@@ -31,6 +31,7 @@ Waiting for video...	等待视频...
 Preview failed: {0}	预览失败: {0}
 Camera session failed	摄像头会话失败
 Session error: {0}	会话错误: {0}
+last {0} s	最近 {0} 秒
 MENU	菜单
 Warning rules	警告规则
 Pre-flight checks	飞行前检查项
@@ -140,6 +141,12 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	导入
 Imported {0} settings	已导入 {0} 项设置
 Settings restored	设置已恢复
+List	列表
+Add a chart	添加图表
+Time window: {0} s  (tap to change)	时间窗口: {0} 秒  (点按更改)
+Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	每个图表以自己的刻度显示一个数值在最近几秒内的变化。请从列表中选择数值 (最多四个)。链路质量始终按 0 到 100 绘制, 因此小幅波动看起来仍然很小。
+Live charts	实时图表
+Use names from the list, such as up_lq or cell.	请使用列表中的名称, 例如 up_lq 或 cell。
 {0}  (in use)	{0}  (使用中)
 Choose the aircraft	选择飞行器
 Aircraft: {0}	飞行器: {0}
@@ -257,9 +264,6 @@ Speak rules that are already true at start-up	启动时已为真的规则也播�
 Unit of the radio's channel numbers (auto is fine)	遥控器通道数值的单位 (自动即可)
 Rule settings	规则设置
 Enter numbers (0 or more)	请输入数字 (0 或更大)
-now: {0}	当前: {0}
-no value now	当前无数值
-Pick a channel or value	选择通道或数值
 ≥ at least	≥ 至少
 ≤ at most	≤ 至多
 > above	> 高于
@@ -268,7 +272,6 @@ Pick a channel or value	选择通道或数值
 ≠ not equal	≠ 不等于
 contains (text)	包含 (文本)
 variable (type, or tap List)	变量 (输入, 或点按列表)
-List	列表
   divide by	  除以
 now: {0}{1}	当前: {0}{1}
 Level: INFO (blue)  - tap to change	级别: 信息 (蓝色)  - 点按更改
@@ -352,6 +355,8 @@ Arm detection: channel, thresholds, cells in the pack...	解锁检测: 通道、
 Flight statistics: max speed, max height, peak current	飞行统计: 最大速度、最大高度、峰值电流
 Rows and current limit...	显示项与电流限值...
 Radar map: home in the centre, your track and range rings	雷达图: 起点居中, 显示航迹和距离环
+Live charts: rolling graphs of telemetry values	实时图表: 遥测数值的滚动曲线
+Charts: choose the values and the time window...	图表: 选择数值和时间窗口...
 Pre-flight checklist (shown while disarmed)	飞行前检查清单 (上锁时显示)
 Edit the checks (thresholds and logic)...	编辑检查项 (阈值与逻辑)...
 Reset the checks to the defaults	将检查项重置为默认值
@@ -456,6 +461,8 @@ GPS satellites	GPS 卫星数
 ground speed, km/h	地速, km/h
 GPS altitude, metres	GPS 海拔, 米
 GPS heading, degrees	GPS 航向, 度
+height above the arming point, metres (while armed)	相对解锁点的高度, 米 (解锁期间)
+distance from home, metres (while armed)	距离起点, 米 (解锁期间)
 latitude	纬度
 longitude	经度
 pitch angle, degrees	俯仰角, 度
@@ -475,3 +482,32 @@ Advanced: the radio's logic values	高级: 遥控器的逻辑值
 channel {0}, 1000 to 2000 microseconds	通道 {0}, 1000 到 2000 微秒
 the radio's own channel number	遥控器自身的通道数值
 the radio's logic value	遥控器的逻辑值
+Link quality %	链路质量 %
+Downlink quality %	下行链路质量 %
+Cell volts	每节电压
+Battery volts	电池电压
+Current A	电流 A
+Capacity used mAh	已用容量 mAh
+Battery %	电量 %
+Speed km/h	速度 km/h
+GPS altitude m	GPS 海拔 m
+Height m	高度 m
+Distance m	距离 m
+Satellites	卫星数
+Heading deg	航向 度
+Climb m/s	爬升率 m/s
+Pitch deg	俯仰 度
+Roll deg	横滚 度
+Yaw deg	偏航 度
+Signal dBm	信号 dBm
+Signal to noise dB	信噪比 dB
+Power mW	功率 mW
+Radio volts	遥控器电压
+Receiver volts	接收机电压
+Lost frames	丢帧数
+Packet rate mode	包速率模式
+Telemetry	遥测
+Channel {0}	通道 {0}
+now: {0}	当前: {0}
+no value now	当前无数值
+Pick a channel or value	选择通道或数值

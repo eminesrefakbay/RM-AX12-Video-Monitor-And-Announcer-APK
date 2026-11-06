@@ -43,6 +43,8 @@ object VariableCatalog {
         "gps_speed" to tn("ground speed, km/h"),
         "gps_alt" to tn("GPS altitude, metres"),
         "gps_heading" to tn("GPS heading, degrees"),
+        "height" to tn("height above the arming point, metres (while armed)"),
+        "dist" to tn("distance from home, metres (while armed)"),
         "gps_lat" to tn("latitude"),
         "gps_lon" to tn("longitude"),
         "pitch" to tn("pitch angle, degrees"),
@@ -63,7 +65,7 @@ object VariableCatalog {
         out.add(Group(tr("Battery (from the flight controller)"), take(listOf("vbat", "cell", "curr", "capa", "batpct"))))
         out.add(Group(tr("Link quality and signal"), take(listOf("up_lq", "up_rssi1", "up_rssi2", "up_snr", "dn_lq", "dn_rssi", "dn_snr", "rf_mode", "tx_power"))))
         out.add(Group(tr("Radio status"), take(listOf("lq", "dbm", "lost", "txv", "rxv", "tlm"))))
-        out.add(Group(tr("GPS and attitude"), take(listOf("sats", "gps_speed", "gps_alt", "gps_heading", "gps_lat", "gps_lon", "pitch", "roll", "yaw", "vspeed"))))
+        out.add(Group(tr("GPS and attitude"), take(listOf("sats", "gps_speed", "gps_alt", "height", "dist", "gps_heading", "gps_lat", "gps_lon", "pitch", "roll", "yaw", "vspeed"))))
         out.add(Group(tr("Flight mode (text)"), take(listOf("fm"))))
         val other = take(live.sorted())
         if (other.isNotEmpty()) out.add(Group(tr("Other values from the radio"), other))
@@ -85,5 +87,25 @@ object VariableCatalog {
         if (name.startsWith("raw")) return tr("the radio's own channel number")
         if (name.startsWith("lv")) return tr("the radio's logic value")
         return ""
+    }
+
+    // a short name with its unit, for the legend of a chart (translated when shown)
+    private val chartLabels = mapOf(
+        "up_lq" to tn("Link quality %"), "lq" to tn("Link quality %"), "dn_lq" to tn("Downlink quality %"),
+        "cell" to tn("Cell volts"), "vbat" to tn("Battery volts"), "curr" to tn("Current A"), "capa" to tn("Capacity used mAh"), "batpct" to tn("Battery %"),
+        "gps_speed" to tn("Speed km/h"), "gps_alt" to tn("GPS altitude m"), "height" to tn("Height m"), "dist" to tn("Distance m"),
+        "sats" to tn("Satellites"), "gps_heading" to tn("Heading deg"), "vspeed" to tn("Climb m/s"),
+        "pitch" to tn("Pitch deg"), "roll" to tn("Roll deg"), "yaw" to tn("Yaw deg"),
+        "up_rssi1" to tn("Signal dBm"), "up_rssi2" to tn("Signal dBm"), "dn_rssi" to tn("Signal dBm"), "dbm" to tn("Signal dBm"),
+        "up_snr" to tn("Signal to noise dB"), "dn_snr" to tn("Signal to noise dB"),
+        "tx_power" to tn("Power mW"), "txv" to tn("Radio volts"), "rxv" to tn("Receiver volts"),
+        "lost" to tn("Lost frames"), "rf_mode" to tn("Packet rate mode"), "tlm" to tn("Telemetry")
+    )
+
+    fun chartLabel(name: String): String {
+        val l = chartLabels[name]
+        if (l != null) return tr(l)
+        if (name.startsWith("ch") && name.substring(2).toIntOrNull() != null) return tr("Channel {0}", name.substring(2))
+        return name
     }
 }

@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.10.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.11.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 628 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 676 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -119,6 +119,19 @@ Rules, warnings and checks can use:
 Switching the profile changes the numbers, **not the rules**. Rules with plain numbers (`vbat / 6 < 3.70`) keep working
 as before. The starting rules, warnings and checks use the new names; an existing install keeps its own text until you
 *Reset the rules / warning rules / checks to the defaults* (Settings).
+
+## Live charts
+
+*Settings > Flight overlays > Live charts* shows **up to four small graphs**, one per value, of the **last 30, 60 or 120 seconds**.
+Each graph has its own scale, its name and unit, the value now, and the ends of its axis. Pick the values from the same list the rule
+editor uses (*Charts: choose the values and the time window*); the default is link quality, volts per cell and current. Values with a
+natural range keep a fixed scale (link quality is always 0 to 100, a channel 1000 to 2000), so a small wobble stays small; current, speed
+and distance start at zero so the height of a punch means something; volts and the rest get a scale that never zooms in closer than a
+sensible span. A missing value shows as a gap. Size, place and opacity work like the other cards. The charts start off (switch them on in
+Settings) and fill as soon as the app runs.
+
+Two new values come with them, usable in charts **and in rules**: **`height`** (metres above where you armed) and **`dist`** (metres from
+home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
 
 ## Aircraft profiles and packs
 

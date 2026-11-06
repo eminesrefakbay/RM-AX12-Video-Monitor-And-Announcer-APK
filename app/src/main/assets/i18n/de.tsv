@@ -31,6 +31,7 @@ Waiting for video...	Warte auf Video...
 Preview failed: {0}	Vorschau fehlgeschlagen: {0}
 Camera session failed	Kamerasitzung fehlgeschlagen
 Session error: {0}	Sitzungsfehler: {0}
+last {0} s	letzte {0} s
 MENU	MENÜ
 Warning rules	Warnregeln
 Pre-flight checks	Checks vor dem Flug
@@ -140,6 +141,12 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	Importieren
 Imported {0} settings	{0} Einstellungen importiert
 Settings restored	Einstellungen wiederhergestellt
+List	Liste
+Add a chart	Diagramm hinzufügen
+Time window: {0} s  (tap to change)	Zeitfenster: {0} s  (zum Ändern tippen)
+Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	Jedes Diagramm zeigt einen Wert über die letzten Sekunden, mit eigener Skala. Wähle die Werte aus der Liste (bis zu vier). Die Verbindungsqualität wird immer von 0 bis 100 gezeichnet, damit ein kleines Schwanken klein bleibt.
+Live charts	Live-Diagramme
+Use names from the list, such as up_lq or cell.	Verwende Namen aus der Liste, zum Beispiel up_lq oder cell.
 {0}  (in use)	{0}  (in Benutzung)
 Choose the aircraft	Fluggerät wählen
 Aircraft: {0}	Fluggerät: {0}
@@ -257,9 +264,6 @@ Speak rules that are already true at start-up	Regeln sprechen, die beim Start sc
 Unit of the radio's channel numbers (auto is fine)	Einheit der Kanalwerte der Fernsteuerung (automatisch genügt)
 Rule settings	Regeleinstellungen
 Enter numbers (0 or more)	Zahlen eingeben (0 oder mehr)
-now: {0}	jetzt: {0}
-no value now	derzeit kein Wert
-Pick a channel or value	Kanal oder Wert wählen
 ≥ at least	≥ mindestens
 ≤ at most	≤ höchstens
 > above	> über
@@ -268,7 +272,6 @@ Pick a channel or value	Kanal oder Wert wählen
 ≠ not equal	≠ ungleich
 contains (text)	enthält (Text)
 variable (type, or tap List)	Variable (tippen oder auf Liste tippen)
-List	Liste
   divide by	  teilen durch
 now: {0}{1}	jetzt: {0}{1}
 Level: INFO (blue)  - tap to change	Stufe: INFO (blau)  - zum Ändern tippen
@@ -352,6 +355,8 @@ Arm detection: channel, thresholds, cells in the pack...	Arm-Erkennung: Kanal, S
 Flight statistics: max speed, max height, peak current	Flugstatistik: Höchstgeschwindigkeit, Maximalhöhe, Spitzenstrom
 Rows and current limit...	Zeilen und Stromgrenze...
 Radar map: home in the centre, your track and range rings	Radarkarte: Home in der Mitte, deine Spur und Entfernungsringe
+Live charts: rolling graphs of telemetry values	Live-Diagramme: fortlaufende Verläufe von Telemetriewerten
+Charts: choose the values and the time window...	Diagramme: Werte und Zeitfenster wählen...
 Pre-flight checklist (shown while disarmed)	Checkliste vor dem Flug (angezeigt, solange gesichert)
 Edit the checks (thresholds and logic)...	Checks bearbeiten (Schwellen und Logik)...
 Reset the checks to the defaults	Checks auf Standard zurücksetzen
@@ -456,6 +461,8 @@ GPS satellites	GPS-Satelliten
 ground speed, km/h	Geschwindigkeit über Grund, km/h
 GPS altitude, metres	GPS-Höhe, Meter
 GPS heading, degrees	GPS-Kurs, Grad
+height above the arming point, metres (while armed)	Höhe über dem Startpunkt, Meter (solange scharf)
+distance from home, metres (while armed)	Entfernung von Home, Meter (solange scharf)
 latitude	Breitengrad
 longitude	Längengrad
 pitch angle, degrees	Nickwinkel, Grad
@@ -475,3 +482,32 @@ Advanced: the radio's logic values	Erweitert: die Logikwerte der Fernsteuerung
 channel {0}, 1000 to 2000 microseconds	Kanal {0}, 1000 bis 2000 Mikrosekunden
 the radio's own channel number	der eigene Kanalwert der Fernsteuerung
 the radio's logic value	der Logikwert der Fernsteuerung
+Link quality %	Verbindungsqualität %
+Downlink quality %	Downlink-Qualität %
+Cell volts	Zellenspannung
+Battery volts	Akkuspannung
+Current A	Strom A
+Capacity used mAh	Verbrauchte Kapazität mAh
+Battery %	Akku %
+Speed km/h	Geschwindigkeit km/h
+GPS altitude m	GPS-Höhe m
+Height m	Höhe m
+Distance m	Entfernung m
+Satellites	Satelliten
+Heading deg	Kurs Grad
+Climb m/s	Steigrate m/s
+Pitch deg	Nick Grad
+Roll deg	Roll Grad
+Yaw deg	Gier Grad
+Signal dBm	Signal dBm
+Signal to noise dB	Signal-Rausch dB
+Power mW	Leistung mW
+Radio volts	Spannung der Fernsteuerung
+Receiver volts	Empfängerspannung
+Lost frames	Verlorene Frames
+Packet rate mode	Paketraten-Modus
+Telemetry	Telemetrie
+Channel {0}	Kanal {0}
+now: {0}	jetzt: {0}
+no value now	derzeit kein Wert
+Pick a channel or value	Kanal oder Wert wählen

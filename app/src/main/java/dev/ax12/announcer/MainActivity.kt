@@ -63,6 +63,9 @@ class MainActivity : Activity() {
     private lateinit var statsView: FlightStatsView
     private lateinit var radarView: RadarView
     private lateinit var checkView: ChecklistView
+    private lateinit var chartView: ChartView
+    private val chartModel = ChartModel()
+    private var chartOn = false
     private val flightStats = FlightStats()
     private var checkEngine: RuleEngine? = null
     private var checkModel: CheckModel? = null
@@ -148,6 +151,10 @@ class MainActivity : Activity() {
         radarView.bind(flightStats)
         radarView.visibility = View.GONE
         frame.addView(radarView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        chartView = ChartView(this)
+        chartView.bind(chartModel)
+        chartView.visibility = View.GONE
+        frame.addView(chartView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         checkView = ChecklistView(this)
         checkView.visibility = View.GONE
         frame.addView(checkView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -368,11 +375,15 @@ class MainActivity : Activity() {
                     reloadChecks()
                 }
                 val numbers = Variables.numbers(sample, scaler, batteryCells)
+                flightStats.update(numbers, now)
+                if (flightStats.armed()) {                      // height and distance exist only in flight, and rules can use them
+                    if (!flightStats.heightNow().isNaN()) numbers["height"] = flightStats.heightNow()
+                    if (!flightStats.distanceNow().isNaN()) numbers["dist"] = flightStats.distanceNow()
+                }
                 latestNumbers = numbers
                 latestTexts = sample.texts
                 engine?.update(numbers, sample.texts, now)
                 warningBar.update(numbers, sample.texts, now)
-                flightStats.update(numbers, now)
                 checkEngine?.update(numbers, sample.texts, now)
                 if (now - lastTileUpdate >= 200) {
                     lastTileUpdate = now
@@ -544,7 +555,7 @@ class MainActivity : Activity() {
         override fun setTestChannelsOn(on: Boolean) = setTestVisible(on)
         override fun about(): String = this@MainActivity.aboutText()
 
-        override fun tileOn(tile: String): Boolean = Prefs.bool(this@MainActivity, tile + "On", true)
+        override fun tileOn(tile: String): Boolean = Prefs.bool(this@MainActivity, tile + "On", tile != "chart")
         override fun setTileOn(tile: String, on: Boolean) {
             Prefs.setBool(this@MainActivity, tile + "On", on)
             applyTiles()
@@ -555,6 +566,7 @@ class MainActivity : Activity() {
         override fun cycleTilePosition(tile: String) = cycleTile(tile + "Pos", defaultTilePosition(tile), 5)
         override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
         override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
+        override fun editCharts() = this@MainActivity.editCharts()
         override fun editArmDetection() = this@MainActivity.editArmDetection()
         override fun editStatsRows() = this@MainActivity.editStatsRows()
         override fun editCheckRules() {
@@ -615,6 +627,7 @@ class MainActivity : Activity() {
     private fun defaultTilePosition(tile: String): Int = when (tile) {
         "stats" -> 0
         "radar" -> 3
+        "chart" -> 1
         else -> 4
     }
 
@@ -641,6 +654,11 @@ class MainActivity : Activity() {
         statsOn = Prefs.bool(this, "statsOn", true)
         radarOn = Prefs.bool(this, "radarOn", true)
         checkOn = Prefs.bool(this, "checkOn", true)
+        chartOn = Prefs.bool(this, "chartOn", false)
+        applyCharts()
+        chartView.setLevel(Prefs.int(this, "chartSize", 1).coerceIn(0, 2))
+        chartView.alpha = floatArrayOf(0.5f, 0.75f, 1f)[Prefs.int(this, "chartOpacity", 1).coerceIn(0, 2)]
+        placeTile(chartView, Prefs.int(this, "chartPos", defaultTilePosition("chart")).coerceIn(0, 4))
         val alpha = floatArrayOf(0.5f, 0.75f, 1f)
         statsView.setTextSp(floatArrayOf(12f, 15f, 19f)[Prefs.int(this, "statsSize", 1).coerceIn(0, 2)])
         statsView.alpha = alpha[Prefs.int(this, "statsOpacity", 1).coerceIn(0, 2)]
@@ -672,6 +690,10 @@ class MainActivity : Activity() {
 
     /** Refresh the three cards (about five times a second). */
     private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long) {
+        chartModel.sample(numbers, now)
+        val showChart = chartOn && chartModel.names.isNotEmpty()
+        chartView.visibility = if (showChart) View.VISIBLE else View.GONE
+        if (showChart) chartView.refresh(now)
         val fs = flightStats
         val flight = fs.armed() || fs.hasFlight()
 
@@ -1214,6 +1236,91 @@ class MainActivity : Activity() {
         Lang.apply(this)                      // the language may have changed
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         recreate()                            // every screen is built again with the new settings
+    }
+
+    // ------------------------------------------------------------------ live charts
+
+    private val liveSource = object : LiveValues {
+        override fun numbers(): Map<String, Double> = latestNumbers
+        override fun texts(): Map<String, String> = latestTexts
+    }
+
+    private fun applyCharts() {
+        chartModel.configure(ChartConfig.parse(Prefs.chartSeries(this)), ChartConfig.windowSeconds(Prefs.int(this, "chartWindow", 1)))
+    }
+
+    /** Up to four values to chart, and how many seconds the graphs show. */
+    private fun editCharts() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        class Row(val box: LinearLayout, val name: EditText)
+        val rows = ArrayList<Row>()
+        val list = LinearLayout(this)
+        list.orientation = LinearLayout.VERTICAL
+        fun addRow(text: String) {
+            val line = LinearLayout(this)
+            line.orientation = LinearLayout.HORIZONTAL
+            line.gravity = Gravity.CENTER_VERTICAL
+            val name = EditText(this)
+            name.setSingleLine(true)
+            name.hint = "up_lq"
+            name.setText(text)
+            line.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            val pick = Button(this)
+            pick.text = tr("List")
+            pick.setOnClickListener { VariablePicker.show(this, liveSource, true) { picked -> name.setText(picked) } }
+            line.addView(pick)
+            val del = Button(this)
+            del.text = "X"
+            del.setOnClickListener {
+                list.removeView(line)
+                rows.removeAll { it.box === line }
+            }
+            line.addView(del)
+            list.addView(line)
+            rows.add(Row(line, name))
+        }
+        for (n in ChartConfig.parse(Prefs.chartSeries(this))) addRow(n)
+        body.addView(list)
+        val add = Button(this)
+        add.text = tr("Add a chart")
+        add.setOnClickListener { if (rows.size < ChartConfig.MAX_SERIES) addRow("") }
+        body.addView(add)
+        var window = Prefs.int(this, "chartWindow", 1).coerceIn(0, ChartConfig.WINDOWS.size - 1)
+        val windowButton = Button(this)
+        windowButton.isAllCaps = false
+        windowButton.text = tr("Time window: {0} s  (tap to change)", ChartConfig.windowSeconds(window))
+        windowButton.setOnClickListener {
+            window = (window + 1) % ChartConfig.WINDOWS.size
+            windowButton.text = tr("Time window: {0} s  (tap to change)", ChartConfig.windowSeconds(window))
+        }
+        body.addView(windowButton)
+        val hint = TextView(this)
+        hint.text = tr("Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.")
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle(tr("Live charts"))
+            .setView(scroll)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val typed = rows.map { it.name.text.toString().trim() }.filter { it.isNotEmpty() }
+            if (typed.any { !Regex("[A-Za-z_][A-Za-z0-9_]{0,23}").matches(it) }) {
+                Toast.makeText(this, tr("Use names from the list, such as up_lq or cell."), Toast.LENGTH_LONG).show()
+            } else {
+                Prefs.setChartSeries(this, ChartConfig.encode(ChartConfig.parse(typed.joinToString(","))))
+                Prefs.setInt(this, "chartWindow", window)
+                applyTiles()
+                dlg.dismiss()
+            }
+        }
     }
 
     // ------------------------------------------------------------------ aircraft and packs

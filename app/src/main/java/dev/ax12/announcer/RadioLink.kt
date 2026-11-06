@@ -102,7 +102,7 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
 
 /** Builds the variable lists the rules see. */
 object Variables {
-    fun numbers(sample: RadioSample, scaler: ChannelScaler, cells: Int): Map<String, Double> {
+    fun numbers(sample: RadioSample, scaler: ChannelScaler, cells: Int): HashMap<String, Double> {
         val m = HashMap<String, Double>()
         for (i in 0 until 16) {
             m["ch" + (i + 1)] = scaler.toMicros(sample.raw[i])

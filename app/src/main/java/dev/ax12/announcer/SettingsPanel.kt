@@ -75,6 +75,7 @@ interface SettingsHost {
     fun cycleTilePosition(tile: String)
     fun tileOpacityLabel(tile: String): String
     fun cycleTileOpacity(tile: String)
+    fun editCharts()
     fun editArmDetection()
     fun editStatsRows()
     fun editCheckRules()
@@ -302,6 +303,9 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             action(tr("Rows and current limit...")) { host.editStatsRows() }
         }
         tileControls("radar", tr("Radar map: home in the centre, your track and range rings")) {}
+        tileControls("chart", tr("Live charts: rolling graphs of telemetry values")) {
+            action(tr("Charts: choose the values and the time window...")) { host.editCharts() }
+        }
         tileControls("check", tr("Pre-flight checklist (shown while disarmed)")) {
             action(tr("Edit the checks (thresholds and logic)...")) { host.editCheckRules() }
             action(tr("Reset the checks to the defaults")) {

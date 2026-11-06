@@ -41,6 +41,8 @@ public final class SettingsFile {
         b("radarOn"); i("radarSize", 0, 2); i("radarPos", 0, 4); i("radarOpacity", 0, 2);
         b("checkOn"); i("checkSize", 0, 2); i("checkPos", 0, 4); i("checkOpacity", 0, 2);
         i("armCh", 1, 16); i("armHigh", 1000, 2100); i("armLow", 900, 2100);
+        // live charts
+        b("chartOn"); i("chartSize", 0, 2); i("chartPos", 0, 4); i("chartOpacity", 0, 2); i("chartWindow", 0, 2); s("chartSeries");
         // battery, packs and aircraft
         i("batActive", 0, BatteryProfiles.MAX - 1);
         s("packs"); i("packActive", 0, Packs.MAX - 1);
@@ -63,6 +65,7 @@ public final class SettingsFile {
         d("checkOn", true); d("checkSize", 1); d("checkPos", 4); d("checkOpacity", 1);
         d("armCh", 5); d("armHigh", 1750); d("armLow", 1650);
         d("batActive", 0); d("packActive", 0);
+        d("chartOn", false); d("chartSize", 1); d("chartPos", 1); d("chartOpacity", 1); d("chartWindow", 1); d("chartSeries", ChartConfig.DEFAULT);
     }
 
     private SettingsFile() {}
@@ -185,6 +188,7 @@ public final class SettingsFile {
         if (key.equals("rules") || key.equals("warnRules") || key.equals("checkRules")) return value.length() <= 200000 ? value : null;
         if (key.equals("barsConfig")) return value.length() <= 4000 ? value : null;
         if (key.equals("batProfiles")) return BatteryProfiles.parseStrict(value) != null ? value : null;
+        if (key.equals("chartSeries")) return ChartConfig.valid(value) ? value : null;
         if (key.equals("packs")) return Packs.parseStrict(value) != null ? value : null;
         if (key.equals("aircraftStore")) return value.length() <= 500000 && AircraftStore.decodeStrict(value, null) != null ? value : null;
         if (key.equals("aircraftActive")) return value.matches("[a-z0-9]{1,8}") ? value : null;

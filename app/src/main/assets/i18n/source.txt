@@ -31,6 +31,7 @@ Waiting for video...
 Preview failed: {0}
 Camera session failed
 Session error: {0}
+last {0} s
 MENU
 Warning rules
 Pre-flight checks
@@ -140,6 +141,12 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import
 Imported {0} settings
 Settings restored
+List
+Add a chart
+Time window: {0} s  (tap to change)
+Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.
+Live charts
+Use names from the list, such as up_lq or cell.
 {0}  (in use)
 Choose the aircraft
 Aircraft: {0}
@@ -257,9 +264,6 @@ Speak rules that are already true at start-up
 Unit of the radio's channel numbers (auto is fine)
 Rule settings
 Enter numbers (0 or more)
-now: {0}
-no value now
-Pick a channel or value
 ≥ at least
 ≤ at most
 > above
@@ -268,7 +272,6 @@ Pick a channel or value
 ≠ not equal
 contains (text)
 variable (type, or tap List)
-List
   divide by
 now: {0}{1}
 Level: INFO (blue)  - tap to change
@@ -352,6 +355,8 @@ Arm detection: channel, thresholds, cells in the pack...
 Flight statistics: max speed, max height, peak current
 Rows and current limit...
 Radar map: home in the centre, your track and range rings
+Live charts: rolling graphs of telemetry values
+Charts: choose the values and the time window...
 Pre-flight checklist (shown while disarmed)
 Edit the checks (thresholds and logic)...
 Reset the checks to the defaults
@@ -456,6 +461,8 @@ GPS satellites
 ground speed, km/h
 GPS altitude, metres
 GPS heading, degrees
+height above the arming point, metres (while armed)
+distance from home, metres (while armed)
 latitude
 longitude
 pitch angle, degrees
@@ -475,3 +482,32 @@ Advanced: the radio's logic values
 channel {0}, 1000 to 2000 microseconds
 the radio's own channel number
 the radio's logic value
+Link quality %
+Downlink quality %
+Cell volts
+Battery volts
+Current A
+Capacity used mAh
+Battery %
+Speed km/h
+GPS altitude m
+Height m
+Distance m
+Satellites
+Heading deg
+Climb m/s
+Pitch deg
+Roll deg
+Yaw deg
+Signal dBm
+Signal to noise dB
+Power mW
+Radio volts
+Receiver volts
+Lost frames
+Packet rate mode
+Telemetry
+Channel {0}
+now: {0}
+no value now
+Pick a channel or value

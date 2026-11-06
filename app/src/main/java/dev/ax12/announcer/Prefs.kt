@@ -51,6 +51,10 @@ object Prefs {
     fun batProfilesText(c: Context): String = p(c).getString("batProfiles", null) ?: BatteryProfiles.encode(BatteryProfiles.defaults())
     fun setBatProfilesText(c: Context, text: String) { p(c).edit().putString("batProfiles", text).apply() }
 
+    // ---- live charts ----
+    fun chartSeries(c: Context): String = p(c).getString("chartSeries", null) ?: ChartConfig.DEFAULT
+    fun setChartSeries(c: Context, text: String) { p(c).edit().putString("chartSeries", text).apply() }
+
     // ---- packs and aircraft ----
     fun packsText(c: Context): String = p(c).getString("packs", null) ?: ""
     fun setPacksText(c: Context, text: String) { p(c).edit().putString("packs", text).apply() }

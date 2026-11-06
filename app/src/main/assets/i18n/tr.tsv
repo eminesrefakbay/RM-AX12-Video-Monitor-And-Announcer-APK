@@ -31,6 +31,7 @@ Waiting for video...	Video bekleniyor...
 Preview failed: {0}	Önizleme başarısız: {0}
 Camera session failed	Kamera oturumu başarısız
 Session error: {0}	Oturum hatası: {0}
+last {0} s	son {0} sn
 MENU	MENÜ
 Warning rules	Uyarı kuralları
 Pre-flight checks	Uçuş öncesi kontroller
@@ -140,6 +141,12 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	İçe aktar
 Imported {0} settings	{0} ayar içe aktarıldı
 Settings restored	Ayarlar geri yüklendi
+List	Liste
+Add a chart	Grafik ekle
+Time window: {0} s  (tap to change)	Zaman aralığı: {0} sn  (değiştirmek için dokunun)
+Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	Her grafik, son saniyelerdeki tek bir değeri kendi ölçeğiyle gösterir. Değerleri listeden seçin (en fazla dört). Bağlantı kalitesi her zaman 0 ile 100 arasında çizilir, böylece küçük bir dalgalanma küçük kalır.
+Live charts	Canlı grafikler
+Use names from the list, such as up_lq or cell.	Listedeki adları kullanın, örneğin up_lq veya cell.
 {0}  (in use)	{0}  (kullanımda)
 Choose the aircraft	Hava aracını seçin
 Aircraft: {0}	Hava aracı: {0}
@@ -257,9 +264,6 @@ Speak rules that are already true at start-up	Başlangıçta zaten doğru olan k
 Unit of the radio's channel numbers (auto is fine)	Kumandanın kanal sayılarının birimi (otomatik yeterli)
 Rule settings	Kural ayarları
 Enter numbers (0 or more)	Sayı girin (0 veya daha fazla)
-now: {0}	şimdi: {0}
-no value now	şu an değer yok
-Pick a channel or value	Bir kanal veya değer seçin
 ≥ at least	≥ en az
 ≤ at most	≤ en çok
 > above	> üstünde
@@ -268,7 +272,6 @@ Pick a channel or value	Bir kanal veya değer seçin
 ≠ not equal	≠ eşit değil
 contains (text)	içerir (metin)
 variable (type, or tap List)	değişken (yazın veya Liste'ye dokunun)
-List	Liste
   divide by	  bölen
 now: {0}{1}	şimdi: {0}{1}
 Level: INFO (blue)  - tap to change	Seviye: BİLGİ (mavi)  - değiştirmek için dokunun
@@ -352,6 +355,8 @@ Arm detection: channel, thresholds, cells in the pack...	Arm algılama: kanal, e
 Flight statistics: max speed, max height, peak current	Uçuş istatistikleri: en yüksek hız, en yüksek irtifa, tepe akım
 Rows and current limit...	Satırlar ve akım sınırı...
 Radar map: home in the centre, your track and range rings	Radar haritası: ortada ev, izin ve mesafe halkaları
+Live charts: rolling graphs of telemetry values	Canlı grafikler: telemetri değerlerinin kayan grafikleri
+Charts: choose the values and the time window...	Grafikler: değerleri ve zaman aralığını seçin...
 Pre-flight checklist (shown while disarmed)	Uçuş öncesi kontrol listesi (disarm iken gösterilir)
 Edit the checks (thresholds and logic)...	Kontrolleri düzenle (eşikler ve mantık)...
 Reset the checks to the defaults	Kontrolleri varsayılanlara sıfırla
@@ -456,6 +461,8 @@ GPS satellites	GPS uyduları
 ground speed, km/h	yer hızı, km/s
 GPS altitude, metres	GPS irtifası, metre
 GPS heading, degrees	GPS yönü, derece
+height above the arming point, metres (while armed)	arm noktasının üzerindeki yükseklik, metre (arm iken)
+distance from home, metres (while armed)	eve uzaklık, metre (arm iken)
 latitude	enlem
 longitude	boylam
 pitch angle, degrees	pitch açısı, derece
@@ -475,3 +482,32 @@ Advanced: the radio's logic values	Gelişmiş: kumandanın mantık değerleri
 channel {0}, 1000 to 2000 microseconds	kanal {0}, 1000 - 2000 mikrosaniye
 the radio's own channel number	kumandanın kendi kanal sayısı
 the radio's logic value	kumandanın mantık değeri
+Link quality %	Bağlantı kalitesi %
+Downlink quality %	Downlink kalitesi %
+Cell volts	Hücre voltu
+Battery volts	Batarya voltu
+Current A	Akım A
+Capacity used mAh	Kullanılan kapasite mAh
+Battery %	Batarya %
+Speed km/h	Hız km/s
+GPS altitude m	GPS irtifası m
+Height m	Yükseklik m
+Distance m	Mesafe m
+Satellites	Uydu sayısı
+Heading deg	Yön derece
+Climb m/s	Tırmanma m/s
+Pitch deg	Pitch derece
+Roll deg	Roll derece
+Yaw deg	Yaw derece
+Signal dBm	Sinyal dBm
+Signal to noise dB	Sinyal/gürültü dB
+Power mW	Güç mW
+Radio volts	Kumanda voltu
+Receiver volts	Alıcı voltu
+Lost frames	Kayıp kareler
+Packet rate mode	Paket hızı modu
+Telemetry	Telemetri
+Channel {0}	Kanal {0}
+now: {0}	şimdi: {0}
+no value now	şu an değer yok
+Pick a channel or value	Bir kanal veya değer seçin

@@ -105,7 +105,7 @@ public class SettingsFileTests {
             Matcher m = lit.matcher(new String(Files.readAllBytes(f.toPath()), "UTF-8"));
             while (m.find()) used.add(m.group(1) != null ? m.group(1) : m.group(2) != null ? m.group(2) : m.group(3));
         }
-        for (String tile : new String[]{"stats", "radar", "check"}) for (String suffix : new String[]{"On", "Size", "Pos", "Opacity"}) used.add(tile + suffix);
+        for (String tile : new String[]{"stats", "radar", "check", "chart"}) for (String suffix : new String[]{"On", "Size", "Pos", "Opacity"}) used.add(tile + suffix);
         Set<String> notExported = new HashSet<String>();
         notExported.add("rulesBackup"); notExported.add("settingsBackup");
         StringBuilder missing = new StringBuilder();
