@@ -108,6 +108,7 @@ class MainActivity : Activity() {
         // overlays on the video: the sticks and the warning bar (panels are added after them, so they sit on top)
         sticksView = SticksView(this)
         sticksView.visibility = View.GONE
+        sticksView.onLongPress = { editChannelBars() }
         frame.addView(sticksView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         warningText = TextView(this)
         warningText.textSize = 18f
@@ -418,6 +419,12 @@ class MainActivity : Activity() {
         override fun sticksOpacityLabel(): String = opacityNames[Prefs.int(this@MainActivity, "sticksOpacity", 1).coerceIn(0, 2)]
         override fun cycleSticksOpacity() = cyclePref("sticksOpacity", 1, 3)
         override fun editStickChannels() = this@MainActivity.editStickChannels()
+        override fun channelBarsOn(): Boolean = Prefs.bool(this@MainActivity, "barsOn", true)
+        override fun setChannelBarsOn(on: Boolean) {
+            Prefs.setBool(this@MainActivity, "barsOn", on)
+            applyOverlayPrefs()
+        }
+        override fun editChannelBars() = this@MainActivity.editChannelBars()
         override fun warningBarOn(): Boolean = Prefs.bool(this@MainActivity, "warnBarOn", true)
         override fun setWarningBarOn(on: Boolean) {
             Prefs.setBool(this@MainActivity, "warnBarOn", on)
@@ -462,6 +469,7 @@ class MainActivity : Activity() {
         )
         val boxDp = intArrayOf(64, 96, 132)[Prefs.int(this, "sticksSize", 1).coerceIn(0, 2)]
         sticksView.configure(layout, Prefs.int(this, "stickInvert", 0), names, boxDp)
+        sticksView.setBars(AuxBars.decode(Prefs.barsConfig(this)), Prefs.bool(this, "barsOn", true))
         sticksView.alpha = floatArrayOf(0.35f, 0.65f, 0.95f)[Prefs.int(this, "sticksOpacity", 1).coerceIn(0, 2)]
         sticksView.visibility = if (sticksEnabled) View.VISIBLE else View.GONE
 
@@ -487,6 +495,97 @@ class MainActivity : Activity() {
             wlp.bottomMargin = dp(40)
         }
         warningText.layoutParams = wlp
+    }
+
+    /** Eight bars, four on each side of the sticks: on or off, which channel, and the name shown on the overlay. */
+    private fun editChannelBars() {
+        val bars = AuxBars.decode(Prefs.barsConfig(this))
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+
+        val boxes = ArrayList<CheckBox>()
+        val chans = ArrayList<EditText>()
+        val nameFields = ArrayList<EditText>()
+        for (i in 0 until AuxBars.SLOTS) {
+            if (i == 0 || i == 4) {
+                val head = TextView(this)
+                head.text = if (i == 0) "Left of the sticks" else "Right of the sticks"
+                head.textSize = 14f
+                head.setTypeface(null, Typeface.BOLD)
+                head.setTextColor(0xFF9CDCFE.toInt())
+                head.setPadding(0, dp(12), 0, dp(2))
+                body.addView(head)
+                val cols = TextView(this)
+                cols.text = "on      channel      name on the overlay"
+                cols.textSize = 11f
+                body.addView(cols)
+            }
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.gravity = Gravity.CENTER_VERTICAL
+            val on = CheckBox(this)
+            on.isChecked = bars[i].enabled
+            row.addView(on)
+            val ch = EditText(this)
+            ch.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            ch.setText(bars[i].channel.toString())
+            ch.setSingleLine(true)
+            row.addView(ch, LinearLayout.LayoutParams(dp(64), ViewGroup.LayoutParams.WRAP_CONTENT))
+            val name = EditText(this)
+            name.setText(bars[i].name)
+            name.setSingleLine(true)
+            name.filters = arrayOf(android.text.InputFilter.LengthFilter(AuxBars.MAX_NAME))
+            row.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            body.addView(row)
+            boxes.add(on)
+            chans.add(ch)
+            nameFields.add(name)
+        }
+        val hint = TextView(this)
+        hint.text = "A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. " +
+                "Names are written along the bar; a short name reads best."
+        hint.textSize = 12f
+        hint.setPadding(0, dp(10), 0, 0)
+        body.addView(hint)
+
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("Channel bars")
+            .setView(scroll)
+            .setPositiveButton("Save", null)
+            .setNegativeButton("Cancel", null)
+            .setNeutralButton("Defaults", null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+            val d = AuxBars.defaults()
+            for (i in 0 until AuxBars.SLOTS) {
+                boxes[i].isChecked = d[i].enabled
+                chans[i].setText(d[i].channel.toString())
+                nameFields[i].setText(d[i].name)
+            }
+        }
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val list = ArrayList<AuxBars.Bar>()
+            var bad: String? = null
+            for (i in 0 until AuxBars.SLOTS) {
+                val ch = chans[i].text.toString().trim().toIntOrNull()
+                if (ch == null || ch < 1 || ch > 16) {
+                    bad = "Bar " + (i + 1) + ": the channel must be 1 to 16"
+                    break
+                }
+                list.add(AuxBars.Bar(boxes[i].isChecked, ch, AuxBars.cleanName(nameFields[i].text.toString(), ch)))
+            }
+            if (bad != null) {
+                Toast.makeText(this, bad, Toast.LENGTH_SHORT).show()
+            } else {
+                Prefs.setBarsConfig(this, AuxBars.encode(list))
+                applyOverlayPrefs()
+                dlg.dismiss()
+            }
+        }
     }
 
     /** One dialog for: stick mode (1 to 4), which channel is roll / pitch / throttle / yaw, and direction. */

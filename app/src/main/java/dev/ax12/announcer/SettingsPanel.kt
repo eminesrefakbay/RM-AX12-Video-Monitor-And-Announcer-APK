@@ -48,6 +48,9 @@ interface SettingsHost {
     fun sticksOpacityLabel(): String
     fun cycleSticksOpacity()
     fun editStickChannels()
+    fun channelBarsOn(): Boolean
+    fun setChannelBarsOn(on: Boolean)
+    fun editChannelBars()
     fun warningBarOn(): Boolean
     fun setWarningBarOn(on: Boolean)
     fun warningBarPositionLabel(): String
@@ -187,6 +190,9 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             }
         }
         action("Stick mode, channels and direction...") { host.editStickChannels() }
+        toggle("Channel bars beside the sticks (aux switches)", host.channelBarsOn()) { host.setChannelBarsOn(it) }
+        action("Channel bars: names, channels, on and off...") { host.editChannelBars() }
+        note("Tip: press and hold the stick view on the video to open the channel bars.")
         toggle("Warning status bar", host.warningBarOn()) { host.setWarningBarOn(it) }
         action("Warning bar position: " + host.warningBarPositionLabel() + "  (tap to change)") {
             host.cycleWarningBarPosition()

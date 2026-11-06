@@ -27,6 +27,7 @@ jobs:
           java -cp out dev.ax12.announcer.RulesFileTests
           java -cp out dev.ax12.announcer.TimingStatsTests
           java -cp out dev.ax12.announcer.OverlayTests
+          java -cp out dev.ax12.announcer.AuxBarsTests
       - name: Native bridge core with a fake SDK (needs only the SDK headers)
         run: |
           git clone --depth 1 "$SDK_REPO" sdk-src
