@@ -20,6 +20,7 @@ std::vector<rmaxSdk::RcChOutCfgUI> channels;
 rmaxSdk::RadioStatusUI radio;
 std::atomic<int> getterCalls{0};
 std::atomic<bool> shutdownCalled{false};
+std::atomic<int> cfgReadCalls{0};
 std::thread::id lastGetterThread;
 rmaxSdk::InitResult initResult = rmaxSdk::InitResult::Success;
 }  // namespace fake
@@ -33,6 +34,7 @@ bool setMessageCallback(MessageCallback cb, void*) noexcept {
     return true;
 }
 void shutdown() noexcept { fake::shutdownCalled = true; }
+void taskReadConfigFromDevice() noexcept { ++fake::cfgReadCalls; }
 std::vector<RcChOutCfgUI> rcGetChOutList() noexcept {
     ++fake::getterCalls;
     std::lock_guard<std::mutex> l(fake::m);
@@ -70,8 +72,21 @@ int main() {
     CHECK(ax12::snapshot().v[ax12::kSnapState] == 0, "state stays 0 after a failed start");
     fake::initResult = rmaxSdk::InitResult::Success;
 
+    ax12::setConfigRetryMs(100);
+    fake::cfgReadCalls = 0;
     CHECK(ax12::start("/tmp") == 0, "start succeeds");
     CHECK(ax12::snapshot().v[ax12::kSnapState] == 1, "running");
+    CHECK(fake::cfgReadCalls >= 1, "start asks the radio for its configuration (taskReadConfigFromDevice)");
+    CHECK(ax12::snapshot().v[ax12::kSnapCfgReady] == 0, "config not ready before GETDEVCFG_END");
+    // the radio did not answer: the bridge keeps asking
+    CHECK(waitFor([] { return fake::cfgReadCalls >= 3; }, 1500), "config request is repeated until the radio answers");
+    send(rmaxSdk::RC_MSGID_GETDEVCFG_END);
+    CHECK(waitFor([] { return ax12::snapshot().v[ax12::kSnapCfgReady] == 1; }, 1000), "GETDEVCFG_END marks the config ready");
+    {
+        int calls = fake::cfgReadCalls;
+        std::this_thread::sleep_for(400ms);
+        CHECK(fake::cfgReadCalls == calls, "no more config requests once ready");
+    }
     CHECK(fake::callback != nullptr, "callback registered");
 
     // channel values
@@ -90,6 +105,8 @@ int main() {
     CHECK(s.v[ax12::kSnapLogic + 4] == 6.0, "logic values copied");
     CHECK(s.v[ax12::kSnapLq] == 97 && s.v[ax12::kSnapDbm] == -64 && s.v[ax12::kSnapLost] == 3, "radio status copied");
     CHECK(s.v[ax12::kSnapTxVolt] > 7.89 && s.v[ax12::kSnapRxVolt] > 22.39, "voltages copied");
+    CHECK(s.v[ax12::kSnapChannelListSize] == 16, "channel list length reported");
+    CHECK(s.v[ax12::kSnapMixoutMsgs] >= 1, "mixout messages counted");
     CHECK(fake::lastGetterThread != me, "getters run on the worker thread, not the SDK callback thread");
 
     // getters are throttled even when the SDK floods us
@@ -112,6 +129,10 @@ int main() {
     send(rmaxSdk::RC_MSGID_CRSF_DATA_RECEIVED, nullptr);   // payload missing: must not crash
     CHECK(!ax12::popCrsf(out), "empty payload ignored");
 
+    send(rmaxSdk::RC_MSGID_FWVERSION_NOT_MATCH);
+    send(rmaxSdk::RC_MSGID_MIXOUT_UPDATE);
+    CHECK(waitFor([] { return ax12::snapshot().v[ax12::kSnapFwMismatch] == 1; }, 1000), "firmware mismatch is reported");
+
     // telemetry lost / recovered
     send(rmaxSdk::RC_MSGID_TELEMETRY_LOST);
     send(rmaxSdk::RC_MSGID_MIXOUT_UPDATE);
@@ -126,7 +147,10 @@ int main() {
     CHECK(fake::shutdownCalled, "SDK shutdown called");
     CHECK(ax12::snapshot().v[ax12::kSnapState] == 0, "state back to 0");
     fake::shutdownCalled = false;
+    int cfgBefore = fake::cfgReadCalls;
     CHECK(ax12::start("/tmp") == 0, "restart works");
+    CHECK(fake::cfgReadCalls > cfgBefore, "restart asks for the config again");
+    CHECK(ax12::snapshot().v[ax12::kSnapFwMismatch] == 0, "restart clears the old firmware flag");
     send(rmaxSdk::RC_MSGID_MIXOUT_UPDATE);
     CHECK(waitFor([] { return ax12::snapshot().v[ax12::kSnapUpdates] >= 1; }, 1000), "values flow again");
     ax12::stop();

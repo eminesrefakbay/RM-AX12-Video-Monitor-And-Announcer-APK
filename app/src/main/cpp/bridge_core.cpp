@@ -19,6 +19,9 @@ struct State {
     bool running = false;
     bool dirty = false;
     bool tlmOk = true;
+    bool cfgReady = false;
+    bool fwMismatch = false;
+    std::uint64_t mixoutMsgs = 0;
     std::uint64_t updates = 0;
     std::uint64_t droppedFrames = 0;
     std::deque<std::vector<std::uint8_t>> crsf;
@@ -32,6 +35,7 @@ State& st() {
 }
 
 constexpr std::size_t kMaxQueuedFrames = 128;
+std::atomic<int> g_cfgRetryMs{3000};
 
 // Runs on the SDK's output thread: keep it short, copy data, never call getters here.
 void onMessage(const rmaxSdk::SdkMessage& message, void* /*user*/) {
@@ -40,7 +44,21 @@ void onMessage(const rmaxSdk::SdkMessage& message, void* /*user*/) {
     case rmaxSdk::RC_MSGID_MIXOUT_UPDATE: {
         std::lock_guard<std::mutex> lock(s.m);
         s.dirty = true;
+        ++s.mixoutMsgs;
         s.cv.notify_one();
+        break;
+    }
+    case rmaxSdk::RC_MSGID_GETDEVCFG_END: {
+        // The SDK guide: the getters are only meaningful after this message.
+        std::lock_guard<std::mutex> lock(s.m);
+        s.cfgReady = true;
+        s.dirty = true;
+        s.cv.notify_one();
+        break;
+    }
+    case rmaxSdk::RC_MSGID_FWVERSION_NOT_MATCH: {
+        std::lock_guard<std::mutex> lock(s.m);
+        s.fwMismatch = true;
         break;
     }
     case rmaxSdk::RC_MSGID_CRSF_DATA_RECEIVED: {
@@ -75,12 +93,20 @@ void onMessage(const rmaxSdk::SdkMessage& message, void* /*user*/) {
 void workerLoop() {
     using namespace std::chrono_literals;
     State& s = st();
+    auto lastCfgRequest = std::chrono::steady_clock::now();
     std::unique_lock<std::mutex> lock(s.m);
     while (s.running) {
         s.cv.wait_for(lock, 250ms, [&] { return !s.running || s.dirty; });
         if (!s.running) break;
         s.dirty = false;
+        const bool needCfg = !s.cfgReady;
         lock.unlock();
+
+        // The radio may not have been reachable at start-up: keep asking until it answers.
+        if (needCfg && std::chrono::steady_clock::now() - lastCfgRequest >= std::chrono::milliseconds(g_cfgRetryMs.load())) {
+            lastCfgRequest = std::chrono::steady_clock::now();
+            rmaxSdk::taskReadConfigFromDevice();
+        }
 
         const auto channels = rmaxSdk::rcGetChOutList();
         const auto radio = rmaxSdk::rcGetRadioStatus();
@@ -99,6 +125,10 @@ void workerLoop() {
         s.snap.v[kSnapRxVolt] = radio.rxVtg;
         s.snap.v[kSnapTlmOk] = s.tlmOk ? 1.0 : 0.0;
         s.snap.v[kSnapUpdates] = static_cast<double>(++s.updates);
+        s.snap.v[kSnapCfgReady] = s.cfgReady ? 1.0 : 0.0;
+        s.snap.v[kSnapMixoutMsgs] = static_cast<double>(s.mixoutMsgs);
+        s.snap.v[kSnapChannelListSize] = static_cast<double>(channels.size());
+        s.snap.v[kSnapFwMismatch] = s.fwMismatch ? 1.0 : 0.0;
 
         lock.unlock();
         std::this_thread::sleep_for(40ms);
@@ -107,6 +137,8 @@ void workerLoop() {
 }
 
 }  // namespace
+
+void setConfigRetryMs(int ms) { g_cfgRetryMs = ms; }
 
 int start(const std::string& appDataPath) {
     State& s = st();
@@ -123,11 +155,17 @@ int start(const std::string& appDataPath) {
         s.running = true;
         s.dirty = true;
         s.tlmOk = true;
+        s.cfgReady = false;
+        s.fwMismatch = false;
+        s.mixoutMsgs = 0;
         s.snap = Snapshot{};
         s.snap.v[kSnapState] = 1;
         s.crsf.clear();
     }
     rmaxSdk::setMessageCallback(&onMessage, nullptr);
+    // Required first step after initialize: load the radio's configuration. Until
+    // RC_MSGID_GETDEVCFG_END arrives the getters return empty or default values.
+    rmaxSdk::taskReadConfigFromDevice();
     s.worker = std::thread(workerLoop);
     return static_cast<int>(result);
 }

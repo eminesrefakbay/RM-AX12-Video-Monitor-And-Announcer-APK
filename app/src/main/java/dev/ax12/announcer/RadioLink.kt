@@ -67,7 +67,7 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
     override fun poll(): RadioSample? {
         if (!started) return null
         val s = AxSdkJni.nativeSnapshot()
-        if (s.size < 40) return null
+        if (s.size < 44) return null
         val now = SystemClock.elapsedRealtime()
 
         var count = 0
@@ -90,8 +90,17 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
         numbers["tlm"] = s[37]
         numbers.putAll(crsfNums)
 
-        val info = "SDK refreshes " + s[38].toLong() + "   CRSF frames ok " + crsf.framesOk +
-                " / bad crc " + crsf.framesBadCrc + " / other " + crsf.framesIgnored
+        val cfgReady = s[40] == 1.0
+        val sb = StringBuilder()
+        sb.append("SDK refreshes ").append(s[38].toLong())
+            .append("   mixout msgs ").append(s[41].toLong())
+            .append("   channels listed ").append(s[42].toLong())
+            .append("\nradio config: ").append(if (cfgReady) "loaded" else "NOT loaded yet")
+        if (s[43] == 1.0) sb.append("\n!! radio firmware does not match this SDK")
+        if (!cfgReady) sb.append("\nwaiting for the radio; if this stays, the SDK cannot reach it (serial lock, see README)")
+        sb.append("\nCRSF frames ok ").append(crsf.framesOk).append(" / bad crc ").append(crsf.framesBadCrc)
+            .append(" / other ").append(crsf.framesIgnored)
+        val info = sb.toString()
         return RadioSample(s.copyOfRange(0, 16), s.copyOfRange(16, 32), numbers, HashMap(crsfTexts), info)
     }
 }

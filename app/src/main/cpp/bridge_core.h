@@ -21,11 +21,18 @@ constexpr int kSnapRxVolt = 36;    // rcGetRadioStatus().rxVtg
 constexpr int kSnapTlmOk = 37;     // 1 = telemetry present, 0 = lost
 constexpr int kSnapUpdates = 38;   // counts refreshes, so Kotlin can see data is moving
 constexpr int kSnapState = 39;     // 0 = not started, 1 = running
-constexpr int kSnapSize = 40;
+constexpr int kSnapCfgReady = 40;  // 1 once the radio's configuration has been loaded (RC_MSGID_GETDEVCFG_END)
+constexpr int kSnapMixoutMsgs = 41;     // how many RC_MSGID_MIXOUT_UPDATE messages arrived
+constexpr int kSnapChannelListSize = 42;  // length of the list rcGetChOutList() returned last time
+constexpr int kSnapFwMismatch = 43;     // 1 if the radio firmware does not match this SDK
+constexpr int kSnapSize = 44;
 
 struct Snapshot {
     double v[kSnapSize];
 };
+
+/** How long to wait before asking the radio for its configuration again (default 3000 ms). Mainly for tests. */
+void setConfigRetryMs(int ms);
 
 /** Starts the SDK. @return the SDK's InitResult as an int (0 Success, 1 AlreadyInitialized, 2 ThreadStartFailed, 3 CommunicationInitFailed). */
 int start(const std::string& appDataPath);

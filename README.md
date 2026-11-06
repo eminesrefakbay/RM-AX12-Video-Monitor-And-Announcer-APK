@@ -13,7 +13,7 @@ An Android app for the RadioMaster AX12:
 | Part | State |
 | --- | --- |
 | Rule engine, CRSF parser, channel scaler (plain Java) | 74 automated checks pass |
-| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 26 checks pass |
+| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 36 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
 

@@ -178,6 +178,13 @@ class MainActivity : Activity() {
         sb.append("source: ").append(link.name)
         if (link !is FakeRadioLink || sdkLink != null) sb.append("   unit: ").append(scaler.mode())
         sb.append('\n')
+        if (link is FakeRadioLink) {
+            sb.append(
+                if (testVisible) "TEST CHANNELS ARE ON - the radio is not being read\n"
+                else if (sdkLink == null) "NO SDK IN THIS BUILD - the radio is not being read\n"
+                else "SDK IS NOT RUNNING - the radio is not being read\n"
+            )
+        }
         if (sdkError != null) sb.append("SDK: ").append(sdkError).append('\n')
         sb.append(sample.info).append("\n\n")
         val sorted = TreeMap<String, Double>(numbers)
