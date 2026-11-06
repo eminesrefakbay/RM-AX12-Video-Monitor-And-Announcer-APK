@@ -160,7 +160,7 @@ public final class RuleText {
 
     private static Cond toCond(Rule.Atom a) {
         if (a.isText()) return new Cond(a.name, a.op, a.text, 1.0, true);
-        return new Cond(a.name, a.op, fmt(a.value), a.divisor, false);
+        return new Cond(a.name, a.op, a.valueRef != null ? "$" + a.valueRef : fmt(a.value), a.divisor, false);
     }
 
     /** The rule line the engine will read. Call validate() first. */
@@ -200,10 +200,12 @@ public final class RuleText {
             } else {
                 if (c.op.equals("~")) return I18n.t("'contains' works on text variables only.");
                 if (c.value.trim().isEmpty()) return I18n.t("Enter a value for {0}.", c.variable.trim());
-                try {
-                    Double.parseDouble(c.value.trim());
-                } catch (NumberFormatException e) {
-                    return I18n.t("'{0}' is not a number.", c.value.trim());
+                if (!BatteryProfiles.isMacro(c.value.trim().toLowerCase(Locale.ROOT))) {
+                    try {
+                        Double.parseDouble(c.value.trim());
+                    } catch (NumberFormatException e) {
+                        return I18n.t("'{0}' is not a number.", c.value.trim());
+                    }
                 }
                 if (c.divisor == 0.0) return I18n.t("The divisor cannot be 0.");
             }

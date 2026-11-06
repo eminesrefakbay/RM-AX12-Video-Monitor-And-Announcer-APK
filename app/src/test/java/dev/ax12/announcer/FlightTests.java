@@ -160,10 +160,10 @@ public class FlightTests {
         check(editable == 6, "all default checks are editable in the GUI");
         CheckModel dm = new CheckModel(dcp.rules);
         RuleEngine de = new RuleEngine(dcp, null, dm);
-        Map<String, Double> good = m("vbat", 25.2, "sats", 16, "up_lq", 100, "ch9", 1000, "ch5", 1000);
+        Map<String, Double> good = m("vbat", 25.2, "sats", 16, "up_lq", 100, "ch9", 1000, "ch5", 1000); BatteryProfiles.addDerived(good, 6);
         for (int i = 0; i < 10; i++) de.update(good, ct, 100 * (i + 1));
         check(dm.ready(), "a healthy, disarmed aircraft is ready with the default checks: pass " + dm.pass() + " fail " + dm.fail() + " unknown " + dm.unknown());
-        good.put("vbat", 23.0);
+        good.put("vbat", 23.0); BatteryProfiles.addDerived(good, 6);
         for (int i = 0; i < 10; i++) de.update(good, ct, 2000 + 100 * i);
         check(!dm.ready() && dm.fail() == 1, "a half empty pack is caught: fail " + dm.fail());
 

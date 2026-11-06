@@ -79,6 +79,17 @@ interface SettingsHost {
     fun editStatsRows()
     fun editCheckRules()
 
+    // battery profiles and backups
+    fun batteryLabel(): String
+    fun cycleBattery()
+    fun editBatteries()
+    fun resetWarningRules()
+    fun resetCheckRules()
+    fun exportSettings()
+    fun importSettings()
+    fun hasSettingsBackup(): Boolean
+    fun restoreSettings()
+
     // updates from GitHub
     fun updateLine(): String
     fun checkUpdatesNow()
@@ -231,6 +242,14 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         note(tr("Off: the button hides and appears when you touch the screen."))
         toggle(tr("Start-up splash screen (logo and version, 2 seconds)"), host.splashOn()) { host.setSplashOn(it) }
 
+        section(tr("Battery"))
+        action(tr("Active battery profile: {0}  (tap to switch)", host.batteryLabel())) {
+            host.cycleBattery()
+            refresh()
+        }
+        action(tr("Edit the battery profiles (cells and voltage limits)...")) { host.editBatteries() }
+        note(tr("Rules and checks can use the value cell (volts per cell) and the limits \$low, \$crit and \$full of the active profile, for example: cell < \$low -> battery low. Switching the profile changes the numbers, not the rules."))
+
         section(tr("OSD overlays (drawn over the video)"))
         toggle(tr("Stick view: roll, pitch, yaw and throttle"), host.sticksOn()) {
             host.setSticksOn(it)
@@ -260,6 +279,9 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             refresh()
         }
         action(tr("Edit the warning rules (thresholds and logic)...")) { host.editWarningRules() }
+        action(tr("Reset the warning rules to the defaults")) {
+            confirm(tr("Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones."), tr("Reset")) { host.resetWarningRules() }
+        }
         action(tr("Preview the warning bar (4 seconds)")) { host.previewWarnings() }
         note(tr("Warnings show while their condition is true, so thresholds and logic are yours to set."))
 
@@ -272,6 +294,9 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         tileControls("radar", tr("Radar map: home in the centre, your track and range rings")) {}
         tileControls("check", tr("Pre-flight checklist (shown while disarmed)")) {
             action(tr("Edit the checks (thresholds and logic)...")) { host.editCheckRules() }
+            action(tr("Reset the checks to the defaults")) {
+                confirm(tr("Replace your checks with the defaults? Export all settings first if you want to keep the current ones."), tr("Reset")) { host.resetCheckRules() }
+            }
         }
 
         section(tr("Video"))
@@ -305,6 +330,14 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             }
         }
         action(tr("Edit the rules as text (advanced)")) { host.openRulesText() }
+
+        section(tr("Backup of all settings"))
+        action(tr("Export all settings to a file...")) { host.exportSettings() }
+        action(tr("Import all settings from a file...")) { host.importSettings() }
+        action(tr("Restore the settings from before the last import"), host.hasSettingsBackup()) {
+            confirm(tr("Swap back to the settings from before the last import? The current settings are kept, so you can swap again."), tr("Restore")) { host.restoreSettings() }
+        }
+        note(tr("One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above."))
 
         section(tr("Diagnostics"))
         toggle(tr("Show the variables panel (every value the radio sends)"), host.variablesOn()) { host.setVariablesOn(it) }

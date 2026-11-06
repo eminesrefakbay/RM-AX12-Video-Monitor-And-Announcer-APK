@@ -102,7 +102,7 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
 
 /** Builds the variable lists the rules see. */
 object Variables {
-    fun numbers(sample: RadioSample, scaler: ChannelScaler): Map<String, Double> {
+    fun numbers(sample: RadioSample, scaler: ChannelScaler, cells: Int): Map<String, Double> {
         val m = HashMap<String, Double>()
         for (i in 0 until 16) {
             m["ch" + (i + 1)] = scaler.toMicros(sample.raw[i])
@@ -110,6 +110,7 @@ object Variables {
             m["lv" + (i + 1)] = sample.logic[i]
         }
         m.putAll(sample.numbers)
+        BatteryProfiles.addDerived(m, cells)          // "cell": volts per cell, while a pack is connected
         return m
     }
 }

@@ -1,5 +1,12 @@
 # Simplified Chinese translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
 Bar {0}: the channel must be 1 to 16.	第 {0} 个条: 通道必须是 1 到 16。
+Add at least one battery profile.	请至少添加一个电池配置。
+At most {0} battery profiles.	最多 {0} 个电池配置。
+Profile {0}: the name cannot be empty.	配置 {0}: 名称不能为空。
+Profile {0}: cells must be 1 to 12.	配置 {0}: 节数必须为 1 到 12。
+Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	配置 {0}: 需满足 严重 < 低 < 满电, 且在每节 2.5 到 4.4 伏之间。
+Two profiles have the same name: {0}.	有两个配置同名: {0}。
+low {0}, critical {1}, full {2} V per cell	低 {0}, 严重 {1}, 满电 {2} 伏/节
 Starting...	正在启动...
 video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	视频: %.1f 帧/秒   帧间隔: 95%% 低于 %d 毫秒, 最差 %d 毫秒 (最近 5 秒)
 Camera {0}  {1}x{2}  ·  {3}	摄像头 {0}  {1}x{2}  ·  {3}
@@ -19,7 +26,6 @@ Waiting for video...	等待视频...
 Preview failed: {0}	预览失败: {0}
 Camera session failed	摄像头会话失败
 Session error: {0}	会话错误: {0}
-PRE-FLIGHT CHECK	飞行前检查
 MENU	菜单
 Warning rules	警告规则
 Pre-flight checks	飞行前检查项
@@ -66,17 +72,16 @@ READY	就绪
 NOT READY: 1 check failed	未就绪: 1 项检查未通过
 NOT READY: {0} checks failed	未就绪: {0} 项检查未通过
 WAITING FOR DATA	等待数据
+PRE-FLIGHT CHECK	飞行前检查
 Arm switch channel (1 to 16, AUX1 is channel 5)	解锁开关通道 (1 到 16, AUX1 为通道 5)
 Counts as armed at or above (microseconds)	大于等于此值视为已解锁 (微秒)
 Counts as disarmed below (microseconds)	低于此值视为已上锁 (微秒)
-Cells in the pack (for the lowest volts per cell)	电池节数 (用于最低每节电压)
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	两个阈值之间的间隔可防止碰到开关时误触发统计的开始或结束。开关必须保持 0.3 秒。
 Arm detection	解锁检测
 Save	保存
 Cancel	取消
 The channel is 1 to 16	通道为 1 到 16
 Use microseconds, with the disarmed value not above the armed one	请使用微秒, 且上锁值不能高于解锁值
-Cells: 1 to 12	节数: 1 到 12
 Speed (now / maximum)	速度 (当前 / 最大)
 Height above the arming point (now / maximum)	相对解锁点的高度 (当前 / 最大)
 Current (now / peak, with a limit line)	电流 (当前 / 峰值, 带限值线)
@@ -119,18 +124,32 @@ Thanks to RadioMaster for publishing the AX SDK.	感谢 RadioMaster 公开发布
 Sound rules saved	语音规则已保存
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	此设备没有文件选择器, 因此文件已保存在这里:\n{0}\n\n请用 USB 线或 adb 复制。导入时, 把同名文件放进该文件夹。
 Could not save the rules: {0}	无法保存规则: {0}
+Could not save the settings: {0}	无法保存设置: {0}
+Settings saved	设置已保存
 No file picker, and no {0} to import	没有文件选择器, 也没有可导入的 {0}
 Could not open the file	无法打开文件
 Could not read the file: {0}	无法读取文件: {0}
 Cannot import	无法导入
+Import all settings	导入所有设置
+The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换其中包含的设置。当前设置会保留为备份, 可在设置中恢复。
+Import	导入
+Imported {0} settings	已导入 {0} 项设置
+Settings restored	设置已恢复
+Battery profile: {0}\n{1}	电池配置: {0}\n{1}
+Battery profile {0}	电池配置 {0}
+name                  cells    full    low    critical	名称                  节数    满电    低    严重
+Add profile	添加配置
+Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	单位: 每节伏特。严重值必须低于低压值, 低压值必须低于满电值。规则使用 cell 以及 $low、$crit、$full 这些名称。
+Battery profiles	电池配置
+Enter numbers in every field	请在每个栏位中输入数字
 Import sound rules	导入语音规则
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中恢复。
-Import	导入
 Imported {0} rules	已导入 {0} 条规则
 Sound rules	语音规则
 Settings	设置
 Mute speech	静音语音
 Speech is OFF - tap to turn on	语音已关闭 - 点按开启
+Battery: {0}  (tap to switch)	电池: {0}  (点按切换)
 test sliders	测试滑块
 test sliders (no radio)	测试滑块 (无遥控器)
 RadioMaster SDK	RadioMaster SDK
@@ -143,6 +162,7 @@ line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
 line {0}: nothing to say after '->'	第 {0} 行: '->' 之后没有要播报的内容
 line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	第 {0} 行: 无法读取条件 '{1}'  (请使用  ch5 >= 1500   或   vbat / 6 < 3.5   或   fm ~ "RTH" )
 line {0}: cannot divide by zero  ({1})	第 {0} 行: 不能除以零  ({1})
+line {0}: unknown name ${1}  (use $low, $crit or $full)	第 {0} 行: 未知名称 ${1}  (请使用 $low、$crit 或 $full)
 line {0}: bad value for {1} ({2})	第 {0} 行: {1} 的值无效 ({2})
 Add at least one condition.	请至少添加一个条件。
 Pick a variable (letters, digits and _ only).	请选择变量 (仅限字母、数字和 _)。
@@ -194,6 +214,10 @@ Each check shows a tick when its condition is true and a cross when not, before 
 A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	警告在条件为真时显示在状态栏中。严重 = 红色并闪烁, 警告 = 琥珀色, 信息 = 蓝色。左侧的开关可以关闭某条规则而不删除它。
 A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	规则在条件变为真时播报。左侧的开关可以关闭某条规则而不删除它。
 Speech is muted (MENU, Mute speech)	语音已静音 (菜单, 静音语音)
+$low  - warning limit of the active battery profile	$low  - 当前电池配置的警告限值
+$crit  - critical limit	$crit  - 严重限值
+$full  - limit for a full pack	$full  - 满电限值
+Battery limit	电池限值
 No rules yet. Tap + Add rule.	还没有规则。点按 + 添加规则。
 Advanced rule (open the text editor): {0}	高级规则 (请打开文本编辑器): {0}
 Edit	编辑
@@ -255,6 +279,12 @@ Edit warning	编辑警告
 New rule	新建规则
 Edit rule	编辑规则
 Label now: {0}	当前标签: {0}
+The file is too large to be a settings file.	文件太大, 不是设置文件。
+No usable settings found in this file.	此文件中没有找到可用的设置。
+No settings found in this file.	此文件中没有找到设置。
+{0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} 项设置, 其中包括 {1} 条语音规则、{2} 条警告规则和 {3} 项检查
+. {0} lines were ignored (unknown or invalid)	。已忽略 {0} 行 (未知或无效)
+. {0} rule lines have problems and will not work	。有 {0} 行规则存在问题, 将不会生效
    Size: {0}  (tap to change)	   大小: {0}  (点按更改)
    Position: {0}  (tap to change)	   位置: {0}  (点按更改)
    Opacity: {0}  (tap to change)	   不透明度: {0}  (点按更改)
@@ -265,6 +295,10 @@ Display	显示
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
 Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)
+Battery	电池
+Active battery profile: {0}  (tap to switch)	当前电池配置: {0}  (点按切换)
+Edit the battery profiles (cells and voltage limits)...	编辑电池配置 (节数和电压限值)...
+Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	规则和检查项可以使用 cell (每节电压) 以及当前配置的限值 $low、$crit、$full, 例如: cell < $low -> 电池电量低。切换配置只会改变数值, 不会改变规则。
 OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)
 Stick view: roll, pitch, yaw and throttle	摇杆视图: 横滚、俯仰、偏航和油门
 Stick size: {0}  (tap to change)	摇杆大小: {0}  (点按更改)
@@ -277,6 +311,9 @@ Tip: press and hold the stick view on the video to open the channel bars.	提示
 Warning status bar	警告状态栏
 Warning bar position: {0}  (tap to change)	警告栏位置: {0}  (点按更改)
 Edit the warning rules (thresholds and logic)...	编辑警告规则 (阈值与逻辑)...
+Reset the warning rules to the defaults	将警告规则重置为默认值
+Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	用默认值替换你的警告规则? 如果想保留当前规则, 请先导出所有设置。
+Reset	重置
 Preview the warning bar (4 seconds)	预览警告栏 (4 秒)
 Warnings show while their condition is true, so thresholds and logic are yours to set.	警告在条件为真时显示, 阈值和逻辑由你自己设定。
 Flight overlays (statistics, radar, checklist)	飞行叠加层 (统计、雷达、检查清单)
@@ -287,6 +324,8 @@ Rows and current limit...	显示项与电流限值...
 Radar map: home in the centre, your track and range rings	雷达图: 起点居中, 显示航迹和距离环
 Pre-flight checklist (shown while disarmed)	飞行前检查清单 (上锁时显示)
 Edit the checks (thresholds and logic)...	编辑检查项 (阈值与逻辑)...
+Reset the checks to the defaults	将检查项重置为默认值
+Replace your checks with the defaults? Export all settings first if you want to keep the current ones.	用默认值替换你的检查项? 如果想保留当前检查项, 请先导出所有设置。
 Video	视频
 Camera: {0}  (tap to choose the HDMI input)	摄像头: {0}  (点按选择 HDMI 输入)
 Rotate video: now {0} degrees  (tap to turn 90)	旋转视频: 当前 {0} 度  (点按旋转 90 度)
@@ -302,8 +341,13 @@ Swap back to the previous rules? The current rules are kept, so you can swap aga
 Restore	恢复
 Reset the rules to the defaults	将规则重置为默认值
 Replace your rules with the defaults? Your current rules are kept as a backup.	用默认规则替换你的规则? 当前规则会保留为备份。
-Reset	重置
 Edit the rules as text (advanced)	以文本方式编辑规则 (高级)
+Backup of all settings	备份所有设置
+Export all settings to a file...	将所有设置导出到文件...
+Import all settings from a file...	从文件导入所有设置...
+Restore the settings from before the last import	恢复上次导入之前的设置
+Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	切换回上次导入之前的设置? 当前设置会保留, 可以再次切换。
+One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	一个文件包含所有内容: 语音规则、警告规则、检查项、叠加层、通道条、电池配置和语言。语音规则在上方还有单独的导出功能。
 Diagnostics	诊断
 Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
 Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
@@ -359,6 +403,7 @@ Installation cancelled	安装已取消
 Installation stopped	安装已停止
 Android did not say why (code {0}).	Android 未说明原因 (代码 {0})。
 battery volts (flight controller); divide by the cell count for volts per cell	电池电压 (飞控); 除以节数得到每节电压
+volts per cell: battery volts divided by the cells of the active battery profile	每节电压: 电池电压除以当前电池配置的节数
 battery current, amps	电池电流, 安
 capacity used, mAh	已用容量, mAh
 battery remaining, percent	剩余电量, 百分比

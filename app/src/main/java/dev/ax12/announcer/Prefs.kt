@@ -47,6 +47,44 @@ object Prefs {
     fun speechLanguage(c: Context): String = p(c).getString("speechLanguage", "same") ?: "same"
     fun setSpeechLanguage(c: Context, code: String) { p(c).edit().putString("speechLanguage", code).apply() }
 
+    // ---- battery profiles ----
+    fun batProfilesText(c: Context): String = p(c).getString("batProfiles", null) ?: BatteryProfiles.encode(BatteryProfiles.defaults())
+    fun setBatProfilesText(c: Context, text: String) { p(c).edit().putString("batProfiles", text).apply() }
+
+    // ---- backup of all settings ----
+    /** The settings as they were before the last import or restore (the text of a settings file). */
+    fun settingsBackup(c: Context): String? = p(c).getString("settingsBackup", null)
+    fun setSettingsBackup(c: Context, text: String) { p(c).edit().putString("settingsBackup", text).apply() }
+
+    /** Every setting with its value now, or its default when it was never changed: a complete snapshot. */
+    fun exportMap(c: Context): Map<String, Any> {
+        val out = LinkedHashMap<String, Any>()
+        val stored = p(c).all
+        for (k in SettingsFile.keys()) {
+            val v = stored[k] ?: SettingsFile.defaultOf(k)
+            if (v != null) out[k] = v
+        }
+        out["rules"] = rules(c)
+        out["warnRules"] = warningRules(c)
+        out["checkRules"] = checkRules(c)
+        out["barsConfig"] = barsConfig(c)
+        out["batProfiles"] = batProfilesText(c)
+        return out
+    }
+
+    /** Writes checked values from a settings file. */
+    fun applyAll(c: Context, values: Map<String, Any>) {
+        val e = p(c).edit()
+        for ((k, v) in values) {
+            when (v) {
+                is String -> e.putString(k, v)
+                is Int -> e.putInt(k, v)
+                is Boolean -> e.putBoolean(k, v)
+            }
+        }
+        e.apply()
+    }
+
     fun rotation(c: Context): Int = p(c).getInt("rotation", 0)
     fun setRotation(c: Context, deg: Int) { p(c).edit().putInt("rotation", deg).apply() }
 }

@@ -11,12 +11,18 @@ public final class Rule {
         public final double value;    // number to compare with (numeric rules)
         public final double divisor;  // the variable is divided by this first:  vbat / 6 < 3.5
         public final String text;     // non-null for text rules:  fm ~ "RTH"
+        public final String valueRef; // non-null when the value was written as a name: $low (value is then the number it stood for)
 
         public Atom(String name, String op, double value) {
             this(name, op, value, 1.0, null);
         }
 
         public Atom(String name, String op, double value, double divisor, String text) {
+            this(name, op, value, divisor, text, null);
+        }
+
+        public Atom(String name, String op, double value, double divisor, String text, String valueRef) {
+            this.valueRef = valueRef;
             this.name = name;
             this.op = op;
             this.value = value;
@@ -29,7 +35,7 @@ public final class Rule {
         @Override
         public String toString() {
             if (text != null) return name + " " + op + " \"" + text + "\"";
-            String v = (value == Math.rint(value)) ? Long.toString((long) value) : Double.toString(value);
+            String v = valueRef != null ? "$" + valueRef : (value == Math.rint(value)) ? Long.toString((long) value) : Double.toString(value);
             String d = (divisor == 1.0) ? "" : " / " + (divisor == Math.rint(divisor) ? Long.toString((long) divisor) : Double.toString(divisor));
             return name + d + " " + op + " " + v;
         }

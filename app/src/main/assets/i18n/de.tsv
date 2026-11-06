@@ -1,5 +1,12 @@
 # German translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
 Bar {0}: the channel must be 1 to 16.	Balken {0}: Der Kanal muss 1 bis 16 sein.
+Add at least one battery profile.	Füge mindestens ein Akkuprofil hinzu.
+At most {0} battery profiles.	Höchstens {0} Akkuprofile.
+Profile {0}: the name cannot be empty.	Profil {0}: Der Name darf nicht leer sein.
+Profile {0}: cells must be 1 to 12.	Profil {0}: Die Zellenzahl muss 1 bis 12 sein.
+Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	Profil {0}: kritisch unter niedrig unter voll, zwischen 2,5 und 4,4 Volt pro Zelle.
+Two profiles have the same name: {0}.	Zwei Profile haben denselben Namen: {0}.
+low {0}, critical {1}, full {2} V per cell	niedrig {0}, kritisch {1}, voll {2} V pro Zelle
 Starting...	Wird gestartet...
 video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	Video: %.1f Bilder/s   Abstand zwischen Bildern: 95 %% unter %d ms, schlimmster %d ms (letzte 5 s)
 Camera {0}  {1}x{2}  ·  {3}	Kamera {0}  {1}x{2}  ·  {3}
@@ -19,7 +26,6 @@ Waiting for video...	Warte auf Video...
 Preview failed: {0}	Vorschau fehlgeschlagen: {0}
 Camera session failed	Kamerasitzung fehlgeschlagen
 Session error: {0}	Sitzungsfehler: {0}
-PRE-FLIGHT CHECK	CHECK VOR DEM FLUG
 MENU	MENÜ
 Warning rules	Warnregeln
 Pre-flight checks	Checks vor dem Flug
@@ -66,17 +72,16 @@ READY	BEREIT
 NOT READY: 1 check failed	NICHT BEREIT: 1 Check fehlgeschlagen
 NOT READY: {0} checks failed	NICHT BEREIT: {0} Checks fehlgeschlagen
 WAITING FOR DATA	WARTE AUF DATEN
+PRE-FLIGHT CHECK	CHECK VOR DEM FLUG
 Arm switch channel (1 to 16, AUX1 is channel 5)	Kanal des Arm-Schalters (1 bis 16, AUX1 ist Kanal 5)
 Counts as armed at or above (microseconds)	Gilt als scharf ab (Mikrosekunden)
 Counts as disarmed below (microseconds)	Gilt als gesichert darunter (Mikrosekunden)
-Cells in the pack (for the lowest volts per cell)	Zellen im Akku (für die niedrigste Spannung pro Zelle)
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	Der Abstand zwischen den beiden Schwellen verhindert, dass ein Anstoßen des Schalters die Statistik startet oder stoppt. Der Schalter muss 0,3 Sekunden stehen bleiben.
 Arm detection	Arm-Erkennung
 Save	Speichern
 Cancel	Abbrechen
 The channel is 1 to 16	Der Kanal ist 1 bis 16
 Use microseconds, with the disarmed value not above the armed one	Mikrosekunden verwenden; der Wert für gesichert nicht über dem für scharf
-Cells: 1 to 12	Zellen: 1 bis 12
 Speed (now / maximum)	Geschwindigkeit (jetzt / Maximum)
 Height above the arming point (now / maximum)	Höhe über dem Startpunkt (jetzt / Maximum)
 Current (now / peak, with a limit line)	Strom (jetzt / Spitze, mit Grenzlinie)
@@ -119,18 +124,32 @@ Thanks to RadioMaster for publishing the AX SDK.	Danke an RadioMaster für die V
 Sound rules saved	Sprachregeln gespeichert
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	Dieses Gerät hat keinen Dateiauswahldialog, deshalb wurde die Datei hier gespeichert:\n{0}\n\nKopiere sie mit einem USB-Kabel oder adb. Zum Importieren lege eine Datei mit demselben Namen in diesen Ordner.
 Could not save the rules: {0}	Regeln konnten nicht gespeichert werden: {0}
+Could not save the settings: {0}	Einstellungen konnten nicht gespeichert werden: {0}
+Settings saved	Einstellungen gespeichert
 No file picker, and no {0} to import	Kein Dateiauswahldialog und kein {0} zum Importieren
 Could not open the file	Datei konnte nicht geöffnet werden
 Could not read the file: {0}	Datei konnte nicht gelesen werden: {0}
 Cannot import	Import nicht möglich
+Import all settings	Alle Einstellungen importieren
+The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nDas ersetzt die darin enthaltenen Einstellungen. Deine aktuellen Einstellungen bleiben als Sicherung erhalten, und die Einstellungen können sie wiederherstellen.
+Import	Importieren
+Imported {0} settings	{0} Einstellungen importiert
+Settings restored	Einstellungen wiederhergestellt
+Battery profile: {0}\n{1}	Akkuprofil: {0}\n{1}
+Battery profile {0}	Akkuprofil {0}
+name                  cells    full    low    critical	Name                  Zellen    voll    niedrig    kritisch
+Add profile	Profil hinzufügen
+Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	Volt pro Zelle. Kritisch muss unter niedrig liegen und niedrig unter voll. Regeln nutzen cell und die Namen $low, $crit und $full.
+Battery profiles	Akkuprofile
+Enter numbers in every field	Gib in jedes Feld eine Zahl ein
 Import sound rules	Sprachregeln importieren
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nDas ersetzt deine aktuellen Regeln. Sie werden als Sicherung behalten, und die Einstellungen können sie wiederherstellen.
-Import	Importieren
 Imported {0} rules	{0} Regeln importiert
 Sound rules	Sprachregeln
 Settings	Einstellungen
 Mute speech	Sprache stummschalten
 Speech is OFF - tap to turn on	Sprache ist AUS - zum Einschalten tippen
+Battery: {0}  (tap to switch)	Akku: {0}  (zum Wechseln tippen)
 test sliders	Testregler
 test sliders (no radio)	Testregler (keine Fernsteuerung)
 RadioMaster SDK	RadioMaster SDK
@@ -143,6 +162,7 @@ line {0}: nothing before '->'	Zeile {0}: nichts vor '->'
 line {0}: nothing to say after '->'	Zeile {0}: nach '->' steht nichts zum Sprechen
 line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	Zeile {0}: Bedingung '{1}' nicht lesbar  (verwende  ch5 >= 1500   oder   vbat / 6 < 3.5   oder   fm ~ "RTH" )
 line {0}: cannot divide by zero  ({1})	Zeile {0}: Division durch null nicht möglich  ({1})
+line {0}: unknown name ${1}  (use $low, $crit or $full)	Zeile {0}: unbekannter Name ${1}  (verwende $low, $crit oder $full)
 line {0}: bad value for {1} ({2})	Zeile {0}: ungültiger Wert für {1} ({2})
 Add at least one condition.	Mindestens eine Bedingung hinzufügen.
 Pick a variable (letters, digits and _ only).	Wähle eine Variable (nur Buchstaben, Ziffern und _).
@@ -194,6 +214,10 @@ Each check shows a tick when its condition is true and a cross when not, before 
 A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	Eine Warnung erscheint in der Statusleiste, solange ihre Bedingung wahr ist. Kritisch = rot und blinkend, Warnung = gelb, Info = blau. Der Schalter links schaltet eine Regel aus, ohne sie zu löschen.
 A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	Eine Regel spricht, wenn ihre Bedingung wahr wird. Der Schalter links schaltet eine Regel aus, ohne sie zu löschen.
 Speech is muted (MENU, Mute speech)	Sprache ist stummgeschaltet (MENÜ, Sprache stummschalten)
+$low  - warning limit of the active battery profile	$low  - Warngrenze des aktiven Akkuprofils
+$crit  - critical limit	$crit  - kritische Grenze
+$full  - limit for a full pack	$full  - Grenze für einen vollen Akku
+Battery limit	Akkugrenze
 No rules yet. Tap + Add rule.	Noch keine Regeln. Tippe auf + Regel hinzufügen.
 Advanced rule (open the text editor): {0}	Erweiterte Regel (Texteditor öffnen): {0}
 Edit	Bearbeiten
@@ -255,6 +279,12 @@ Edit warning	Warnung bearbeiten
 New rule	Neue Regel
 Edit rule	Regel bearbeiten
 Label now: {0}	Beschriftung jetzt: {0}
+The file is too large to be a settings file.	Die Datei ist zu groß für eine Einstellungsdatei.
+No usable settings found in this file.	In dieser Datei wurden keine brauchbaren Einstellungen gefunden.
+No settings found in this file.	In dieser Datei wurden keine Einstellungen gefunden.
+{0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} Einstellungen, darunter {1} Sprachregeln, {2} Warnregeln und {3} Checks
+. {0} lines were ignored (unknown or invalid)	. {0} Zeilen wurden ignoriert (unbekannt oder ungültig)
+. {0} rule lines have problems and will not work	. {0} Regelzeilen haben Probleme und funktionieren nicht
    Size: {0}  (tap to change)	   Größe: {0}  (zum Ändern tippen)
    Position: {0}  (tap to change)	   Position: {0}  (zum Ändern tippen)
    Opacity: {0}  (tap to change)	   Deckkraft: {0}  (zum Ändern tippen)
@@ -265,6 +295,10 @@ Display	Anzeige
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
 Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)
+Battery	Akku
+Active battery profile: {0}  (tap to switch)	Aktives Akkuprofil: {0}  (zum Wechseln tippen)
+Edit the battery profiles (cells and voltage limits)...	Akkuprofile bearbeiten (Zellen und Spannungsgrenzen)...
+Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Regeln und Checks können den Wert cell (Volt pro Zelle) und die Grenzen $low, $crit, $full des aktiven Profils nutzen, zum Beispiel: cell < $low -> Akku niedrig. Beim Wechsel des Profils ändern sich die Zahlen, nicht die Regeln.
 OSD overlays (drawn over the video)	OSD-Einblendungen (über das Video gezeichnet)
 Stick view: roll, pitch, yaw and throttle	Stick-Ansicht: Roll, Nick, Gier und Gas
 Stick size: {0}  (tap to change)	Stick-Größe: {0}  (zum Ändern tippen)
@@ -277,6 +311,9 @@ Tip: press and hold the stick view on the video to open the channel bars.	Tipp: 
 Warning status bar	Warn-Statusleiste
 Warning bar position: {0}  (tap to change)	Position der Warnleiste: {0}  (zum Ändern tippen)
 Edit the warning rules (thresholds and logic)...	Warnregeln bearbeiten (Schwellen und Logik)...
+Reset the warning rules to the defaults	Warnregeln auf Standard zurücksetzen
+Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	Deine Warnregeln durch die Standardregeln ersetzen? Exportiere vorher alle Einstellungen, wenn du die aktuellen behalten willst.
+Reset	Zurücksetzen
 Preview the warning bar (4 seconds)	Warnleiste ansehen (4 Sekunden)
 Warnings show while their condition is true, so thresholds and logic are yours to set.	Warnungen erscheinen, solange ihre Bedingung wahr ist; Schwellen und Logik legst du selbst fest.
 Flight overlays (statistics, radar, checklist)	Flug-Einblendungen (Statistik, Radar, Checkliste)
@@ -287,6 +324,8 @@ Rows and current limit...	Zeilen und Stromgrenze...
 Radar map: home in the centre, your track and range rings	Radarkarte: Home in der Mitte, deine Spur und Entfernungsringe
 Pre-flight checklist (shown while disarmed)	Checkliste vor dem Flug (angezeigt, solange gesichert)
 Edit the checks (thresholds and logic)...	Checks bearbeiten (Schwellen und Logik)...
+Reset the checks to the defaults	Checks auf Standard zurücksetzen
+Replace your checks with the defaults? Export all settings first if you want to keep the current ones.	Deine Checks durch die Standard-Checks ersetzen? Exportiere vorher alle Einstellungen, wenn du die aktuellen behalten willst.
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (zum Wählen des HDMI-Eingangs tippen)
 Rotate video: now {0} degrees  (tap to turn 90)	Video drehen: jetzt {0} Grad  (zum Drehen um 90 tippen)
@@ -302,8 +341,13 @@ Swap back to the previous rules? The current rules are kept, so you can swap aga
 Restore	Wiederherstellen
 Reset the rules to the defaults	Regeln auf Standard zurücksetzen
 Replace your rules with the defaults? Your current rules are kept as a backup.	Deine Regeln durch die Standardregeln ersetzen? Deine aktuellen Regeln bleiben als Sicherung erhalten.
-Reset	Zurücksetzen
 Edit the rules as text (advanced)	Regeln als Text bearbeiten (erweitert)
+Backup of all settings	Sicherung aller Einstellungen
+Export all settings to a file...	Alle Einstellungen in eine Datei exportieren...
+Import all settings from a file...	Alle Einstellungen aus einer Datei importieren...
+Restore the settings from before the last import	Einstellungen von vor dem letzten Import wiederherstellen
+Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	Zu den Einstellungen von vor dem letzten Import zurückwechseln? Die aktuellen Einstellungen bleiben erhalten, du kannst erneut wechseln.
+One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	Eine Datei mit allem: Sprachregeln, Warnregeln, Checks, Einblendungen, Kanalbalken, Akkuprofile und Sprache. Die Sprachregeln haben oben außerdem ihren eigenen Export.
 Diagnostics	Diagnose
 Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
 Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
@@ -359,6 +403,7 @@ Installation cancelled	Installation abgebrochen
 Installation stopped	Installation gestoppt
 Android did not say why (code {0}).	Android hat keinen Grund genannt (Code {0}).
 battery volts (flight controller); divide by the cell count for volts per cell	Akkuspannung (Flugcontroller); durch die Zellenzahl teilen für Volt pro Zelle
+volts per cell: battery volts divided by the cells of the active battery profile	Volt pro Zelle: Akkuspannung geteilt durch die Zellenzahl des aktiven Akkuprofils
 battery current, amps	Akkustrom, Ampere
 capacity used, mAh	verbrauchte Kapazität, mAh
 battery remaining, percent	Akku verbleibend, Prozent

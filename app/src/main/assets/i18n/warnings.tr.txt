@@ -1,14 +1,14 @@
 # durum çubuğu uyarıları:   koşul -> metin      (koşul doğru olduğu sürece gösterilir)
 # !metin = kritik (kırmızı)    metin = uyarı (sarı)    *metin = bilgi (mavi)
-# metindeki canlı değerler: {vbat/6:2} = hücre başına volt, {up_lq}, {sats}, {fm}
+# metindeki canlı değerler: {cell:2} = hücre başına volt, {up_lq}, {sats}, {fm}
 # sonda @5 = koşul doğru kalsa bile 5 saniye sonra gizle (koşul bir sonraki açılışta tekrar gösterir)
 hysteresis = 25
 var_hysteresis = 1
 hold = 300
 scale = auto
 
-vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> BATARYA DÜŞÜK {vbat/6:2} V hücre başına
-vbat / 6 < 3.55 and vbat > 12 -> !BATARYA KRİTİK {vbat/6:2} V hücre başına
+cell < $low and cell >= $crit -> BATARYA DÜŞÜK {cell:2} V hücre başına
+cell < $crit -> !BATARYA KRİTİK {cell:2} V hücre başına
 up_lq < 70 and up_lq >= 40 and ch5 >= 1950 -> BAĞLANTI KALİTESİ {up_lq}%
 up_lq < 40 and ch5 >= 1950 -> !BAĞLANTI KRİTİK {up_lq}%
 tlm == 0 and ch5 >= 1950 -> !TELEMETRİ KAYIP

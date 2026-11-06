@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -52,6 +53,8 @@ class MainActivity : Activity() {
     private lateinit var mainMenu: MainMenu
     private val updater by lazy { Updater(this) }
     private val autoCheck = Runnable { if (Prefs.bool(this, "updateAuto", true)) updater.check(false) }
+    private var batteryCells = 6
+    private var batteryName = ""
     private var splash: SplashOverlay? = null
     private val splashHide = Runnable { splash?.dismiss() }
     private lateinit var warnPanel: RulesPanel
@@ -185,7 +188,9 @@ class MainActivity : Activity() {
             { !speaker.muted },
             { rulesPanel.show() },
             { speaker.muted = !speaker.muted },
-            { settingsPanel.show() }
+            { settingsPanel.show() },
+            { batteryName },
+            { switchBattery() }
         )
         frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
 
@@ -295,7 +300,7 @@ class MainActivity : Activity() {
     }
 
     private fun reloadRules() {
-        val parsed = RuleParser.parse(Prefs.rules(this))
+        val parsed = RuleParser.parse(Prefs.rules(this), Battery.macros(this))
         engine = RuleEngine(parsed, speaker)          // a new engine starts silent
         sdkScaler = when (parsed.settings.scale) {
             "percent" -> ChannelScaler(false, ChannelScaler.Mode.PERCENT)
@@ -310,7 +315,7 @@ class MainActivity : Activity() {
 
     private fun reloadChecks() {
         val text = Prefs.checkRules(this)
-        val parsed = RuleParser.parse(text)
+        val parsed = RuleParser.parse(text, Battery.macros(this))
         val model = CheckModel(parsed.rules)
         checkModel = model
         checkEngine = RuleEngine(parsed, null, model)
@@ -321,8 +326,9 @@ class MainActivity : Activity() {
 
     private fun reloadWarnings() {
         val text = Prefs.warningRules(this)
-        warningBar.load(text)
-        val errors = RuleParser.parse(text).errors
+        val macros = Battery.macros(this)
+        warningBar.load(text, macros)
+        val errors = RuleParser.parse(text, macros).errors
         if (errors.isNotEmpty()) {
             Toast.makeText(this, tr("Warning rules: {0} error(s). Open Settings, then the warning rules.", errors.size), Toast.LENGTH_LONG).show()
         }
@@ -358,7 +364,7 @@ class MainActivity : Activity() {
                     reloadWarnings()
                     reloadChecks()
                 }
-                val numbers = Variables.numbers(sample, scaler)
+                val numbers = Variables.numbers(sample, scaler, batteryCells)
                 latestNumbers = numbers
                 latestTexts = sample.texts
                 engine?.update(numbers, sample.texts, now)
@@ -492,6 +498,21 @@ class MainActivity : Activity() {
         override fun restoreRules() = this@MainActivity.restoreRules()
         override fun resetRules() = this@MainActivity.resetRules()
         override fun openRulesText() { startActivity(Intent(this@MainActivity, RulesActivity::class.java)) }
+        override fun batteryLabel(): String = batteryName
+        override fun cycleBattery() = switchBattery()
+        override fun editBatteries() = this@MainActivity.editBatteries()
+        override fun resetWarningRules() {
+            Prefs.setWarningRules(this@MainActivity, DefaultWarnings.text())
+            reloadWarnings()
+        }
+        override fun resetCheckRules() {
+            Prefs.setCheckRules(this@MainActivity, DefaultChecks.text())
+            reloadChecks()
+        }
+        override fun exportSettings() = this@MainActivity.exportSettings()
+        override fun importSettings() = this@MainActivity.importSettings()
+        override fun hasSettingsBackup(): Boolean = Prefs.settingsBackup(this@MainActivity) != null
+        override fun restoreSettings() = this@MainActivity.restoreSettings()
         override fun updateLine(): String = tr("Installed: version {0} (build {1})   Channel: {2}", updater.installedName(), updater.installedCode(), (if (updater.channel() == "stable") tr("Stable") else tr("Nightly")))
         override fun checkUpdatesNow() {
             settingsPanel.hide()
@@ -626,11 +647,14 @@ class MainActivity : Activity() {
     }
 
     private fun applyFlightConfig() {
+        val profile = Battery.active(this)
+        batteryCells = profile.cells
+        batteryName = profile.name
         flightStats.configure(
             Prefs.int(this, "armCh", 5).coerceIn(1, 16),
             Prefs.int(this, "armHigh", 1750).toDouble(),
             Prefs.int(this, "armLow", 1650).toDouble(),
-            Prefs.int(this, "cells", 6).coerceIn(1, 12)
+            batteryCells
         )
     }
 
@@ -692,7 +716,7 @@ class MainActivity : Activity() {
                 footer = tr("WAITING FOR DATA")
                 color = 0xFFB0BEC5.toInt()
             }
-            checkView.setContent(rows, footer, color)
+            checkView.setContent(tr("PRE-FLIGHT CHECK") + "  \u00B7  " + batteryName, rows, footer, color)
         }
     }
 
@@ -715,7 +739,6 @@ class MainActivity : Activity() {
         val ch = field(tr("Arm switch channel (1 to 16, AUX1 is channel 5)"), Prefs.int(this, "armCh", 5))
         val high = field(tr("Counts as armed at or above (microseconds)"), Prefs.int(this, "armHigh", 1750))
         val low = field(tr("Counts as disarmed below (microseconds)"), Prefs.int(this, "armLow", 1650))
-        val cells = field(tr("Cells in the pack (for the lowest volts per cell)"), Prefs.int(this, "cells", 6))
         val hint = TextView(this)
         hint.text = tr("The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.")
         hint.textSize = 12f
@@ -734,15 +757,12 @@ class MainActivity : Activity() {
             val c = ch.text.toString().trim().toIntOrNull()
             val h = high.text.toString().trim().toIntOrNull()
             val l = low.text.toString().trim().toIntOrNull()
-            val n = cells.text.toString().trim().toIntOrNull()
             if (c == null || c < 1 || c > 16) Toast.makeText(this, tr("The channel is 1 to 16"), Toast.LENGTH_SHORT).show()
             else if (h == null || l == null || h < 1000 || h > 2100 || l < 900 || l > h) Toast.makeText(this, tr("Use microseconds, with the disarmed value not above the armed one"), Toast.LENGTH_LONG).show()
-            else if (n == null || n < 1 || n > 12) Toast.makeText(this, tr("Cells: 1 to 12"), Toast.LENGTH_SHORT).show()
             else {
                 Prefs.setInt(this, "armCh", c)
                 Prefs.setInt(this, "armHigh", h)
                 Prefs.setInt(this, "armLow", l)
-                Prefs.setInt(this, "cells", n)
                 applyFlightConfig()
                 dlg.dismiss()
             }
@@ -1080,6 +1100,220 @@ class MainActivity : Activity() {
         }
     }
 
+    // ------------------------------------------------------------------ all settings in one file
+
+    private val requestExportSettings = 43
+    private val requestImportSettings = 44
+    private val settingsFileName = "ax-hud-settings.txt"
+
+    private fun settingsText(): String =
+        SettingsFile.export(Prefs.exportMap(this), SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(Date()), updater.installedName())
+
+    /** For a device without a file picker: the app's own folder, reachable over USB. */
+    private fun saveToAppFolder(name: String, text: String, title: String) {
+        try {
+            val f = File(getExternalFilesDir(null) ?: filesDir, name)
+            f.writeText(text, Charsets.UTF_8)
+            Immersive.show(
+                AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(tr("This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.", f.absolutePath))
+                    .setPositiveButton("OK", null)
+                    .create()
+            )
+        } catch (e: Exception) {
+            Toast.makeText(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun exportSettings() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TITLE, settingsFileName)
+        try {
+            startActivityForResult(intent, requestExportSettings)
+        } catch (e: ActivityNotFoundException) {
+            saveToAppFolder(settingsFileName, settingsText(), tr("Settings saved"))
+        }
+    }
+
+    private fun writeSettings(uri: Uri) {
+        try {
+            contentResolver.openOutputStream(uri, "wt")?.use { it.write(settingsText().toByteArray(Charsets.UTF_8)) }
+            Toast.makeText(this, tr("Settings saved"), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun importSettings() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "*/*"
+        try {
+            startActivityForResult(intent, requestImportSettings)
+        } catch (e: ActivityNotFoundException) {
+            val f = File(getExternalFilesDir(null) ?: filesDir, settingsFileName)
+            if (f.exists()) askImportSettings(readTextLimited(f.inputStream())) else {
+                Toast.makeText(this, tr("No file picker, and no {0} to import", f.absolutePath), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun readSettings(uri: Uri) {
+        try {
+            val stream = contentResolver.openInputStream(uri)
+            if (stream == null) Toast.makeText(this, tr("Could not open the file"), Toast.LENGTH_LONG).show()
+            else askImportSettings(readTextLimited(stream))
+        } catch (e: Exception) {
+            Toast.makeText(this, tr("Could not read the file: {0}", e.message), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun askImportSettings(raw: String) {
+        val summary = SettingsFile.inspect(raw)
+        if (!summary.usable) {
+            Immersive.show(AlertDialog.Builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
+            return
+        }
+        Immersive.show(
+            AlertDialog.Builder(this)
+                .setTitle(tr("Import all settings"))
+                .setMessage(tr("The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.", summary.message))
+                .setPositiveButton(tr("Import")) { _, _ ->
+                    Prefs.setSettingsBackup(this, settingsText())          // the state before, for "restore"
+                    Prefs.applyAll(this, summary.values)
+                    afterSettingsChanged(tr("Imported {0} settings", summary.entries))
+                }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
+    /** Swaps the current settings with the backup (press again to swap forward). */
+    private fun restoreSettings() {
+        val backup = Prefs.settingsBackup(this) ?: return
+        val summary = SettingsFile.inspect(backup)
+        if (!summary.usable) return
+        val current = settingsText()
+        Prefs.applyAll(this, summary.values)
+        Prefs.setSettingsBackup(this, current)
+        afterSettingsChanged(tr("Settings restored"))
+    }
+
+    private fun afterSettingsChanged(message: String) {
+        Lang.apply(this)                      // the language may have changed
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        recreate()                            // every screen is built again with the new settings
+    }
+
+    // ------------------------------------------------------------------ battery profiles
+
+    private fun switchBattery() {
+        val p = Battery.cycle(this)
+        applyBattery()
+        Toast.makeText(this, tr("Battery profile: {0}\n{1}", p.name, BatteryProfiles.limitsText(p)), Toast.LENGTH_LONG).show()
+        speaker.say(I18n.tIn(Lang.speechCode(this), "Battery profile {0}", p.name), false)
+    }
+
+    /** The cell count, the limits and every rule follow the active profile. */
+    private fun applyBattery() {
+        applyFlightConfig()
+        reloadRules()
+        reloadWarnings()
+        reloadChecks()
+    }
+
+    private fun editBatteries() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val head = TextView(this)
+        head.text = tr("name                  cells    full    low    critical")
+        head.textSize = 11f
+        body.addView(head)
+        class Row(val box: LinearLayout, val name: EditText, val cells: EditText, val full: EditText, val low: EditText, val crit: EditText)
+        val rows = ArrayList<Row>()
+        val list = LinearLayout(this)
+        list.orientation = LinearLayout.VERTICAL
+        fun volts(v: Double) = String.format(Locale.US, "%.2f", v)
+        fun addRow(p: BatteryProfiles.Profile) {
+            val line = LinearLayout(this)
+            line.orientation = LinearLayout.HORIZONTAL
+            line.gravity = Gravity.CENTER_VERTICAL
+            fun num(text: String, widthDp: Int, decimal: Boolean): EditText {
+                val e = EditText(this)
+                e.inputType = if (decimal) android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL else android.text.InputType.TYPE_CLASS_NUMBER
+                e.setSingleLine(true)
+                e.setText(text)
+                line.addView(e, LinearLayout.LayoutParams(dp(widthDp), ViewGroup.LayoutParams.WRAP_CONTENT))
+                return e
+            }
+            val name = EditText(this)
+            name.setSingleLine(true)
+            name.filters = arrayOf(android.text.InputFilter.LengthFilter(BatteryProfiles.MAX_NAME))
+            name.setText(p.name)
+            line.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            val cells = num(p.cells.toString(), 48, false)
+            val full = num(volts(p.full), 64, true)
+            val low = num(volts(p.low), 64, true)
+            val crit = num(volts(p.crit), 64, true)
+            val del = Button(this)
+            del.text = "X"
+            del.setOnClickListener {
+                list.removeView(line)
+                rows.removeAll { it.box === line }
+            }
+            line.addView(del)
+            list.addView(line)
+            rows.add(Row(line, name, cells, full, low, crit))
+        }
+        for (p in Battery.profiles(this)) addRow(p)
+        body.addView(list)
+        val add = Button(this)
+        add.text = tr("Add profile")
+        add.setOnClickListener { if (rows.size < BatteryProfiles.MAX) addRow(BatteryProfiles.Profile("New", 6, 4.15, 3.70, 3.55)) }
+        body.addView(add)
+        val hint = TextView(this)
+        hint.text = tr("Volts per cell. Critical must be below low, and low below full. Rules use cell and the names \$low, \$crit and \$full.")
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val activeName = Battery.active(this).name
+        val dlg = AlertDialog.Builder(this)
+            .setTitle(tr("Battery profiles"))
+            .setView(scroll)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val out = ArrayList<BatteryProfiles.Profile>()
+            var bad = false
+            for (r in rows) {
+                val cells = r.cells.text.toString().trim().toIntOrNull()
+                val full = r.full.text.toString().trim().toDoubleOrNull()
+                val low = r.low.text.toString().trim().toDoubleOrNull()
+                val crit = r.crit.text.toString().trim().toDoubleOrNull()
+                if (cells == null || full == null || low == null || crit == null) { bad = true; break }
+                out.add(BatteryProfiles.Profile(BatteryProfiles.cleanName(r.name.text.toString()), cells, full, low, crit))
+            }
+            val problem = if (bad) tr("Enter numbers in every field") else BatteryProfiles.validate(out)
+            if (problem != null) {
+                Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+            } else {
+                Battery.setProfiles(this, out)
+                val idx = out.indexOfFirst { it.name.equals(activeName, ignoreCase = true) }
+                Prefs.setInt(this, "batActive", if (idx < 0) 0 else idx)
+                applyBattery()
+                dlg.dismiss()
+            }
+        }
+    }
+
     private fun importRules() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -1098,6 +1332,8 @@ class MainActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) return
         val uri = data?.data ?: return
+        if (requestCode == requestExportSettings) { writeSettings(uri); return }
+        if (requestCode == requestImportSettings) { readSettings(uri); return }
         if (requestCode == requestExport) {
             try {
                 contentResolver.openOutputStream(uri, "wt")?.use { it.write(exportText().toByteArray(Charsets.UTF_8)) }

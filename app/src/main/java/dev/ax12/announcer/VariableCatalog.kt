@@ -20,6 +20,7 @@ object VariableCatalog {
 
     private val help: Map<String, String> = mapOf(
         "vbat" to tn("battery volts (flight controller); divide by the cell count for volts per cell"),
+        "cell" to tn("volts per cell: battery volts divided by the cells of the active battery profile"),
         "curr" to tn("battery current, amps"),
         "capa" to tn("capacity used, mAh"),
         "batpct" to tn("battery remaining, percent"),
@@ -59,7 +60,7 @@ object VariableCatalog {
         fun take(names: List<String>): List<String> = names.filter { used.add(it) }
         val out = ArrayList<Group>()
         out.add(Group(tr("Switches and sticks (channels, 1000 to 2000)"), take((1..16).map { "ch$it" })))
-        out.add(Group(tr("Battery (from the flight controller)"), take(listOf("vbat", "curr", "capa", "batpct"))))
+        out.add(Group(tr("Battery (from the flight controller)"), take(listOf("vbat", "cell", "curr", "capa", "batpct"))))
         out.add(Group(tr("Link quality and signal"), take(listOf("up_lq", "up_rssi1", "up_rssi2", "up_snr", "dn_lq", "dn_rssi", "dn_snr", "rf_mode", "tx_power"))))
         out.add(Group(tr("Radio status"), take(listOf("lq", "dbm", "lost", "txv", "rxv", "tlm"))))
         out.add(Group(tr("GPS and attitude"), take(listOf("sats", "gps_speed", "gps_alt", "gps_heading", "gps_lat", "gps_lon", "pitch", "roll", "yaw", "vspeed"))))

@@ -15,11 +15,11 @@ ch10 <= 1125 or ch10 >= 1875 -> Positionshaltung | Positionshaltung aus
 ch10 >= 1950 -> Höhenhaltung
 ch9 <= 1100 -> Airmode an | Airmode aus
 
-# --- Akku, Volt pro Zelle (6S): der Wert des Flugcontrollers, wie im OSD ---
-# Li-ion-Landung etwa 3,6 V: Warnung 3.70, kritisch 3.55.  Für LiPo 3.85 / 3.70 verwenden.
-# "vbat > 12" hält die kritische Warnung still, wenn der Flugcontroller nur über USB versorgt wird (vbat = 0).
-vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> Akku niedrig @30
-vbat / 6 < 3.55 and vbat > 12 -> !Akku kritisch @10
+# --- Akku, Volt pro Zelle: der Wert des Flugcontrollers, wie im OSD ---
+# Akku: "cell" sind Volt pro Zelle (Akkuspannung / Zellenzahl des aktiven Akkuprofils); $low und $crit sind die Grenzen.
+# Das Profil (Li-ion / LiPo ...) im MENÜ wechseln: die Zahlen ändern sich, diese Regeln bleiben. "cell" gibt es nur, solange ein Akku angeschlossen ist.
+cell < $low and cell >= $crit -> Akku niedrig @30
+cell < $crit -> !Akku kritisch @10
 
 # --- Verbindung: nur bei eingeschaltetem Arm-Schalter (ch5), damit ein stromloses Fluggerät still bleibt ---
 up_lq < 70 and ch5 >= 1950 -> Verbindungsqualität niedrig

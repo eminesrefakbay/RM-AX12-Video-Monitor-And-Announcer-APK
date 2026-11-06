@@ -1,12 +1,12 @@
 # Kontrollen vor dem Flug:   Bedingung -> Beschriftung      (Haken, wenn die Bedingung wahr ist, sonst Kreuz)
-# Live-Werte in der Beschriftung: {sats}, {up_lq}, {vbat/6:2} = Volt pro Zelle
+# Live-Werte in der Beschriftung: {sats}, {up_lq}, {cell:2} = Volt pro Zelle
 hysteresis = 25
 var_hysteresis = 1
 hold = 500
 scale = auto
 
-vbat > 12 -> Akku angeschlossen
-vbat / 6 >= 4.15 -> Akku voll {vbat/6:2} V pro Zelle
+vbat > 6 -> Akku angeschlossen
+cell >= $full -> Akku voll {cell:2} V pro Zelle
 sats >= 10 -> GPS {sats} Satelliten (10 nötig)
 up_lq >= 95 -> Verbindungsqualität {up_lq}%
 ch9 <= 1100 -> Airmode-Schalter an

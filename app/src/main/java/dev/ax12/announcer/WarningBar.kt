@@ -19,8 +19,8 @@ class WarningBar(private val bar: TextView) {
     private var lastLevel = -1
 
     /** (Re)load the warning rules. The bar starts with the current state of every rule. */
-    fun load(rulesText: String) {
-        val parsed = RuleParser.parse(rulesText)
+    fun load(rulesText: String, macros: Map<String, Double>) {
+        val parsed = RuleParser.parse(rulesText, macros)
         val m = WarningModel(parsed.rules)
         model = m
         engine = RuleEngine(parsed, null, m)

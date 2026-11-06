@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.8.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.9.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 482 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 559 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -101,6 +101,33 @@ file picker and saves a plain text file (`ax12-sound-rules.txt`, rules with one 
 such a file, shows how many rules it has and any problems, and replaces your rules only after you confirm. The old
 rules are kept: *Restore the rules from before the last import* swaps them back (press again to swap forward).
 On a device without a file picker the file is written to the app's own folder and its path is shown.
+
+## Battery profiles (Li-ion / LiPo)
+
+A **battery profile** is a kind of pack: its cell count and its volts-per-cell limits (low warning, critical, full). Two are
+there from the start (Li-ion 6S: 3.70 / 3.55 / 4.15, LiPo 6S: 3.85 / 3.70 / 4.15); you can edit them and add more
+(*Settings > Battery*). **One tap on the MENU's Battery item switches the profile**; the app says its name aloud, shows the
+limits, and the pre-flight checklist carries the profile's name in its title, so you can check it before every flight.
+
+Rules, warnings and checks can use:
+
+* **`cell`**: volts per cell (battery volts divided by the active profile's cells). It only exists while a pack is connected
+  (at least 2.5 V per cell), so rules about it stay silent when the flight controller runs from USB.
+* **`$low`, `$crit`, `$full`**: the active profile's limits, used instead of a number:
+  `cell < $low and cell >= $crit -> battery low`. In the rule editor the **$** button next to the value inserts one.
+
+Switching the profile changes the numbers, **not the rules**. Rules with plain numbers (`vbat / 6 < 3.70`) keep working
+as before. The starting rules, warnings and checks use the new names; an existing install keeps its own text until you
+*Reset the rules / warning rules / checks to the defaults* (Settings).
+
+## Backup of all settings
+
+*Settings > Backup of all settings* writes **one text file with everything**: sound rules, warning rules, pre-flight checks,
+overlays and their places, stick and channel-bar settings, arm detection, battery profiles, camera, language and update
+channel. *Import* shows what the file contains, replaces the settings in it, and keeps the old ones: *Restore* swaps them
+back (press again to swap forward). Only known settings with valid values are read, so a damaged or hand-edited file cannot
+break the app. The sound rules also keep their own, smaller export. The file is a complete snapshot, so it is also the way to
+move the setup to another radio.
 
 ## Rules
 

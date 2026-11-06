@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  *   ch9 < 1300 -> !battery critical @10                (! = urgent, @10 = repeat every 10 s)
  *   vbat / 6 < 3.5 -> battery low                      (the variable is divided first: volts per cell)
  *   fm ~ "RTH" -> return to home                       (text rules: ==  !=  ~ means contains)
+ *   cell < $low -> battery low                         ($low, $crit, $full: the limits of the active battery profile)
  *
  * Settings lines:  hysteresis = 25 (channels, microseconds)   var_hysteresis = 1 (other variables, percent)
  *                  hold = 100   initial = on|off   scale = auto|percent|permille|us
@@ -38,14 +39,22 @@ public final class RuleParser {
 
     private static final Pattern SETTING = Pattern.compile("^(hysteresis|var_hysteresis|hold|initial|scale)\\s*=\\s*(\\S+)$", Pattern.CASE_INSENSITIVE);
     private static final Pattern ATOM = Pattern.compile(
-            "^([A-Za-z_][A-Za-z0-9_]*)\\s*(?:/\\s*(\\d+(?:\\.\\d+)?))?\\s*(>=|<=|==|!=|>|<)\\s*(-?\\d+(?:\\.\\d+)?)$");
+            "^([A-Za-z_][A-Za-z0-9_]*)\\s*(?:/\\s*(\\d+(?:\\.\\d+)?))?\\s*(>=|<=|==|!=|>|<)\\s*(-?\\d+(?:\\.\\d+)?|\\$[A-Za-z_]+)$");
     private static final Pattern TEXT_ATOM = Pattern.compile(
             "^([A-Za-z_][A-Za-z0-9_]*)\\s*(==|!=|~)\\s*\"([^\"]*)\"$");
     private static final Pattern REPEAT = Pattern.compile("\\s@(\\d+)\\s*$");
 
     private RuleParser() {}
 
+    private static final java.util.Map<String, Double> DEFAULT_MACROS = BatteryProfiles.macros(BatteryProfiles.defaults().get(0));
+
+    /** For checking and for the rules editor: $low, $crit and $full stand for the first default profile's numbers. */
     public static Result parse(String text) {
+        return parse(text, DEFAULT_MACROS);
+    }
+
+    /** @param macros the numbers $low, $crit and $full stand for (from the active battery profile) */
+    public static Result parse(String text, java.util.Map<String, Double> macros) {
         Result res = new Result();
         if (text == null) return res;
         String[] lines = text.split("\\r?\\n", -1);
@@ -114,8 +123,22 @@ public final class RuleParser {
                             break;
                         }
                     }
-                    atoms.add(new Rule.Atom(am.group(1).toLowerCase(Locale.ROOT), am.group(3),
-                            Double.parseDouble(am.group(4)), divisor, null));
+                    String vtxt = am.group(4);
+                    double value;
+                    String ref = null;
+                    if (vtxt.startsWith("$")) {
+                        ref = vtxt.substring(1).toLowerCase(Locale.ROOT);
+                        Double mv = macros.get(ref);
+                        if (mv == null) {
+                            res.errors.add(I18n.t("line {0}: unknown name ${1}  (use $low, $crit or $full)", lineNo, ref));
+                            ok = false;
+                            break;
+                        }
+                        value = mv;
+                    } else {
+                        value = Double.parseDouble(vtxt);
+                    }
+                    atoms.add(new Rule.Atom(am.group(1).toLowerCase(Locale.ROOT), am.group(3), value, divisor, null, ref));
                 }
                 if (!ok) break;
                 groups.add(atoms);

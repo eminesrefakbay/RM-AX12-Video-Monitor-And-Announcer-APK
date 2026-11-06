@@ -15,11 +15,11 @@ ch10 <= 1125 or ch10 >= 1875 -> konum tutma | konum tutma kapalı
 ch10 >= 1950 -> irtifa tutma
 ch9 <= 1100 -> airmode açık | airmode kapalı
 
-# --- batarya, hücre başına volt (6S): uçuş kontrolcüsünün değeri, OSD'de görünenle aynı ---
-# Li-ion inişi yaklaşık 3.6 V: uyarı 3.70, kritik 3.55.  LiPo için 3.85 / 3.70 kullanın.
-# "vbat > 12", uçuş kontrolcüsü yalnızca USB'den beslenirken (vbat = 0) kritik uyarıyı susturur.
-vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> batarya düşük @30
-vbat / 6 < 3.55 and vbat > 12 -> !batarya kritik @10
+# --- batarya, hücre başına volt: uçuş kontrolcüsünün değeri, OSD'de görünenle aynı ---
+# Batarya: "cell" hücre başına volttur (batarya voltu / etkin batarya profilinin hücre sayısı); $low ve $crit sınırlarıdır.
+# Profili (Li-ion / LiPo ...) MENÜ'den değiştirin: sayılar değişir, bu kurallar aynı kalır. "cell" yalnızca bir batarya bağlıyken vardır.
+cell < $low and cell >= $crit -> batarya düşük @30
+cell < $crit -> !batarya kritik @10
 
 # --- bağlantı: yalnızca arm anahtarı açıkken (ch5), böylece enerjisiz hava aracı sessiz kalır ---
 up_lq < 70 and ch5 >= 1950 -> bağlantı kalitesi düşük

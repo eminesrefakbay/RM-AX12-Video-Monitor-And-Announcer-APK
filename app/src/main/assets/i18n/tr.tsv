@@ -1,5 +1,12 @@
 # Turkish translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
 Bar {0}: the channel must be 1 to 16.	Çubuk {0}: kanal 1 ile 16 arasında olmalı.
+Add at least one battery profile.	En az bir batarya profili ekleyin.
+At most {0} battery profiles.	En fazla {0} batarya profili olabilir.
+Profile {0}: the name cannot be empty.	Profil {0}: ad boş olamaz.
+Profile {0}: cells must be 1 to 12.	Profil {0}: hücre sayısı 1 ile 12 arasında olmalı.
+Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	Profil {0}: kritik < düşük < dolu olmalı ve hücre başına 2.5 ile 4.4 volt arasında olmalı.
+Two profiles have the same name: {0}.	İki profilin adı aynı: {0}.
+low {0}, critical {1}, full {2} V per cell	düşük {0}, kritik {1}, dolu {2} V hücre başına
 Starting...	Başlatılıyor...
 video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	video: %.1f kare/sn   kareler arası boşluk: %%95 altında %d ms, en kötü %d ms (son 5 sn)
 Camera {0}  {1}x{2}  ·  {3}	Kamera {0}  {1}x{2}  ·  {3}
@@ -19,7 +26,6 @@ Waiting for video...	Video bekleniyor...
 Preview failed: {0}	Önizleme başarısız: {0}
 Camera session failed	Kamera oturumu başarısız
 Session error: {0}	Oturum hatası: {0}
-PRE-FLIGHT CHECK	UÇUŞ ÖNCESİ KONTROL
 MENU	MENÜ
 Warning rules	Uyarı kuralları
 Pre-flight checks	Uçuş öncesi kontroller
@@ -66,17 +72,16 @@ READY	HAZIR
 NOT READY: 1 check failed	HAZIR DEĞİL: 1 kontrol başarısız
 NOT READY: {0} checks failed	HAZIR DEĞİL: {0} kontrol başarısız
 WAITING FOR DATA	VERİ BEKLENİYOR
+PRE-FLIGHT CHECK	UÇUŞ ÖNCESİ KONTROL
 Arm switch channel (1 to 16, AUX1 is channel 5)	Arm anahtarı kanalı (1-16, AUX1 kanal 5'tir)
 Counts as armed at or above (microseconds)	Bu değer ve üzerinde arm sayılır (mikrosaniye)
 Counts as disarmed below (microseconds)	Bu değerin altında disarm sayılır (mikrosaniye)
-Cells in the pack (for the lowest volts per cell)	Paketteki hücre sayısı (en düşük hücre başına volt için)
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	İki eşik arasındaki boşluk, anahtara çarpılınca istatistiklerin arm/disarm olmasını önler. Anahtar 0.3 saniye yerinde kalmalıdır.
 Arm detection	Arm algılama
 Save	Kaydet
 Cancel	İptal
 The channel is 1 to 16	Kanal 1 ile 16 arasındadır
 Use microseconds, with the disarmed value not above the armed one	Mikrosaniye kullanın; disarm değeri arm değerinden büyük olmasın
-Cells: 1 to 12	Hücre: 1 ile 12
 Speed (now / maximum)	Hız (şimdi / en yüksek)
 Height above the arming point (now / maximum)	Arm noktasının üzerindeki yükseklik (şimdi / en yüksek)
 Current (now / peak, with a limit line)	Akım (şimdi / tepe, sınır çizgisiyle)
@@ -119,18 +124,32 @@ Thanks to RadioMaster for publishing the AX SDK.	RadioMaster'a AX SDK'yı yayım
 Sound rules saved	Ses kuralları kaydedildi
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	Bu cihazda dosya seçici yok, bu yüzden dosya buraya kaydedildi:\n{0}\n\nBir USB kablosu veya adb ile kopyalayın. İçe aktarmak için aynı adlı bir dosyayı o klasöre koyun.
 Could not save the rules: {0}	Kurallar kaydedilemedi: {0}
+Could not save the settings: {0}	Ayarlar kaydedilemedi: {0}
+Settings saved	Ayarlar kaydedildi
 No file picker, and no {0} to import	Dosya seçici yok ve içe aktarılacak {0} yok
 Could not open the file	Dosya açılamadı
 Could not read the file: {0}	Dosya okunamadı: {0}
 Cannot import	İçe aktarılamıyor
+Import all settings	Tüm ayarları içe aktar
+The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.	Dosyada {0}\n\nBu, içindeki ayarların yerine geçer. Mevcut ayarlarınız yedek olarak saklanır ve Ayarlar'dan geri yüklenebilir.
+Import	İçe aktar
+Imported {0} settings	{0} ayar içe aktarıldı
+Settings restored	Ayarlar geri yüklendi
+Battery profile: {0}\n{1}	Batarya profili: {0}\n{1}
+Battery profile {0}	Batarya profili {0}
+name                  cells    full    low    critical	ad                    hücre    dolu    düşük    kritik
+Add profile	Profil ekle
+Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	Hücre başına volt. Kritik, düşükten; düşük de doludan küçük olmalıdır. Kurallar cell değerini ve $low, $crit, $full adlarını kullanır.
+Battery profiles	Batarya profilleri
+Enter numbers in every field	Her alana sayı girin
 Import sound rules	Ses kurallarını içe aktar
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Dosyada {0} var\n\nBu, mevcut kurallarınızın yerine geçer. Yedek olarak saklanır ve Ayarlar'dan geri yüklenebilir.
-Import	İçe aktar
 Imported {0} rules	{0} kural içe aktarıldı
 Sound rules	Ses kuralları
 Settings	Ayarlar
 Mute speech	Konuşmayı sustur
 Speech is OFF - tap to turn on	Konuşma KAPALI - açmak için dokunun
+Battery: {0}  (tap to switch)	Batarya: {0}  (değiştirmek için dokunun)
 test sliders	test kaydırıcıları
 test sliders (no radio)	test kaydırıcıları (kumanda yok)
 RadioMaster SDK	RadioMaster SDK
@@ -143,6 +162,7 @@ line {0}: nothing before '->'	satır {0}: '->' öncesinde bir şey yok
 line {0}: nothing to say after '->'	satır {0}: '->' sonrasında söylenecek bir şey yok
 line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	satır {0}: '{1}' koşulu okunamadı  (şunları kullanın:  ch5 >= 1500   veya   vbat / 6 < 3.5   veya   fm ~ "RTH" )
 line {0}: cannot divide by zero  ({1})	satır {0}: sıfıra bölünemez  ({1})
+line {0}: unknown name ${1}  (use $low, $crit or $full)	satır {0}: bilinmeyen ad ${1}  (şunları kullanın: $low, $crit veya $full)
 line {0}: bad value for {1} ({2})	satır {0}: {1} için geçersiz değer ({2})
 Add at least one condition.	En az bir koşul ekleyin.
 Pick a variable (letters, digits and _ only).	Bir değişken seçin (yalnızca harf, rakam ve _).
@@ -194,6 +214,10 @@ Each check shows a tick when its condition is true and a cross when not, before 
 A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	Bir uyarı, koşulu doğru olduğu sürece durum çubuğunda görünür. Kritik = kırmızı ve yanıp söner, uyarı = sarı, bilgi = mavi. Soldaki anahtar, bir kuralı silmeden kapatır.
 A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	Bir kural, koşulu doğru olunca konuşur. Soldaki anahtar, bir kuralı silmeden kapatır.
 Speech is muted (MENU, Mute speech)	Konuşma sessize alındı (MENÜ, Konuşmayı sustur)
+$low  - warning limit of the active battery profile	$low  - etkin batarya profilinin uyarı sınırı
+$crit  - critical limit	$crit  - kritik sınır
+$full  - limit for a full pack	$full  - dolu paket sınırı
+Battery limit	Batarya sınırı
 No rules yet. Tap + Add rule.	Henüz kural yok. + Kural ekle'ye dokunun.
 Advanced rule (open the text editor): {0}	Gelişmiş kural (metin düzenleyiciyi açın): {0}
 Edit	Düzenle
@@ -255,6 +279,12 @@ Edit warning	Uyarıyı düzenle
 New rule	Yeni kural
 Edit rule	Kuralı düzenle
 Label now: {0}	Etiket şimdi: {0}
+The file is too large to be a settings file.	Dosya bir ayar dosyası olamayacak kadar büyük.
+No usable settings found in this file.	Bu dosyada kullanılabilir ayar bulunamadı.
+No settings found in this file.	Bu dosyada ayar bulunamadı.
+{0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} ayar; bunların içinde {1} ses kuralı, {2} uyarı kuralı ve {3} kontrol var
+. {0} lines were ignored (unknown or invalid)	. {0} satır yok sayıldı (bilinmeyen veya geçersiz)
+. {0} rule lines have problems and will not work	. {0} kural satırında sorun var ve çalışmayacak
    Size: {0}  (tap to change)	   Boyut: {0}  (değiştirmek için dokunun)
    Position: {0}  (tap to change)	   Konum: {0}  (değiştirmek için dokunun)
    Opacity: {0}  (tap to change)	   Opaklık: {0}  (değiştirmek için dokunun)
@@ -265,6 +295,10 @@ Display	Ekran
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
 Start-up splash screen (logo and version, 2 seconds)	Açılış ekranı (logo ve sürüm, 2 saniye)
+Battery	Batarya
+Active battery profile: {0}  (tap to switch)	Etkin batarya profili: {0}  (değiştirmek için dokunun)
+Edit the battery profiles (cells and voltage limits)...	Batarya profillerini düzenle (hücre sayısı ve voltaj sınırları)...
+Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Kurallar ve kontroller, cell değerini (hücre başına volt) ve etkin profilin $low, $crit, $full sınırlarını kullanabilir; örneğin: cell < $low -> batarya düşük. Profili değiştirmek sayıları değiştirir, kuralları değil.
 OSD overlays (drawn over the video)	OSD katmanları (videonun üzerine çizilir)
 Stick view: roll, pitch, yaw and throttle	Stick görünümü: roll, pitch, yaw ve gaz
 Stick size: {0}  (tap to change)	Stick boyutu: {0}  (değiştirmek için dokunun)
@@ -277,6 +311,9 @@ Tip: press and hold the stick view on the video to open the channel bars.	İpucu
 Warning status bar	Uyarı durum çubuğu
 Warning bar position: {0}  (tap to change)	Uyarı çubuğu konumu: {0}  (değiştirmek için dokunun)
 Edit the warning rules (thresholds and logic)...	Uyarı kurallarını düzenle (eşikler ve mantık)...
+Reset the warning rules to the defaults	Uyarı kurallarını varsayılanlara sıfırla
+Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	Uyarı kurallarınız varsayılanlarla değiştirilsin mi? Mevcut olanları saklamak istiyorsanız önce tüm ayarları dışa aktarın.
+Reset	Sıfırla
 Preview the warning bar (4 seconds)	Uyarı çubuğunu önizle (4 saniye)
 Warnings show while their condition is true, so thresholds and logic are yours to set.	Uyarılar koşulları doğru olduğu sürece görünür; eşikleri ve mantığı siz belirlersiniz.
 Flight overlays (statistics, radar, checklist)	Uçuş katmanları (istatistik, radar, kontrol listesi)
@@ -287,6 +324,8 @@ Rows and current limit...	Satırlar ve akım sınırı...
 Radar map: home in the centre, your track and range rings	Radar haritası: ortada ev, izin ve mesafe halkaları
 Pre-flight checklist (shown while disarmed)	Uçuş öncesi kontrol listesi (disarm iken gösterilir)
 Edit the checks (thresholds and logic)...	Kontrolleri düzenle (eşikler ve mantık)...
+Reset the checks to the defaults	Kontrolleri varsayılanlara sıfırla
+Replace your checks with the defaults? Export all settings first if you want to keep the current ones.	Kontrolleriniz varsayılanlarla değiştirilsin mi? Mevcut olanları saklamak istiyorsanız önce tüm ayarları dışa aktarın.
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (HDMI girişini seçmek için dokunun)
 Rotate video: now {0} degrees  (tap to turn 90)	Videoyu döndür: şimdi {0} derece  (90 çevirmek için dokunun)
@@ -302,8 +341,13 @@ Swap back to the previous rules? The current rules are kept, so you can swap aga
 Restore	Geri yükle
 Reset the rules to the defaults	Kuralları varsayılanlara sıfırla
 Replace your rules with the defaults? Your current rules are kept as a backup.	Kurallarınız varsayılanlarla değiştirilsin mi? Mevcut kurallarınız yedek olarak saklanır.
-Reset	Sıfırla
 Edit the rules as text (advanced)	Kuralları metin olarak düzenle (gelişmiş)
+Backup of all settings	Tüm ayarların yedeği
+Export all settings to a file...	Tüm ayarları dosyaya aktar...
+Import all settings from a file...	Tüm ayarları dosyadan içe aktar...
+Restore the settings from before the last import	Son içe aktarmadan önceki ayarları geri yükle
+Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	Son içe aktarmadan önceki ayarlara dönülsün mü? Mevcut ayarlar saklanır, tekrar değiştirebilirsiniz.
+One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	Her şey tek dosyada: ses kuralları, uyarı kuralları, kontroller, ekran katmanları, kanal çubukları, batarya profilleri ve dil. Ses kurallarının ayrıca yukarıda kendi dışa aktarması da vardır.
 Diagnostics	Tanılama
 Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
 Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
@@ -359,6 +403,7 @@ Installation cancelled	Kurulum iptal edildi
 Installation stopped	Kurulum durdu
 Android did not say why (code {0}).	Android nedenini belirtmedi (kod {0}).
 battery volts (flight controller); divide by the cell count for volts per cell	batarya voltu (uçuş kontrolcüsü); hücre başına volt için hücre sayısına bölün
+volts per cell: battery volts divided by the cells of the active battery profile	hücre başına volt: batarya voltu, etkin batarya profilinin hücre sayısına bölünür
 battery current, amps	batarya akımı, amper
 capacity used, mAh	kullanılan kapasite, mAh
 battery remaining, percent	kalan batarya, yüzde

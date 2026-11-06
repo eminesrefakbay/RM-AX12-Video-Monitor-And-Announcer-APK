@@ -130,6 +130,22 @@ class RulesPanel(
         else speaker.say(text, urgent)
     }
 
+    /** The limit names low, crit and full (written with a dollar sign): the limits of the active battery profile, to use in a condition instead of a number. */
+    private fun pickLimit(onPicked: (String) -> Unit) {
+        val names = arrayOf("\$low", "\$crit", "\$full")
+        val labels = arrayOf(
+            tr("\$low  - warning limit of the active battery profile"),
+            tr("\$crit  - critical limit"),
+            tr("\$full  - limit for a full pack")
+        )
+        val dlg = AlertDialog.Builder(activity)
+            .setTitle(tr("Battery limit"))
+            .setItems(labels) { _, which -> onPicked(names[which]) }
+            .setNegativeButton(tr("Cancel"), null)
+            .create()
+        Immersive.show(dlg)
+    }
+
     private fun testWarningFor(sp: RuleText.Spec) {
         val level = if (sp.urgentTrue) 2 else if (sp.onTrue.startsWith("*")) 0 else 1
         val text = TextTemplate.expand(sp.onTrue.removePrefix("*").trim(), live.numbers(), live.texts())
@@ -455,6 +471,16 @@ class RulesPanel(
                 valueField.hint = "value"
                 valueField.setText(c.value)
                 lineB.addView(valueField, LinearLayout.LayoutParams(dp(110), ViewGroup.LayoutParams.WRAP_CONTENT))
+                if (BatteryProfiles.isMacro(c.value)) valueField.inputType = InputType.TYPE_CLASS_TEXT
+                val limits = Button(activity)
+                limits.text = "\$"
+                limits.isAllCaps = false
+                limits.setOnClickListener { pickLimit { name ->
+                    valueField.inputType = InputType.TYPE_CLASS_TEXT          // a name needs the text keyboard
+                    valueField.setText(name)
+                    valueField.setSelection(name.length)
+                } }
+                lineB.addView(limits)
 
                 val divLabel = TextView(activity)
                 divLabel.text = tr("  divide by")
@@ -480,7 +506,7 @@ class RulesPanel(
             }
 
             private fun updateKeyboard() {
-                val numeric = !isTextVariable(varField.text.toString().trim())
+                val numeric = !isTextVariable(varField.text.toString().trim()) && !BatteryProfiles.isMacro(valueField.text.toString().trim())
                 if (numeric != numericKeyboard) {
                     numericKeyboard = numeric
                     val tilde = opCodes.indexOf("~")

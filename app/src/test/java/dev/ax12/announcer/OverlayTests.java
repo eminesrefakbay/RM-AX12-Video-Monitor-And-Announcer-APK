@@ -132,17 +132,17 @@ public class OverlayTests {
         WarningModel dm = new WarningModel(dwp.rules);
         RuleEngine de = new RuleEngine(dwp, null, dm);
         Map<String, Double> dv = new HashMap<String, Double>(); Map<String, String> dt = new HashMap<String, String>();
-        dv.put("vbat", 25.2); dv.put("up_lq", 100.0); dv.put("tlm", 1.0); dv.put("ch5", 1000.0); dv.put("sats", 16.0); dt.put("fm", "ANGL");
+        dv.put("vbat", 25.2); dv.put("up_lq", 100.0); dv.put("tlm", 1.0); dv.put("ch5", 1000.0); dv.put("sats", 16.0); dt.put("fm", "ANGL"); BatteryProfiles.addDerived(dv, 6);
         long dn = 0;
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(dm.items(dv, dt).isEmpty(), "bench, healthy, disarmed: nothing shown: " + show(dm.items(dv, dt)));
         dv.put("ch5", 2000.0);
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(show(dm.items(dv, dt)).equals("[INFO:ARMED; ]"), "armed shows the info line only: " + show(dm.items(dv, dt)));
-        dv.put("vbat", 21.5);                                   // 3.58 V per cell
+        dv.put("vbat", 21.5); BatteryProfiles.addDerived(dv, 6);                                   // 3.58 V per cell
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(show(dm.items(dv, dt)).equals("[WARNING:BATTERY LOW 3.58 V per cell; INFO:ARMED; ]"), "low battery with the live value: " + show(dm.items(dv, dt)));
-        dv.put("vbat", 20.9);                                   // 3.48 V per cell
+        dv.put("vbat", 20.9); BatteryProfiles.addDerived(dv, 6);                                   // 3.48 V per cell
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(show(dm.items(dv, dt)).startsWith("[CRITICAL:BATTERY CRITICAL 3.48 V per cell"), "critical battery: " + show(dm.items(dv, dt)));
         dv.put("up_lq", 55.0); dv.put("sats", 6.0); dt.put("fm", "RTH");
@@ -156,7 +156,7 @@ public class OverlayTests {
         dv.put("ch5", 1000.0); dv.put("up_lq", 0.0); dv.put("tlm", 0.0);                  // landed, disarmed, aircraft off
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(!show(dm.items(dv, dt)).contains("LINK") && !show(dm.items(dv, dt)).contains("TELEMETRY"), "disarmed: no link warnings after landing: " + show(dm.items(dv, dt)));
-        dv.remove("vbat"); dv.remove("sats"); dt.remove("fm");                                 // aircraft powered off: battery, GPS and mode all expire
+        dv.remove("vbat"); dv.remove("cell"); dv.remove("sats"); dt.remove("fm");                                 // aircraft powered off: battery, GPS and mode all expire
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(dm.items(dv, dt).isEmpty(), "aircraft off: no stale battery or flight-mode warning remains: " + show(dm.items(dv, dt)));
 

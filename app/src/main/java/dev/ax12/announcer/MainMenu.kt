@@ -18,10 +18,13 @@ class MainMenu(
     private val speechOn: () -> Boolean,
     private val onRules: () -> Unit,
     private val onToggleSpeech: () -> Unit,
-    private val onSettings: () -> Unit
+    private val onSettings: () -> Unit,
+    private val batteryName: () -> String,
+    private val onBattery: () -> Unit
 ) {
     val root = FrameLayout(activity)
     private val speechButton = Button(activity)
+    private val batteryButton = Button(activity)
 
     val isShowing: Boolean get() = root.visibility == View.VISIBLE
 
@@ -49,6 +52,15 @@ class MainMenu(
                 onToggleSpeech()
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        box.addView(batteryButton.also { b ->
+            b.isAllCaps = false
+            b.textSize = 16f
+            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            b.setOnClickListener {
+                hide()
+                onBattery()
+            }
+        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         box.addView(item(tr("Settings")) { onSettings() })
 
         val lp = FrameLayout.LayoutParams(dp(300), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
@@ -73,6 +85,7 @@ class MainMenu(
 
     fun show() {
         speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is OFF - tap to turn on")
+        batteryButton.text = tr("Battery: {0}  (tap to switch)", batteryName())
         root.visibility = View.VISIBLE
     }
 
