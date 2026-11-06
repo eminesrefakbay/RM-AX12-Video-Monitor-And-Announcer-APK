@@ -1,4 +1,4 @@
-# AX12 Video Monitor and Announcer (v0.4.2)
+# AX12 Video Monitor and Announcer (v0.5.2)
 
 An Android app for the RadioMaster AX12:
 
@@ -12,10 +12,35 @@ An Android app for the RadioMaster AX12:
 
 | Part | State |
 | --- | --- |
-| Rule engine, CRSF parser, channel scaler (plain Java) | 167 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 270 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
+
+## OSD overlays: sticks, channel bars and the warning status bar
+
+**Settings > OSD overlays** controls what is drawn over the video.
+
+* **Stick view:** two boxes with a dot show roll, pitch, yaw and throttle from the channel values the radio sends.
+  Size, position (five places) and opacity are settings. *Stick mode, channels and direction* sets the stick mode
+  (1 to 4), which channel is roll/pitch/throttle/yaw (default 1, 2, 3, 4) and lets you reverse any stick axis.
+* **Channel bars:** up to eight bars beside the sticks, four on each side (default channels 5 to 8 on the left,
+  9 to 12 on the right). Each bar has an on/off switch, a channel number and a **name written along the bar**
+  (defaults ARM, MODE, RTH, PREARM, AIRMODE, HOLD, OSD, BEEP, matching the AKB7's INAV modes; names up to 12
+  characters). A bar fills with the channel value and its colour shows a switch position: grey-blue = low,
+  amber = middle, green = high. A **reverse** box per bar is for a switch that is reversed in the radio: the bar then
+  shows the switch the way you flip it (a reversed bar flips its fill and its colour). Only the picture changes;
+  sound and warning rules still use the real channel values. Edit the bars in *Channel bars...* or **press and hold the
+  stick view** on the video. One switch shows or hides the whole group.
+* **Warning status bar:** one line at the top (or bottom) that lists every active warning, coloured by the worst:
+  **critical = red and blinking, warning = amber, info = blue**. Warnings are **rules**, edited like the sound
+  rules (Settings > OSD overlays > *Edit the warning rules*): pick variables from the list, thresholds, `and` / `or`,
+  *Detect switch*, text. A warning is shown **while its condition is true** (a sound rule speaks once when it becomes
+  true). Severity is part of the rule text: `!text` critical, `*text` info, `text` warning. A warning whose input
+  disappears (for example the battery value when the aircraft is switched off) is removed instead of staying on
+  screen. *Preview the warning bar* shows a sample for four seconds; each rule has a *Test* button.
+* **Live values in texts**, for warnings and for spoken rules: `{vbat/6:2}` is volts per cell with two decimals,
+  `{up_lq}`, `{sats}`, `{fm}`. A spoken rule such as `vbat / 6 < 3.6 -> battery {vbat/6:2} per cell` says the number.
 
 ## How the video is drawn, and measuring lag
 

@@ -120,7 +120,7 @@ class SticksView(context: Context) : View(context) {
         var changed = false
         for (i in bars.indices) {
             val us = numbers["ch" + bars[i].channel]
-            val f = if (us == null) Double.NaN else AuxBars.fraction(us)
+            val f = if (us == null) Double.NaN else AuxBars.fraction(us, bars[i].invert)
             frac[i] = f
             if (differs(f, shown[i], 0.01)) {
                 shown[i] = f

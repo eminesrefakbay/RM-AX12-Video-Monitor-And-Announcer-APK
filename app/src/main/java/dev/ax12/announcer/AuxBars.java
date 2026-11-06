@@ -5,7 +5,8 @@ import java.util.List;
 
 /**
  * The channel bars beside the sticks: eight bars (four on each side), each with a channel number, a name
- * and an on/off switch. Stored as eight text lines "on|channel|name". Plain Java, tested on a PC.
+ * an on/off switch and a "reversed" switch. Stored as eight text lines "on|channel|name|reversed"
+ * (older settings without the last field still load). Plain Java, tested on a PC.
  */
 public final class AuxBars {
 
@@ -16,14 +17,21 @@ public final class AuxBars {
         public boolean enabled;
         public int channel;
         public String name;
+        /** The switch is reversed in the radio: the bar shows it the other way round. */
+        public boolean invert;
 
         public Bar(boolean enabled, int channel, String name) {
+            this(enabled, channel, name, false);
+        }
+
+        public Bar(boolean enabled, int channel, String name, boolean invert) {
             this.enabled = enabled;
             this.channel = channel;
             this.name = name;
+            this.invert = invert;
         }
 
-        public Bar copy() { return new Bar(enabled, channel, name); }
+        public Bar copy() { return new Bar(enabled, channel, name, invert); }
     }
 
     private static final String[] DEFAULT_NAMES = {"ARM", "MODE", "RTH", "PREARM", "AIRMODE", "HOLD", "OSD", "BEEP"};
@@ -49,7 +57,8 @@ public final class AuxBars {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < SLOTS; i++) {
             Bar b = i < bars.size() ? bars.get(i) : defaults().get(i);
-            sb.append(b.enabled ? 1 : 0).append('|').append(b.channel).append('|').append(cleanName(b.name, b.channel)).append('\n');
+            sb.append(b.enabled ? 1 : 0).append('|').append(b.channel).append('|').append(cleanName(b.name, b.channel))
+              .append('|').append(b.invert ? 1 : 0).append('\n');
         }
         return sb.toString();
     }
@@ -60,7 +69,7 @@ public final class AuxBars {
         if (text == null) return out;
         String[] lines = text.split("\\r?\\n");
         for (int i = 0; i < SLOTS && i < lines.length; i++) {
-            String[] p = lines[i].split("\\|", 3);
+            String[] p = lines[i].split("\\|", 4);
             if (p.length < 2) continue;
             int ch;
             try {
@@ -70,8 +79,9 @@ public final class AuxBars {
             }
             if (ch < 1 || ch > 16) continue;
             boolean on = !p[0].trim().equals("0");
-            String name = p.length == 3 ? p[2] : "";
-            out.set(i, new Bar(on, ch, cleanName(name, ch)));
+            String name = p.length >= 3 ? p[2] : "";
+            boolean inv = p.length == 4 && p[3].trim().equals("1");
+            out.set(i, new Bar(on, ch, cleanName(name, ch), inv));
         }
         return out;
     }
@@ -96,6 +106,12 @@ public final class AuxBars {
     /** 0 (1000 microseconds) .. 1 (2000 microseconds). */
     public static double fraction(double us) {
         return Math.max(0.0, Math.min(1.0, (us - 1000.0) / 1000.0));
+    }
+
+    /** The same, for a reversed switch: 1000 microseconds reads as full and 2000 as empty. */
+    public static double fraction(double us, boolean invert) {
+        double f = fraction(us);
+        return invert ? 1.0 - f : f;
     }
 
     /** 0 = low, 1 = middle, 2 = high: what a two or three position switch is showing. */

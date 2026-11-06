@@ -507,6 +507,7 @@ class MainActivity : Activity() {
         val boxes = ArrayList<CheckBox>()
         val chans = ArrayList<EditText>()
         val nameFields = ArrayList<EditText>()
+        val reverseBoxes = ArrayList<CheckBox>()
         for (i in 0 until AuxBars.SLOTS) {
             if (i == 0 || i == 4) {
                 val head = TextView(this)
@@ -517,7 +518,7 @@ class MainActivity : Activity() {
                 head.setPadding(0, dp(12), 0, dp(2))
                 body.addView(head)
                 val cols = TextView(this)
-                cols.text = "on      channel      name on the overlay"
+                cols.text = "on      channel      name on the overlay                 reverse"
                 cols.textSize = 11f
                 body.addView(cols)
             }
@@ -537,14 +538,20 @@ class MainActivity : Activity() {
             name.setSingleLine(true)
             name.filters = arrayOf(android.text.InputFilter.LengthFilter(AuxBars.MAX_NAME))
             row.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            val rev = CheckBox(this)
+            rev.isChecked = bars[i].invert
+            row.addView(rev)
             body.addView(row)
+            reverseBoxes.add(rev)
             boxes.add(on)
             chans.add(ch)
             nameFields.add(name)
         }
         val hint = TextView(this)
         hint.text = "A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. " +
-                "Names are written along the bar; a short name reads best."
+                "Names are written along the bar; a short name reads best.\n\n" +
+                "Reverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it " +
+                "(up = full and green). Only the picture changes: sound and warning rules still use the real channel values."
         hint.textSize = 12f
         hint.setPadding(0, dp(10), 0, 0)
         body.addView(hint)
@@ -565,6 +572,7 @@ class MainActivity : Activity() {
                 boxes[i].isChecked = d[i].enabled
                 chans[i].setText(d[i].channel.toString())
                 nameFields[i].setText(d[i].name)
+                reverseBoxes[i].isChecked = false
             }
         }
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
@@ -576,7 +584,7 @@ class MainActivity : Activity() {
                     bad = "Bar " + (i + 1) + ": the channel must be 1 to 16"
                     break
                 }
-                list.add(AuxBars.Bar(boxes[i].isChecked, ch, AuxBars.cleanName(nameFields[i].text.toString(), ch)))
+                list.add(AuxBars.Bar(boxes[i].isChecked, ch, AuxBars.cleanName(nameFields[i].text.toString(), ch), reverseBoxes[i].isChecked))
             }
             if (bad != null) {
                 Toast.makeText(this, bad, Toast.LENGTH_SHORT).show()

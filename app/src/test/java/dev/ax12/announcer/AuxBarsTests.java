@@ -56,6 +56,29 @@ public class AuxBarsTests {
         check(AuxBars.level(0.0) == 0 && AuxBars.level(0.5) == 1 && AuxBars.level(1.0) == 2, "low, middle, high");
         check(AuxBars.level(AuxBars.fraction(1150)) == 0 && AuxBars.level(AuxBars.fraction(1850)) == 2 && AuxBars.level(AuxBars.fraction(1500)) == 1, "a three position switch reads low, middle, high");
 
+        // ---------- reversed switches ----------
+        List<AuxBars.Bar> r = AuxBars.defaults();
+        check(!r.get(0).invert, "not reversed by default");
+        r.get(1).invert = true; r.get(5).invert = true;
+        List<AuxBars.Bar> rb = AuxBars.decode(AuxBars.encode(r));
+        check(rb.get(1).invert && rb.get(5).invert && !rb.get(0).invert && !rb.get(2).invert, "reversed flags survive encode and decode");
+        check(AuxBars.encode(rb).equals(AuxBars.encode(r)), "stable with the flag");
+        check(r.get(1).copy().invert, "copy keeps the flag");
+        // settings saved by v0.5.0 (three fields) still load, not reversed
+        List<AuxBars.Bar> old = AuxBars.decode("1|5|ARM\n0|6|MODE\n1|7|RTH\n1|8|PREARM\n1|9|AIRMODE\n1|10|HOLD\n1|11|OSD\n1|12|BEEP\n");
+        check(old.get(0).name.equals("ARM") && !old.get(1).enabled && old.get(1).name.equals("MODE") && !old.get(1).invert && !old.get(7).invert, "old three-field settings load");
+        check(!AuxBars.decode("1|5|ARM|x").get(0).invert && !AuxBars.decode("1|5|ARM|").get(0).invert, "an unreadable flag means not reversed");
+        check(AuxBars.decode("1|5|ARM|1").get(0).invert, "flag 1 means reversed");
+        // the picture
+        check(AuxBars.fraction(1000, true) == 1.0 && AuxBars.fraction(2000, true) == 0.0 && Math.abs(AuxBars.fraction(1500, true) - 0.5) < 1e-9, "a reversed bar flips the fill");
+        check(AuxBars.fraction(1000, false) == 0.0, "not reversed is unchanged");
+        check(AuxBars.level(AuxBars.fraction(1000, true)) == 2 && AuxBars.level(AuxBars.fraction(2000, true)) == 0, "a reversed switch reads high when it is flipped to 1000");
+        check(AuxBars.level(AuxBars.fraction(1500, true)) == 1, "the middle stays the middle");
+        check(AuxBars.fraction(900, true) == 1.0 && AuxBars.fraction(2400, true) == 0.0, "reversed values are clamped too");
+        // a name never carries the separator, so the flag cannot be pushed into the name
+        List<AuxBars.Bar> tricky = AuxBars.defaults(); tricky.get(0).name = "A|1"; tricky.get(0).invert = false;
+        check(!AuxBars.decode(AuxBars.encode(tricky)).get(0).invert, "a pipe in a name cannot flip the flag");
+
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);
     }
