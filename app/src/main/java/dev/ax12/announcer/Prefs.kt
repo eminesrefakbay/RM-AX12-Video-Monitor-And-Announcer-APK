@@ -22,6 +22,15 @@ object Prefs {
     fun rulesBackup(c: Context): String? = p(c).getString("rulesBackup", null)
     fun setRulesBackup(c: Context, text: String) { p(c).edit().putString("rulesBackup", text).apply() }
 
+    // ---- warning rules and overlays ----
+    fun warningRules(c: Context): String = p(c).getString("warnRules", null) ?: DefaultWarnings.TEXT
+    fun setWarningRules(c: Context, text: String) { p(c).edit().putString("warnRules", text).apply() }
+
+    fun bool(c: Context, key: String, def: Boolean): Boolean = p(c).getBoolean(key, def)
+    fun setBool(c: Context, key: String, v: Boolean) { p(c).edit().putBoolean(key, v).apply() }
+    fun int(c: Context, key: String, def: Int): Int = p(c).getInt(key, def)
+    fun setInt(c: Context, key: String, v: Int) { p(c).edit().putInt(key, v).apply() }
+
     fun rotation(c: Context): Int = p(c).getInt("rotation", 0)
     fun setRotation(c: Context, deg: Int) { p(c).edit().putInt("rotation", deg).apply() }
 }

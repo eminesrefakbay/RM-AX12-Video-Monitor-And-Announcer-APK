@@ -44,7 +44,12 @@ class RulesPanel(
     private val speaker: Speaker,
     private val live: LiveValues,
     private val onChanged: () -> Unit,
-    private val openTextEditor: () -> Unit
+    private val openTextEditor: () -> Unit,
+    private val loadText: () -> String,
+    private val saveText: (String) -> Unit,
+    private val warning: Boolean = false,
+    private val titleText: String = "Sound rules",
+    private val testWarning: ((String, Int) -> Unit)? = null
 ) {
     val root = LinearLayout(activity)
     private val list = LinearLayout(activity)
@@ -64,7 +69,7 @@ class RulesPanel(
         root.elevation = dp(24).toFloat()             // above the MENU button and every other view
 
         val title = TextView(activity)
-        title.text = "Sound rules"
+        title.text = titleText
         title.textSize = 22f
         title.setTextColor(Color.WHITE)
         title.setTypeface(null, Typeface.BOLD)
@@ -84,14 +89,17 @@ class RulesPanel(
         root.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
         val tip = TextView(activity)
-        tip.text = "A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it."
+        tip.text = if (warning)
+            "A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it."
+        else
+            "A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it."
         tip.textSize = 12f
         tip.setTextColor(0xFFBDBDBD.toInt())
         root.addView(tip)
     }
 
     fun show() {
-        items = RuleText.parse(Prefs.rules(activity)).toMutableList()
+        items = RuleText.parse(loadText()).toMutableList()
         refresh()
         root.visibility = View.VISIBLE
     }
@@ -110,13 +118,19 @@ class RulesPanel(
     }
 
     private fun save() {
-        Prefs.setRules(activity, RuleText.join(items))
+        saveText(RuleText.join(items))
         onChanged()
     }
 
     private fun testSpeak(text: String, urgent: Boolean) {
         if (speaker.muted) Toast.makeText(activity, "Speech is muted (MENU, Mute speech)", Toast.LENGTH_SHORT).show()
         else speaker.say(text, urgent)
+    }
+
+    private fun testWarningFor(sp: RuleText.Spec) {
+        val level = if (sp.urgentTrue) 2 else if (sp.onTrue.startsWith("*")) 0 else 1
+        val text = TextTemplate.expand(sp.onTrue.removePrefix("*").trim(), live.numbers(), live.texts())
+        testWarning?.invoke(text, level)
     }
 
     // ------------------------------------------------------------------ the list
@@ -146,7 +160,7 @@ class RulesPanel(
 
         val summary = TextView(activity)
         val spec = item.spec
-        summary.text = if (spec != null) RuleText.describe(spec)
+        summary.text = if (spec != null) (if (warning) RuleText.describeWarning(spec) else RuleText.describe(spec))
         else "Advanced rule (open the text editor): " + item.raw.removePrefix("#off").trim()
         summary.textSize = 15f
         summary.setTextColor(Color.WHITE)
@@ -166,7 +180,12 @@ class RulesPanel(
         lp.rightMargin = dp(10)
         r.addView(summary, lp)
         r.addView(button("Edit") { if (item.spec != null) editRule(item) else openTextEditor() })
-        r.addView(button("Test") { if (item.spec != null) testSpeak(item.spec!!.onTrue, item.spec!!.urgentTrue) })
+        r.addView(button("Test") {
+            val sp = item.spec
+            if (sp != null) {
+                if (warning) testWarningFor(sp) else testSpeak(sp.onTrue, sp.urgentTrue)
+            }
+        })
         r.addView(button("X") {
             Immersive.show(
                 AlertDialog.Builder(activity)
@@ -216,7 +235,7 @@ class RulesPanel(
         val initial = CheckBox(activity)
         initial.text = "Speak rules that are already true at start-up"
         initial.isChecked = RuleText.getSetting(items, "initial", "off").equals("on", ignoreCase = true)
-        body.addView(initial)
+        if (!warning) body.addView(initial)
         body.addView(label("Unit of the radio's channel numbers (auto is fine)"))
         val scales = arrayOf("auto", "percent", "permille", "us")
         val scale = Spinner(activity)
@@ -371,6 +390,8 @@ class RulesPanel(
         private lateinit var errorView: TextView
         private lateinit var detectInfo: TextView
         private var dialog: AlertDialog? = null
+        private var severityButton: Button? = null
+        private var severity: Int = if (spec.urgentTrue) 2 else if (spec.onTrue.startsWith("*")) 0 else 1
         private var building = true
         private var detectBaseline: Map<String, Double>? = null
         private var detectUntil = 0L
@@ -518,12 +539,26 @@ class RulesPanel(
             val s = RuleText.Spec()
             for (r in rows) s.conds.add(r.toCond())
             s.any = connector.selectedItemPosition == 1
-            s.onTrue = sayField.text.toString()
-            s.urgentTrue = urgent.isChecked
-            s.onFalse = if (falseCheck.isChecked) falseField.text.toString() else ""
-            s.urgentFalse = spec.urgentFalse
-            s.repeatSec = if (repeatCheck.isChecked) (repeatField.text.toString().trim().toIntOrNull() ?: 0) else 0
+            if (warning) {
+                s.onTrue = (if (severity == 0) "*" else "") + sayField.text.toString()
+                s.urgentTrue = severity == 2
+                s.onFalse = ""
+                s.urgentFalse = false
+                s.repeatSec = 0
+            } else {
+                s.onTrue = sayField.text.toString()
+                s.urgentTrue = urgent.isChecked
+                s.onFalse = if (falseCheck.isChecked) falseField.text.toString() else ""
+                s.urgentFalse = spec.urgentFalse
+                s.repeatSec = if (repeatCheck.isChecked) (repeatField.text.toString().trim().toIntOrNull() ?: 0) else 0
+            }
             return s
+        }
+
+        private fun severityLabel(): String = when (severity) {
+            0 -> "Level: INFO (blue)  - tap to change"
+            2 -> "Level: CRITICAL (red, blinking)  - tap to change"
+            else -> "Level: WARNING (amber)  - tap to change"
         }
 
         private fun refreshPreview() {
@@ -639,43 +674,61 @@ class RulesPanel(
             tools.addView(detectInfo)
             body.addView(tools)
 
-            // say ...
-            body.addView(label("Say"))
+            // say ...  (or: show in the status bar)
+            body.addView(label(if (warning) "Show in the status bar" else "Say"))
             sayField = EditText(activity)
-            sayField.setText(spec.onTrue)
+            sayField.setText(if (warning) spec.onTrue.removePrefix("*").trim() else spec.onTrue)
             sayField.setSingleLine(true)
-            sayField.hint = "words to speak"
+            sayField.hint = if (warning) "text, for example BATTERY {vbat/6:2} V" else "words to speak"
             sayField.addTextChangedListener(watcher { refreshPreview() })
             body.addView(sayField)
+            val tipLive = TextView(activity)
+            tipLive.text = "Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}"
+            tipLive.textSize = 11f
+            tipLive.setTextColor(0xFFBDBDBD.toInt())
+            body.addView(tipLive)
             urgent = CheckBox(activity)
             urgent.text = "Urgent (interrupts what is being said)"
             urgent.isChecked = spec.urgentTrue
             urgent.setOnCheckedChangeListener { _, _ -> refreshPreview() }
-            body.addView(urgent)
+            if (warning) {
+                val sb = Button(activity)
+                severityButton = sb
+                sb.isAllCaps = false
+                sb.setOnClickListener {
+                    severity = (severity + 1) % 3
+                    sb.text = severityLabel()
+                    refreshPreview()
+                }
+                sb.text = severityLabel()
+                body.addView(sb)
+            } else {
+                body.addView(urgent)
+            }
 
             falseCheck = CheckBox(activity)
             falseCheck.text = "Also say something when it turns false"
             falseCheck.isChecked = spec.onFalse.isNotEmpty()
             falseCheck.setOnCheckedChangeListener { _, _ -> refreshPreview() }
-            body.addView(falseCheck)
+            if (!warning) body.addView(falseCheck)
             falseField = EditText(activity)
             falseField.setText(spec.onFalse)
             falseField.setSingleLine(true)
             falseField.hint = "words when it turns false"
             falseField.addTextChangedListener(watcher { if (falseField.text.isNotEmpty()) falseCheck.isChecked = true; refreshPreview() })
-            body.addView(falseField)
+            if (!warning) body.addView(falseField)
 
             repeatCheck = CheckBox(activity)
             repeatCheck.text = "Repeat while it stays true, every (seconds)"
             repeatCheck.isChecked = spec.repeatSec > 0
             repeatCheck.setOnCheckedChangeListener { _, _ -> refreshPreview() }
-            body.addView(repeatCheck)
+            if (!warning) body.addView(repeatCheck)
             repeatField = EditText(activity)
             repeatField.inputType = InputType.TYPE_CLASS_NUMBER
             repeatField.setText(if (spec.repeatSec > 0) spec.repeatSec.toString() else "")
             repeatField.hint = "10"
             repeatField.addTextChangedListener(watcher { if (repeatField.text.isNotEmpty()) repeatCheck.isChecked = true; refreshPreview() })
-            body.addView(repeatField, LinearLayout.LayoutParams(dp(100), ViewGroup.LayoutParams.WRAP_CONTENT))
+            if (!warning) body.addView(repeatField, LinearLayout.LayoutParams(dp(100), ViewGroup.LayoutParams.WRAP_CONTENT))
 
             body.addView(label("The rule as text"))
             preview = TextView(activity)
@@ -689,7 +742,7 @@ class RulesPanel(
             val scroll = ScrollView(activity)
             scroll.addView(body)
             val dlg = AlertDialog.Builder(activity)
-                .setTitle(if (existing == null) "New rule" else "Edit rule")
+                .setTitle(if (warning) (if (existing == null) "New warning" else "Edit warning") else (if (existing == null) "New rule" else "Edit rule"))
                 .setView(scroll)
                 .setPositiveButton("Save", null)
                 .setNegativeButton("Cancel", null)
@@ -699,7 +752,14 @@ class RulesPanel(
             dlg.setOnDismissListener { ui.removeCallbacks(tick) }
             Immersive.show(dlg)
             dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-                if (sayField.text.isNotBlank()) testSpeak(sayField.text.toString().trim(), urgent.isChecked)
+                if (sayField.text.isNotBlank()) {
+                    if (warning) {
+                        val shown = TextTemplate.expand(sayField.text.toString().trim(), live.numbers(), live.texts())
+                        testWarning?.invoke(shown, severity)
+                    } else {
+                        testSpeak(sayField.text.toString().trim(), urgent.isChecked)
+                    }
+                }
             }
             dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val s = readSpec()

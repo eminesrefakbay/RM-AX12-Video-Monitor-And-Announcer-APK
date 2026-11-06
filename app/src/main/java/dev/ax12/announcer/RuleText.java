@@ -210,6 +210,8 @@ public final class RuleText {
         }
         if (s.onTrue.trim().isEmpty()) return "Type what to say.";
         for (String t : new String[]{s.onTrue, s.onFalse}) {
+            String tpl = TextTemplate.check(t);
+            if (tpl != null) return tpl;
             if (t.contains("|") || t.contains("->")) return "The spoken text cannot contain | or ->.";
             if (TRAILING_REPEAT.matcher(" " + t).find()) return "The spoken text cannot end with @number.";
         }
@@ -217,6 +219,18 @@ public final class RuleText {
         if (!r.errors.isEmpty()) return r.errors.get(0);
         if (r.rules.size() != 1) return "The rule could not be read.";
         return null;
+    }
+
+    /** One readable sentence for the list of warnings. */
+    public static String describeWarning(Spec s) {
+        String level = s.urgentTrue ? "CRITICAL" : s.onTrue.startsWith("*") ? "INFO" : "WARNING";
+        Spec shown = s.copy();
+        if (shown.onTrue.startsWith("*")) shown.onTrue = shown.onTrue.substring(1);
+        shown.urgentTrue = false;
+        shown.onFalse = "";
+        shown.repeatSec = 0;
+        String d = describe(shown);
+        return "[" + level + "] " + d.replaceFirst(": say ", ": show ");
     }
 
     /** One readable sentence for the list. */

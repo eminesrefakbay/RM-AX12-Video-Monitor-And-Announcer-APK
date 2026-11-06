@@ -11,23 +11,25 @@ class RulesActivity : Activity() {
 
     private lateinit var edit: EditText
     private lateinit var info: TextView
+    private var warnings = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rules)
         edit = findViewById(R.id.rulesEdit)
         info = findViewById(R.id.rulesInfo)
-        edit.setText(Prefs.rules(this))
+        warnings = intent.getBooleanExtra("warnings", false)
+        edit.setText(if (warnings) Prefs.warningRules(this) else Prefs.rules(this))
 
         findViewById<Button>(R.id.btnCheck).setOnClickListener { check() }
         findViewById<Button>(R.id.btnSave).setOnClickListener {
             if (check()) {
-                Prefs.setRules(this, edit.text.toString())
+                if (warnings) Prefs.setWarningRules(this, edit.text.toString()) else Prefs.setRules(this, edit.text.toString())
                 finish()
             }
         }
         findViewById<Button>(R.id.btnSample).setOnClickListener {
-            edit.setText(DefaultRules.TEXT)
+            edit.setText(if (warnings) DefaultWarnings.TEXT else DefaultRules.TEXT)
             check()
         }
         findViewById<Button>(R.id.btnClose).setOnClickListener { finish() }

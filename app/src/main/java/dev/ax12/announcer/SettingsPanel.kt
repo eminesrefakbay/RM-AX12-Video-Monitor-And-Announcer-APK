@@ -37,6 +37,23 @@ interface SettingsHost {
     fun testChannelsOn(): Boolean
     fun setTestChannelsOn(on: Boolean)
     fun about(): String
+
+    // OSD overlays
+    fun sticksOn(): Boolean
+    fun setSticksOn(on: Boolean)
+    fun sticksSizeLabel(): String
+    fun cycleSticksSize()
+    fun sticksPositionLabel(): String
+    fun cycleSticksPosition()
+    fun sticksOpacityLabel(): String
+    fun cycleSticksOpacity()
+    fun editStickChannels()
+    fun warningBarOn(): Boolean
+    fun setWarningBarOn(on: Boolean)
+    fun warningBarPositionLabel(): String
+    fun cycleWarningBarPosition()
+    fun editWarningRules()
+    fun previewWarnings()
 }
 
 /**
@@ -149,6 +166,35 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         section("Display")
         toggle("Always show the MENU button", host.menuAlways()) { host.setMenuAlways(it) }
         note("Off: the button hides and appears when you touch the screen.")
+
+        section("OSD overlays (drawn over the video)")
+        toggle("Stick view: roll, pitch, yaw and throttle", host.sticksOn()) {
+            host.setSticksOn(it)
+            refresh()
+        }
+        if (host.sticksOn()) {
+            action("Stick size: " + host.sticksSizeLabel() + "  (tap to change)") {
+                host.cycleSticksSize()
+                refresh()
+            }
+            action("Stick position: " + host.sticksPositionLabel() + "  (tap to change)") {
+                host.cycleSticksPosition()
+                refresh()
+            }
+            action("Stick opacity: " + host.sticksOpacityLabel() + "  (tap to change)") {
+                host.cycleSticksOpacity()
+                refresh()
+            }
+        }
+        action("Stick mode, channels and direction...") { host.editStickChannels() }
+        toggle("Warning status bar", host.warningBarOn()) { host.setWarningBarOn(it) }
+        action("Warning bar position: " + host.warningBarPositionLabel() + "  (tap to change)") {
+            host.cycleWarningBarPosition()
+            refresh()
+        }
+        action("Edit the warning rules (thresholds and logic)...") { host.editWarningRules() }
+        action("Preview the warning bar (4 seconds)") { host.previewWarnings() }
+        note("Warnings show while their condition is true, so thresholds and logic are yours to set.")
 
         section("Video")
         action("Camera: " + host.cameraId() + "  (tap to choose the HDMI input)") { host.chooseCamera() }

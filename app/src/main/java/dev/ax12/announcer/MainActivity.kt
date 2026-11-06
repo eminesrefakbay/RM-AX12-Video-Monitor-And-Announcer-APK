@@ -7,16 +7,22 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.TextureView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -44,6 +50,11 @@ class MainActivity : Activity() {
     private lateinit var rulesPanel: RulesPanel
     private lateinit var settingsPanel: SettingsPanel
     private lateinit var mainMenu: MainMenu
+    private lateinit var warnPanel: RulesPanel
+    private lateinit var sticksView: SticksView
+    private lateinit var warningText: TextView
+    private lateinit var warningBar: WarningBar
+    private var sticksEnabled = false
     private lateinit var menuButton: Button
     private var overlayWasOpen = false
     private val hideMenuRunnable = Runnable {
@@ -87,19 +98,47 @@ class MainActivity : Activity() {
         menuButton = findViewById(R.id.menuButton)
         menuButton.setOnClickListener { mainMenu.show() }
 
-        rulesPanel = RulesPanel(
-            this, speaker,
-            object : LiveValues {
-                override fun numbers(): Map<String, Double> = latestNumbers
-                override fun texts(): Map<String, String> = latestTexts
-            },
-            { reloadRules() },
-            { startActivity(Intent(this, RulesActivity::class.java)) }
-        )
-        settingsPanel = SettingsPanel(this, settingsHost)
+        val liveValues = object : LiveValues {
+            override fun numbers(): Map<String, Double> = latestNumbers
+            override fun texts(): Map<String, String> = latestTexts
+        }
         val frame = findViewById<FrameLayout>(R.id.rootFrame)
         val full = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+
+        // overlays on the video: the sticks and the warning bar (panels are added after them, so they sit on top)
+        sticksView = SticksView(this)
+        sticksView.visibility = View.GONE
+        frame.addView(sticksView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        warningText = TextView(this)
+        warningText.textSize = 18f
+        warningText.setTypeface(null, Typeface.BOLD)
+        warningText.gravity = Gravity.CENTER
+        warningText.maxLines = 2
+        warningText.setPadding(dp(12), dp(6), dp(12), dp(6))
+        warningText.visibility = View.GONE
+        frame.addView(warningText, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        warningBar = WarningBar(warningText)
+
+        rulesPanel = RulesPanel(
+            this, speaker, liveValues,
+            { reloadRules() },
+            { startActivity(Intent(this, RulesActivity::class.java)) },
+            { Prefs.rules(this) },
+            { Prefs.setRules(this, it) }
+        )
+        warnPanel = RulesPanel(
+            this, speaker, liveValues,
+            { reloadWarnings() },
+            { startActivity(Intent(this, RulesActivity::class.java).putExtra("warnings", true)) },
+            { Prefs.warningRules(this) },
+            { Prefs.setWarningRules(this, it) },
+            warning = true,
+            titleText = "Warning rules",
+            testWarning = { text, level -> warningBar.showTest(text, level, SystemClock.elapsedRealtime()) }
+        )
+        settingsPanel = SettingsPanel(this, settingsHost)
         frame.addView(rulesPanel.root, full)
+        frame.addView(warnPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(settingsPanel.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
@@ -112,10 +151,14 @@ class MainActivity : Activity() {
         frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
 
         applyMenuMode()
+        applyOverlayPrefs()
     }
+
+    private fun dp(v: Int): Int = (v * resources.displayMetrics.density + 0.5f).toInt()
 
     override fun onBackPressed() {
         if (mainMenu.isShowing) mainMenu.hide()
+        else if (warnPanel.isShowing) warnPanel.hide()
         else if (settingsPanel.isShowing) settingsPanel.hide()
         else if (rulesPanel.isShowing) rulesPanel.hide()
         else super.onBackPressed()
@@ -129,7 +172,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || settingsPanel.isShowing
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || settingsPanel.isShowing
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -146,6 +189,7 @@ class MainActivity : Activity() {
         super.onResume()
         hideSystemUi()
         reloadRules()
+        reloadWarnings()
         startSdk()
         if (hasCameraPermission()) camera.start() else requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
         ui.post(tick)
@@ -208,6 +252,15 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun reloadWarnings() {
+        val text = Prefs.warningRules(this)
+        warningBar.load(text)
+        val errors = RuleParser.parse(text).errors
+        if (errors.isNotEmpty()) {
+            Toast.makeText(this, "Warning rules: " + errors.size + " error(s). Open Settings, then the warning rules.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     /** 20 times a second: NO VIDEO panel, read the radio, run the rules, refresh the debug panels. */
     private val tick = object : Runnable {
         override fun run() {
@@ -233,11 +286,16 @@ class MainActivity : Activity() {
             val scaler = if (useFake) fakeScaler else sdkScaler
             val sample = link.poll()
             if (sample != null) {
-                if (scaler.observe(sample.raw)) engine?.reset()      // the radio's unit became clear: start silent again
+                if (scaler.observe(sample.raw)) {                    // the radio's unit became clear: start again
+                    engine?.reset()
+                    reloadWarnings()
+                }
                 val numbers = Variables.numbers(sample, scaler)
                 latestNumbers = numbers
                 latestTexts = sample.texts
                 engine?.update(numbers, sample.texts, now)
+                warningBar.update(numbers, sample.texts, now)
+                if (sticksEnabled) sticksView.update(numbers)
                 if (testVisible) {
                     val sb = StringBuilder()
                     for (i in 0 until 16) sb.append("ch").append(i + 1).append("=").append(numbers["ch" + (i + 1)]!!.toInt())
@@ -347,6 +405,175 @@ class MainActivity : Activity() {
         override fun testChannelsOn(): Boolean = testVisible
         override fun setTestChannelsOn(on: Boolean) = setTestVisible(on)
         override fun about(): String = this@MainActivity.aboutText()
+
+        override fun sticksOn(): Boolean = sticksEnabled
+        override fun setSticksOn(on: Boolean) {
+            Prefs.setBool(this@MainActivity, "sticksOn", on)
+            applyOverlayPrefs()
+        }
+        override fun sticksSizeLabel(): String = sizeNames[Prefs.int(this@MainActivity, "sticksSize", 1).coerceIn(0, 2)]
+        override fun cycleSticksSize() = cyclePref("sticksSize", 1, 3)
+        override fun sticksPositionLabel(): String = positionNames[Prefs.int(this@MainActivity, "sticksPos", 0).coerceIn(0, 4)]
+        override fun cycleSticksPosition() = cyclePref("sticksPos", 0, 5)
+        override fun sticksOpacityLabel(): String = opacityNames[Prefs.int(this@MainActivity, "sticksOpacity", 1).coerceIn(0, 2)]
+        override fun cycleSticksOpacity() = cyclePref("sticksOpacity", 1, 3)
+        override fun editStickChannels() = this@MainActivity.editStickChannels()
+        override fun warningBarOn(): Boolean = Prefs.bool(this@MainActivity, "warnBarOn", true)
+        override fun setWarningBarOn(on: Boolean) {
+            Prefs.setBool(this@MainActivity, "warnBarOn", on)
+            applyOverlayPrefs()
+        }
+        override fun warningBarPositionLabel(): String = if (Prefs.int(this@MainActivity, "warnBarPos", 0) == 0) "top" else "bottom"
+        override fun cycleWarningBarPosition() = cyclePref("warnBarPos", 0, 2)
+        override fun editWarningRules() {
+            settingsPanel.hide()
+            warnPanel.show()
+        }
+        override fun previewWarnings() {
+            val now = SystemClock.elapsedRealtime()
+            warningBar.showTest("BATTERY CRITICAL 3.48 V per cell", 2, now, 4000)
+            settingsPanel.hide()
+        }
+    }
+
+    private val sizeNames = arrayOf("small", "medium", "large")
+    private val positionNames = arrayOf("bottom center", "bottom left", "bottom right", "top left", "top right")
+    private val opacityNames = arrayOf("35%", "65%", "95%")
+
+    private fun cyclePref(key: String, def: Int, count: Int) {
+        Prefs.setInt(this, key, (Prefs.int(this, key, def) + 1) % count)
+        applyOverlayPrefs()
+    }
+
+    /** Apply the stick view and warning bar settings: on or off, size, place, which channels. */
+    private fun applyOverlayPrefs() {
+        sticksEnabled = Prefs.bool(this, "sticksOn", false)
+        val mode = Prefs.int(this, "stickMode", 2)
+        val roll = Prefs.int(this, "stickRoll", 1)
+        val pitch = Prefs.int(this, "stickPitch", 2)
+        val throttle = Prefs.int(this, "stickThrottle", 3)
+        val yaw = Prefs.int(this, "stickYaw", 4)
+        val layout = StickLayout.forMode(mode, roll, pitch, throttle, yaw)
+        val names = arrayOf(
+            StickLayout.axisName(layout, mode, true, true, roll, pitch, throttle, yaw),
+            StickLayout.axisName(layout, mode, true, false, roll, pitch, throttle, yaw),
+            StickLayout.axisName(layout, mode, false, true, roll, pitch, throttle, yaw),
+            StickLayout.axisName(layout, mode, false, false, roll, pitch, throttle, yaw)
+        )
+        val boxDp = intArrayOf(64, 96, 132)[Prefs.int(this, "sticksSize", 1).coerceIn(0, 2)]
+        sticksView.configure(layout, Prefs.int(this, "stickInvert", 0), names, boxDp)
+        sticksView.alpha = floatArrayOf(0.35f, 0.65f, 0.95f)[Prefs.int(this, "sticksOpacity", 1).coerceIn(0, 2)]
+        sticksView.visibility = if (sticksEnabled) View.VISIBLE else View.GONE
+
+        val pos = Prefs.int(this, "sticksPos", 0).coerceIn(0, 4)
+        val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        lp.gravity = when (pos) {
+            1 -> Gravity.BOTTOM or Gravity.START
+            2 -> Gravity.BOTTOM or Gravity.END
+            3 -> Gravity.TOP or Gravity.START
+            4 -> Gravity.TOP or Gravity.END
+            else -> Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        }
+        lp.setMargins(dp(10), dp(52), dp(10), dp(48))      // clear of the warning bar and the no-video bar
+        sticksView.layoutParams = lp
+
+        warningBar.enabled = Prefs.bool(this, "warnBarOn", true)
+        val wlp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        if (Prefs.int(this, "warnBarPos", 0) == 0) {
+            wlp.gravity = Gravity.TOP
+            wlp.rightMargin = dp(110)                       // room for the MENU button
+        } else {
+            wlp.gravity = Gravity.BOTTOM
+            wlp.bottomMargin = dp(40)
+        }
+        warningText.layoutParams = wlp
+    }
+
+    /** One dialog for: stick mode (1 to 4), which channel is roll / pitch / throttle / yaw, and direction. */
+    private fun editStickChannels() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+
+        var mode = Prefs.int(this, "stickMode", 2).coerceIn(1, 4)
+        val modeNames = arrayOf(
+            "Mode 1: left = pitch + yaw, right = throttle + roll",
+            "Mode 2: left = throttle + yaw, right = pitch + roll",
+            "Mode 3: left = throttle + roll, right = pitch + yaw",
+            "Mode 4: left = pitch + roll, right = throttle + yaw"
+        )
+        val modeButton = Button(this)
+        modeButton.isAllCaps = false
+        modeButton.text = modeNames[mode - 1]
+        modeButton.setOnClickListener {
+            mode = mode % 4 + 1
+            modeButton.text = modeNames[mode - 1]
+        }
+        body.addView(modeButton)
+
+        fun field(label: String, value: Int): EditText {
+            val t = TextView(this)
+            t.text = label
+            t.setPadding(0, dp(8), 0, 0)
+            body.addView(t)
+            val e = EditText(this)
+            e.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            e.setText(value.toString())
+            body.addView(e)
+            return e
+        }
+        val roll = field("Roll channel (1 to 16)", Prefs.int(this, "stickRoll", 1))
+        val pitch = field("Pitch channel", Prefs.int(this, "stickPitch", 2))
+        val throttle = field("Throttle channel", Prefs.int(this, "stickThrottle", 3))
+        val yaw = field("Yaw channel", Prefs.int(this, "stickYaw", 4))
+
+        val mask = Prefs.int(this, "stickInvert", 0)
+        val labels = arrayOf("Left stick up/down drawn reversed", "Left stick left/right drawn reversed",
+            "Right stick up/down drawn reversed", "Right stick left/right drawn reversed")
+        val flags = intArrayOf(StickLayout.INV_LEFT_V, StickLayout.INV_LEFT_H, StickLayout.INV_RIGHT_V, StickLayout.INV_RIGHT_H)
+        val boxes = ArrayList<CheckBox>()
+        for (i in 0 until 4) {
+            val c = CheckBox(this)
+            c.text = labels[i]
+            c.isChecked = (mask and flags[i]) != 0
+            body.addView(c)
+            boxes.add(c)
+        }
+        val hint = TextView(this)
+        hint.text = "The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. " +
+                "Turn a direction round if the dot moves the wrong way."
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("Stick view")
+            .setView(scroll)
+            .setPositiveButton("Save", null)
+            .setNegativeButton("Cancel", null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val values = listOf(roll, pitch, throttle, yaw).map { it.text.toString().trim().toIntOrNull() }
+            if (values.any { it == null || it < 1 || it > 16 }) {
+                Toast.makeText(this, "Channels are numbers from 1 to 16", Toast.LENGTH_SHORT).show()
+            } else if (values.toSet().size < 4) {
+                Toast.makeText(this, "Each of the four needs its own channel", Toast.LENGTH_SHORT).show()
+            } else {
+                Prefs.setInt(this, "stickMode", mode)
+                Prefs.setInt(this, "stickRoll", values[0]!!)
+                Prefs.setInt(this, "stickPitch", values[1]!!)
+                Prefs.setInt(this, "stickThrottle", values[2]!!)
+                Prefs.setInt(this, "stickYaw", values[3]!!)
+                var m = 0
+                for (i in 0 until 4) if (boxes[i].isChecked) m = m or flags[i]
+                Prefs.setInt(this, "stickInvert", m)
+                applyOverlayPrefs()
+                dlg.dismiss()
+            }
+        }
     }
 
     private fun aboutText(): String {

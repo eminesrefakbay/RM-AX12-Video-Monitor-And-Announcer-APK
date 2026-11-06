@@ -32,16 +32,38 @@ public final class RuleEngine {
         }
     }
 
+    /** Told when a rule's condition becomes true or false (after hold), and when its inputs disappear. */
+    public interface StateListener {
+        void changed(int index, Rule rule, boolean active);
+    }
+
     private final List<Rule> rules;
     private final RuleParser.Settings settings;
     private final Announcer out;
+    private final StateListener listener;
     private final List<State> states = new ArrayList<State>();
+    private Map<String, Double> curValues = Collections.<String, Double>emptyMap();
+    private Map<String, String> curTexts = Collections.<String, String>emptyMap();
 
     public RuleEngine(RuleParser.Result parsed, Announcer out) {
+        this(parsed, out, null);
+    }
+
+    /**
+     * With a listener the engine works in "level" mode, for warnings: the listener hears the starting
+     * state of every rule, every change, and a rule whose variable has gone missing counts as off.
+     */
+    public RuleEngine(RuleParser.Result parsed, Announcer out, StateListener listener) {
         this.rules = parsed.rules;
         this.settings = parsed.settings;
         this.out = out;
+        this.listener = listener;
         for (Rule r : rules) states.add(new State(r));
+    }
+
+    private void say(String text, boolean urgent) {
+        if (out == null) return;
+        out.say(TextTemplate.expand(text, curValues, curTexts), urgent);
     }
 
     /** Forget all state (use after reloading channels or a link loss) so the next reading is silent again. */
@@ -60,19 +82,31 @@ public final class RuleEngine {
 
     /** @param values numeric variables (ch5, vbat, lq ...)   @param texts text variables (fm ...) */
     public void update(Map<String, Double> values, Map<String, String> texts, long nowMs) {
+        curValues = values;
+        curTexts = texts;
         for (int i = 0; i < rules.size(); i++) {
             Rule r = rules.get(i);
             State s = states.get(i);
             Boolean cond = evaluate(r, s, values, texts);
-            if (cond == null) continue;
+            if (cond == null) {
+                if (listener != null && s.initialized) {       // the input is gone: a warning must not stay on
+                    s.initialized = false;
+                    if (s.committed) {
+                        s.committed = false;
+                        listener.changed(i, r, false);
+                    }
+                }
+                continue;
+            }
 
             if (!s.initialized) {
                 s.initialized = true;
                 s.committed = cond;
                 s.candidate = cond;
                 s.candidateSince = nowMs;
+                if (listener != null) listener.changed(i, r, cond);
                 if (cond && settings.announceInitial) {
-                    out.say(r.onTrue, r.urgentTrue);
+                    say(r.onTrue, r.urgentTrue);
                     s.lastSpoken = nowMs;
                 }
                 continue;
@@ -85,14 +119,15 @@ public final class RuleEngine {
 
             if (s.candidate != s.committed && nowMs - s.candidateSince >= settings.holdMs) {
                 s.committed = s.candidate;
+                if (listener != null) listener.changed(i, r, s.committed);
                 if (s.committed) {
-                    out.say(r.onTrue, r.urgentTrue);
+                    say(r.onTrue, r.urgentTrue);
                     s.lastSpoken = nowMs;
                 } else if (r.onFalse != null) {
-                    out.say(r.onFalse, r.urgentFalse);
+                    say(r.onFalse, r.urgentFalse);
                 }
             } else if (s.committed && r.repeatSec > 0 && nowMs - s.lastSpoken >= r.repeatSec * 1000L) {
-                out.say(r.onTrue, r.urgentTrue);
+                say(r.onTrue, r.urgentTrue);
                 s.lastSpoken = nowMs;
             }
         }
