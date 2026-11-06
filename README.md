@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.11.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.12.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 676 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 711 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -119,6 +119,18 @@ Rules, warnings and checks can use:
 Switching the profile changes the numbers, **not the rules**. Rules with plain numbers (`vbat / 6 < 3.70`) keep working
 as before. The starting rules, warnings and checks use the new names; an existing install keeps its own text until you
 *Reset the rules / warning rules / checks to the defaults* (Settings).
+
+## Moving and resizing the cards
+
+*Settings > Layout of the cards > Move and resize the cards with your finger* opens an edit mode over the video. **Drag a card to
+move it; drag the round handle at its bottom right corner to resize it.** The cards you can edit are the stick view, the flight
+statistics, the radar, the pre-flight checklist and the live charts (switched-on ones; cards that are only shown at certain moments,
+like the radar before a flight or the checklist while armed, are shown while you edit). A card snaps lightly to the screen edges and
+can never leave the screen or grow bigger than it. **Done** finishes; **Reset the layout** puts every card back in its corner.
+
+A card's place is stored as a fraction of the free space on the screen, so it stays where you meant it on any screen size; its size is
+a factor on top of its *Size* setting (50 % to 250 %, as far as it fits the screen). A card you never touch stays in the corner chosen in
+Settings. The layout is shared by all aircraft and is part of the full settings backup. The warning bar keeps its top/bottom setting.
 
 ## Live charts
 

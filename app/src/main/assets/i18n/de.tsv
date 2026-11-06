@@ -32,6 +32,9 @@ Preview failed: {0}	Vorschau fehlgeschlagen: {0}
 Camera session failed	Kamerasitzung fehlgeschlagen
 Session error: {0}	Sitzungsfehler: {0}
 last {0} s	letzte {0} s
+Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den runden Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
+Reset the layout	Layout zurücksetzen
+Done	Fertig
 MENU	MENÜ
 Warning rules	Warnregeln
 Pre-flight checks	Checks vor dem Flug
@@ -141,6 +144,11 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	Importieren
 Imported {0} settings	{0} Einstellungen importiert
 Settings restored	Einstellungen wiederhergestellt
+Sticks	Sticks
+Statistics	Statistik
+Radar	Radar
+Checklist	Checkliste
+Charts	Diagramme
 List	Liste
 Add a chart	Diagramm hinzufügen
 Time window: {0} s  (tap to change)	Zeitfenster: {0} s  (zum Ändern tippen)
@@ -361,6 +369,11 @@ Pre-flight checklist (shown while disarmed)	Checkliste vor dem Flug (angezeigt, 
 Edit the checks (thresholds and logic)...	Checks bearbeiten (Schwellen und Logik)...
 Reset the checks to the defaults	Checks auf Standard zurücksetzen
 Replace your checks with the defaults? Export all settings first if you want to keep the current ones.	Deine Checks durch die Standard-Checks ersetzen? Exportiere vorher alle Einstellungen, wenn du die aktuellen behalten willst.
+Layout of the cards	Anordnung der Karten
+Move and resize the cards with your finger...	Karten mit dem Finger verschieben und in der Größe ändern...
+Put every card back in its corner at normal size	Jede Karte in ihre Ecke zurück, in normaler Größe
+Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Jede Karte in ihre Ecke zurück, in normaler Größe? Die gewählten Positionen und Größen werden vergessen.
+Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Ziehe eine Karte, um sie zu verschieben, und ihren runden Griff, um die Größe zu ändern. Ausgeschaltete Karten werden nicht gezeigt. Die Größe-Einstellung einer Karte ist ihre Startgröße; das Ändern multipliziert sie.
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (zum Wählen des HDMI-Eingangs tippen)
 Rotate video: now {0} degrees  (tap to turn 90)	Video drehen: jetzt {0} Grad  (zum Drehen um 90 tippen)

@@ -155,9 +155,13 @@ class MainActivity : Activity() {
         chartView.bind(chartModel)
         chartView.visibility = View.GONE
         frame.addView(chartView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        rootFrame = frame
+        layoutEditor = LayoutEditor(this, layoutHost)
         checkView = ChecklistView(this)
         checkView.visibility = View.GONE
         frame.addView(checkView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        frame.addView(layoutEditor, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        for (t in tileNames) watchTileSize(t)
 
         rulesPanel = RulesPanel(
             this, speaker, liveValues,
@@ -223,6 +227,7 @@ class MainActivity : Activity() {
 
     override fun onBackPressed() {
         if (splash?.isShowing == true) splash?.dismiss()
+        else if (editingLayout) endLayoutEdit()
         else if (mainMenu.isShowing) mainMenu.hide()
         else if (warnPanel.isShowing) warnPanel.hide()
         else if (checkPanel.isShowing) checkPanel.hide()
@@ -239,7 +244,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -400,6 +405,10 @@ class MainActivity : Activity() {
                     lastVarsUpdate = now
                     varsText.text = describe(link, sample, numbers, scaler)
                 }
+            }
+            if (sample == null && editingLayout && now - lastTileUpdate >= 200) {
+                lastTileUpdate = now
+                updateTiles(latestNumbers, latestTexts, now)
             }
             ui.postDelayed(this, 50)
         }
@@ -567,6 +576,11 @@ class MainActivity : Activity() {
         override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
         override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
         override fun editCharts() = this@MainActivity.editCharts()
+        override fun editLayout() {
+            settingsPanel.hide()
+            startLayoutEdit()
+        }
+        override fun resetLayout() = this@MainActivity.resetLayout()
         override fun editArmDetection() = this@MainActivity.editArmDetection()
         override fun editStatsRows() = this@MainActivity.editStatsRows()
         override fun editCheckRules() {
@@ -658,17 +672,17 @@ class MainActivity : Activity() {
         applyCharts()
         chartView.setLevel(Prefs.int(this, "chartSize", 1).coerceIn(0, 2))
         chartView.alpha = floatArrayOf(0.5f, 0.75f, 1f)[Prefs.int(this, "chartOpacity", 1).coerceIn(0, 2)]
-        placeTile(chartView, Prefs.int(this, "chartPos", defaultTilePosition("chart")).coerceIn(0, 4))
+        layoutTile(chartView, "chart") { placeTile(chartView, Prefs.int(this, "chartPos", defaultTilePosition("chart")).coerceIn(0, 4)) }
         val alpha = floatArrayOf(0.5f, 0.75f, 1f)
         statsView.setTextSp(floatArrayOf(12f, 15f, 19f)[Prefs.int(this, "statsSize", 1).coerceIn(0, 2)])
         statsView.alpha = alpha[Prefs.int(this, "statsOpacity", 1).coerceIn(0, 2)]
-        placeTile(statsView, Prefs.int(this, "statsPos", defaultTilePosition("stats")).coerceIn(0, 4))
+        layoutTile(statsView, "stats") { placeTile(statsView, Prefs.int(this, "statsPos", defaultTilePosition("stats")).coerceIn(0, 4)) }
         radarView.setSizeDp(intArrayOf(110, 150, 210)[Prefs.int(this, "radarSize", 1).coerceIn(0, 2)])
         radarView.alpha = alpha[Prefs.int(this, "radarOpacity", 1).coerceIn(0, 2)]
-        placeTile(radarView, Prefs.int(this, "radarPos", defaultTilePosition("radar")).coerceIn(0, 4))
+        layoutTile(radarView, "radar") { placeTile(radarView, Prefs.int(this, "radarPos", defaultTilePosition("radar")).coerceIn(0, 4)) }
         checkView.setTextSp(floatArrayOf(13f, 16f, 20f)[Prefs.int(this, "checkSize", 1).coerceIn(0, 2)])
         checkView.alpha = alpha[Prefs.int(this, "checkOpacity", 1).coerceIn(0, 2)]
-        placeTile(checkView, Prefs.int(this, "checkPos", defaultTilePosition("check")).coerceIn(0, 4))
+        layoutTile(checkView, "check") { placeTile(checkView, Prefs.int(this, "checkPos", defaultTilePosition("check")).coerceIn(0, 4)) }
     }
 
     private fun applyFlightConfig() {
@@ -695,7 +709,7 @@ class MainActivity : Activity() {
         chartView.visibility = if (showChart) View.VISIBLE else View.GONE
         if (showChart) chartView.refresh(now)
         val fs = flightStats
-        val flight = fs.armed() || fs.hasFlight()
+        val flight = fs.armed() || fs.hasFlight() || editingLayout
 
         val showStats = statsOn && flight
         statsView.visibility = if (showStats) View.VISIBLE else View.GONE
@@ -718,12 +732,12 @@ class MainActivity : Activity() {
             statsView.setContent((if (fs.armed()) tr("FLIGHT  ") else tr("LAST FLIGHT  ")) + clock(fs.armedMs(now)), lines)
         }
 
-        val showRadar = radarOn && fs.hasHome()
+        val showRadar = radarOn && (fs.hasHome() || editingLayout)
         radarView.visibility = if (showRadar) View.VISIBLE else View.GONE
         if (showRadar) radarView.invalidate()
 
         val cm = checkModel
-        val showCheck = checkOn && cm != null && !fs.armed() && !cm.allUnknown()
+        val showCheck = checkOn && cm != null && (!fs.armed() || editingLayout) && (!cm.allUnknown() || editingLayout)
         checkView.visibility = if (showCheck) View.VISIBLE else View.GONE
         if (showCheck && cm != null) {
             val rows = ArrayList<ChecklistView.Row>()
@@ -882,7 +896,7 @@ class MainActivity : Activity() {
             else -> Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         }
         lp.setMargins(dp(10), dp(52), dp(10), dp(48))      // clear of the warning bar and the no-video bar
-        sticksView.layoutParams = lp
+        layoutTile(sticksView, "sticks") { sticksView.layoutParams = lp }
 
         warningBar.enabled = Prefs.bool(this, "warnBarOn", true)
         val wlp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -1236,6 +1250,127 @@ class MainActivity : Activity() {
         Lang.apply(this)                      // the language may have changed
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         recreate()                            // every screen is built again with the new settings
+    }
+
+    // ------------------------------------------------------------------ moving and resizing the cards
+
+    private var editingLayout = false
+    private lateinit var layoutEditor: LayoutEditor
+    private lateinit var rootFrame: FrameLayout
+
+    private val tileNames = arrayOf("chart", "radar", "stats", "check", "sticks")      // bottom to top
+
+    private fun tileView(name: String): View = when (name) {
+        "sticks" -> sticksView
+        "stats" -> statsView
+        "radar" -> radarView
+        "check" -> checkView
+        else -> chartView
+    }
+
+    private fun tileLabel(name: String): String = when (name) {
+        "sticks" -> tr("Sticks")
+        "stats" -> tr("Statistics")
+        "radar" -> tr("Radar")
+        "check" -> tr("Checklist")
+        else -> tr("Charts")
+    }
+
+    /** True once the user has moved a card: it then has a place of its own and no longer sits in a corner. */
+    private fun isFree(tile: String): Boolean = Prefs.int(this, tile + "X", -1) >= 0 && Prefs.int(this, tile + "Y", -1) >= 0
+
+    /**
+     * Places a card: in its corner (the settings' position) until the user moves it, afterwards where the user put it and at the size
+     * the user chose. The place is a fraction of the free space, so it is right on any screen.
+     */
+    private fun layoutTile(view: View, tile: String, preset: () -> Unit) {
+        if (!isFree(tile)) {
+            view.scaleX = 1f
+            view.scaleY = 1f
+            view.translationX = 0f
+            view.translationY = 0f
+            preset()
+            return
+        }
+        view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START)
+        applyFreePosition(view, tile)
+    }
+
+    private fun applyFreePosition(view: View, tile: String) {
+        if (!isFree(tile) || view.width <= 0 || view.height <= 0 || rootFrame.width <= 0) return
+        val r = TileLayout.rect(
+            rootFrame.width.toDouble(), rootFrame.height.toDouble(), view.width.toDouble(), view.height.toDouble(),
+            Prefs.int(this, tile + "X", 0), Prefs.int(this, tile + "Y", 0), TileLayout.fromPercent(Prefs.int(this, tile + "Scale", 100))
+        )
+        view.pivotX = 0f
+        view.pivotY = 0f
+        view.scaleX = (r.width / view.width).toFloat()
+        view.scaleY = (r.height / view.height).toFloat()
+        view.translationX = r.left.toFloat()           // a free card sits at 0,0 in its parent: its offset is its place
+        view.translationY = r.top.toFloat()
+    }
+
+    /** Keeps a card where it was put when its own size changes (a statistics row appears, a chart is added). */
+    private fun watchTileSize(tile: String) {
+        tileView(tile).addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
+            if (!layoutEditor.dragging) applyFreePosition(v, tile)
+        }
+    }
+
+    private val layoutHost = object : LayoutEditor.Host {
+        override fun tiles(): List<LayoutEditor.Tile> =
+            tileNames.filter { tileView(it).visibility == View.VISIBLE && tileView(it).width > 0 }.map { LayoutEditor.Tile(it, tileLabel(it), tileView(it)) }
+
+        override fun isFree(tile: LayoutEditor.Tile): Boolean = this@MainActivity.isFree(tile.name)
+
+        override fun enterFree(tile: LayoutEditor.Tile) {
+            if (isFree(tile.name)) return
+            val v = tile.view
+            val f = TileLayout.fractions(rootFrame.width.toDouble(), rootFrame.height.toDouble(), v.width.toDouble(), v.height.toDouble(), 1.0,
+                (v.left + v.translationX).toDouble(), (v.top + v.translationY).toDouble())
+            Prefs.setInt(this@MainActivity, tile.name + "X", f[0])
+            Prefs.setInt(this@MainActivity, tile.name + "Y", f[1])
+            Prefs.setInt(this@MainActivity, tile.name + "Scale", 100)
+            v.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START)
+            applyFreePosition(v, tile.name)
+        }
+
+        override fun placed(tile: LayoutEditor.Tile, fx: Int, fy: Int, percent: Int) {
+            Prefs.setInt(this@MainActivity, tile.name + "X", fx)
+            Prefs.setInt(this@MainActivity, tile.name + "Y", fy)
+            Prefs.setInt(this@MainActivity, tile.name + "Scale", percent)
+            applyFreePosition(tile.view, tile.name)
+        }
+
+        override fun done() = endLayoutEdit()
+
+        override fun reset() {
+            resetLayout()
+        }
+    }
+
+    private fun startLayoutEdit() {
+        editingLayout = true
+        lastTileUpdate = 0
+        layoutEditor.show()
+    }
+
+    private fun endLayoutEdit() {
+        editingLayout = false
+        layoutEditor.hide()
+        lastTileUpdate = 0
+        settingsPanel.show()
+    }
+
+    /** Every card back in its corner at normal size. */
+    private fun resetLayout() {
+        for (t in tileNames) {
+            Prefs.setInt(this, t + "X", -1)
+            Prefs.setInt(this, t + "Y", -1)
+            Prefs.setInt(this, t + "Scale", 100)
+        }
+        applyTiles()
+        applyOverlayPrefs()
     }
 
     // ------------------------------------------------------------------ live charts

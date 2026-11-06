@@ -32,6 +32,9 @@ Preview failed: {0}
 Camera session failed
 Session error: {0}
 last {0} s
+Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.
+Reset the layout
+Done
 MENU
 Warning rules
 Pre-flight checks
@@ -141,6 +144,11 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import
 Imported {0} settings
 Settings restored
+Sticks
+Statistics
+Radar
+Checklist
+Charts
 List
 Add a chart
 Time window: {0} s  (tap to change)
@@ -361,6 +369,11 @@ Pre-flight checklist (shown while disarmed)
 Edit the checks (thresholds and logic)...
 Reset the checks to the defaults
 Replace your checks with the defaults? Export all settings first if you want to keep the current ones.
+Layout of the cards
+Move and resize the cards with your finger...
+Put every card back in its corner at normal size
+Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.
+Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.
 Video
 Camera: {0}  (tap to choose the HDMI input)
 Rotate video: now {0} degrees  (tap to turn 90)

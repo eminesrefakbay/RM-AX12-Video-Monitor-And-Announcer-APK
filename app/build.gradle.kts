@@ -19,7 +19,7 @@ val keystorePassword: String? = System.getenv("SIGNING_PASSWORD")
 val ciRun: Int? = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
 // The version people read. Nightly builds get a suffix from CI ("-nightly.45"), stable builds do not.
 // Change baseVersion before you make a stable release.
-val baseVersion = "0.11.0"
+val baseVersion = "0.12.0"
 val versionSuffix: String = System.getenv("VERSION_SUFFIX") ?: ""
 
 android {

@@ -32,6 +32,9 @@ Preview failed: {0}	预览失败: {0}
 Camera session failed	摄像头会话失败
 Session error: {0}	会话错误: {0}
 last {0} s	最近 {0} 秒
+Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动圆形手柄可调整大小。完成后点按“完成”。
+Reset the layout	重置布局
+Done	完成
 MENU	菜单
 Warning rules	警告规则
 Pre-flight checks	飞行前检查项
@@ -141,6 +144,11 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	导入
 Imported {0} settings	已导入 {0} 项设置
 Settings restored	设置已恢复
+Sticks	摇杆
+Statistics	统计
+Radar	雷达
+Checklist	检查清单
+Charts	图表
 List	列表
 Add a chart	添加图表
 Time window: {0} s  (tap to change)	时间窗口: {0} 秒  (点按更改)
@@ -361,6 +369,11 @@ Pre-flight checklist (shown while disarmed)	飞行前检查清单 (上锁时显�
 Edit the checks (thresholds and logic)...	编辑检查项 (阈值与逻辑)...
 Reset the checks to the defaults	将检查项重置为默认值
 Replace your checks with the defaults? Export all settings first if you want to keep the current ones.	用默认值替换你的检查项? 如果想保留当前检查项, 请先导出所有设置。
+Layout of the cards	卡片布局
+Move and resize the cards with your finger...	用手指移动卡片并调整大小...
+Put every card back in its corner at normal size	将所有卡片放回各自角落并恢复正常大小
+Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	将所有卡片放回各自角落并恢复正常大小? 你选择的位置和大小将被清除。
+Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其圆形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
 Video	视频
 Camera: {0}  (tap to choose the HDMI input)	摄像头: {0}  (点按选择 HDMI 输入)
 Rotate video: now {0} degrees  (tap to turn 90)	旋转视频: 当前 {0} 度  (点按旋转 90 度)

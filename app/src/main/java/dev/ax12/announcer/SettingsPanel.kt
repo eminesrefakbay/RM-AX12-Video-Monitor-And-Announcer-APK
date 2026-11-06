@@ -76,6 +76,8 @@ interface SettingsHost {
     fun tileOpacityLabel(tile: String): String
     fun cycleTileOpacity(tile: String)
     fun editCharts()
+    fun editLayout()
+    fun resetLayout()
     fun editArmDetection()
     fun editStatsRows()
     fun editCheckRules()
@@ -312,6 +314,13 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
                 confirm(tr("Replace your checks with the defaults? Export all settings first if you want to keep the current ones."), tr("Reset")) { host.resetCheckRules() }
             }
         }
+
+        section(tr("Layout of the cards"))
+        action(tr("Move and resize the cards with your finger...")) { host.editLayout() }
+        action(tr("Put every card back in its corner at normal size")) {
+            confirm(tr("Put every card back in its corner at normal size? The places and sizes you chose will be forgotten."), tr("Reset")) { host.resetLayout() }
+        }
+        note(tr("Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it."))
 
         section(tr("Video"))
         action(tr("Camera: {0}  (tap to choose the HDMI input)", host.cameraId())) { host.chooseCamera() }
