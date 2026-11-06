@@ -20,11 +20,14 @@ class MainMenu(
     private val onToggleSpeech: () -> Unit,
     private val onSettings: () -> Unit,
     private val batteryName: () -> String,
-    private val onBattery: () -> Unit
+    private val onBattery: () -> Unit,
+    private val aircraftName: () -> String,
+    private val onAircraft: () -> Unit
 ) {
     val root = FrameLayout(activity)
     private val speechButton = Button(activity)
     private val batteryButton = Button(activity)
+    private val aircraftButton = Button(activity)
 
     val isShowing: Boolean get() = root.visibility == View.VISIBLE
 
@@ -61,6 +64,15 @@ class MainMenu(
                 onBattery()
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        box.addView(aircraftButton.also { b ->
+            b.isAllCaps = false
+            b.textSize = 16f
+            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            b.setOnClickListener {
+                hide()
+                onAircraft()
+            }
+        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         box.addView(item(tr("Settings")) { onSettings() })
 
         val lp = FrameLayout.LayoutParams(dp(300), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
@@ -86,6 +98,7 @@ class MainMenu(
     fun show() {
         speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is OFF - tap to turn on")
         batteryButton.text = tr("Battery: {0}  (tap to switch)", batteryName())
+        aircraftButton.text = tr("Aircraft: {0}  (tap to choose)", aircraftName())
         root.visibility = View.VISIBLE
     }
 

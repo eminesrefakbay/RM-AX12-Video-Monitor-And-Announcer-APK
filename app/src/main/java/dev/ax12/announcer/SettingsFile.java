@@ -41,8 +41,10 @@ public final class SettingsFile {
         b("radarOn"); i("radarSize", 0, 2); i("radarPos", 0, 4); i("radarOpacity", 0, 2);
         b("checkOn"); i("checkSize", 0, 2); i("checkPos", 0, 4); i("checkOpacity", 0, 2);
         i("armCh", 1, 16); i("armHigh", 1000, 2100); i("armLow", 900, 2100);
-        // battery
+        // battery, packs and aircraft
         i("batActive", 0, BatteryProfiles.MAX - 1);
+        s("packs"); i("packActive", 0, Packs.MAX - 1);
+        s("aircraftStore"); s("aircraftActive");
     }
 
     private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
@@ -60,7 +62,7 @@ public final class SettingsFile {
         d("radarOn", true); d("radarSize", 1); d("radarPos", 3); d("radarOpacity", 1);
         d("checkOn", true); d("checkSize", 1); d("checkPos", 4); d("checkOpacity", 1);
         d("armCh", 5); d("armHigh", 1750); d("armLow", 1650);
-        d("batActive", 0);
+        d("batActive", 0); d("packActive", 0);
     }
 
     private SettingsFile() {}
@@ -144,7 +146,21 @@ public final class SettingsFile {
         return new Summary(true, values.size(), ignored, sound, warn, chk, problems, sb.toString(), values);
     }
 
+    /** One setting as a line of the file, or null when the key or the type of the value is not in the schema. */
+    public static String line(String key, Object v) {
+        String t = TYPE.get(key);
+        if (t == null) return null;
+        if (t.equals("S") && v instanceof String) return "S\t" + key + "\t" + I18n.escape((String) v);
+        if (t.equals("I") && v instanceof Integer) return "I\t" + key + "\t" + v;
+        if (t.equals("B") && v instanceof Boolean) return "B\t" + key + "\t" + v;
+        return null;
+    }
+
     /** @return the checked value, or null if the type, the key, the range or the content is wrong */
+    public static Object parseValue(String type, String key, String value) {
+        return read(type, key, value);
+    }
+
     private static Object read(String type, String key, String value) {
         String want = TYPE.get(key);
         if (want == null || !want.equals(type)) return null;
@@ -169,6 +185,9 @@ public final class SettingsFile {
         if (key.equals("rules") || key.equals("warnRules") || key.equals("checkRules")) return value.length() <= 200000 ? value : null;
         if (key.equals("barsConfig")) return value.length() <= 4000 ? value : null;
         if (key.equals("batProfiles")) return BatteryProfiles.parseStrict(value) != null ? value : null;
+        if (key.equals("packs")) return Packs.parseStrict(value) != null ? value : null;
+        if (key.equals("aircraftStore")) return value.length() <= 500000 && AircraftStore.decodeStrict(value, null) != null ? value : null;
+        if (key.equals("aircraftActive")) return value.matches("[a-z0-9]{1,8}") ? value : null;
         if (key.equals("camera")) return value.matches("[A-Za-z0-9_.:-]{1,40}") ? value : null;
         if (key.equals("language")) return value.equals("auto") || I18n.isSupported(value) ? value : null;
         if (key.equals("speechLanguage")) return value.equals("same") || I18n.isSupported(value) ? value : null;

@@ -60,14 +60,16 @@ class ChecklistView(context: Context) : View(context) {
     }
 
     private var title = ""
+    private var subtitle = ""
 
-    fun setContent(newTitle: String, newRows: List<Row>, newFooter: String, color: Int) {
-        val sb = StringBuilder(newTitle).append('#').append(newFooter)
+    fun setContent(newTitle: String, newSubtitle: String, newRows: List<Row>, newFooter: String, color: Int) {
+        val sb = StringBuilder(newTitle).append('#').append(newSubtitle).append('#').append(newFooter)
         for (r in newRows) sb.append('|').append(r.label).append(':').append(r.state)
         val sig = sb.toString()
         if (sig == signature) return
         signature = sig
         title = newTitle
+        subtitle = newSubtitle
         rows = newRows
         footer = newFooter
         footerColor = color
@@ -80,9 +82,9 @@ class ChecklistView(context: Context) : View(context) {
     private fun markW() = textPx * 1.2f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var w = maxOf(titlePaint.measureText(title), footPaint.measureText(footer))
+        var w = maxOf(titlePaint.measureText(title), footPaint.measureText(footer), labelPaint.measureText(subtitle) * 0.8f)
         for (r in rows) w = maxOf(w, markW() + labelPaint.measureText(r.label))
-        val h = pad() * 2 + rowH() * (rows.size + 2)
+        val h = pad() * 2 + rowH() * (rows.size + 2) + (if (subtitle.isEmpty()) 0f else rowH() * 0.8f)
         setMeasuredDimension((w + pad() * 2).toInt() + 2, h.toInt() + 2)
     }
 
@@ -92,6 +94,15 @@ class ChecklistView(context: Context) : View(context) {
         canvas.drawRoundRect(rect, 10f * density, 10f * density, edge)
         var y = pad() + textPx
         canvas.drawText(title, pad(), y, titlePaint)
+        if (subtitle.isNotEmpty()) {
+            y += rowH() * 0.8f
+            val old = labelPaint.textSize
+            labelPaint.textSize = old * 0.8f
+            labelPaint.color = 0xFFB0BEC5.toInt()
+            canvas.drawText(subtitle, pad(), y, labelPaint)
+            labelPaint.textSize = old
+            labelPaint.color = 0xFFFFFFFF.toInt()
+        }
         for (r in rows) {
             y += rowH()
             drawMark(canvas, pad() + markW() * 0.4f, y - textPx * 0.33f, r.state)

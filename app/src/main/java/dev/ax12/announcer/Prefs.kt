@@ -51,6 +51,14 @@ object Prefs {
     fun batProfilesText(c: Context): String = p(c).getString("batProfiles", null) ?: BatteryProfiles.encode(BatteryProfiles.defaults())
     fun setBatProfilesText(c: Context, text: String) { p(c).edit().putString("batProfiles", text).apply() }
 
+    // ---- packs and aircraft ----
+    fun packsText(c: Context): String = p(c).getString("packs", null) ?: ""
+    fun setPacksText(c: Context, text: String) { p(c).edit().putString("packs", text).apply() }
+    fun aircraftStoreText(c: Context): String? = p(c).getString("aircraftStore", null)
+    fun setAircraftStoreText(c: Context, text: String) { p(c).edit().putString("aircraftStore", text).apply() }
+    fun aircraftActive(c: Context): String? = p(c).getString("aircraftActive", null)
+    fun setAircraftActive(c: Context, id: String) { p(c).edit().putString("aircraftActive", id).apply() }
+
     // ---- backup of all settings ----
     /** The settings as they were before the last import or restore (the text of a settings file). */
     fun settingsBackup(c: Context): String? = p(c).getString("settingsBackup", null)
@@ -69,6 +77,12 @@ object Prefs {
         out["checkRules"] = checkRules(c)
         out["barsConfig"] = barsConfig(c)
         out["batProfiles"] = batProfilesText(c)
+        out["packs"] = packsText(c)
+        // all the aircraft: the one in use is saved from the settings as they are now
+        val store = Aircraft.store(c)
+        store.syncActive(out)
+        out["aircraftStore"] = store.encode()
+        out["aircraftActive"] = store.activeId()
         return out
     }
 

@@ -79,7 +79,11 @@ interface SettingsHost {
     fun editStatsRows()
     fun editCheckRules()
 
-    // battery profiles and backups
+    // aircraft, packs, battery profiles and backups
+    fun aircraftName(): String
+    fun chooseAircraft()
+    fun manageAircraft()
+    fun editPacks()
     fun batteryLabel(): String
     fun cycleBattery()
     fun editBatteries()
@@ -242,11 +246,17 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         note(tr("Off: the button hides and appears when you touch the screen."))
         toggle(tr("Start-up splash screen (logo and version, 2 seconds)"), host.splashOn()) { host.setSplashOn(it) }
 
+        section(tr("Aircraft"))
+        action(tr("Active aircraft: {0}  (tap to choose)", host.aircraftName())) { host.chooseAircraft() }
+        action(tr("Manage the aircraft (add, rename, delete)...")) { host.manageAircraft() }
+        note(tr("Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared."))
+
         section(tr("Battery"))
         action(tr("Active battery profile: {0}  (tap to switch)", host.batteryLabel())) {
             host.cycleBattery()
             refresh()
         }
+        action(tr("Edit the packs of this aircraft...")) { host.editPacks() }
         action(tr("Edit the battery profiles (cells and voltage limits)...")) { host.editBatteries() }
         note(tr("Rules and checks can use the value cell (volts per cell) and the limits \$low, \$crit and \$full of the active profile, for example: cell < \$low -> battery low. Switching the profile changes the numbers, not the rules."))
 

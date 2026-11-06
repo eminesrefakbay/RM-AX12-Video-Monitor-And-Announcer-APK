@@ -55,6 +55,7 @@ class MainActivity : Activity() {
     private val autoCheck = Runnable { if (Prefs.bool(this, "updateAuto", true)) updater.check(false) }
     private var batteryCells = 6
     private var batteryName = ""
+    private var aircraftName = ""
     private var splash: SplashOverlay? = null
     private val splashHide = Runnable { splash?.dismiss() }
     private lateinit var warnPanel: RulesPanel
@@ -190,7 +191,9 @@ class MainActivity : Activity() {
             { speaker.muted = !speaker.muted },
             { settingsPanel.show() },
             { batteryName },
-            { switchBattery() }
+            { switchBattery() },
+            { aircraftName },
+            { chooseAircraft() }
         )
         frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
 
@@ -498,6 +501,10 @@ class MainActivity : Activity() {
         override fun restoreRules() = this@MainActivity.restoreRules()
         override fun resetRules() = this@MainActivity.resetRules()
         override fun openRulesText() { startActivity(Intent(this@MainActivity, RulesActivity::class.java)) }
+        override fun aircraftName(): String = this@MainActivity.aircraftName
+        override fun chooseAircraft() = this@MainActivity.chooseAircraft()
+        override fun manageAircraft() = this@MainActivity.manageAircraft()
+        override fun editPacks() = this@MainActivity.editPacks()
         override fun batteryLabel(): String = batteryName
         override fun cycleBattery() = switchBattery()
         override fun editBatteries() = this@MainActivity.editBatteries()
@@ -649,7 +656,8 @@ class MainActivity : Activity() {
     private fun applyFlightConfig() {
         val profile = Battery.active(this)
         batteryCells = profile.cells
-        batteryName = profile.name
+        batteryName = Battery.label(this)
+        aircraftName = Aircraft.activeName(this)
         flightStats.configure(
             Prefs.int(this, "armCh", 5).coerceIn(1, 16),
             Prefs.int(this, "armHigh", 1750).toDouble(),
@@ -716,7 +724,7 @@ class MainActivity : Activity() {
                 footer = tr("WAITING FOR DATA")
                 color = 0xFFB0BEC5.toInt()
             }
-            checkView.setContent(tr("PRE-FLIGHT CHECK") + "  \u00B7  " + batteryName, rows, footer, color)
+            checkView.setContent(tr("PRE-FLIGHT CHECK"), aircraftName + "  \u00B7  " + batteryName, rows, footer, color)
         }
     }
 
@@ -1208,13 +1216,213 @@ class MainActivity : Activity() {
         recreate()                            // every screen is built again with the new settings
     }
 
+    // ------------------------------------------------------------------ aircraft and packs
+
+    private fun chooseAircraft() {
+        val store = Aircraft.store(this)
+        val list = store.list()
+        val labels = Array(list.size) { i -> if (list[i].id == store.activeId()) tr("{0}  (in use)", list[i].name) else list[i].name }
+        Immersive.show(
+            AlertDialog.Builder(this)
+                .setTitle(tr("Choose the aircraft"))
+                .setItems(labels) { _, which -> switchAircraft(list[which].id) }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
+    /** Saves this aircraft's settings, loads the other one's, and builds the screens again. */
+    private fun switchAircraft(id: String) {
+        if (id == Aircraft.store(this).activeId()) return
+        if (!Aircraft.switchTo(this, id)) return
+        Toast.makeText(this, tr("Aircraft: {0}", Aircraft.activeName(this)), Toast.LENGTH_LONG).show()
+        recreate()
+    }
+
+    private fun manageAircraft() {
+        val store = Aircraft.store(this)
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        class Row(val id: String, val name: EditText)
+        val rows = ArrayList<Row>()
+        val list = LinearLayout(this)
+        list.orientation = LinearLayout.VERTICAL
+        fun addRow(a: AircraftStore.Aircraft) {
+            val line = LinearLayout(this)
+            line.orientation = LinearLayout.HORIZONTAL
+            line.gravity = Gravity.CENTER_VERTICAL
+            val name = EditText(this)
+            name.setSingleLine(true)
+            name.filters = arrayOf(android.text.InputFilter.LengthFilter(AircraftStore.MAX_NAME))
+            name.setText(a.name)
+            line.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            if (a.id == store.activeId()) {
+                val inUse = TextView(this)
+                inUse.text = tr("in use")
+                inUse.textSize = 12f
+                inUse.setPadding(dp(6), 0, dp(6), 0)
+                line.addView(inUse)
+            }
+            val del = Button(this)
+            del.text = "X"
+            del.setOnClickListener {
+                val err = store.remove(a.id)
+                if (err != null) Toast.makeText(this, err, Toast.LENGTH_LONG).show()
+                else {
+                    list.removeView(line)
+                    rows.removeAll { it.id == a.id }
+                }
+            }
+            line.addView(del)
+            list.addView(line)
+            rows.add(Row(a.id, name))
+        }
+        for (a in store.list()) addRow(a)
+        body.addView(list)
+        fun newName(): String {
+            var n = store.list().size + 1
+            while (store.validateName(tr("Aircraft {0}", n), null) != null) n++
+            return tr("Aircraft {0}", n)
+        }
+        fun addAircraft(values: Map<String, Any>) {
+            if (store.list().size >= AircraftStore.MAX) {
+                Toast.makeText(this, tr("At most {0} aircraft.", AircraftStore.MAX), Toast.LENGTH_SHORT).show()
+                return
+            }
+            val a = store.add(newName(), values)
+            if (a != null) addRow(a)
+        }
+        val addCopy = Button(this)
+        addCopy.text = tr("Add: copy of the current")
+        addCopy.setOnClickListener { addAircraft(Aircraft.live(this)) }
+        body.addView(addCopy)
+        val addNew = Button(this)
+        addNew.text = tr("Add: starting settings")
+        addNew.setOnClickListener { addAircraft(Aircraft.startingValues(this)) }
+        body.addView(addNew)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle(tr("Aircraft"))
+            .setView(scroll)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            var problem: String? = null
+            for (r in rows) {
+                problem = store.rename(r.id, r.name.text.toString())
+                if (problem != null) break
+            }
+            if (problem != null) {
+                Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+            } else {
+                Aircraft.save(this, store)
+                applyFlightConfig()
+                settingsPanel.refresh()
+                dlg.dismiss()
+            }
+        }
+    }
+
+    private fun editPacks() {
+        val profiles = Battery.profiles(this)
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val head = TextView(this)
+        head.text = tr("name                    battery profile              mAh")
+        head.textSize = 11f
+        body.addView(head)
+        class Row(val box: LinearLayout, val name: EditText, val profile: Button, val mah: EditText)
+        val rows = ArrayList<Row>()
+        val list = LinearLayout(this)
+        list.orientation = LinearLayout.VERTICAL
+        fun addRow(p: Packs.Pack) {
+            val line = LinearLayout(this)
+            line.orientation = LinearLayout.HORIZONTAL
+            line.gravity = Gravity.CENTER_VERTICAL
+            val name = EditText(this)
+            name.setSingleLine(true)
+            name.filters = arrayOf(android.text.InputFilter.LengthFilter(Packs.MAX_NAME))
+            name.setText(p.name)
+            line.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            val prof = Button(this)
+            prof.isAllCaps = false
+            prof.text = p.profile
+            prof.setOnClickListener {
+                val names = profiles.map { it.name }
+                val i = names.indexOfFirst { it.equals(prof.text.toString(), ignoreCase = true) }
+                prof.text = names[(i + 1) % names.size]            // the next profile
+            }
+            line.addView(prof)
+            val mah = EditText(this)
+            mah.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            mah.setSingleLine(true)
+            mah.setText(p.capacityMah.toString())
+            line.addView(mah, LinearLayout.LayoutParams(dp(76), ViewGroup.LayoutParams.WRAP_CONTENT))
+            val del = Button(this)
+            del.text = "X"
+            del.setOnClickListener {
+                list.removeView(line)
+                rows.removeAll { it.box === line }
+            }
+            line.addView(del)
+            list.addView(line)
+            rows.add(Row(line, name, prof, mah))
+        }
+        for (p in Battery.packs(this)) addRow(p)
+        body.addView(list)
+        val add = Button(this)
+        add.text = tr("Add pack")
+        add.setOnClickListener {
+            if (rows.size < Packs.MAX) addRow(Packs.Pack(tr("Pack {0}", rows.size + 1), Battery.active(this).name, 0))
+        }
+        body.addView(add)
+        val hint = TextView(this)
+        hint.text = tr("Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.")
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle(tr("Packs"))
+            .setView(scroll)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val out = ArrayList<Packs.Pack>()
+            var bad = false
+            for (r in rows) {
+                val mah = r.mah.text.toString().trim().toIntOrNull()
+                if (mah == null) { bad = true; break }
+                out.add(Packs.Pack(Packs.cleanName(r.name.text.toString()), r.profile.text.toString(), mah))
+            }
+            val problem = if (bad) tr("Enter numbers in every field") else Packs.validate(out)
+            if (problem != null) {
+                Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+            } else {
+                Battery.setPacks(this, out)
+                Battery.applyActivePack(this)
+                applyBattery()
+                settingsPanel.refresh()
+                dlg.dismiss()
+            }
+        }
+    }
+
     // ------------------------------------------------------------------ battery profiles
 
     private fun switchBattery() {
-        val p = Battery.cycle(this)
+        Battery.cycle(this)
         applyBattery()
-        Toast.makeText(this, tr("Battery profile: {0}\n{1}", p.name, BatteryProfiles.limitsText(p)), Toast.LENGTH_LONG).show()
-        speaker.say(I18n.tIn(Lang.speechCode(this), "Battery profile {0}", p.name), false)
+        Toast.makeText(this, tr("Battery profile: {0}\n{1}", Battery.label(this), BatteryProfiles.limitsText(Battery.active(this))), Toast.LENGTH_LONG).show()
+        speaker.say(I18n.tIn(Lang.speechCode(this), "Battery {0}", Battery.spokenName(this)), false)
     }
 
     /** The cell count, the limits and every rule follow the active profile. */

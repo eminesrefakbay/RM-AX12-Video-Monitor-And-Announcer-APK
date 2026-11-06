@@ -1,4 +1,9 @@
 # Turkish translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+Give the aircraft a name.	Hava aracına bir ad verin.
+There is already an aircraft with this name: {0}.	Bu adda bir hava aracı zaten var: {0}.
+That aircraft does not exist.	Böyle bir hava aracı yok.
+At least one aircraft must stay.	En az bir hava aracı kalmalı.
+You cannot delete the aircraft in use. Switch to another one first.	Kullanımdaki hava aracını silemezsiniz. Önce başkasına geçin.
 Bar {0}: the channel must be 1 to 16.	Çubuk {0}: kanal 1 ile 16 arasında olmalı.
 Add at least one battery profile.	En az bir batarya profili ekleyin.
 At most {0} battery profiles.	En fazla {0} batarya profili olabilir.
@@ -135,13 +140,27 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	İçe aktar
 Imported {0} settings	{0} ayar içe aktarıldı
 Settings restored	Ayarlar geri yüklendi
+{0}  (in use)	{0}  (kullanımda)
+Choose the aircraft	Hava aracını seçin
+Aircraft: {0}	Hava aracı: {0}
+in use	kullanımda
+Aircraft {0}	Hava aracı {0}
+At most {0} aircraft.	En fazla {0} hava aracı olabilir.
+Add: copy of the current	Ekle: mevcut olanın kopyası
+Add: starting settings	Ekle: başlangıç ayarlarıyla
+Aircraft	Hava aracı
+name                    battery profile              mAh	ad                      batarya profili              mAh
+Add pack	Paket ekle
+Pack {0}	Paket {0}
+Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	Her paket bir batarya profili kullanır (sınırları). Menüden bir paket seçmek onun profiline geçer. Kapasite kayıtlarınız içindir (0 = bilinmiyor). Paket yoksa menü doğrudan profili değiştirir.
+Packs	Paketler
+Enter numbers in every field	Her alana sayı girin
 Battery profile: {0}\n{1}	Batarya profili: {0}\n{1}
-Battery profile {0}	Batarya profili {0}
+Battery {0}	Batarya {0}
 name                  cells    full    low    critical	ad                    hücre    dolu    düşük    kritik
 Add profile	Profil ekle
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	Hücre başına volt. Kritik, düşükten; düşük de doludan küçük olmalıdır. Kurallar cell değerini ve $low, $crit, $full adlarını kullanır.
 Battery profiles	Batarya profilleri
-Enter numbers in every field	Her alana sayı girin
 Import sound rules	Ses kurallarını içe aktar
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Dosyada {0} var\n\nBu, mevcut kurallarınızın yerine geçer. Yedek olarak saklanır ve Ayarlar'dan geri yüklenebilir.
 Imported {0} rules	{0} kural içe aktarıldı
@@ -150,6 +169,13 @@ Settings	Ayarlar
 Mute speech	Konuşmayı sustur
 Speech is OFF - tap to turn on	Konuşma KAPALI - açmak için dokunun
 Battery: {0}  (tap to switch)	Batarya: {0}  (değiştirmek için dokunun)
+Aircraft: {0}  (tap to choose)	Hava aracı: {0}  (seçmek için dokunun)
+At most {0} packs.	En fazla {0} paket olabilir.
+Pack {0}: the name cannot be empty.	Paket {0}: ad boş olamaz.
+Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Paket {0}: kapasite 0 ile {1} mAh arasındadır (0 = bilinmiyor).
+Two packs have the same name: {0}.	İki paketin adı aynı: {0}.
+{0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
+{0} ({1})	{0} ({1})
 test sliders	test kaydırıcıları
 test sliders (no radio)	test kaydırıcıları (kumanda yok)
 RadioMaster SDK	RadioMaster SDK
@@ -295,8 +321,12 @@ Display	Ekran
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
 Start-up splash screen (logo and version, 2 seconds)	Açılış ekranı (logo ve sürüm, 2 saniye)
+Active aircraft: {0}  (tap to choose)	Etkin hava aracı: {0}  (seçmek için dokunun)
+Manage the aircraft (add, rename, delete)...	Hava araçlarını yönet (ekle, yeniden adlandır, sil)...
+Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Her hava aracı kendi kurallarını, uyarı kurallarını, kontrollerini, batarya profillerini ve paketlerini, kanal çubuklarını, stick eşlemesini ve arm anahtarını saklar. Ekran katmanlarının görünümü, dil ve güncellemeler ortaktır.
 Battery	Batarya
 Active battery profile: {0}  (tap to switch)	Etkin batarya profili: {0}  (değiştirmek için dokunun)
+Edit the packs of this aircraft...	Bu hava aracının paketlerini düzenle...
 Edit the battery profiles (cells and voltage limits)...	Batarya profillerini düzenle (hücre sayısı ve voltaj sınırları)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Kurallar ve kontroller, cell değerini (hücre başına volt) ve etkin profilin $low, $crit, $full sınırlarını kullanabilir; örneğin: cell < $low -> batarya düşük. Profili değiştirmek sayıları değiştirir, kuralları değil.
 OSD overlays (drawn over the video)	OSD katmanları (videonun üzerine çizilir)

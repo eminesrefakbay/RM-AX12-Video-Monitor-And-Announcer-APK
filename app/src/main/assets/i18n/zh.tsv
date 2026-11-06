@@ -1,4 +1,9 @@
 # Simplified Chinese translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+Give the aircraft a name.	请给飞行器起一个名称。
+There is already an aircraft with this name: {0}.	已经有同名的飞行器: {0}。
+That aircraft does not exist.	该飞行器不存在。
+At least one aircraft must stay.	至少要保留一个飞行器。
+You cannot delete the aircraft in use. Switch to another one first.	不能删除正在使用的飞行器。请先切换到另一个。
 Bar {0}: the channel must be 1 to 16.	第 {0} 个条: 通道必须是 1 到 16。
 Add at least one battery profile.	请至少添加一个电池配置。
 At most {0} battery profiles.	最多 {0} 个电池配置。
@@ -135,13 +140,27 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	导入
 Imported {0} settings	已导入 {0} 项设置
 Settings restored	设置已恢复
+{0}  (in use)	{0}  (使用中)
+Choose the aircraft	选择飞行器
+Aircraft: {0}	飞行器: {0}
+in use	使用中
+Aircraft {0}	飞行器 {0}
+At most {0} aircraft.	最多 {0} 个飞行器。
+Add: copy of the current	添加: 复制当前飞行器
+Add: starting settings	添加: 使用初始设置
+Aircraft	飞行器
+name                    battery profile              mAh	名称                    电池配置              mAh
+Add pack	添加电池包
+Pack {0}	电池包 {0}
+Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	每个电池包使用一个电池配置 (即其限值)。在菜单中选择电池包会切换到它的配置。容量仅供记录 (0 = 未知)。没有电池包时, 菜单直接切换配置。
+Packs	电池包
+Enter numbers in every field	请在每个栏位中输入数字
 Battery profile: {0}\n{1}	电池配置: {0}\n{1}
-Battery profile {0}	电池配置 {0}
+Battery {0}	电池 {0}
 name                  cells    full    low    critical	名称                  节数    满电    低    严重
 Add profile	添加配置
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	单位: 每节伏特。严重值必须低于低压值, 低压值必须低于满电值。规则使用 cell 以及 $low、$crit、$full 这些名称。
 Battery profiles	电池配置
-Enter numbers in every field	请在每个栏位中输入数字
 Import sound rules	导入语音规则
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中恢复。
 Imported {0} rules	已导入 {0} 条规则
@@ -150,6 +169,13 @@ Settings	设置
 Mute speech	静音语音
 Speech is OFF - tap to turn on	语音已关闭 - 点按开启
 Battery: {0}  (tap to switch)	电池: {0}  (点按切换)
+Aircraft: {0}  (tap to choose)	飞行器: {0}  (点按选择)
+At most {0} packs.	最多 {0} 个电池包。
+Pack {0}: the name cannot be empty.	电池包 {0}: 名称不能为空。
+Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	电池包 {0}: 容量为 0 到 {1} mAh (0 = 未知)。
+Two packs have the same name: {0}.	有两个电池包同名: {0}。
+{0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
+{0} ({1})	{0} ({1})
 test sliders	测试滑块
 test sliders (no radio)	测试滑块 (无遥控器)
 RadioMaster SDK	RadioMaster SDK
@@ -295,8 +321,12 @@ Display	显示
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
 Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)
+Active aircraft: {0}  (tap to choose)	当前飞行器: {0}  (点按选择)
+Manage the aircraft (add, rename, delete)...	管理飞行器 (添加、重命名、删除)...
+Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	每个飞行器都保存自己的规则、警告规则、检查项、电池配置和电池包、通道条、摇杆映射以及解锁开关。叠加层外观、语言和更新是共用的。
 Battery	电池
 Active battery profile: {0}  (tap to switch)	当前电池配置: {0}  (点按切换)
+Edit the packs of this aircraft...	编辑此飞行器的电池包...
 Edit the battery profiles (cells and voltage limits)...	编辑电池配置 (节数和电压限值)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	规则和检查项可以使用 cell (每节电压) 以及当前配置的限值 $low、$crit、$full, 例如: cell < $low -> 电池电量低。切换配置只会改变数值, 不会改变规则。
 OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)

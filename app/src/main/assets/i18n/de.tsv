@@ -1,4 +1,9 @@
 # German translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+Give the aircraft a name.	Gib dem Fluggerät einen Namen.
+There is already an aircraft with this name: {0}.	Es gibt bereits ein Fluggerät mit diesem Namen: {0}.
+That aircraft does not exist.	Dieses Fluggerät gibt es nicht.
+At least one aircraft must stay.	Mindestens ein Fluggerät muss bleiben.
+You cannot delete the aircraft in use. Switch to another one first.	Du kannst das benutzte Fluggerät nicht löschen. Wechsle zuerst zu einem anderen.
 Bar {0}: the channel must be 1 to 16.	Balken {0}: Der Kanal muss 1 bis 16 sein.
 Add at least one battery profile.	Füge mindestens ein Akkuprofil hinzu.
 At most {0} battery profiles.	Höchstens {0} Akkuprofile.
@@ -135,13 +140,27 @@ The file has {0}\n\nThis replaces the settings it contains. Your current setting
 Import	Importieren
 Imported {0} settings	{0} Einstellungen importiert
 Settings restored	Einstellungen wiederhergestellt
+{0}  (in use)	{0}  (in Benutzung)
+Choose the aircraft	Fluggerät wählen
+Aircraft: {0}	Fluggerät: {0}
+in use	in Benutzung
+Aircraft {0}	Fluggerät {0}
+At most {0} aircraft.	Höchstens {0} Fluggeräte.
+Add: copy of the current	Hinzufügen: Kopie des aktuellen
+Add: starting settings	Hinzufügen: Startwerte
+Aircraft	Fluggerät
+name                    battery profile              mAh	Name                    Akkuprofil              mAh
+Add pack	Akku hinzufügen
+Pack {0}	Akku {0}
+Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	Jeder Akku nutzt ein Akkuprofil (seine Grenzen). Einen Akku im Menü zu wählen schaltet auf sein Profil. Die Kapazität dient deinen Unterlagen (0 = unbekannt). Ohne Akkus wechselt das Menü direkt das Profil.
+Packs	Akkus
+Enter numbers in every field	Gib in jedes Feld eine Zahl ein
 Battery profile: {0}\n{1}	Akkuprofil: {0}\n{1}
-Battery profile {0}	Akkuprofil {0}
+Battery {0}	Akku {0}
 name                  cells    full    low    critical	Name                  Zellen    voll    niedrig    kritisch
 Add profile	Profil hinzufügen
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	Volt pro Zelle. Kritisch muss unter niedrig liegen und niedrig unter voll. Regeln nutzen cell und die Namen $low, $crit und $full.
 Battery profiles	Akkuprofile
-Enter numbers in every field	Gib in jedes Feld eine Zahl ein
 Import sound rules	Sprachregeln importieren
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nDas ersetzt deine aktuellen Regeln. Sie werden als Sicherung behalten, und die Einstellungen können sie wiederherstellen.
 Imported {0} rules	{0} Regeln importiert
@@ -150,6 +169,13 @@ Settings	Einstellungen
 Mute speech	Sprache stummschalten
 Speech is OFF - tap to turn on	Sprache ist AUS - zum Einschalten tippen
 Battery: {0}  (tap to switch)	Akku: {0}  (zum Wechseln tippen)
+Aircraft: {0}  (tap to choose)	Fluggerät: {0}  (zum Wählen tippen)
+At most {0} packs.	Höchstens {0} Akkus.
+Pack {0}: the name cannot be empty.	Akku {0}: Der Name darf nicht leer sein.
+Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Akku {0}: Die Kapazität ist 0 bis {1} mAh (0 = unbekannt).
+Two packs have the same name: {0}.	Zwei Akkus haben denselben Namen: {0}.
+{0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
+{0} ({1})	{0} ({1})
 test sliders	Testregler
 test sliders (no radio)	Testregler (keine Fernsteuerung)
 RadioMaster SDK	RadioMaster SDK
@@ -295,8 +321,12 @@ Display	Anzeige
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
 Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)
+Active aircraft: {0}  (tap to choose)	Aktives Fluggerät: {0}  (zum Wählen tippen)
+Manage the aircraft (add, rename, delete)...	Fluggeräte verwalten (hinzufügen, umbenennen, löschen)...
+Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Jedes Fluggerät behält seine eigenen Regeln, Warnregeln, Checks, Akkuprofile und Akkus, Kanalbalken, Stick-Zuordnung und seinen Arm-Schalter. Aussehen der Einblendungen, Sprache und Updates sind gemeinsam.
 Battery	Akku
 Active battery profile: {0}  (tap to switch)	Aktives Akkuprofil: {0}  (zum Wechseln tippen)
+Edit the packs of this aircraft...	Akkus dieses Fluggeräts bearbeiten...
 Edit the battery profiles (cells and voltage limits)...	Akkuprofile bearbeiten (Zellen und Spannungsgrenzen)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Regeln und Checks können den Wert cell (Volt pro Zelle) und die Grenzen $low, $crit, $full des aktiven Profils nutzen, zum Beispiel: cell < $low -> Akku niedrig. Beim Wechsel des Profils ändern sich die Zahlen, nicht die Regeln.
 OSD overlays (drawn over the video)	OSD-Einblendungen (über das Video gezeichnet)

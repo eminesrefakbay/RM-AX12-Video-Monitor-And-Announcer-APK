@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.9.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.10.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 559 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 628 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -119,6 +119,23 @@ Rules, warnings and checks can use:
 Switching the profile changes the numbers, **not the rules**. Rules with plain numbers (`vbat / 6 < 3.70`) keep working
 as before. The starting rules, warnings and checks use the new names; an existing install keeps its own text until you
 *Reset the rules / warning rules / checks to the defaults* (Settings).
+
+## Aircraft profiles and packs
+
+Each aircraft can have its own setup. *Settings > Aircraft* (and the MENU's **Aircraft** item) switch between them; *Manage the
+aircraft* adds one (a copy of the current setup, or the starting settings), renames and deletes.
+
+* **Per aircraft:** sound rules, warning rules, pre-flight checks, battery profiles and packs, aux channel bars (names),
+  stick mapping, arm switch and current limit.
+* **Shared by all:** overlay looks and places, language, speech language, camera and video settings, updates.
+* Switching saves what you changed on the aircraft you leave and loads the other one; nothing is lost on the way. The screens are
+  rebuilt for a moment. Your existing setup becomes the first aircraft, "My aircraft".
+* The pre-flight checklist shows the aircraft and the pack under its title, so you see before arming that the right setup is loaded.
+* The **full settings backup includes every aircraft**.
+
+**Packs** are the named packs of an aircraft (*Settings > Battery > Edit the packs*): a name, the battery profile it uses and its
+capacity (for your records). With packs, the MENU's Battery item chooses the **pack** and the pack chooses the profile (Li-ion or
+LiPo limits); the voice says the pack's name. With no packs it switches the profile directly, as before.
 
 ## Backup of all settings
 

@@ -92,7 +92,7 @@ public class SettingsFileTests {
             if (dv == null) { noDefault.append(k).append(' '); continue; }
             defs.put(k, dv);
         }
-        check(noDefault.toString().trim().equals("rules warnRules checkRules barsConfig batProfiles camera"), "only the texts with their own defaults and the camera have none: " + noDefault);
+        check(noDefault.toString().trim().equals("rules warnRules checkRules barsConfig batProfiles camera packs aircraftStore aircraftActive"), "only the texts with their own defaults and the camera have none: " + noDefault);
         SettingsFile.Summary ds = SettingsFile.inspect(SettingsFile.export(defs, "x", "y"));
         check(ds.usable && ds.ignored == 0 && ds.entries == defs.size(), "every default is accepted by the reader (" + ds.entries + "/" + defs.size() + ", ignored " + ds.ignored + ")");
 
