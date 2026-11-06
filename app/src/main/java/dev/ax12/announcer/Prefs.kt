@@ -15,6 +15,13 @@ object Prefs {
     fun fill(c: Context): Boolean = p(c).getBoolean("fill", false)
     fun setFill(c: Context, on: Boolean) { p(c).edit().putBoolean("fill", on).apply() }
 
+    fun menuAlways(c: Context): Boolean = p(c).getBoolean("menuAlways", false)
+    fun setMenuAlways(c: Context, on: Boolean) { p(c).edit().putBoolean("menuAlways", on).apply() }
+
+    /** The rules as they were before the last import, reset or restore. */
+    fun rulesBackup(c: Context): String? = p(c).getString("rulesBackup", null)
+    fun setRulesBackup(c: Context, text: String) { p(c).edit().putString("rulesBackup", text).apply() }
+
     fun rotation(c: Context): Int = p(c).getInt("rotation", 0)
     fun setRotation(c: Context, deg: Int) { p(c).edit().putInt("rotation", deg).apply() }
 }

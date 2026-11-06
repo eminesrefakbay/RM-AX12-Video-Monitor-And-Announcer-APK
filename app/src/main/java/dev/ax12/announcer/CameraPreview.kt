@@ -54,6 +54,15 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     var fill: Boolean = Prefs.fill(activity)
         private set
 
+    private val timing = TimingStats(5000)
+
+    /** How the video is arriving, from the app's side: frame rate and the gaps between frames. */
+    fun videoStats(): String {
+        val s = timing.summary(SystemClock.elapsedRealtime())
+        return String.format(java.util.Locale.US, "video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)",
+            s.perSecond, s.p95Ms, s.maxMs)
+    }
+
     private val retry = Runnable { if (running) openCamera() }
 
     init {
@@ -65,7 +74,9 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
             override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, w: Int, h: Int) { applyTransform() }
             override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean = true
             override fun onSurfaceTextureUpdated(st: SurfaceTexture) {
-                lastFrameMs = SystemClock.elapsedRealtime()
+                val now = SystemClock.elapsedRealtime()
+                if (lastFrameMs != 0L) timing.add(now, now - lastFrameMs)
+                lastFrameMs = now
             }
         }
     }

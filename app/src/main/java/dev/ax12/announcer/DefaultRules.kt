@@ -2,7 +2,7 @@ package dev.ax12.announcer
 
 /**
  * Starting rules, written for the AKB7 INAV mode ranges (AUX1 = ch5 ... AUX8 = ch12).
- * Edit freely in the app. Open MENU > Show variables to see every name you can use.
+ * Edit freely in the app. Open MENU > Settings > Diagnostics > Show variables to see every name you can use.
  */
 object DefaultRules {
     const val TEXT = """# one rule per line:   condition -> spoken text
@@ -33,7 +33,7 @@ up_lq < 70 and ch5 >= 1950 -> link quality low
 up_lq < 40 and ch5 >= 1950 -> !link critical @5
 tlm == 0 and ch5 >= 1950 -> !telemetry lost
 
-# --- the flight controller's own flight mode (check the exact names under MENU > Show variables) ---
+# --- the flight controller's own flight mode (check the exact names under Settings > Diagnostics > Show variables) ---
 fm ~ "RTH" -> return to home active
 """
 }

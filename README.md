@@ -1,4 +1,4 @@
-# AX12 Video Monitor and Announcer (v0.3.1)
+# AX12 Video Monitor and Announcer (v0.4.1)
 
 An Android app for the RadioMaster AX12:
 
@@ -12,10 +12,32 @@ An Android app for the RadioMaster AX12:
 
 | Part | State |
 | --- | --- |
-| Rule engine, CRSF parser, channel scaler (plain Java) | 141 automated checks pass |
+| Rule engine, CRSF parser, channel scaler (plain Java) | 167 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
+
+## How the video is drawn, and measuring lag
+
+The HDMI input is read with Camera2 into a `TextureView`: the frames go from the camera straight into a GPU texture
+(hardware accelerated, no copies to the CPU, no bitmap or colour conversion). Rotation and stretch are a GPU matrix.
+`TextureView` needs the app's main thread to put each new frame on screen and adds about one frame compared with a
+`SurfaceView`, so main-thread work shows up as stutter. Most of the delay is in the radio's HDMI capture, before the app.
+Settings > Diagnostics > Show variables prints the frame rate, the gaps between frames and how late the app's own
+50 ms loop runs, so constant delay and stutter can be told apart.
+
+## Menu and settings
+
+The MENU button hides itself and comes back for a few seconds whenever you touch the screen (Settings can keep it
+always visible). The menu holds only the daily items: **Sound rules**, **Mute speech** and **Settings**.
+**Settings** holds the rest: the MENU button option, video (camera, rotate, fit or fill), speech (on/off, test),
+the sound rules files, and the diagnostics (variables panel, test channels).
+
+**Export / import of the sound rules:** Settings > Sound rules > *Export sound rules to a file...* opens Android's
+file picker and saves a plain text file (`ax12-sound-rules.txt`, rules with one comment line on top). *Import* reads
+such a file, shows how many rules it has and any problems, and replaces your rules only after you confirm. The old
+rules are kept: *Restore the rules from before the last import* swaps them back (press again to swap forward).
+On a device without a file picker the file is written to the app's own folder and its path is shown.
 
 ## Rules
 
@@ -27,7 +49,7 @@ hold time, start-up behaviour and unit. The GUI and the text editor edit the sam
 comments and settings in the text are kept. A switched-off rule is stored as a comment starting with `#off`.
 Rules the GUI cannot show (mixed `and`/`or`) appear as "Advanced rule" and open the text editor.
 
-**MENU > Rules as text (advanced)** edits the same rules as plain text, one rule per line:
+**Settings > Edit the rules as text (advanced)** edits the same rules as plain text, one rule per line:
 
 ```
 ch5 >= 1500 -> drone armed | drone disarmed          text after | is spoken when it turns false
@@ -42,9 +64,9 @@ hysteresis = 25   var_hysteresis = 1   hold = 100   initial = off   scale = auto
 * `hold` ignores changes shorter than that many ms. The first reading is silent unless `initial = on`.
 * A rule whose variable has no value is skipped (for example battery rules before telemetry arrives).
 * `scale` is the unit of the radio's channel numbers. The SDK does not name it, so `auto` guesses from the
-  numbers seen (percent, then permille, then microseconds). Look at MENU > Show variables.
+  numbers seen (percent, then permille, then microseconds). Look at Settings > Diagnostics > Show variables.
 
-### Variables (MENU > Show variables lists the live ones)
+### Variables (Settings > Diagnostics > Show variables lists the live ones)
 
 | Name | Meaning |
 | --- | --- |
@@ -84,7 +106,7 @@ An Android app has no writable lock directory, so the link may never open: then 
 
 ## Try it without the radio
 
-MENU > Test channels shows 16 sliders (1000..2000 us). Move ch5 above 1500 and listen.
+Settings > Diagnostics > Test channels shows 16 sliders (1000..2000 us). Move ch5 above 1500 and listen.
 
 ## Tests
 

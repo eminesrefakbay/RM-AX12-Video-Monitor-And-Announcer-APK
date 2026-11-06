@@ -548,7 +548,7 @@ class RulesPanel(
             val base = HashMap<String, Double>()
             for (i in 1..16) live.numbers()["ch$i"]?.let { base["ch$i"] = it }
             if (base.isEmpty()) {
-                detectInfo.text = "No channel values yet (is the radio connected? try MENU, Show variables)"
+                detectInfo.text = "No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)"
                 return
             }
             detectBaseline = base
