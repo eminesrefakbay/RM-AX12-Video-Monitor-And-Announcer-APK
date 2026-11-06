@@ -52,7 +52,7 @@ class SplashOverlay(private val activity: Activity) {
         root.addView(version, vp)
 
         val sub = TextView(activity)
-        sub.text = "AX12 video monitor, HUD and announcer"
+        sub.text = tr("AX12 video monitor, HUD and announcer")
         sub.textSize = 13f
         sub.setTextColor(0xFFB0BEC5.toInt())
         sub.gravity = Gravity.CENTER
@@ -66,7 +66,7 @@ class SplashOverlay(private val activity: Activity) {
         return try {
             val info = activity.packageManager.getPackageInfo(activity.packageName, 0)
             val build = if (Build.VERSION.SDK_INT >= 28) info.longVersionCode else info.versionCode.toLong()
-            "AX-HUD  version " + (info.versionName ?: "?") + "  (build " + build + ")"
+            tr("AX-HUD  version {0}  (build {1})", (info.versionName ?: "?"), build)
         } catch (e: Exception) {
             "AX-HUD"
         }

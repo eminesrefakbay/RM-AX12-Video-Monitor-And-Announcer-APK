@@ -17,6 +17,12 @@ class RulesActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rules)
+        findViewById<TextView>(R.id.rulesTitle).text = tr("Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed")
+        findViewById<TextView>(R.id.rulesHint).text = tr("and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.")
+        findViewById<Button>(R.id.btnCheck).text = tr("Check")
+        findViewById<Button>(R.id.btnSave).text = tr("Save")
+        findViewById<Button>(R.id.btnSample).text = tr("Sample")
+        findViewById<Button>(R.id.btnClose).text = tr("Close")
         edit = findViewById(R.id.rulesEdit)
         info = findViewById(R.id.rulesInfo)
         warnings = intent.getBooleanExtra("warnings", false)
@@ -32,7 +38,7 @@ class RulesActivity : Activity() {
             }
         }
         findViewById<Button>(R.id.btnSample).setOnClickListener {
-            edit.setText(if (checks) DefaultChecks.TEXT else if (warnings) DefaultWarnings.TEXT else DefaultRules.TEXT)
+            edit.setText(if (checks) DefaultChecks.text() else if (warnings) DefaultWarnings.text() else DefaultRules.text(this))
             check()
         }
         findViewById<Button>(R.id.btnClose).setOnClickListener { finish() }
@@ -47,7 +53,7 @@ class RulesActivity : Activity() {
         val result = RuleParser.parse(edit.text.toString())
         return if (result.errors.isEmpty()) {
             info.setTextColor(0xFF9CDCFE.toInt())
-            info.text = "OK: " + result.rules.size + " rules"
+            info.text = tr("OK: {0} rules", result.rules.size)
             true
         } else {
             info.setTextColor(0xFFFF8A80.toInt())

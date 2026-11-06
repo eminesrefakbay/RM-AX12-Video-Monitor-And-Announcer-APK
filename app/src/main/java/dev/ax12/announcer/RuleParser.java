@@ -62,10 +62,10 @@ public final class RuleParser {
             }
 
             int arrow = line.indexOf("->");
-            if (arrow < 0) { res.errors.add("line " + lineNo + ": missing '->'  (" + line + ")"); continue; }
+            if (arrow < 0) { res.errors.add(I18n.t("line {0}: missing '->'  ({1})", lineNo, line)); continue; }
             String cond = line.substring(0, arrow).trim();
             String speech = line.substring(arrow + 2).trim();
-            if (cond.isEmpty()) { res.errors.add("line " + lineNo + ": nothing before '->'"); continue; }
+            if (cond.isEmpty()) { res.errors.add(I18n.t("line {0}: nothing before '->'", lineNo)); continue; }
 
             int repeat = 0;
             Matcher rm = REPEAT.matcher(" " + speech);
@@ -85,7 +85,7 @@ public final class RuleParser {
             boolean urgentTrue = false, urgentFalse = false;
             if (trueText.startsWith("!")) { urgentTrue = true; trueText = trueText.substring(1).trim(); }
             if (falseText != null && falseText.startsWith("!")) { urgentFalse = true; falseText = falseText.substring(1).trim(); }
-            if (trueText.isEmpty()) { res.errors.add("line " + lineNo + ": nothing to say after '->'"); continue; }
+            if (trueText.isEmpty()) { res.errors.add(I18n.t("line {0}: nothing to say after '->'", lineNo)); continue; }
             if (repeat > 0 && repeat < 2) repeat = 2;
 
             List<List<Rule.Atom>> groups = new ArrayList<List<Rule.Atom>>();
@@ -101,8 +101,7 @@ public final class RuleParser {
                     }
                     Matcher am = ATOM.matcher(part);
                     if (!am.matches()) {
-                        res.errors.add("line " + lineNo + ": cannot read condition '" + part
-                                + "'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ \"RTH\" )");
+                        res.errors.add(I18n.t("line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ \"RTH\" )", lineNo, part));
                         ok = false;
                         break;
                     }
@@ -110,7 +109,7 @@ public final class RuleParser {
                     if (am.group(2) != null) {
                         divisor = Double.parseDouble(am.group(2));
                         if (divisor == 0.0) {
-                            res.errors.add("line " + lineNo + ": cannot divide by zero  (" + part + ")");
+                            res.errors.add(I18n.t("line {0}: cannot divide by zero  ({1})", lineNo, part));
                             ok = false;
                             break;
                         }
@@ -152,7 +151,7 @@ public final class RuleParser {
                 else throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            res.errors.add("line " + lineNo + ": bad value for " + name + " (" + value + ")");
+            res.errors.add(I18n.t("line {0}: bad value for {1} ({2})", lineNo, name, value));
         }
     }
 }

@@ -23,11 +23,11 @@ interface RadioLink {
 /** Sliders in the test panel stand in for the radio. Values are microseconds. */
 class FakeRadioLink : RadioLink {
     val values = DoubleArray(16) { 1500.0 }
-    override val name = "test sliders"
+    override val name = tr("test sliders")
     override fun start(): String? = null
     override fun stop() {}
     override fun poll(): RadioSample? =
-        RadioSample(values.copyOf(), DoubleArray(16), HashMap(), HashMap(), "test sliders (no radio)")
+        RadioSample(values.copyOf(), DoubleArray(16), HashMap(), HashMap(), tr("test sliders (no radio)"))
 }
 
 /**
@@ -38,20 +38,20 @@ class FakeRadioLink : RadioLink {
  * so a rule never acts on a stale battery voltage or a stale flight mode.
  */
 class AxSdkRadioLink(private val context: Context) : RadioLink {
-    override val name = "RadioMaster SDK"
+    override val name = tr("RadioMaster SDK")
 
     private val crsf = CrsfState()
     private var started = false
 
     override fun start(): String? {
-        if (!AxSdkJni.loaded) return "This build has no RadioMaster SDK files (see the README)"
+        if (!AxSdkJni.loaded) return tr("This build has no RadioMaster SDK files (see the README)")
         val code = AxSdkJni.nativeStart(context.filesDir.absolutePath)
         started = (code == 0 || code == 1)
         return when (code) {
             0, 1 -> null
-            2 -> "SDK worker thread failed to start"
-            3 -> "The SDK could not open the radio's serial link (see README: serial lock)"
-            else -> "SDK start failed (code $code)"
+            2 -> tr("SDK worker thread failed to start")
+            3 -> tr("The SDK could not open the radio's serial link (see README: serial lock)")
+            else -> tr("SDK start failed (code {0})", code)
         }
     }
 

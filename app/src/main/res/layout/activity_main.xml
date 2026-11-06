@@ -73,7 +73,7 @@
         android:layout_height="48dp"
         android:layout_gravity="top|end"
         android:alpha="0.6"
-        android:text="MENU" />
+        android:text="@null" />
 
     <!-- Test channels: sliders that stand in for the radio while you design the rules. -->
     <ScrollView

@@ -90,7 +90,7 @@ public final class AuxBars {
     public static String validate(List<Bar> bars) {
         for (int i = 0; i < bars.size(); i++) {
             int ch = bars.get(i).channel;
-            if (ch < 1 || ch > 16) return "Bar " + (i + 1) + ": the channel must be 1 to 16.";
+            if (ch < 1 || ch > 16) return I18n.t("Bar {0}: the channel must be 1 to 16.", (i + 1));
         }
         return null;
     }

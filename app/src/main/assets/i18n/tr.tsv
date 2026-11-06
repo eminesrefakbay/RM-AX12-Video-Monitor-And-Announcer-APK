@@ -1,0 +1,402 @@
+# Turkish translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+Bar {0}: the channel must be 1 to 16.	Çubuk {0}: kanal 1 ile 16 arasında olmalı.
+Starting...	Başlatılıyor...
+video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	video: %.1f kare/sn   kareler arası boşluk: %%95 altında %d ms, en kötü %d ms (son 5 sn)
+Camera {0}  {1}x{2}  ·  {3}	Kamera {0}  {1}x{2}  ·  {3}
+auto	otomatik
+Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	Kamera {0}   arabellek {1}x{2}   döndürme {3} {4}   görünüm {5}x{6}\n{7}
+fill	doldur
+fit	sığdır
+Camera {0}  ({1}, sensor {2} deg)	Kamera {0}  ({1}, sensör {2} derece)
+Camera permission needed	Kamera izni gerekli
+No camera found - check the HDMI cable and the video receiver	Kamera bulunamadı - HDMI kablosunu ve video alıcıyı kontrol edin
+Opening camera {0}...	Kamera {0} açılıyor...
+Camera disconnected	Kamera bağlantısı kesildi
+Camera error {0}	Kamera hatası {0}
+Cannot open camera: {0}	Kamera açılamıyor: {0}
+No surface yet	Henüz yüzey yok
+Waiting for video...	Video bekleniyor...
+Preview failed: {0}	Önizleme başarısız: {0}
+Camera session failed	Kamera oturumu başarısız
+Session error: {0}	Oturum hatası: {0}
+PRE-FLIGHT CHECK	UÇUŞ ÖNCESİ KONTROL
+MENU	MENÜ
+Warning rules	Uyarı kuralları
+Pre-flight checks	Uçuş öncesi kontroller
+Sound rules: {0} error(s). Open the rules editor.	Ses kuralları: {0} hata. Kural düzenleyiciyi açın.
+Pre-flight checks: {0} error(s). Open Settings, then the checks.	Uçuş öncesi kontroller: {0} hata. Ayarlar'ı, sonra kontrolleri açın.
+Warning rules: {0} error(s). Open Settings, then the warning rules.	Uyarı kuralları: {0} hata. Ayarlar'ı, sonra uyarı kurallarını açın.
+NO VIDEO  ·  {0}	VİDEO YOK  ·  {0}
+TEST CHANNELS ARE ON - the radio is not being read\n	TEST KANALLARI AÇIK - kumanda okunmuyor\n
+NO SDK IN THIS BUILD - the radio is not being read\n	BU SÜRÜMDE SDK YOK - kumanda okunmuyor\n
+SDK IS NOT RUNNING - the radio is not being read\n	SDK ÇALIŞMIYOR - kumanda okunmuyor\n
+Android lists no cameras	Android hiç kamera listelemiyor
+Choose the HDMI camera	HDMI kamerayı seçin
+Speech is off	Konuşma kapalı
+Sound test	Ses testi
+Automatic ({0})	Otomatik ({0})
+Same as the app ({0})	Uygulamayla aynı ({0})
+The voice now speaks {0}.	Ses artık {0} konuşuyor.
+Installed: version {0} (build {1})   Channel: {2}	Yüklü: sürüm {0} (yapı {1})   Kanal: {2}
+Stable	Kararlı
+Nightly	Nightly
+Stable (tested releases only)	Kararlı (yalnızca test edilmiş sürümler)
+Nightly (newest build of every push)	Nightly (her push'un en yeni yapısı)
+top	üst
+bottom	alt
+BATTERY CRITICAL 3.48 V per cell	BATARYA KRİTİK 3.48 V hücre başına
+small	küçük
+medium	orta
+large	büyük
+bottom center	alt orta
+bottom left	sol alt
+bottom right	sağ alt
+top left	sol üst
+top right	sağ üst
+center	orta
+SPEED	HIZ
+HEIGHT	YÜKSEKLİK
+CURRENT	AKIM
+DISTANCE	MESAFE
+MIN LINK	MİN BAĞLANTI
+MIN CELL	MİN HÜCRE
+FLIGHT  	UÇUŞ  
+LAST FLIGHT  	SON UÇUŞ  
+READY	HAZIR
+NOT READY: 1 check failed	HAZIR DEĞİL: 1 kontrol başarısız
+NOT READY: {0} checks failed	HAZIR DEĞİL: {0} kontrol başarısız
+WAITING FOR DATA	VERİ BEKLENİYOR
+Arm switch channel (1 to 16, AUX1 is channel 5)	Arm anahtarı kanalı (1-16, AUX1 kanal 5'tir)
+Counts as armed at or above (microseconds)	Bu değer ve üzerinde arm sayılır (mikrosaniye)
+Counts as disarmed below (microseconds)	Bu değerin altında disarm sayılır (mikrosaniye)
+Cells in the pack (for the lowest volts per cell)	Paketteki hücre sayısı (en düşük hücre başına volt için)
+The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	İki eşik arasındaki boşluk, anahtara çarpılınca istatistiklerin arm/disarm olmasını önler. Anahtar 0.3 saniye yerinde kalmalıdır.
+Arm detection	Arm algılama
+Save	Kaydet
+Cancel	İptal
+The channel is 1 to 16	Kanal 1 ile 16 arasındadır
+Use microseconds, with the disarmed value not above the armed one	Mikrosaniye kullanın; disarm değeri arm değerinden büyük olmasın
+Cells: 1 to 12	Hücre: 1 ile 12
+Speed (now / maximum)	Hız (şimdi / en yüksek)
+Height above the arming point (now / maximum)	Arm noktasının üzerindeki yükseklik (şimdi / en yüksek)
+Current (now / peak, with a limit line)	Akım (şimdi / tepe, sınır çizgisiyle)
+Distance from home (now / maximum)	Eve uzaklık (şimdi / en yüksek)
+Lowest link quality	En düşük bağlantı kalitesi
+Lowest volts per cell	Hücre başına en düşük volt
+Current limit line (amps)	Akım sınır çizgisi (amper)
+Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.	Yükseklik, arm ettiğiniz yere göre GPS irtifasından gelir; birkaç metre hata olabilir. Akım sınır çizgisinin üzerine çıkınca çubuk kırmızıya döner.
+Flight statistics rows	Uçuş istatistik satırları
+The current limit is 5 to 300 amps	Akım sınırı 5 ile 300 amper arasındadır
+Left of the sticks	Stick'lerin solu
+Right of the sticks	Stick'lerin sağı
+on      channel      name on the overlay                 reverse	açık      kanal      ekrandaki ad                 ters
+A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	Bir çubuk, kanal değeriyle dolar. Gri-mavi = düşük, kehribar = orta, yeşil = yüksek. Adlar çubuk boyunca yazılır; kısa bir ad en iyi okunur.\n\nTers: kumandada ters çevrilmiş bir anahtar için işaretleyin; böylece çubuk anahtarı sizin çevirdiğiniz gibi gösterir (yukarı = dolu ve yeşil). Yalnızca görüntü değişir: ses ve uyarı kuralları yine gerçek kanal değerlerini kullanır.
+Channel bars	Kanal çubukları
+Defaults	Varsayılanlar
+Bar {0}: the channel must be 1 to 16	Çubuk {0}: kanal 1 ile 16 arasında olmalı
+Mode 1: left = pitch + yaw, right = throttle + roll	Mod 1: sol = pitch + yaw, sağ = gaz + roll
+Mode 2: left = throttle + yaw, right = pitch + roll	Mod 2: sol = gaz + yaw, sağ = pitch + roll
+Mode 3: left = throttle + roll, right = pitch + yaw	Mod 3: sol = gaz + roll, sağ = pitch + yaw
+Mode 4: left = pitch + roll, right = throttle + yaw	Mod 4: sol = pitch + roll, sağ = gaz + yaw
+Roll channel (1 to 16)	Roll kanalı (1-16)
+Pitch channel	Pitch kanalı
+Throttle channel	Gaz kanalı
+Yaw channel	Yaw kanalı
+Left stick up/down drawn reversed	Sol stick yukarı/aşağı ters çizilsin
+Left stick left/right drawn reversed	Sol stick sol/sağ ters çizilsin
+Right stick up/down drawn reversed	Sağ stick yukarı/aşağı ters çizilsin
+Right stick left/right drawn reversed	Sağ stick sol/sağ ters çizilsin
+The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	Stick'ler, kumandanın gönderdiği kanal değerlerini gösterir. Yaygın sıra: roll 1, pitch 2, gaz 3, yaw 4. Nokta yanlış yöne giderse bir yönü ters çevirin.
+Stick view	Stick görünümü
+Channels are numbers from 1 to 16	Kanallar 1 ile 16 arasında sayılardır
+Each of the four needs its own channel	Dördünün her biri kendi kanalına ihtiyaç duyar
+Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Android'de {0} sesi yüklü değil. Android Ayarları'nda Metinden konuşmaya çıkışı bölümünden yükleyin.
+Built without the RadioMaster SDK files (test channels only).	RadioMaster SDK dosyaları olmadan derlendi (yalnızca test kanalları).
+RadioMaster SDK: running.	RadioMaster SDK: çalışıyor.
+RadioMaster SDK: not running{0}.	RadioMaster SDK: çalışmıyor{0}.
+AX12 Video Monitor and Announcer, version {0}\n{1}	AX12 Video Monitörü ve Sesli Uyarı, sürüm {0}\n{1}
+Thanks to RadioMaster for publishing the AX SDK.	RadioMaster'a AX SDK'yı yayımladığı için teşekkürler.
+Sound rules saved	Ses kuralları kaydedildi
+This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	Bu cihazda dosya seçici yok, bu yüzden dosya buraya kaydedildi:\n{0}\n\nBir USB kablosu veya adb ile kopyalayın. İçe aktarmak için aynı adlı bir dosyayı o klasöre koyun.
+Could not save the rules: {0}	Kurallar kaydedilemedi: {0}
+No file picker, and no {0} to import	Dosya seçici yok ve içe aktarılacak {0} yok
+Could not open the file	Dosya açılamadı
+Could not read the file: {0}	Dosya okunamadı: {0}
+Cannot import	İçe aktarılamıyor
+Import sound rules	Ses kurallarını içe aktar
+The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Dosyada {0} var\n\nBu, mevcut kurallarınızın yerine geçer. Yedek olarak saklanır ve Ayarlar'dan geri yüklenebilir.
+Import	İçe aktar
+Imported {0} rules	{0} kural içe aktarıldı
+Sound rules	Ses kuralları
+Settings	Ayarlar
+Mute speech	Konuşmayı sustur
+Speech is OFF - tap to turn on	Konuşma KAPALI - açmak için dokunun
+test sliders	test kaydırıcıları
+test sliders (no radio)	test kaydırıcıları (kumanda yok)
+RadioMaster SDK	RadioMaster SDK
+This build has no RadioMaster SDK files (see the README)	Bu sürümde RadioMaster SDK dosyaları yok (README'ye bakın)
+SDK worker thread failed to start	SDK çalışan iş parçacığı başlatılamadı
+The SDK could not open the radio's serial link (see README: serial lock)	SDK, kumandanın seri bağlantısını açamadı (README'ye bakın: seri kilit)
+SDK start failed (code {0})	SDK başlatılamadı (kod {0})
+line {0}: missing '->'  ({1})	satır {0}: '->' eksik  ({1})
+line {0}: nothing before '->'	satır {0}: '->' öncesinde bir şey yok
+line {0}: nothing to say after '->'	satır {0}: '->' sonrasında söylenecek bir şey yok
+line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	satır {0}: '{1}' koşulu okunamadı  (şunları kullanın:  ch5 >= 1500   veya   vbat / 6 < 3.5   veya   fm ~ "RTH" )
+line {0}: cannot divide by zero  ({1})	satır {0}: sıfıra bölünemez  ({1})
+line {0}: bad value for {1} ({2})	satır {0}: {1} için geçersiz değer ({2})
+Add at least one condition.	En az bir koşul ekleyin.
+Pick a variable (letters, digits and _ only).	Bir değişken seçin (yalnızca harf, rakam ve _).
+Text can use is, is not or contains.	Metin için eşittir, eşit değildir veya içerir kullanılabilir.
+Text must not contain quotation marks.	Metin tırnak işareti içermemelidir.
+'contains' works on text variables only.	'içerir' yalnızca metin değişkenlerinde çalışır.
+Enter a value for {0}.	{0} için bir değer girin.
+'{0}' is not a number.	'{0}' bir sayı değil.
+The divisor cannot be 0.	Bölen 0 olamaz.
+Type what to say.	Söylenecek metni yazın.
+The spoken text cannot contain | or ->.	Konuşulan metin | veya -> içeremez.
+The spoken text cannot end with @number.	Konuşulan metin @sayı ile bitemez.
+The rule could not be read.	Kural okunamadı.
+{0} contains “{1}”	{0} “{1}” içeriyor
+{0} is “{1}”	{0} “{1}” değerinde
+{0} is not “{1}”	{0} “{1}” değil
+{0} or {1}	{0} veya {1}
+{0} and {1}	{0} ve {1}
+passes when {0}: ✓ “{1}”	{0} iken geçer: ✓ “{1}”
+CRITICAL	KRİTİK
+INFO	BİLGİ
+WARNING	UYARI
+, hides after {0} s	, {0} sn sonra gizlenir
+when {0}: show “{1}”	{0} olduğunda: “{1}” göster
+when {0}: say “{1}”	{0} olduğunda: “{1}” de
+, then “{0}” when it turns false	, sonra koşul yanlış olunca “{0}”
+, every {0} s while true	, doğru kaldıkça her {0} sn
+ (urgent)	 (acil)
+Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	Metin olarak kurallar - her satırda bir tane:   ch5 >= 1500 -> motorlar aktif | motorlar kapalı
+and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	and / or kullanılabilir.  ! = acil.  @10 = her 10 sn'de tekrar.  Ayarlar: hysteresis = 25, hold = 100, initial = on/off.  # = yorum.
+Check	Kontrol et
+Sample	Örnek
+Close	Kapat
+OK: {0} rules	Tamam: {0} kural
+The file is empty.	Dosya boş.
+The file is too large to be a rules file.	Dosya bir kural dosyası olamayacak kadar büyük.
+This does not look like a text file.	Bu bir metin dosyasına benzemiyor.
+No rules found in this file.	Bu dosyada kural bulunamadı.
+No usable rules found. First problem: {0}	Kullanılabilir kural bulunamadı. İlk sorun: {0}
+1 rule	1 kural
+{0} rules	{0} kural
+ ({0} switched off)	 ({0} kapalı)
+. 1 line has a problem and will not work. First: {0}	. 1 satırda sorun var ve çalışmayacak. İlki: {0}
+. {0} lines have a problem and will not work. First: {1}	. {0} satırda sorun var ve çalışmayacak. İlki: {1}
+, no problems found.	, sorun bulunamadı.
++ Add rule	+ Kural ekle
+Text editor	Metin düzenleyici
+Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	Her kontrol, siz arm etmeden önce koşulu doğruysa onay işareti, değilse çarpı gösterir. Soldaki anahtar, bir kontrolü silmeden kapatır.
+A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	Bir uyarı, koşulu doğru olduğu sürece durum çubuğunda görünür. Kritik = kırmızı ve yanıp söner, uyarı = sarı, bilgi = mavi. Soldaki anahtar, bir kuralı silmeden kapatır.
+A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	Bir kural, koşulu doğru olunca konuşur. Soldaki anahtar, bir kuralı silmeden kapatır.
+Speech is muted (MENU, Mute speech)	Konuşma sessize alındı (MENÜ, Konuşmayı sustur)
+No rules yet. Tap + Add rule.	Henüz kural yok. + Kural ekle'ye dokunun.
+Advanced rule (open the text editor): {0}	Gelişmiş kural (metin düzenleyiciyi açın): {0}
+Edit	Düzenle
+Test	Test
+Delete this rule?	Bu kural silinsin mi?
+Delete	Sil
+Channel hysteresis, microseconds (stops chatter near a switch threshold)	Kanal histerezisi, mikrosaniye (anahtar eşiği yakınında titremeyi önler)
+Voltage and link hysteresis, percent of the threshold	Voltaj ve bağlantı histerezisi, eşiğin yüzdesi
+Hold time, milliseconds (ignore changes shorter than this)	Bekleme süresi, milisaniye (bundan kısa değişiklikleri yok sayar)
+Speak rules that are already true at start-up	Başlangıçta zaten doğru olan kuralları seslendir
+Unit of the radio's channel numbers (auto is fine)	Kumandanın kanal sayılarının birimi (otomatik yeterli)
+Rule settings	Kural ayarları
+Enter numbers (0 or more)	Sayı girin (0 veya daha fazla)
+now: {0}	şimdi: {0}
+no value now	şu an değer yok
+Pick a channel or value	Bir kanal veya değer seçin
+≥ at least	≥ en az
+≤ at most	≤ en çok
+> above	> üstünde
+< below	< altında
+= equals	= eşittir
+≠ not equal	≠ eşit değil
+contains (text)	içerir (metin)
+variable (type, or tap List)	değişken (yazın veya Liste'ye dokunun)
+List	Liste
+  divide by	  bölen
+now: {0}{1}	şimdi: {0}{1}
+Level: INFO (blue)  - tap to change	Seviye: BİLGİ (mavi)  - değiştirmek için dokunun
+Level: CRITICAL (red, blinking)  - tap to change	Seviye: KRİTİK (kırmızı, yanıp söner)  - değiştirmek için dokunun
+Level: WARNING (amber)  - tap to change	Seviye: UYARI (sarı)  - değiştirmek için dokunun
+The timeout needs a number of seconds, 2 or more.	Zaman aşımı için 2 veya daha fazla saniye girin.
+Repeat needs a number of seconds, 2 or more.	Tekrar için 2 veya daha fazla saniye girin.
+No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	Henüz kanal değeri yok (kumanda bağlı mı? Ayarlar, Tanılama, Değişkenleri göster'i deneyin)
+Move the switch now...	Anahtarı şimdi hareket ettirin...
+No switch moved.	Hiçbir anahtar hareket etmedi.
+Detected {0} at {1}	{0} algılandı, değer {1}
+When	Ne zaman
+all of these are true	bunların hepsi doğru
+any of these is true	bunlardan biri doğru
++ condition	+ koşul
+Detect switch	Anahtarı algıla
+Check label (shown with a tick or a cross)	Kontrol etiketi (onay işareti veya çarpıyla gösterilir)
+Show in the status bar	Durum çubuğunda göster
+Say	Söyle
+label, for example GPS {sats} satellites	etiket, örneğin GPS {sats} uydu
+text, for example BATTERY {vbat/6:2} V	metin, örneğin BATARYA {vbat/6:2} V
+words to speak	söylenecek sözcükler
+Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	Canlı değerler: {vbat/6:2} = 2 ondalıkla hücre başına volt, {up_lq}, {sats}, {fm}
+Urgent (interrupts what is being said)	Acil (söylenmekte olanı keser)
+Also say something when it turns false	Koşul yanlış olunca da bir şey söyle
+words when it turns false	koşul yanlış olunca söylenecek sözcükler
+Hide after (seconds), even if the condition stays true	Şu kadar saniye sonra gizle, koşul doğru kalsa bile
+Repeat while it stays true, every (seconds)	Doğru kaldıkça tekrarla, her (saniye)
+The rule as text	Metin olarak kural
+New check	Yeni kontrol
+Edit check	Kontrolü düzenle
+New warning	Yeni uyarı
+Edit warning	Uyarıyı düzenle
+New rule	Yeni kural
+Edit rule	Kuralı düzenle
+Label now: {0}	Etiket şimdi: {0}
+   Size: {0}  (tap to change)	   Boyut: {0}  (değiştirmek için dokunun)
+   Position: {0}  (tap to change)	   Konum: {0}  (değiştirmek için dokunun)
+   Opacity: {0}  (tap to change)	   Opaklık: {0}  (değiştirmek için dokunun)
+Language: {0}  (tap to change)	Dil: {0}  (değiştirmek için dokunun)
+Speech language: {0}  (tap to change)	Konuşma dili: {0}  (değiştirmek için dokunun)
+The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Ekran ve ses farklı dilleri kullanabilir. Kurallarınız kendi sözcüklerini korur: "Kuralları varsayılanlara sıfırla" başlangıç kurallarını sesin diliyle yükler.
+Display	Ekran
+Always show the MENU button	MENÜ düğmesini her zaman göster
+Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
+Start-up splash screen (logo and version, 2 seconds)	Açılış ekranı (logo ve sürüm, 2 saniye)
+OSD overlays (drawn over the video)	OSD katmanları (videonun üzerine çizilir)
+Stick view: roll, pitch, yaw and throttle	Stick görünümü: roll, pitch, yaw ve gaz
+Stick size: {0}  (tap to change)	Stick boyutu: {0}  (değiştirmek için dokunun)
+Stick position: {0}  (tap to change)	Stick konumu: {0}  (değiştirmek için dokunun)
+Stick opacity: {0}  (tap to change)	Stick opaklığı: {0}  (değiştirmek için dokunun)
+Stick mode, channels and direction...	Stick modu, kanallar ve yön...
+Channel bars beside the sticks (aux switches)	Stick'lerin yanında kanal çubukları (aux anahtarları)
+Channel bars: names, channels, on and off...	Kanal çubukları: adlar, kanallar, açık ve kapalı...
+Tip: press and hold the stick view on the video to open the channel bars.	İpucu: kanal çubuklarını açmak için videodaki stick görünümüne basılı tutun.
+Warning status bar	Uyarı durum çubuğu
+Warning bar position: {0}  (tap to change)	Uyarı çubuğu konumu: {0}  (değiştirmek için dokunun)
+Edit the warning rules (thresholds and logic)...	Uyarı kurallarını düzenle (eşikler ve mantık)...
+Preview the warning bar (4 seconds)	Uyarı çubuğunu önizle (4 saniye)
+Warnings show while their condition is true, so thresholds and logic are yours to set.	Uyarılar koşulları doğru olduğu sürece görünür; eşikleri ve mantığı siz belirlersiniz.
+Flight overlays (statistics, radar, checklist)	Uçuş katmanları (istatistik, radar, kontrol listesi)
+The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing.	Arm anahtarı uçuşu başlatır ve bitirir: arm edince istatistikler sıfırlanır ve inişten sonra okunabilir kalır.
+Arm detection: channel, thresholds, cells in the pack...	Arm algılama: kanal, eşikler, paketteki hücreler...
+Flight statistics: max speed, max height, peak current	Uçuş istatistikleri: en yüksek hız, en yüksek irtifa, tepe akım
+Rows and current limit...	Satırlar ve akım sınırı...
+Radar map: home in the centre, your track and range rings	Radar haritası: ortada ev, izin ve mesafe halkaları
+Pre-flight checklist (shown while disarmed)	Uçuş öncesi kontrol listesi (disarm iken gösterilir)
+Edit the checks (thresholds and logic)...	Kontrolleri düzenle (eşikler ve mantık)...
+Video	Video
+Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (HDMI girişini seçmek için dokunun)
+Rotate video: now {0} degrees  (tap to turn 90)	Videoyu döndür: şimdi {0} derece  (90 çevirmek için dokunun)
+Scale: {0}  (tap to change)	Ölçek: {0}  (değiştirmek için dokunun)
+fill (stretch)	doldur (esnet)
+Speech	Konuşma
+Speech on	Konuşma açık
+Speak a test sentence	Bir deneme cümlesi söyle
+Export sound rules to a file...	Ses kurallarını dosyaya aktar...
+Import sound rules from a file...	Ses kurallarını dosyadan içe aktar...
+Restore the rules from before the last import, reset or restore	Son içe aktarma, sıfırlama veya geri yüklemeden önceki kuralları geri yükle
+Swap back to the previous rules? The current rules are kept, so you can swap again.	Önceki kurallara dönülsün mü? Mevcut kurallar saklanır, tekrar değiştirebilirsiniz.
+Restore	Geri yükle
+Reset the rules to the defaults	Kuralları varsayılanlara sıfırla
+Replace your rules with the defaults? Your current rules are kept as a backup.	Kurallarınız varsayılanlarla değiştirilsin mi? Mevcut kurallarınız yedek olarak saklanır.
+Reset	Sıfırla
+Edit the rules as text (advanced)	Kuralları metin olarak düzenle (gelişmiş)
+Diagnostics	Tanılama
+Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
+Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
+Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
+Updates (from GitHub)	Güncellemeler (GitHub'dan)
+Check for updates now	Güncellemeleri şimdi denetle
+Channel: {0}  (tap to change)	Kanal: {0}  (değiştirmek için dokunun)
+Check at start-up (needs internet)	Açılışta denetle (internet gerekir)
+Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android her güncellemeyi onaylamanızı ister. İlk seferde ayrıca AX-HUD'dan kuruluma izin vermenizi ister. Uçuş sırasında asla güncellemeyin.
+About	Hakkında
+AX12 video monitor, HUD and announcer	AX12 video monitör, HUD ve sesli uyarı
+AX-HUD  version {0}  (build {1})	AX-HUD  sürüm {0}  (yapı {1})
+Use {variable} for a live value, for example {vbat/6:2}.	Canlı değer için {variable} kullanın, örneğin {vbat/6:2}.
+A divisor in { } cannot be 0.	{ } içindeki bölen 0 olamaz.
+Cancelled	İptal edildi
+Only https:// addresses are allowed	Yalnızca https:// adreslerine izin verilir
+Not a valid address	Geçerli bir adres değil
+The server answered {0}	Sunucu şu yanıtı verdi: {0}
+The answer is too large	Yanıt çok büyük
+The file is too large	Dosya çok büyük
+The file has an unexpected size	Dosyanın boyutu beklenmedik
+The download is incomplete or the wrong size	İndirme eksik veya boyutu yanlış
+The checksum does not match: the file is damaged or not the published one	Sağlama toplamı eşleşmiyor: dosya bozuk veya yayımlanan dosya değil
+Cannot replace the old file	Eski dosyanın yerine yazılamıyor
+Cannot save the file	Dosya kaydedilemiyor
+SHA-256 is not available	SHA-256 kullanılamıyor
+Already checking	Zaten denetleniyor
+Looking for an update on github.com ...	github.com'da güncelleme aranıyor ...
+The update information could not be read	Güncelleme bilgisi okunamadı
+No connection	Bağlantı yok
+No build has been published on this channel yet.	Bu kanalda henüz yayımlanmış bir yapı yok.
+Could not check: {0}\n\nIs the phone hotspot on?	Denetlenemedi: {0}\n\nTelefon hotspot'u açık mı?
+no connection	bağlantı yok
+Updates	Güncellemeler
+You have the latest build: version {0} (build {1})	En son yapıya sahipsiniz: sürüm {0} (yapı {1})
+AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD güncellemesi var: {0} (yapı {1}). Ayarlar'ı, sonra Güncellemeler'i açın.
+Update available	Güncelleme var
+New: version {0} (build {1}, {2} MB)\nInstalled: version {3} (build {4}){5}\n\nDo not do this during a flight.	Yeni: sürüm {0} (yapı {1}, {2} MB)\nYüklü: sürüm {3} (yapı {4}){5}\n\nBunu uçuş sırasında yapmayın.
+Download and install	İndir ve yükle
+Later	Sonra
+Starting ...	Başlatılıyor ...
+Downloading {0}	{0} indiriliyor
+Download failed	İndirme başarısız
+Allow installing	Kurulumlara izin ver
+Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android, AX-HUD bir güncellemeyi kurmadan önce izninizi ister. Sayfayı açın, AX-HUD için açın, geri dönüp güncellemeyi yeniden çalıştırın. İndirilen dosya saklanır, bu yüzden iki kez indirilmez.
+Open the page	Sayfayı aç
+Could not start the installation	Kurulum başlatılamadı
+unknown error	bilinmeyen hata
+Updated. The app will reopen.	Güncellendi. Uygulama yeniden açılacak.
+Installation cancelled	Kurulum iptal edildi
+\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\nKurulu kopya farklı bir anahtarla imzalanmış. Kurallarınızı dışa aktarın (Ayarlar), AX-HUD'ı bir kez kaldırın ve bu yapıyı kurun; bundan sonra güncellemeler çalışır. UPDATES.md dosyasına bakın.
+\n\nThis build is older than the installed one.	\n\nBu yapı, kurulu olandan daha eski.
+Installation stopped	Kurulum durdu
+Android did not say why (code {0}).	Android nedenini belirtmedi (kod {0}).
+battery volts (flight controller); divide by the cell count for volts per cell	batarya voltu (uçuş kontrolcüsü); hücre başına volt için hücre sayısına bölün
+battery current, amps	batarya akımı, amper
+capacity used, mAh	kullanılan kapasite, mAh
+battery remaining, percent	kalan batarya, yüzde
+uplink link quality, percent (0 = no link)	uplink bağlantı kalitesi, yüzde (0 = bağlantı yok)
+uplink signal strength, antenna 1, dBm (negative)	uplink sinyal gücü, anten 1, dBm (negatif)
+uplink signal strength, antenna 2, dBm (negative)	uplink sinyal gücü, anten 2, dBm (negatif)
+uplink signal to noise, dB	uplink sinyal/gürültü, dB
+downlink link quality, percent	downlink bağlantı kalitesi, yüzde
+downlink signal strength, dBm	downlink sinyal gücü, dBm
+downlink signal to noise, dB	downlink sinyal/gürültü, dB
+ExpressLRS packet rate mode number	ExpressLRS paket hızı modu numarası
+transmitter power, mW	verici gücü, mW
+link quality from the radio, percent	kumandadan bağlantı kalitesi, yüzde
+signal strength from the radio	kumandadan sinyal gücü
+radio's lost-frame counter	kumandanın kayıp kare sayacı
+radio battery volts	kumanda batarya voltu
+receiver volts	alıcı voltu
+telemetry present: 1 yes, 0 lost	telemetri var: 1 evet, 0 kayıp
+GPS satellites	GPS uyduları
+ground speed, km/h	yer hızı, km/s
+GPS altitude, metres	GPS irtifası, metre
+GPS heading, degrees	GPS yönü, derece
+latitude	enlem
+longitude	boylam
+pitch angle, degrees	pitch açısı, derece
+roll angle, degrees	roll açısı, derece
+yaw / heading, degrees	yaw / yön, derece
+climb rate, m/s	tırmanma hızı, m/s
+flight mode name from the flight controller (text)	uçuş kontrolcüsünden uçuş modu adı (metin)
+Switches and sticks (channels, 1000 to 2000)	Anahtarlar ve stick'ler (kanallar, 1000 - 2000)
+Battery (from the flight controller)	Batarya (uçuş kontrolcüsünden)
+Link quality and signal	Bağlantı kalitesi ve sinyal
+Radio status	Kumanda durumu
+GPS and attitude	GPS ve duruş
+Flight mode (text)	Uçuş modu (metin)
+Other values from the radio	Kumandadan diğer değerler
+Advanced: the radio's own channel numbers	Gelişmiş: kumandanın kendi kanal sayıları
+Advanced: the radio's logic values	Gelişmiş: kumandanın mantık değerleri
+channel {0}, 1000 to 2000 microseconds	kanal {0}, 1000 - 2000 mikrosaniye
+the radio's own channel number	kumandanın kendi kanal sayısı
+the radio's logic value	kumandanın mantık değeri

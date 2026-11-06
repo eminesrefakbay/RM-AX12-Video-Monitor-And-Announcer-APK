@@ -1,6 +1,8 @@
 <p align="center"><img src="docs/logo.png" width="160" alt="AX-HUD logo"></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.7.1)
+<p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
+
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.8.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -10,14 +12,24 @@
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
 * only **reads** from the radio. It never writes a setting.
 
-## Status (v0.2)
+## Status
+
+Built and tested by its author on one setup: **RadioMaster AX12 (Android 9, October 2026 system update), INAV 9.1, ExpressLRS**.
+It works there: video, spoken announcements, warning bar, overlays, updates from GitHub. It has been checked that the
+control link stays clean while the app starts, runs and is force-stopped. Other radios, firmware versions and flight
+controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, see "Serial lock") is the one that works on the AX12.
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 372 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 482 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
-| Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
-| Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
+| Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
+
+## Languages
+
+English, Turkish, German and Simplified Chinese: *Settings > Language* (Automatic follows Android). The voice can speak a
+different language than the screen. German and Chinese have not been checked by native speakers yet; see
+**[TRANSLATING.md](TRANSLATING.md)** to improve a text.
 
 ## Flight overlays: statistics, radar and pre-flight checklist
 
@@ -198,3 +210,8 @@ drone, the gauge and the name. The launcher icons are built from it. Android 8 a
 an adaptive icon: navy background and the artwork as the foreground, kept inside the safe zone so every launcher shape
 shows it whole. Older Android versions get the full design. The logo has no third-party logos in it, and every edge is
 pure navy (no light fringe).
+
+## Acknowledgments
+
+Thanks to **RadioMaster** for publishing the AX SDK that makes this app possible. AX-HUD is an independent project and is not
+affiliated with RadioMaster. The app also includes the Qt libraries that come with the SDK (LGPL).

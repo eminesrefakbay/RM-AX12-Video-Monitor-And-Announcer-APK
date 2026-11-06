@@ -6,7 +6,7 @@ import android.content.Context
 object Prefs {
     private fun p(c: Context) = c.getSharedPreferences("ax12announcer", Context.MODE_PRIVATE)
 
-    fun rules(c: Context): String = p(c).getString("rules", null) ?: DefaultRules.TEXT
+    fun rules(c: Context): String = p(c).getString("rules", null) ?: DefaultRules.text(c)
     fun setRules(c: Context, text: String) { p(c).edit().putString("rules", text).apply() }
 
     fun cameraId(c: Context): String? = p(c).getString("camera", null)
@@ -23,10 +23,10 @@ object Prefs {
     fun setRulesBackup(c: Context, text: String) { p(c).edit().putString("rulesBackup", text).apply() }
 
     // ---- warning rules and overlays ----
-    fun warningRules(c: Context): String = p(c).getString("warnRules", null) ?: DefaultWarnings.TEXT
+    fun warningRules(c: Context): String = p(c).getString("warnRules", null) ?: DefaultWarnings.text()
     fun setWarningRules(c: Context, text: String) { p(c).edit().putString("warnRules", text).apply() }
 
-    fun checkRules(c: Context): String = p(c).getString("checkRules", null) ?: DefaultChecks.TEXT
+    fun checkRules(c: Context): String = p(c).getString("checkRules", null) ?: DefaultChecks.text()
     fun setCheckRules(c: Context, text: String) { p(c).edit().putString("checkRules", text).apply() }
 
     fun barsConfig(c: Context): String = p(c).getString("barsConfig", null) ?: AuxBars.encode(AuxBars.defaults())
@@ -39,6 +39,13 @@ object Prefs {
 
     fun updateChannel(c: Context): String = if (p(c).getString("updateChannel", "nightly") == "stable") "stable" else "nightly"
     fun setUpdateChannel(c: Context, ch: String) { p(c).edit().putString("updateChannel", ch).apply() }
+
+    /** "auto" (follow Android), or en / tr / de / zh */
+    fun language(c: Context): String = p(c).getString("language", "auto") ?: "auto"
+    fun setLanguage(c: Context, code: String) { p(c).edit().putString("language", code).apply() }
+    /** "same" (as the app), or en / tr / de / zh */
+    fun speechLanguage(c: Context): String = p(c).getString("speechLanguage", "same") ?: "same"
+    fun setSpeechLanguage(c: Context, code: String) { p(c).edit().putString("speechLanguage", code).apply() }
 
     fun rotation(c: Context): Int = p(c).getInt("rotation", 0)
     fun setRotation(c: Context, deg: Int) { p(c).edit().putInt("rotation", deg).apply() }

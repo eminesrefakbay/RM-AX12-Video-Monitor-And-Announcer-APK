@@ -1,0 +1,30 @@
+# eine Regel pro Zeile:   Bedingung -> gesprochener Text
+# optional:  Text | Text, wenn die Bedingung falsch wird     ! = dringend     @10 = alle 10 s wiederholen
+hysteresis = 25
+var_hysteresis = 1
+hold = 100
+initial = off
+scale = auto
+
+# --- Schalter (INAV-Modusbereiche, Kanalnummern = RC-Kanäle, 1000..2000 us) ---
+ch5 >= 1950 -> Motoren scharf | Motoren gesichert
+ch6 >= 1950 -> Angle-Modus
+ch6 >= 1450 and ch6 <= 1550 -> Horizon-Modus
+ch7 >= 1875 -> !Rückkehr nach Hause | Rückkehr aus
+ch10 <= 1125 or ch10 >= 1875 -> Positionshaltung | Positionshaltung aus
+ch10 >= 1950 -> Höhenhaltung
+ch9 <= 1100 -> Airmode an | Airmode aus
+
+# --- Akku, Volt pro Zelle (6S): der Wert des Flugcontrollers, wie im OSD ---
+# Li-ion-Landung etwa 3,6 V: Warnung 3.70, kritisch 3.55.  Für LiPo 3.85 / 3.70 verwenden.
+# "vbat > 12" hält die kritische Warnung still, wenn der Flugcontroller nur über USB versorgt wird (vbat = 0).
+vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> Akku niedrig @30
+vbat / 6 < 3.55 and vbat > 12 -> !Akku kritisch @10
+
+# --- Verbindung: nur bei eingeschaltetem Arm-Schalter (ch5), damit ein stromloses Fluggerät still bleibt ---
+up_lq < 70 and ch5 >= 1950 -> Verbindungsqualität niedrig
+up_lq < 40 and ch5 >= 1950 -> !Verbindung kritisch @5
+tlm == 0 and ch5 >= 1950 -> !Telemetrie verloren
+
+# --- der eigene Flugmodus des Flugcontrollers (genaue Namen unter Einstellungen > Diagnose > Variablen anzeigen prüfen) ---
+fm ~ "RTH" -> Rückkehr nach Hause aktiv

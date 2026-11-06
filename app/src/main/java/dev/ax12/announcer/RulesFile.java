@@ -42,12 +42,12 @@ public final class RulesFile {
     /** What the file contains, and whether it can be imported. */
     public static Summary inspect(String text) {
         List<String> none = new ArrayList<String>();
-        if (text == null || text.trim().isEmpty()) return new Summary(0, 0, none, false, "The file is empty.");
-        if (text.length() > MAX_CHARS) return new Summary(0, 0, none, false, "The file is too large to be a rules file.");
+        if (text == null || text.trim().isEmpty()) return new Summary(0, 0, none, false, I18n.t("The file is empty."));
+        if (text.length() > MAX_CHARS) return new Summary(0, 0, none, false, I18n.t("The file is too large to be a rules file."));
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == 0 || (c < 32 && c != '\n' && c != '\r' && c != '\t')) {
-                return new Summary(0, 0, none, false, "This does not look like a text file.");
+                return new Summary(0, 0, none, false, I18n.t("This does not look like a text file."));
             }
         }
         String clean = normalize(text);
@@ -56,17 +56,17 @@ public final class RulesFile {
         for (RuleText.Item it : RuleText.parse(clean)) if (it.kind == RuleText.Kind.DISABLED_RULE) disabled++;
         int rules = r.rules.size();
         if (rules == 0 && disabled == 0) {
-            String why = r.errors.isEmpty() ? "No rules found in this file." : "No usable rules found. First problem: " + r.errors.get(0);
+            String why = r.errors.isEmpty() ? I18n.t("No rules found in this file.") : I18n.t("No usable rules found. First problem: {0}", r.errors.get(0));
             return new Summary(0, 0, r.errors, false, why);
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(rules).append(rules == 1 ? " rule" : " rules");
-        if (disabled > 0) sb.append(" (").append(disabled).append(" switched off)");
+        sb.append(rules == 1 ? I18n.t("1 rule") : I18n.t("{0} rules", rules));
+        if (disabled > 0) sb.append(I18n.t(" ({0} switched off)", disabled));
         if (!r.errors.isEmpty()) {
-            sb.append(". ").append(r.errors.size()).append(r.errors.size() == 1 ? " line has" : " lines have")
-              .append(" a problem and will not work. First: ").append(r.errors.get(0));
+            sb.append(r.errors.size() == 1 ? I18n.t(". 1 line has a problem and will not work. First: {0}", r.errors.get(0))
+                                           : I18n.t(". {0} lines have a problem and will not work. First: {1}", r.errors.size(), r.errors.get(0)));
         } else {
-            sb.append(", no problems found.");
+            sb.append(I18n.t(", no problems found."));
         }
         return new Summary(rules, disabled, r.errors, true, sb.toString());
     }

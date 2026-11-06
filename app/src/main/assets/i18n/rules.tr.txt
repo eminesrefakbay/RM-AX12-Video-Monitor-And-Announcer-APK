@@ -1,0 +1,30 @@
+# her satır bir kural:   koşul -> söylenecek metin
+# isteğe bağlı:  metin | koşul yanlış olunca söylenecek metin     ! = acil     @10 = her 10 sn'de tekrar
+hysteresis = 25
+var_hysteresis = 1
+hold = 100
+initial = off
+scale = auto
+
+# --- anahtarlar (INAV mod aralıkları, kanal numaraları = RC kanalları, 1000..2000 us) ---
+ch5 >= 1950 -> motorlar aktif | motorlar kapalı
+ch6 >= 1950 -> açı modu
+ch6 >= 1450 and ch6 <= 1550 -> ufuk modu
+ch7 >= 1875 -> !eve dönüş | eve dönüş kapalı
+ch10 <= 1125 or ch10 >= 1875 -> konum tutma | konum tutma kapalı
+ch10 >= 1950 -> irtifa tutma
+ch9 <= 1100 -> airmode açık | airmode kapalı
+
+# --- batarya, hücre başına volt (6S): uçuş kontrolcüsünün değeri, OSD'de görünenle aynı ---
+# Li-ion inişi yaklaşık 3.6 V: uyarı 3.70, kritik 3.55.  LiPo için 3.85 / 3.70 kullanın.
+# "vbat > 12", uçuş kontrolcüsü yalnızca USB'den beslenirken (vbat = 0) kritik uyarıyı susturur.
+vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> batarya düşük @30
+vbat / 6 < 3.55 and vbat > 12 -> !batarya kritik @10
+
+# --- bağlantı: yalnızca arm anahtarı açıkken (ch5), böylece enerjisiz hava aracı sessiz kalır ---
+up_lq < 70 and ch5 >= 1950 -> bağlantı kalitesi düşük
+up_lq < 40 and ch5 >= 1950 -> !bağlantı kritik @5
+tlm == 0 and ch5 >= 1950 -> !telemetri kayboldu
+
+# --- uçuş kontrolcüsünün kendi uçuş modu (tam adları Ayarlar > Tanılama > Değişkenleri göster altından kontrol edin) ---
+fm ~ "RTH" -> eve dönüş aktif

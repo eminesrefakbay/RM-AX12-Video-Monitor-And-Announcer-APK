@@ -42,7 +42,7 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
 
     @Volatile var lastFrameMs = 0L
         private set
-    @Volatile private var message = "Starting..."
+    @Volatile private var message = tr("Starting...")
 
     var rotation: Int = Prefs.rotation(activity)
         private set
@@ -59,7 +59,7 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     /** How the video is arriving, from the app's side: frame rate and the gaps between frames. */
     fun videoStats(): String {
         val s = timing.summary(SystemClock.elapsedRealtime())
-        return String.format(java.util.Locale.US, "video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)",
+        return String.format(java.util.Locale.US, tr("video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)"),
             s.perSecond, s.p95Ms, s.maxMs)
     }
 
@@ -99,11 +99,10 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     }
 
     /** One short line for the status bar shown when there is no video. */
-    fun barText(): String = "Camera " + (cameraId ?: "auto") + "  " + bufW + "x" + bufH + "  \u00B7  " + message
+    fun barText(): String = tr("Camera {0}  {1}x{2}  \u00B7  {3}", (cameraId ?: tr("auto")), bufW, bufH, message)
 
     /** One line for the "NO VIDEO" panel. */
-    fun statusLine(): String = "Camera " + (cameraId ?: "auto") + "   buffer " + bufW + "x" + bufH +
-            "   rotation " + rotation + (if (fill) " fill" else " fit") + "   view " + view.width + "x" + view.height + "\n" + message
+    fun statusLine(): String = tr("Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}", (cameraId ?: tr("auto")), bufW, bufH, rotation, (if (fill) tr("fill") else tr("fit")), view.width, view.height, message)
 
     /** (id, description) of every camera Android shows. Pick the HDMI input here. */
     fun listCameras(): List<Pair<String, String>> {
@@ -117,7 +116,7 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
                 else -> "?"
             }
             val orient = c.get(CameraCharacteristics.SENSOR_ORIENTATION)
-            out.add(Pair(id, "Camera " + id + "  (" + facing + ", sensor " + orient + " deg)"))
+            out.add(Pair(id, tr("Camera {0}  ({1}, sensor {2} deg)", id, facing, orient)))
         }
         return out
     }
@@ -148,18 +147,18 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     private fun openCamera() {
         if (!running || device != null) return
         if (activity.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            message = "Camera permission needed"
+            message = tr("Camera permission needed")
             return
         }
         val id = chooseCameraId()
         if (id == null) {
-            message = "No camera found - check the HDMI cable and the video receiver"
+            message = tr("No camera found - check the HDMI cable and the video receiver")
             scheduleRetry()
             return
         }
         try {
             chooseSize(id)
-            message = "Opening camera " + id + "..."
+            message = tr("Opening camera {0}...", id)
             manager.openCamera(id, object : CameraDevice.StateCallback() {
                 override fun onOpened(d: CameraDevice) {
                     device = d
@@ -168,18 +167,18 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
                 override fun onDisconnected(d: CameraDevice) {
                     d.close()
                     device = null
-                    message = "Camera disconnected"
+                    message = tr("Camera disconnected")
                     scheduleRetry()
                 }
                 override fun onError(d: CameraDevice, error: Int) {
                     d.close()
                     device = null
-                    message = "Camera error " + error
+                    message = tr("Camera error {0}", error)
                     scheduleRetry()
                 }
             }, handler)
         } catch (e: Exception) {
-            message = "Cannot open camera: " + e.message
+            message = tr("Cannot open camera: {0}", e.message)
             scheduleRetry()
         }
     }
@@ -187,7 +186,7 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     private fun startSession(d: CameraDevice) {
         val st = view.surfaceTexture
         if (st == null) {
-            message = "No surface yet"
+            message = tr("No surface yet")
             scheduleRetry()
             return
         }
@@ -201,19 +200,19 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
                     session = s
                     try {
                         s.setRepeatingRequest(request.build(), null, handler)
-                        message = "Waiting for video..."
+                        message = tr("Waiting for video...")
                     } catch (e: Exception) {
-                        message = "Preview failed: " + e.message
+                        message = tr("Preview failed: {0}", e.message)
                         scheduleRetry()
                     }
                 }
                 override fun onConfigureFailed(s: CameraCaptureSession) {
-                    message = "Camera session failed"
+                    message = tr("Camera session failed")
                     scheduleRetry()
                 }
             }, handler)
         } catch (e: Exception) {
-            message = "Session error: " + e.message
+            message = tr("Session error: {0}", e.message)
             scheduleRetry()
         }
         main.post { applyTransform() }

@@ -152,7 +152,7 @@ public class FlightTests {
         RuleText.Spec cs = RuleText.fromLine("sats >= 10 -> GPS {sats} satellites");
         check(RuleText.describeCheck(cs).startsWith("passes when sats \u2265 10: \u2713 "), "check description: " + RuleText.describeCheck(cs));
         // the shipped defaults
-        String dc = readQuoted("app/src/main/java/dev/ax12/announcer/DefaultChecks.kt");
+        String dc = readFile("app/src/main/assets/i18n/checks.en.txt");
         RuleParser.Result dcp = RuleParser.parse(dc);
         check(!dc.isEmpty() && dcp.errors.isEmpty() && dcp.rules.size() == 6, "default checks parse: " + dcp.errors + " " + dcp.rules.size());
         int editable = 0;
@@ -171,11 +171,9 @@ public class FlightTests {
         System.exit(failures == 0 ? 0 : 1);
     }
 
-    static String readQuoted(String path) {
+    static String readFile(String path) {
         try {
-            String src = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(path)), java.nio.charset.StandardCharsets.UTF_8);
-            int a = src.indexOf("\"\"\"") + 3, b = src.indexOf("\"\"\"", a);
-            return src.substring(a, b);
+            return new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(path)), java.nio.charset.StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "";
         }

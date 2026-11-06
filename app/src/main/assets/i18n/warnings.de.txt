@@ -1,0 +1,17 @@
+# Warnungen für die Statusleiste:   Bedingung -> Text      (angezeigt, solange die Bedingung wahr ist)
+# !Text = kritisch (rot)    Text = Warnung (gelb)    *Text = Info (blau)
+# Live-Werte im Text: {vbat/6:2} = Volt pro Zelle, {up_lq}, {sats}, {fm}
+# @5 am Ende = nach 5 Sekunden ausblenden, auch wenn die Bedingung wahr bleibt (erscheint wieder, wenn sie erneut wahr wird)
+hysteresis = 25
+var_hysteresis = 1
+hold = 300
+scale = auto
+
+vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> AKKU NIEDRIG {vbat/6:2} V pro Zelle
+vbat / 6 < 3.55 and vbat > 12 -> !AKKU KRITISCH {vbat/6:2} V pro Zelle
+up_lq < 70 and up_lq >= 40 and ch5 >= 1950 -> VERBINDUNGSQUALITÄT {up_lq}%
+up_lq < 40 and ch5 >= 1950 -> !VERBINDUNG KRITISCH {up_lq}%
+tlm == 0 and ch5 >= 1950 -> !TELEMETRIE VERLOREN
+sats < 8 and sats > 0 -> GPS {sats} SATELLITEN
+fm ~ "RTH" -> !RÜCKKEHR NACH HAUSE
+ch5 >= 1950 -> *MOTOREN SCHARF @5

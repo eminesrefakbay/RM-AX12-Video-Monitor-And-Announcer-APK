@@ -40,6 +40,12 @@ interface SettingsHost {
     fun setTestChannelsOn(on: Boolean)
     fun about(): String
 
+    // languages
+    fun languageLabel(): String
+    fun cycleLanguage()
+    fun speechLanguageLabel(): String
+    fun cycleSpeechLanguage()
+
     // OSD overlays
     fun sticksOn(): Boolean
     fun setSticksOn(on: Boolean)
@@ -106,13 +112,13 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
         val title = TextView(activity)
-        title.text = "Settings"
+        title.text = tr("Settings")
         title.textSize = 22f
         title.setTextColor(Color.WHITE)
         title.setTypeface(null, Typeface.BOLD)
         bar.addView(title, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         val close = Button(activity)
-        close.text = "Close"
+        close.text = tr("Close")
         close.setOnClickListener { hide() }
         bar.addView(close)
         root.addView(bar)
@@ -172,15 +178,15 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             refresh()
         }
         if (host.tileOn(tile)) {
-            action("   Size: " + host.tileSizeLabel(tile) + "  (tap to change)") {
+            action(tr("   Size: {0}  (tap to change)", host.tileSizeLabel(tile))) {
                 host.cycleTileSize(tile)
                 refresh()
             }
-            action("   Position: " + host.tilePositionLabel(tile) + "  (tap to change)") {
+            action(tr("   Position: {0}  (tap to change)", host.tilePositionLabel(tile))) {
                 host.cycleTilePosition(tile)
                 refresh()
             }
-            action("   Opacity: " + host.tileOpacityLabel(tile) + "  (tap to change)") {
+            action(tr("   Opacity: {0}  (tap to change)", host.tileOpacityLabel(tile))) {
                 host.cycleTileOpacity(tile)
                 refresh()
             }
@@ -202,7 +208,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             AlertDialog.Builder(activity)
                 .setMessage(message)
                 .setPositiveButton(positive) { _, _ -> onYes() }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(tr("Cancel"), null)
                 .create()
         )
     }
@@ -212,102 +218,110 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
     fun refresh() {
         list.removeAllViews()
 
-        section("Display")
-        toggle("Always show the MENU button", host.menuAlways()) { host.setMenuAlways(it) }
-        note("Off: the button hides and appears when you touch the screen.")
-        toggle("Start-up splash screen (logo and version, 2 seconds)", host.splashOn()) { host.setSplashOn(it) }
+        section("Language / Dil / Sprache / \u8BED\u8A00")
+        action(tr("Language: {0}  (tap to change)", host.languageLabel())) { host.cycleLanguage() }
+        action(tr("Speech language: {0}  (tap to change)", host.speechLanguageLabel())) {
+            host.cycleSpeechLanguage()
+            refresh()
+        }
+        note(tr("The screen and the voice can use different languages. Your rules keep their own words: \"Reset the rules to the defaults\" loads the starting rules in the voice's language."))
 
-        section("OSD overlays (drawn over the video)")
-        toggle("Stick view: roll, pitch, yaw and throttle", host.sticksOn()) {
+        section(tr("Display"))
+        toggle(tr("Always show the MENU button"), host.menuAlways()) { host.setMenuAlways(it) }
+        note(tr("Off: the button hides and appears when you touch the screen."))
+        toggle(tr("Start-up splash screen (logo and version, 2 seconds)"), host.splashOn()) { host.setSplashOn(it) }
+
+        section(tr("OSD overlays (drawn over the video)"))
+        toggle(tr("Stick view: roll, pitch, yaw and throttle"), host.sticksOn()) {
             host.setSticksOn(it)
             refresh()
         }
         if (host.sticksOn()) {
-            action("Stick size: " + host.sticksSizeLabel() + "  (tap to change)") {
+            action(tr("Stick size: {0}  (tap to change)", host.sticksSizeLabel())) {
                 host.cycleSticksSize()
                 refresh()
             }
-            action("Stick position: " + host.sticksPositionLabel() + "  (tap to change)") {
+            action(tr("Stick position: {0}  (tap to change)", host.sticksPositionLabel())) {
                 host.cycleSticksPosition()
                 refresh()
             }
-            action("Stick opacity: " + host.sticksOpacityLabel() + "  (tap to change)") {
+            action(tr("Stick opacity: {0}  (tap to change)", host.sticksOpacityLabel())) {
                 host.cycleSticksOpacity()
                 refresh()
             }
         }
-        action("Stick mode, channels and direction...") { host.editStickChannels() }
-        toggle("Channel bars beside the sticks (aux switches)", host.channelBarsOn()) { host.setChannelBarsOn(it) }
-        action("Channel bars: names, channels, on and off...") { host.editChannelBars() }
-        note("Tip: press and hold the stick view on the video to open the channel bars.")
-        toggle("Warning status bar", host.warningBarOn()) { host.setWarningBarOn(it) }
-        action("Warning bar position: " + host.warningBarPositionLabel() + "  (tap to change)") {
+        action(tr("Stick mode, channels and direction...")) { host.editStickChannels() }
+        toggle(tr("Channel bars beside the sticks (aux switches)"), host.channelBarsOn()) { host.setChannelBarsOn(it) }
+        action(tr("Channel bars: names, channels, on and off...")) { host.editChannelBars() }
+        note(tr("Tip: press and hold the stick view on the video to open the channel bars."))
+        toggle(tr("Warning status bar"), host.warningBarOn()) { host.setWarningBarOn(it) }
+        action(tr("Warning bar position: {0}  (tap to change)", host.warningBarPositionLabel())) {
             host.cycleWarningBarPosition()
             refresh()
         }
-        action("Edit the warning rules (thresholds and logic)...") { host.editWarningRules() }
-        action("Preview the warning bar (4 seconds)") { host.previewWarnings() }
-        note("Warnings show while their condition is true, so thresholds and logic are yours to set.")
+        action(tr("Edit the warning rules (thresholds and logic)...")) { host.editWarningRules() }
+        action(tr("Preview the warning bar (4 seconds)")) { host.previewWarnings() }
+        note(tr("Warnings show while their condition is true, so thresholds and logic are yours to set."))
 
-        section("Flight overlays (statistics, radar, checklist)")
-        note("The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing.")
-        action("Arm detection: channel, thresholds, cells in the pack...") { host.editArmDetection() }
-        tileControls("stats", "Flight statistics: max speed, max height, peak current") {
-            action("Rows and current limit...") { host.editStatsRows() }
+        section(tr("Flight overlays (statistics, radar, checklist)"))
+        note(tr("The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing."))
+        action(tr("Arm detection: channel, thresholds, cells in the pack...")) { host.editArmDetection() }
+        tileControls("stats", tr("Flight statistics: max speed, max height, peak current")) {
+            action(tr("Rows and current limit...")) { host.editStatsRows() }
         }
-        tileControls("radar", "Radar map: home in the centre, your track and range rings") {}
-        tileControls("check", "Pre-flight checklist (shown while disarmed)") {
-            action("Edit the checks (thresholds and logic)...") { host.editCheckRules() }
+        tileControls("radar", tr("Radar map: home in the centre, your track and range rings")) {}
+        tileControls("check", tr("Pre-flight checklist (shown while disarmed)")) {
+            action(tr("Edit the checks (thresholds and logic)...")) { host.editCheckRules() }
         }
 
-        section("Video")
-        action("Camera: " + host.cameraId() + "  (tap to choose the HDMI input)") { host.chooseCamera() }
-        action("Rotate video: now " + host.rotation() + " degrees  (tap to turn 90)") {
+        section(tr("Video"))
+        action(tr("Camera: {0}  (tap to choose the HDMI input)", host.cameraId())) { host.chooseCamera() }
+        action(tr("Rotate video: now {0} degrees  (tap to turn 90)", host.rotation())) {
             host.rotateVideo()
             refresh()
         }
-        action("Scale: " + (if (host.fill()) "fill (stretch)" else "fit") + "  (tap to change)") {
+        action(tr("Scale: {0}  (tap to change)", (if (host.fill()) tr("fill (stretch)") else "fit"))) {
             host.toggleFill()
             refresh()
         }
 
-        section("Speech")
-        toggle("Speech on", host.speechOn()) { host.setSpeechOn(it) }
-        action("Speak a test sentence") { host.speakTest() }
+        section(tr("Speech"))
+        toggle(tr("Speech on"), host.speechOn()) { host.setSpeechOn(it) }
+        action(tr("Speak a test sentence")) { host.speakTest() }
 
-        section("Sound rules")
-        action("Export sound rules to a file...") { host.exportRules() }
-        action("Import sound rules from a file...") { host.importRules() }
-        action("Restore the rules from before the last import, reset or restore", host.hasRulesBackup()) {
-            confirm("Swap back to the previous rules? The current rules are kept, so you can swap again.", "Restore") {
+        section(tr("Sound rules"))
+        action(tr("Export sound rules to a file...")) { host.exportRules() }
+        action(tr("Import sound rules from a file...")) { host.importRules() }
+        action(tr("Restore the rules from before the last import, reset or restore"), host.hasRulesBackup()) {
+            confirm(tr("Swap back to the previous rules? The current rules are kept, so you can swap again."), tr("Restore")) {
                 host.restoreRules()
                 refresh()
             }
         }
-        action("Reset the rules to the defaults") {
-            confirm("Replace your rules with the defaults? Your current rules are kept as a backup.", "Reset") {
+        action(tr("Reset the rules to the defaults")) {
+            confirm(tr("Replace your rules with the defaults? Your current rules are kept as a backup."), tr("Reset")) {
                 host.resetRules()
                 refresh()
             }
         }
-        action("Edit the rules as text (advanced)") { host.openRulesText() }
+        action(tr("Edit the rules as text (advanced)")) { host.openRulesText() }
 
-        section("Diagnostics")
-        toggle("Show the variables panel (every value the radio sends)", host.variablesOn()) { host.setVariablesOn(it) }
-        toggle("Test channels: sliders instead of the radio", host.testChannelsOn()) { host.setTestChannelsOn(it) }
-        note("Close Settings to see the panels over the video.")
+        section(tr("Diagnostics"))
+        toggle(tr("Show the variables panel (every value the radio sends)"), host.variablesOn()) { host.setVariablesOn(it) }
+        toggle(tr("Test channels: sliders instead of the radio"), host.testChannelsOn()) { host.setTestChannelsOn(it) }
+        note(tr("Close Settings to see the panels over the video."))
 
-        section("Updates (from GitHub)")
+        section(tr("Updates (from GitHub)"))
         note(host.updateLine())
-        action("Check for updates now") { host.checkUpdatesNow() }
-        action("Channel: " + host.updateChannelLabel() + "  (tap to change)") {
+        action(tr("Check for updates now")) { host.checkUpdatesNow() }
+        action(tr("Channel: {0}  (tap to change)", host.updateChannelLabel())) {
             host.cycleUpdateChannel()
             refresh()
         }
-        toggle("Check at start-up (needs internet)", host.updateAuto()) { host.setUpdateAuto(it) }
-        note("Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.")
+        toggle(tr("Check at start-up (needs internet)"), host.updateAuto()) { host.setUpdateAuto(it) }
+        note(tr("Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight."))
 
-        section("About")
+        section(tr("About"))
         note(host.about())
     }
 }

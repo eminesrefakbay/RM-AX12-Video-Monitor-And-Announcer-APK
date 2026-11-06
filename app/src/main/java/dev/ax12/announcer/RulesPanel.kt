@@ -48,7 +48,7 @@ class RulesPanel(
     private val loadText: () -> String,
     private val saveText: (String) -> Unit,
     private val warning: Boolean = false,
-    private val titleText: String = "Sound rules",
+    private val titleText: String = tr("Sound rules"),
     private val testWarning: ((String, Int) -> Unit)? = null,
     private val check: Boolean = false
 ) {
@@ -78,10 +78,10 @@ class RulesPanel(
 
         val bar = LinearLayout(activity)
         bar.orientation = LinearLayout.HORIZONTAL
-        bar.addView(button("+ Add rule") { editRule(null) }, weight())
-        bar.addView(button("Settings") { editSettings() }, weight())
-        bar.addView(button("Text editor") { openTextEditor() }, weight())
-        bar.addView(button("Close") { hide() }, weight())
+        bar.addView(button(tr("+ Add rule")) { editRule(null) }, weight())
+        bar.addView(button(tr("Settings")) { editSettings() }, weight())
+        bar.addView(button(tr("Text editor")) { openTextEditor() }, weight())
+        bar.addView(button(tr("Close")) { hide() }, weight())
         root.addView(bar)
 
         val scroll = ScrollView(activity)
@@ -91,11 +91,11 @@ class RulesPanel(
 
         val tip = TextView(activity)
         tip.text = if (check)
-            "Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it."
+            tr("Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.")
         else if (warning)
-            "A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it."
+            tr("A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.")
         else
-            "A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it."
+            tr("A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.")
         tip.textSize = 12f
         tip.setTextColor(0xFFBDBDBD.toInt())
         root.addView(tip)
@@ -126,7 +126,7 @@ class RulesPanel(
     }
 
     private fun testSpeak(text: String, urgent: Boolean) {
-        if (speaker.muted) Toast.makeText(activity, "Speech is muted (MENU, Mute speech)", Toast.LENGTH_SHORT).show()
+        if (speaker.muted) Toast.makeText(activity, tr("Speech is muted (MENU, Mute speech)"), Toast.LENGTH_SHORT).show()
         else speaker.say(text, urgent)
     }
 
@@ -148,7 +148,7 @@ class RulesPanel(
         }
         if (count == 0) {
             val empty = TextView(activity)
-            empty.text = "No rules yet. Tap + Add rule."
+            empty.text = tr("No rules yet. Tap + Add rule.")
             empty.setTextColor(Color.WHITE)
             empty.setPadding(0, dp(16), 0, 0)
             list.addView(empty)
@@ -164,7 +164,7 @@ class RulesPanel(
         val summary = TextView(activity)
         val spec = item.spec
         summary.text = if (spec != null) (if (check) RuleText.describeCheck(spec) else if (warning) RuleText.describeWarning(spec) else RuleText.describe(spec))
-        else "Advanced rule (open the text editor): " + item.raw.removePrefix("#off").trim()
+        else tr("Advanced rule (open the text editor): {0}", item.raw.removePrefix("#off").trim())
         summary.textSize = 15f
         summary.setTextColor(Color.WHITE)
         summary.alpha = if (item.kind == RuleText.Kind.RULE) 1f else 0.4f
@@ -182,8 +182,8 @@ class RulesPanel(
         lp.leftMargin = dp(10)
         lp.rightMargin = dp(10)
         r.addView(summary, lp)
-        r.addView(button("Edit") { if (item.spec != null) editRule(item) else openTextEditor() })
-        if (!check) r.addView(button("Test") {
+        r.addView(button(tr("Edit")) { if (item.spec != null) editRule(item) else openTextEditor() })
+        if (!check) r.addView(button(tr("Test")) {
             val sp = item.spec
             if (sp != null) {
                 if (warning) testWarningFor(sp) else testSpeak(sp.onTrue, sp.urgentTrue)
@@ -192,13 +192,13 @@ class RulesPanel(
         r.addView(button("X") {
             Immersive.show(
                 AlertDialog.Builder(activity)
-                    .setMessage("Delete this rule?")
-                    .setPositiveButton("Delete") { _, _ ->
+                    .setMessage(tr("Delete this rule?"))
+                    .setPositiveButton(tr("Delete")) { _, _ ->
                         items.remove(item)
                         save()
                         refresh()
                     }
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(tr("Cancel"), null)
                     .create()
             )
         })
@@ -226,20 +226,20 @@ class RulesPanel(
         body.orientation = LinearLayout.VERTICAL
         body.setPadding(dp(16), dp(8), dp(16), dp(8))
 
-        body.addView(label("Channel hysteresis, microseconds (stops chatter near a switch threshold)"))
+        body.addView(label(tr("Channel hysteresis, microseconds (stops chatter near a switch threshold)")))
         val hys = numberField(RuleText.getSetting(items, "hysteresis", "25"))
         body.addView(hys)
-        body.addView(label("Voltage and link hysteresis, percent of the threshold"))
+        body.addView(label(tr("Voltage and link hysteresis, percent of the threshold")))
         val vhys = numberField(RuleText.getSetting(items, "var_hysteresis", "1"))
         body.addView(vhys)
-        body.addView(label("Hold time, milliseconds (ignore changes shorter than this)"))
+        body.addView(label(tr("Hold time, milliseconds (ignore changes shorter than this)")))
         val hold = numberField(RuleText.getSetting(items, "hold", "100"))
         body.addView(hold)
         val initial = CheckBox(activity)
-        initial.text = "Speak rules that are already true at start-up"
+        initial.text = tr("Speak rules that are already true at start-up")
         initial.isChecked = RuleText.getSetting(items, "initial", "off").equals("on", ignoreCase = true)
         if (!warning && !check) body.addView(initial)
-        body.addView(label("Unit of the radio's channel numbers (auto is fine)"))
+        body.addView(label(tr("Unit of the radio's channel numbers (auto is fine)")))
         val scales = arrayOf("auto", "percent", "permille", "us")
         val scale = Spinner(activity)
         val ad = ArrayAdapter(activity, android.R.layout.simple_spinner_item, scales)
@@ -251,10 +251,10 @@ class RulesPanel(
         val scroll = ScrollView(activity)
         scroll.addView(body)
         val dlg = AlertDialog.Builder(activity)
-            .setTitle("Rule settings")
+            .setTitle(tr("Rule settings"))
             .setView(scroll)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel", null)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
             .create()
         Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
@@ -262,7 +262,7 @@ class RulesPanel(
             val v = vhys.text.toString().trim().toDoubleOrNull()
             val ms = hold.text.toString().trim().toLongOrNull()
             if (h == null || h < 0 || v == null || v < 0 || ms == null || ms < 0) {
-                Toast.makeText(activity, "Enter numbers (0 or more)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, tr("Enter numbers (0 or more)"), Toast.LENGTH_SHORT).show()
             } else {
                 RuleText.setSetting(items, "hysteresis", RuleText.fmt(h))
                 RuleText.setSetting(items, "var_hysteresis", RuleText.fmt(v))
@@ -340,7 +340,7 @@ class RulesPanel(
                 box.setPadding(dp(12), dp(6), dp(12), dp(6))
                 val shown = liveText(name, nums, txts)
                 val line1 = TextView(activity)
-                line1.text = name + "      " + (if (shown != null) "now: " + shown else "no value now")
+                line1.text = name + "      " + (if (shown != null) tr("now: {0}", shown) else tr("no value now"))
                 line1.textSize = 16f
                 line1.setTextColor(Color.WHITE)
                 box.addView(line1)
@@ -358,9 +358,9 @@ class RulesPanel(
         }
         listView.adapter = adapter
         val dlg = AlertDialog.Builder(activity)
-            .setTitle("Pick a channel or value")
+            .setTitle(tr("Pick a channel or value"))
             .setView(listView)
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(tr("Cancel"), null)
             .create()
         listView.setOnItemClickListener { _, _, position, _ ->
             val n = rows[position].name
@@ -380,7 +380,7 @@ class RulesPanel(
         private val condBox = LinearLayout(activity)
         private val rows = ArrayList<CondRow>()
         private val opCodes = arrayOf(">=", "<=", ">", "<", "==", "!=", "~")
-        private val opLabels = arrayOf("\u2265 at least", "\u2264 at most", "> above", "< below", "= equals", "\u2260 not equal", "contains (text)")
+        private val opLabels = arrayOf(tr("\u2265 at least"), tr("\u2264 at most"), tr("> above"), tr("< below"), tr("= equals"), tr("\u2260 not equal"), tr("contains (text)"))
 
         private lateinit var connector: Spinner
         private lateinit var sayField: EditText
@@ -420,13 +420,13 @@ class RulesPanel(
                 varField.setAdapter(ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line, names))
                 varField.threshold = 0
                 varField.setSingleLine(true)
-                varField.hint = "variable (type, or tap List)"
+                varField.hint = tr("variable (type, or tap List)")
                 varField.setText(c.variable)
                 varField.setOnClickListener { varField.showDropDown() }
                 lineA.addView(varField, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
 
                 val pick = Button(activity)
-                pick.text = "List"
+                pick.text = tr("List")
                 pick.setOnClickListener {
                     pickVariable { chosen ->
                         varField.setText(chosen)
@@ -457,7 +457,7 @@ class RulesPanel(
                 lineB.addView(valueField, LinearLayout.LayoutParams(dp(110), ViewGroup.LayoutParams.WRAP_CONTENT))
 
                 val divLabel = TextView(activity)
-                divLabel.text = "  divide by"
+                divLabel.text = tr("  divide by")
                 divLabel.textSize = 12f
                 lineB.addView(divLabel)
                 divField.setSingleLine(true)
@@ -510,7 +510,7 @@ class RulesPanel(
                     val d = divField.text.toString().trim().toDoubleOrNull() ?: 1.0
                     RuleText.fmt(Math.round(n / (if (d == 0.0) 1.0 else d) * 100.0) / 100.0)
                 } else "-"
-                nowText.text = "now: " + shown + (if (help.isNotEmpty()) "   (" + help + ")" else "")
+                nowText.text = tr("now: {0}{1}", shown, (if (help.isNotEmpty()) "   (" + help + ")" else ""))
             }
         }
 
@@ -565,16 +565,16 @@ class RulesPanel(
         }
 
         private fun severityLabel(): String = when (severity) {
-            0 -> "Level: INFO (blue)  - tap to change"
-            2 -> "Level: CRITICAL (red, blinking)  - tap to change"
-            else -> "Level: WARNING (amber)  - tap to change"
+            0 -> tr("Level: INFO (blue)  - tap to change")
+            2 -> tr("Level: CRITICAL (red, blinking)  - tap to change")
+            else -> tr("Level: WARNING (amber)  - tap to change")
         }
 
         private fun refreshPreview() {
             if (building) return
             val s = readSpec()
             var err = RuleText.validate(s)
-            if (err == null && repeatCheck.isChecked && s.repeatSec < 2) err = if (warning) "The timeout needs a number of seconds, 2 or more." else "Repeat needs a number of seconds, 2 or more."
+            if (err == null && repeatCheck.isChecked && s.repeatSec < 2) err = if (warning) tr("The timeout needs a number of seconds, 2 or more.") else tr("Repeat needs a number of seconds, 2 or more.")
             errorView.text = err ?: ""
             preview.text = if (err == null) RuleText.line(s) else "-"
             dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = (err == null)
@@ -595,19 +595,19 @@ class RulesPanel(
             val base = HashMap<String, Double>()
             for (i in 1..16) live.numbers()["ch$i"]?.let { base["ch$i"] = it }
             if (base.isEmpty()) {
-                detectInfo.text = "No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)"
+                detectInfo.text = tr("No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)")
                 return
             }
             detectBaseline = base
             detectUntil = SystemClock.elapsedRealtime() + 15000
-            detectInfo.text = "Move the switch now..."
+            detectInfo.text = tr("Move the switch now...")
         }
 
         private fun detectStep(nums: Map<String, Double>) {
             val base = detectBaseline ?: return
             if (SystemClock.elapsedRealtime() > detectUntil) {
                 detectBaseline = null
-                detectInfo.text = "No switch moved."
+                detectInfo.text = tr("No switch moved.")
                 return
             }
             for (i in 1..16) {
@@ -617,7 +617,7 @@ class RulesPanel(
                 if (Math.abs(now - was) >= 300) {
                     detectBaseline = null
                     applyDetected(key, now)
-                    detectInfo.text = "Detected $key at " + now.toInt()
+                    detectInfo.text = tr("Detected {0} at {1}", key, now.toInt())
                     return
                 }
             }
@@ -651,11 +651,11 @@ class RulesPanel(
             whenRow.orientation = LinearLayout.HORIZONTAL
             whenRow.gravity = Gravity.CENTER_VERTICAL
             val whenLabel = TextView(activity)
-            whenLabel.text = "When"
+            whenLabel.text = tr("When")
             whenLabel.textSize = 16f
             whenRow.addView(whenLabel)
             connector = Spinner(activity)
-            val cad = ArrayAdapter(activity, android.R.layout.simple_spinner_item, arrayOf("all of these are true", "any of these is true"))
+            val cad = ArrayAdapter(activity, android.R.layout.simple_spinner_item, arrayOf(tr("all of these are true"), tr("any of these is true")))
             cad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             connector.adapter = cad
             connector.setSelection(if (spec.any) 1 else 0)
@@ -670,11 +670,11 @@ class RulesPanel(
             tools.orientation = LinearLayout.HORIZONTAL
             tools.gravity = Gravity.CENTER_VERTICAL
             val addCond = Button(activity)
-            addCond.text = "+ condition"
+            addCond.text = tr("+ condition")
             addCond.setOnClickListener { addRow(RuleText.Cond()); refreshPreview() }
             tools.addView(addCond)
             val detect = Button(activity)
-            detect.text = "Detect switch"
+            detect.text = tr("Detect switch")
             detect.setOnClickListener { startDetect() }
             tools.addView(detect)
             detectInfo = TextView(activity)
@@ -684,20 +684,20 @@ class RulesPanel(
             body.addView(tools)
 
             // say ...  (or: show in the status bar)
-            body.addView(label(if (check) "Check label (shown with a tick or a cross)" else if (warning) "Show in the status bar" else "Say"))
+            body.addView(label(if (check) tr("Check label (shown with a tick or a cross)") else if (warning) tr("Show in the status bar") else tr("Say")))
             sayField = EditText(activity)
             sayField.setText(if (warning) spec.onTrue.removePrefix("*").trim() else spec.onTrue)
             sayField.setSingleLine(true)
-            sayField.hint = if (check) "label, for example GPS {sats} satellites" else if (warning) "text, for example BATTERY {vbat/6:2} V" else "words to speak"
+            sayField.hint = if (check) tr("label, for example GPS {sats} satellites") else if (warning) tr("text, for example BATTERY {vbat/6:2} V") else tr("words to speak")
             sayField.addTextChangedListener(watcher { refreshPreview() })
             body.addView(sayField)
             val tipLive = TextView(activity)
-            tipLive.text = "Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}"
+            tipLive.text = tr("Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}")
             tipLive.textSize = 11f
             tipLive.setTextColor(0xFFBDBDBD.toInt())
             body.addView(tipLive)
             urgent = CheckBox(activity)
-            urgent.text = "Urgent (interrupts what is being said)"
+            urgent.text = tr("Urgent (interrupts what is being said)")
             urgent.isChecked = spec.urgentTrue
             urgent.setOnCheckedChangeListener { _, _ -> refreshPreview() }
             if (warning) {
@@ -716,19 +716,19 @@ class RulesPanel(
             }
 
             falseCheck = CheckBox(activity)
-            falseCheck.text = "Also say something when it turns false"
+            falseCheck.text = tr("Also say something when it turns false")
             falseCheck.isChecked = spec.onFalse.isNotEmpty()
             falseCheck.setOnCheckedChangeListener { _, _ -> refreshPreview() }
             if (!warning && !check) body.addView(falseCheck)
             falseField = EditText(activity)
             falseField.setText(spec.onFalse)
             falseField.setSingleLine(true)
-            falseField.hint = "words when it turns false"
+            falseField.hint = tr("words when it turns false")
             falseField.addTextChangedListener(watcher { if (falseField.text.isNotEmpty()) falseCheck.isChecked = true; refreshPreview() })
             if (!warning && !check) body.addView(falseField)
 
             repeatCheck = CheckBox(activity)
-            repeatCheck.text = if (warning) "Hide after (seconds), even if the condition stays true" else "Repeat while it stays true, every (seconds)"
+            repeatCheck.text = if (warning) tr("Hide after (seconds), even if the condition stays true") else tr("Repeat while it stays true, every (seconds)")
             repeatCheck.isChecked = spec.repeatSec > 0
             repeatCheck.setOnCheckedChangeListener { _, _ -> refreshPreview() }
             if (!check) body.addView(repeatCheck)
@@ -739,7 +739,7 @@ class RulesPanel(
             repeatField.addTextChangedListener(watcher { if (repeatField.text.isNotEmpty()) repeatCheck.isChecked = true; refreshPreview() })
             if (!check) body.addView(repeatField, LinearLayout.LayoutParams(dp(100), ViewGroup.LayoutParams.WRAP_CONTENT))
 
-            body.addView(label("The rule as text"))
+            body.addView(label(tr("The rule as text")))
             preview = TextView(activity)
             preview.typeface = Typeface.MONOSPACE
             preview.textSize = 13f
@@ -751,11 +751,11 @@ class RulesPanel(
             val scroll = ScrollView(activity)
             scroll.addView(body)
             val dlg = AlertDialog.Builder(activity)
-                .setTitle(if (check) (if (existing == null) "New check" else "Edit check") else if (warning) (if (existing == null) "New warning" else "Edit warning") else (if (existing == null) "New rule" else "Edit rule"))
+                .setTitle(if (check) (if (existing == null) tr("New check") else tr("Edit check")) else if (warning) (if (existing == null) tr("New warning") else tr("Edit warning")) else (if (existing == null) tr("New rule") else tr("Edit rule")))
                 .setView(scroll)
-                .setPositiveButton("Save", null)
-                .setNegativeButton("Cancel", null)
-                .setNeutralButton("Test", null)
+                .setPositiveButton(tr("Save"), null)
+                .setNegativeButton(tr("Cancel"), null)
+                .setNeutralButton(tr("Test"), null)
                 .create()
             dialog = dlg
             dlg.setOnDismissListener { ui.removeCallbacks(tick) }
@@ -764,7 +764,7 @@ class RulesPanel(
                 if (sayField.text.isNotBlank()) {
                     if (check) {
                         val shown = TextTemplate.expand(sayField.text.toString().trim(), live.numbers(), live.texts())
-                        Toast.makeText(activity, "Label now: " + shown, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, tr("Label now: {0}", shown), Toast.LENGTH_SHORT).show()
                     } else if (warning) {
                         val shown = TextTemplate.expand(sayField.text.toString().trim(), live.numbers(), live.texts())
                         testWarning?.invoke(shown, severity)

@@ -1,0 +1,402 @@
+# German translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+Bar {0}: the channel must be 1 to 16.	Balken {0}: Der Kanal muss 1 bis 16 sein.
+Starting...	Wird gestartet...
+video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	Video: %.1f Bilder/s   Abstand zwischen Bildern: 95 %% unter %d ms, schlimmster %d ms (letzte 5 s)
+Camera {0}  {1}x{2}  ·  {3}	Kamera {0}  {1}x{2}  ·  {3}
+auto	automatisch
+Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	Kamera {0}   Puffer {1}x{2}   Drehung {3} {4}   Ansicht {5}x{6}\n{7}
+fill	füllen
+fit	einpassen
+Camera {0}  ({1}, sensor {2} deg)	Kamera {0}  ({1}, Sensor {2} Grad)
+Camera permission needed	Kameraberechtigung erforderlich
+No camera found - check the HDMI cable and the video receiver	Keine Kamera gefunden - HDMI-Kabel und Videoempfänger prüfen
+Opening camera {0}...	Kamera {0} wird geöffnet...
+Camera disconnected	Kamera getrennt
+Camera error {0}	Kamerafehler {0}
+Cannot open camera: {0}	Kamera kann nicht geöffnet werden: {0}
+No surface yet	Noch keine Oberfläche
+Waiting for video...	Warte auf Video...
+Preview failed: {0}	Vorschau fehlgeschlagen: {0}
+Camera session failed	Kamerasitzung fehlgeschlagen
+Session error: {0}	Sitzungsfehler: {0}
+PRE-FLIGHT CHECK	CHECK VOR DEM FLUG
+MENU	MENÜ
+Warning rules	Warnregeln
+Pre-flight checks	Checks vor dem Flug
+Sound rules: {0} error(s). Open the rules editor.	Sprachregeln: {0} Fehler. Regeleditor öffnen.
+Pre-flight checks: {0} error(s). Open Settings, then the checks.	Checks vor dem Flug: {0} Fehler. Einstellungen öffnen, dann die Checks.
+Warning rules: {0} error(s). Open Settings, then the warning rules.	Warnregeln: {0} Fehler. Einstellungen öffnen, dann die Warnregeln.
+NO VIDEO  ·  {0}	KEIN VIDEO  ·  {0}
+TEST CHANNELS ARE ON - the radio is not being read\n	TESTKANÄLE SIND AN - die Fernsteuerung wird nicht gelesen\n
+NO SDK IN THIS BUILD - the radio is not being read\n	KEIN SDK IN DIESER VERSION - die Fernsteuerung wird nicht gelesen\n
+SDK IS NOT RUNNING - the radio is not being read\n	SDK LÄUFT NICHT - die Fernsteuerung wird nicht gelesen\n
+Android lists no cameras	Android listet keine Kameras
+Choose the HDMI camera	HDMI-Kamera wählen
+Speech is off	Sprachausgabe ist aus
+Sound test	Klangtest
+Automatic ({0})	Automatisch ({0})
+Same as the app ({0})	Wie die App ({0})
+The voice now speaks {0}.	Die Stimme spricht jetzt {0}.
+Installed: version {0} (build {1})   Channel: {2}	Installiert: Version {0} (Build {1})   Kanal: {2}
+Stable	Stabil
+Nightly	Nightly
+Stable (tested releases only)	Stabil (nur getestete Releases)
+Nightly (newest build of every push)	Nightly (neuester Build jedes Pushs)
+top	oben
+bottom	unten
+BATTERY CRITICAL 3.48 V per cell	AKKU KRITISCH 3.48 V pro Zelle
+small	klein
+medium	mittel
+large	groß
+bottom center	unten Mitte
+bottom left	unten links
+bottom right	unten rechts
+top left	oben links
+top right	oben rechts
+center	Mitte
+SPEED	TEMPO
+HEIGHT	HÖHE
+CURRENT	STROM
+DISTANCE	ENTFERNUNG
+MIN LINK	MIN LINK
+MIN CELL	MIN ZELLE
+FLIGHT  	FLUG  
+LAST FLIGHT  	LETZTER FLUG  
+READY	BEREIT
+NOT READY: 1 check failed	NICHT BEREIT: 1 Check fehlgeschlagen
+NOT READY: {0} checks failed	NICHT BEREIT: {0} Checks fehlgeschlagen
+WAITING FOR DATA	WARTE AUF DATEN
+Arm switch channel (1 to 16, AUX1 is channel 5)	Kanal des Arm-Schalters (1 bis 16, AUX1 ist Kanal 5)
+Counts as armed at or above (microseconds)	Gilt als scharf ab (Mikrosekunden)
+Counts as disarmed below (microseconds)	Gilt als gesichert darunter (Mikrosekunden)
+Cells in the pack (for the lowest volts per cell)	Zellen im Akku (für die niedrigste Spannung pro Zelle)
+The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	Der Abstand zwischen den beiden Schwellen verhindert, dass ein Anstoßen des Schalters die Statistik startet oder stoppt. Der Schalter muss 0,3 Sekunden stehen bleiben.
+Arm detection	Arm-Erkennung
+Save	Speichern
+Cancel	Abbrechen
+The channel is 1 to 16	Der Kanal ist 1 bis 16
+Use microseconds, with the disarmed value not above the armed one	Mikrosekunden verwenden; der Wert für gesichert nicht über dem für scharf
+Cells: 1 to 12	Zellen: 1 bis 12
+Speed (now / maximum)	Geschwindigkeit (jetzt / Maximum)
+Height above the arming point (now / maximum)	Höhe über dem Startpunkt (jetzt / Maximum)
+Current (now / peak, with a limit line)	Strom (jetzt / Spitze, mit Grenzlinie)
+Distance from home (now / maximum)	Entfernung von Home (jetzt / Maximum)
+Lowest link quality	Niedrigste Verbindungsqualität
+Lowest volts per cell	Niedrigste Spannung pro Zelle
+Current limit line (amps)	Strom-Grenzlinie (Ampere)
+Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.	Die Höhe kommt aus der GPS-Höhe relativ zum Startpunkt, rechne also mit einigen Metern Abweichung. Der Balken wird rot, wenn der Strom über der Grenzlinie liegt.
+Flight statistics rows	Zeilen der Flugstatistik
+The current limit is 5 to 300 amps	Das Stromlimit liegt zwischen 5 und 300 Ampere
+Left of the sticks	Links der Sticks
+Right of the sticks	Rechts der Sticks
+on      channel      name on the overlay                 reverse	an      Kanal      Name in der Anzeige                 umkehren
+A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	Ein Balken füllt sich mit dem Kanalwert. Graublau = niedrig, gelb = Mitte, grün = hoch. Die Namen stehen entlang des Balkens; ein kurzer Name ist am besten lesbar.\n\nUmkehren: für einen Schalter, der in der Fernsteuerung umgekehrt ist, damit der Balken den Schalter so zeigt, wie du ihn umlegst (oben = voll und grün). Nur das Bild ändert sich: Sprach- und Warnregeln nutzen weiter die echten Kanalwerte.
+Channel bars	Kanalbalken
+Defaults	Standard
+Bar {0}: the channel must be 1 to 16	Balken {0}: Der Kanal muss 1 bis 16 sein
+Mode 1: left = pitch + yaw, right = throttle + roll	Modus 1: links = Nick + Gier, rechts = Gas + Roll
+Mode 2: left = throttle + yaw, right = pitch + roll	Modus 2: links = Gas + Gier, rechts = Nick + Roll
+Mode 3: left = throttle + roll, right = pitch + yaw	Modus 3: links = Gas + Roll, rechts = Nick + Gier
+Mode 4: left = pitch + roll, right = throttle + yaw	Modus 4: links = Nick + Roll, rechts = Gas + Gier
+Roll channel (1 to 16)	Roll-Kanal (1 bis 16)
+Pitch channel	Pitch-Kanal
+Throttle channel	Gas-Kanal
+Yaw channel	Yaw-Kanal
+Left stick up/down drawn reversed	Linker Stick hoch/runter umgekehrt
+Left stick left/right drawn reversed	Linker Stick links/rechts umgekehrt
+Right stick up/down drawn reversed	Rechter Stick hoch/runter umgekehrt
+Right stick left/right drawn reversed	Rechter Stick links/rechts umgekehrt
+The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	Die Sticks zeigen die Kanalwerte, die die Fernsteuerung sendet. Übliche Reihenfolge: Roll 1, Nick 2, Gas 3, Gier 4. Kehre eine Richtung um, wenn sich der Punkt falsch herum bewegt.
+Stick view	Stick-Ansicht
+Channels are numbers from 1 to 16	Kanäle sind Zahlen von 1 bis 16
+Each of the four needs its own channel	Jeder der vier braucht einen eigenen Kanal
+Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Auf Android ist keine {0}-Stimme installiert. Installiere sie in den Android-Einstellungen unter Sprachausgabe.
+Built without the RadioMaster SDK files (test channels only).	Ohne die RadioMaster-SDK-Dateien gebaut (nur Testkanäle).
+RadioMaster SDK: running.	RadioMaster SDK: läuft.
+RadioMaster SDK: not running{0}.	RadioMaster SDK: läuft nicht{0}.
+AX12 Video Monitor and Announcer, version {0}\n{1}	AX12 Videomonitor und Ansager, Version {0}\n{1}
+Thanks to RadioMaster for publishing the AX SDK.	Danke an RadioMaster für die Veröffentlichung des AX SDK.
+Sound rules saved	Sprachregeln gespeichert
+This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	Dieses Gerät hat keinen Dateiauswahldialog, deshalb wurde die Datei hier gespeichert:\n{0}\n\nKopiere sie mit einem USB-Kabel oder adb. Zum Importieren lege eine Datei mit demselben Namen in diesen Ordner.
+Could not save the rules: {0}	Regeln konnten nicht gespeichert werden: {0}
+No file picker, and no {0} to import	Kein Dateiauswahldialog und kein {0} zum Importieren
+Could not open the file	Datei konnte nicht geöffnet werden
+Could not read the file: {0}	Datei konnte nicht gelesen werden: {0}
+Cannot import	Import nicht möglich
+Import sound rules	Sprachregeln importieren
+The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nDas ersetzt deine aktuellen Regeln. Sie werden als Sicherung behalten, und die Einstellungen können sie wiederherstellen.
+Import	Importieren
+Imported {0} rules	{0} Regeln importiert
+Sound rules	Sprachregeln
+Settings	Einstellungen
+Mute speech	Sprache stummschalten
+Speech is OFF - tap to turn on	Sprache ist AUS - zum Einschalten tippen
+test sliders	Testregler
+test sliders (no radio)	Testregler (keine Fernsteuerung)
+RadioMaster SDK	RadioMaster SDK
+This build has no RadioMaster SDK files (see the README)	Diese Version enthält keine RadioMaster-SDK-Dateien (siehe README)
+SDK worker thread failed to start	SDK-Arbeitsthread konnte nicht gestartet werden
+The SDK could not open the radio's serial link (see README: serial lock)	Das SDK konnte die serielle Verbindung der Fernsteuerung nicht öffnen (siehe README: serielle Sperre)
+SDK start failed (code {0})	SDK-Start fehlgeschlagen (Code {0})
+line {0}: missing '->'  ({1})	Zeile {0}: '->' fehlt  ({1})
+line {0}: nothing before '->'	Zeile {0}: nichts vor '->'
+line {0}: nothing to say after '->'	Zeile {0}: nach '->' steht nichts zum Sprechen
+line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	Zeile {0}: Bedingung '{1}' nicht lesbar  (verwende  ch5 >= 1500   oder   vbat / 6 < 3.5   oder   fm ~ "RTH" )
+line {0}: cannot divide by zero  ({1})	Zeile {0}: Division durch null nicht möglich  ({1})
+line {0}: bad value for {1} ({2})	Zeile {0}: ungültiger Wert für {1} ({2})
+Add at least one condition.	Mindestens eine Bedingung hinzufügen.
+Pick a variable (letters, digits and _ only).	Wähle eine Variable (nur Buchstaben, Ziffern und _).
+Text can use is, is not or contains.	Text kann „ist“, „ist nicht“ oder „enthält“ verwenden.
+Text must not contain quotation marks.	Der Text darf keine Anführungszeichen enthalten.
+'contains' works on text variables only.	„enthält“ funktioniert nur bei Textvariablen.
+Enter a value for {0}.	Gib einen Wert für {0} ein.
+'{0}' is not a number.	„{0}“ ist keine Zahl.
+The divisor cannot be 0.	Der Teiler darf nicht 0 sein.
+Type what to say.	Gib ein, was gesagt werden soll.
+The spoken text cannot contain | or ->.	Der gesprochene Text darf | oder -> nicht enthalten.
+The spoken text cannot end with @number.	Der gesprochene Text darf nicht mit @Zahl enden.
+The rule could not be read.	Die Regel konnte nicht gelesen werden.
+{0} contains “{1}”	{0} enthält „{1}“
+{0} is “{1}”	{0} ist „{1}“
+{0} is not “{1}”	{0} ist nicht „{1}“
+{0} or {1}	{0} oder {1}
+{0} and {1}	{0} und {1}
+passes when {0}: ✓ “{1}”	bestanden, wenn {0}: ✓ „{1}“
+CRITICAL	KRITISCH
+INFO	INFO
+WARNING	WARNUNG
+, hides after {0} s	, wird nach {0} s ausgeblendet
+when {0}: show “{1}”	wenn {0}: zeige „{1}“
+when {0}: say “{1}”	wenn {0}: sage „{1}“
+, then “{0}” when it turns false	, dann „{0}“, wenn es falsch wird
+, every {0} s while true	, alle {0} s, solange es wahr ist
+ (urgent)	 (dringend)
+Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	Regeln als Text - eine pro Zeile:   ch5 >= 1500 -> Motoren scharf | Motoren gesichert
+and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	and / or erlaubt.  ! = dringend.  @10 = alle 10 s wiederholen.  Einstellungen: hysteresis = 25, hold = 100, initial = on/off.  # = Kommentar.
+Check	Prüfen
+Sample	Beispiel
+Close	Schließen
+OK: {0} rules	OK: {0} Regeln
+The file is empty.	Die Datei ist leer.
+The file is too large to be a rules file.	Die Datei ist zu groß für eine Regeldatei.
+This does not look like a text file.	Das sieht nicht nach einer Textdatei aus.
+No rules found in this file.	In dieser Datei wurden keine Regeln gefunden.
+No usable rules found. First problem: {0}	Keine brauchbaren Regeln gefunden. Erstes Problem: {0}
+1 rule	1 Regel
+{0} rules	{0} Regeln
+ ({0} switched off)	 ({0} ausgeschaltet)
+. 1 line has a problem and will not work. First: {0}	. 1 Zeile hat ein Problem und funktioniert nicht. Erste: {0}
+. {0} lines have a problem and will not work. First: {1}	. {0} Zeilen haben ein Problem und funktionieren nicht. Erste: {1}
+, no problems found.	, keine Probleme gefunden.
++ Add rule	+ Regel hinzufügen
+Text editor	Texteditor
+Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	Jeder Check zeigt vor dem Scharfschalten einen Haken, wenn seine Bedingung wahr ist, sonst ein Kreuz. Der Schalter links schaltet einen Check aus, ohne ihn zu löschen.
+A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	Eine Warnung erscheint in der Statusleiste, solange ihre Bedingung wahr ist. Kritisch = rot und blinkend, Warnung = gelb, Info = blau. Der Schalter links schaltet eine Regel aus, ohne sie zu löschen.
+A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	Eine Regel spricht, wenn ihre Bedingung wahr wird. Der Schalter links schaltet eine Regel aus, ohne sie zu löschen.
+Speech is muted (MENU, Mute speech)	Sprache ist stummgeschaltet (MENÜ, Sprache stummschalten)
+No rules yet. Tap + Add rule.	Noch keine Regeln. Tippe auf + Regel hinzufügen.
+Advanced rule (open the text editor): {0}	Erweiterte Regel (Texteditor öffnen): {0}
+Edit	Bearbeiten
+Test	Test
+Delete this rule?	Diese Regel löschen?
+Delete	Löschen
+Channel hysteresis, microseconds (stops chatter near a switch threshold)	Kanal-Hysterese, Mikrosekunden (verhindert Flattern nahe einer Schalterschwelle)
+Voltage and link hysteresis, percent of the threshold	Spannungs- und Verbindungs-Hysterese, Prozent der Schwelle
+Hold time, milliseconds (ignore changes shorter than this)	Haltezeit, Millisekunden (kürzere Änderungen ignorieren)
+Speak rules that are already true at start-up	Regeln sprechen, die beim Start schon wahr sind
+Unit of the radio's channel numbers (auto is fine)	Einheit der Kanalwerte der Fernsteuerung (automatisch genügt)
+Rule settings	Regeleinstellungen
+Enter numbers (0 or more)	Zahlen eingeben (0 oder mehr)
+now: {0}	jetzt: {0}
+no value now	derzeit kein Wert
+Pick a channel or value	Kanal oder Wert wählen
+≥ at least	≥ mindestens
+≤ at most	≤ höchstens
+> above	> über
+< below	< unter
+= equals	= gleich
+≠ not equal	≠ ungleich
+contains (text)	enthält (Text)
+variable (type, or tap List)	Variable (tippen oder auf Liste tippen)
+List	Liste
+  divide by	  teilen durch
+now: {0}{1}	jetzt: {0}{1}
+Level: INFO (blue)  - tap to change	Stufe: INFO (blau)  - zum Ändern tippen
+Level: CRITICAL (red, blinking)  - tap to change	Stufe: KRITISCH (rot, blinkend)  - zum Ändern tippen
+Level: WARNING (amber)  - tap to change	Stufe: WARNUNG (gelb)  - zum Ändern tippen
+The timeout needs a number of seconds, 2 or more.	Das Zeitlimit braucht eine Sekundenzahl, 2 oder mehr.
+Repeat needs a number of seconds, 2 or more.	Wiederholen braucht eine Sekundenzahl, 2 oder mehr.
+No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	Noch keine Kanalwerte (ist die Fernsteuerung verbunden? Versuche Einstellungen, Diagnose, Variablen anzeigen)
+Move the switch now...	Bewege jetzt den Schalter...
+No switch moved.	Es wurde kein Schalter bewegt.
+Detected {0} at {1}	{0} erkannt bei {1}
+When	Wenn
+all of these are true	alle diese sind wahr
+any of these is true	eine davon ist wahr
++ condition	+ Bedingung
+Detect switch	Schalter erkennen
+Check label (shown with a tick or a cross)	Check-Beschriftung (mit Haken oder Kreuz)
+Show in the status bar	In der Statusleiste anzeigen
+Say	Sagen
+label, for example GPS {sats} satellites	Beschriftung, z. B. GPS {sats} Satelliten
+text, for example BATTERY {vbat/6:2} V	Text, z. B. AKKU {vbat/6:2} V
+words to speak	zu sprechende Wörter
+Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	Live-Werte: {vbat/6:2} = Volt pro Zelle mit 2 Dezimalstellen, {up_lq}, {sats}, {fm}
+Urgent (interrupts what is being said)	Dringend (unterbricht das Gesprochene)
+Also say something when it turns false	Auch etwas sagen, wenn es falsch wird
+words when it turns false	Wörter, wenn es falsch wird
+Hide after (seconds), even if the condition stays true	Ausblenden nach (Sekunden), auch wenn die Bedingung wahr bleibt
+Repeat while it stays true, every (seconds)	Wiederholen, solange wahr, alle (Sekunden)
+The rule as text	Die Regel als Text
+New check	Neuer Check
+Edit check	Check bearbeiten
+New warning	Neue Warnung
+Edit warning	Warnung bearbeiten
+New rule	Neue Regel
+Edit rule	Regel bearbeiten
+Label now: {0}	Beschriftung jetzt: {0}
+   Size: {0}  (tap to change)	   Größe: {0}  (zum Ändern tippen)
+   Position: {0}  (tap to change)	   Position: {0}  (zum Ändern tippen)
+   Opacity: {0}  (tap to change)	   Deckkraft: {0}  (zum Ändern tippen)
+Language: {0}  (tap to change)	Sprache: {0}  (zum Ändern tippen)
+Speech language: {0}  (tap to change)	Sprache der Ansagen: {0}  (zum Ändern tippen)
+The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Anzeige und Stimme können verschiedene Sprachen nutzen. Deine Regeln behalten ihren Wortlaut: „Regeln auf Standard zurücksetzen“ lädt die Startregeln in der Sprache der Stimme.
+Display	Anzeige
+Always show the MENU button	MENÜ-Taste immer anzeigen
+Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
+Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)
+OSD overlays (drawn over the video)	OSD-Einblendungen (über das Video gezeichnet)
+Stick view: roll, pitch, yaw and throttle	Stick-Ansicht: Roll, Nick, Gier und Gas
+Stick size: {0}  (tap to change)	Stick-Größe: {0}  (zum Ändern tippen)
+Stick position: {0}  (tap to change)	Stick-Position: {0}  (zum Ändern tippen)
+Stick opacity: {0}  (tap to change)	Stick-Deckkraft: {0}  (zum Ändern tippen)
+Stick mode, channels and direction...	Stick-Modus, Kanäle und Richtung...
+Channel bars beside the sticks (aux switches)	Kanalbalken neben den Sticks (Aux-Schalter)
+Channel bars: names, channels, on and off...	Kanalbalken: Namen, Kanäle, an und aus...
+Tip: press and hold the stick view on the video to open the channel bars.	Tipp: Halte die Stick-Ansicht auf dem Video gedrückt, um die Kanalbalken zu öffnen.
+Warning status bar	Warn-Statusleiste
+Warning bar position: {0}  (tap to change)	Position der Warnleiste: {0}  (zum Ändern tippen)
+Edit the warning rules (thresholds and logic)...	Warnregeln bearbeiten (Schwellen und Logik)...
+Preview the warning bar (4 seconds)	Warnleiste ansehen (4 Sekunden)
+Warnings show while their condition is true, so thresholds and logic are yours to set.	Warnungen erscheinen, solange ihre Bedingung wahr ist; Schwellen und Logik legst du selbst fest.
+Flight overlays (statistics, radar, checklist)	Flug-Einblendungen (Statistik, Radar, Checkliste)
+The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing.	Der Arm-Schalter startet und beendet einen Flug: Die Statistik beginnt beim Scharfschalten neu und bleibt nach der Landung lesbar.
+Arm detection: channel, thresholds, cells in the pack...	Arm-Erkennung: Kanal, Schwellen, Zellen im Akku...
+Flight statistics: max speed, max height, peak current	Flugstatistik: Höchstgeschwindigkeit, Maximalhöhe, Spitzenstrom
+Rows and current limit...	Zeilen und Stromgrenze...
+Radar map: home in the centre, your track and range rings	Radarkarte: Home in der Mitte, deine Spur und Entfernungsringe
+Pre-flight checklist (shown while disarmed)	Checkliste vor dem Flug (angezeigt, solange gesichert)
+Edit the checks (thresholds and logic)...	Checks bearbeiten (Schwellen und Logik)...
+Video	Video
+Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (zum Wählen des HDMI-Eingangs tippen)
+Rotate video: now {0} degrees  (tap to turn 90)	Video drehen: jetzt {0} Grad  (zum Drehen um 90 tippen)
+Scale: {0}  (tap to change)	Skalierung: {0}  (zum Ändern tippen)
+fill (stretch)	füllen (strecken)
+Speech	Sprache
+Speech on	Sprache an
+Speak a test sentence	Testsatz sprechen
+Export sound rules to a file...	Sprachregeln in eine Datei exportieren...
+Import sound rules from a file...	Sprachregeln aus einer Datei importieren...
+Restore the rules from before the last import, reset or restore	Regeln von vor dem letzten Import, Zurücksetzen oder Wiederherstellen zurückholen
+Swap back to the previous rules? The current rules are kept, so you can swap again.	Zu den vorherigen Regeln zurückwechseln? Die aktuellen Regeln bleiben erhalten, du kannst erneut wechseln.
+Restore	Wiederherstellen
+Reset the rules to the defaults	Regeln auf Standard zurücksetzen
+Replace your rules with the defaults? Your current rules are kept as a backup.	Deine Regeln durch die Standardregeln ersetzen? Deine aktuellen Regeln bleiben als Sicherung erhalten.
+Reset	Zurücksetzen
+Edit the rules as text (advanced)	Regeln als Text bearbeiten (erweitert)
+Diagnostics	Diagnose
+Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
+Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
+Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
+Updates (from GitHub)	Updates (von GitHub)
+Check for updates now	Jetzt nach Updates suchen
+Channel: {0}  (tap to change)	Kanal: {0}  (zum Ändern tippen)
+Check at start-up (needs internet)	Beim Start prüfen (Internet nötig)
+Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android lässt dich jedes Update bestätigen. Beim ersten Mal fragt es auch, ob AX-HUD Installationen erlaubt sein sollen. Aktualisiere nie während eines Fluges.
+About	Info
+AX12 video monitor, HUD and announcer	AX12 Videomonitor, HUD und Ansager
+AX-HUD  version {0}  (build {1})	AX-HUD  Version {0}  (Build {1})
+Use {variable} for a live value, for example {vbat/6:2}.	Verwende {variable} für einen Live-Wert, zum Beispiel {vbat/6:2}.
+A divisor in { } cannot be 0.	Ein Teiler in { } darf nicht 0 sein.
+Cancelled	Abgebrochen
+Only https:// addresses are allowed	Nur https://-Adressen sind erlaubt
+Not a valid address	Keine gültige Adresse
+The server answered {0}	Der Server antwortete {0}
+The answer is too large	Die Antwort ist zu groß
+The file is too large	Die Datei ist zu groß
+The file has an unexpected size	Die Datei hat eine unerwartete Größe
+The download is incomplete or the wrong size	Der Download ist unvollständig oder hat die falsche Größe
+The checksum does not match: the file is damaged or not the published one	Die Prüfsumme stimmt nicht: Die Datei ist beschädigt oder nicht die veröffentlichte
+Cannot replace the old file	Die alte Datei kann nicht ersetzt werden
+Cannot save the file	Die Datei kann nicht gespeichert werden
+SHA-256 is not available	SHA-256 ist nicht verfügbar
+Already checking	Es wird bereits geprüft
+Looking for an update on github.com ...	Suche auf github.com nach einem Update ...
+The update information could not be read	Die Update-Informationen konnten nicht gelesen werden
+No connection	Keine Verbindung
+No build has been published on this channel yet.	Auf diesem Kanal wurde noch kein Build veröffentlicht.
+Could not check: {0}\n\nIs the phone hotspot on?	Prüfung nicht möglich: {0}\n\nIst der Handy-Hotspot an?
+no connection	keine Verbindung
+Updates	Updates
+You have the latest build: version {0} (build {1})	Du hast den neuesten Build: Version {0} (Build {1})
+AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD-Update verfügbar: {0} (Build {1}). Öffne Einstellungen, dann Updates.
+Update available	Update verfügbar
+New: version {0} (build {1}, {2} MB)\nInstalled: version {3} (build {4}){5}\n\nDo not do this during a flight.	Neu: Version {0} (Build {1}, {2} MB)\nInstalliert: Version {3} (Build {4}){5}\n\nTu das nicht während eines Fluges.
+Download and install	Herunterladen und installieren
+Later	Später
+Starting ...	Wird gestartet ...
+Downloading {0}	{0} wird heruntergeladen
+Download failed	Download fehlgeschlagen
+Allow installing	Installation erlauben
+Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android braucht deine Erlaubnis, bevor AX-HUD ein Update installieren kann. Öffne die Seite, schalte es für AX-HUD ein, komm zurück und starte das Update erneut. Der Download bleibt erhalten und wird nicht zweimal geladen.
+Open the page	Seite öffnen
+Could not start the installation	Die Installation konnte nicht gestartet werden
+unknown error	unbekannter Fehler
+Updated. The app will reopen.	Aktualisiert. Die App öffnet sich erneut.
+Installation cancelled	Installation abgebrochen
+\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\nDie installierte Kopie wurde mit einem anderen Schlüssel signiert. Exportiere deine Regeln (Einstellungen), deinstalliere AX-HUD einmal und installiere diesen Build; danach funktionieren Updates. Siehe UPDATES.md.
+\n\nThis build is older than the installed one.	\n\nDieser Build ist älter als der installierte.
+Installation stopped	Installation gestoppt
+Android did not say why (code {0}).	Android hat keinen Grund genannt (Code {0}).
+battery volts (flight controller); divide by the cell count for volts per cell	Akkuspannung (Flugcontroller); durch die Zellenzahl teilen für Volt pro Zelle
+battery current, amps	Akkustrom, Ampere
+capacity used, mAh	verbrauchte Kapazität, mAh
+battery remaining, percent	Akku verbleibend, Prozent
+uplink link quality, percent (0 = no link)	Uplink-Verbindungsqualität, Prozent (0 = keine Verbindung)
+uplink signal strength, antenna 1, dBm (negative)	Uplink-Signalstärke, Antenne 1, dBm (negativ)
+uplink signal strength, antenna 2, dBm (negative)	Uplink-Signalstärke, Antenne 2, dBm (negativ)
+uplink signal to noise, dB	Uplink-Signal-Rausch-Abstand, dB
+downlink link quality, percent	Downlink-Verbindungsqualität, Prozent
+downlink signal strength, dBm	Downlink-Signalstärke, dBm
+downlink signal to noise, dB	Downlink-Signal-Rausch-Abstand, dB
+ExpressLRS packet rate mode number	ExpressLRS-Paketraten-Modusnummer
+transmitter power, mW	Sendeleistung, mW
+link quality from the radio, percent	Verbindungsqualität von der Fernsteuerung, Prozent
+signal strength from the radio	Signalstärke von der Fernsteuerung
+radio's lost-frame counter	Zähler verlorener Frames der Fernsteuerung
+radio battery volts	Akkuspannung der Fernsteuerung
+receiver volts	Empfängerspannung
+telemetry present: 1 yes, 0 lost	Telemetrie vorhanden: 1 ja, 0 verloren
+GPS satellites	GPS-Satelliten
+ground speed, km/h	Geschwindigkeit über Grund, km/h
+GPS altitude, metres	GPS-Höhe, Meter
+GPS heading, degrees	GPS-Kurs, Grad
+latitude	Breitengrad
+longitude	Längengrad
+pitch angle, degrees	Nickwinkel, Grad
+roll angle, degrees	Rollwinkel, Grad
+yaw / heading, degrees	Gier / Kurs, Grad
+climb rate, m/s	Steigrate, m/s
+flight mode name from the flight controller (text)	Flugmodus-Name vom Flugcontroller (Text)
+Switches and sticks (channels, 1000 to 2000)	Schalter und Sticks (Kanäle, 1000 bis 2000)
+Battery (from the flight controller)	Akku (vom Flugcontroller)
+Link quality and signal	Verbindungsqualität und Signal
+Radio status	Status der Fernsteuerung
+GPS and attitude	GPS und Lage
+Flight mode (text)	Flugmodus (Text)
+Other values from the radio	Weitere Werte von der Fernsteuerung
+Advanced: the radio's own channel numbers	Erweitert: die eigenen Kanalwerte der Fernsteuerung
+Advanced: the radio's logic values	Erweitert: die Logikwerte der Fernsteuerung
+channel {0}, 1000 to 2000 microseconds	Kanal {0}, 1000 bis 2000 Mikrosekunden
+the radio's own channel number	der eigene Kanalwert der Fernsteuerung
+the radio's logic value	der Logikwert der Fernsteuerung

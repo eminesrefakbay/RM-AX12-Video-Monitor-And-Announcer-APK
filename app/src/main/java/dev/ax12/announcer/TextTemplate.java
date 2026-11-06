@@ -27,11 +27,11 @@ public final class TextTemplate {
         if (text == null) return null;
         String rest = PLACEHOLDER.matcher(text).replaceAll("");
         if (rest.indexOf('{') >= 0 || rest.indexOf('}') >= 0) {
-            return "Use {variable} for a live value, for example {vbat/6:2}.";
+            return I18n.t("Use {variable} for a live value, for example {vbat/6:2}.");
         }
         Matcher m = PLACEHOLDER.matcher(text);
         while (m.find()) {
-            if (m.group(2) != null && Double.parseDouble(m.group(2)) == 0.0) return "A divisor in { } cannot be 0.";
+            if (m.group(2) != null && Double.parseDouble(m.group(2)) == 0.0) return I18n.t("A divisor in { } cannot be 0.");
         }
         return null;
     }

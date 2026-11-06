@@ -1,0 +1,13 @@
+# uçuş öncesi kontroller:   koşul -> etiket      (koşul doğruysa onay işareti, değilse çarpı)
+# etiketteki canlı değerler: {sats}, {up_lq}, {vbat/6:2} = hücre başına volt
+hysteresis = 25
+var_hysteresis = 1
+hold = 500
+scale = auto
+
+vbat > 12 -> Batarya bağlı
+vbat / 6 >= 4.15 -> Batarya dolu {vbat/6:2} V hücre başına
+sats >= 10 -> GPS {sats} uydu (10 gerekli)
+up_lq >= 95 -> Bağlantı kalitesi {up_lq}%
+ch9 <= 1100 -> Airmode anahtarı açık
+ch5 < 1500 -> Arm anahtarı kapalı

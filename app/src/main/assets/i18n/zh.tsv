@@ -1,0 +1,402 @@
+# Simplified Chinese translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+Bar {0}: the channel must be 1 to 16.	第 {0} 个条: 通道必须是 1 到 16。
+Starting...	正在启动...
+video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	视频: %.1f 帧/秒   帧间隔: 95%% 低于 %d 毫秒, 最差 %d 毫秒 (最近 5 秒)
+Camera {0}  {1}x{2}  ·  {3}	摄像头 {0}  {1}x{2}  ·  {3}
+auto	自动
+Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	摄像头 {0}   缓冲 {1}x{2}   旋转 {3} {4}   视图 {5}x{6}\n{7}
+fill	填充
+fit	适应
+Camera {0}  ({1}, sensor {2} deg)	摄像头 {0}  ({1}, 传感器 {2} 度)
+Camera permission needed	需要摄像头权限
+No camera found - check the HDMI cable and the video receiver	未找到摄像头 - 请检查 HDMI 线和视频接收机
+Opening camera {0}...	正在打开摄像头 {0}...
+Camera disconnected	摄像头已断开
+Camera error {0}	摄像头错误 {0}
+Cannot open camera: {0}	无法打开摄像头: {0}
+No surface yet	暂无画面表面
+Waiting for video...	等待视频...
+Preview failed: {0}	预览失败: {0}
+Camera session failed	摄像头会话失败
+Session error: {0}	会话错误: {0}
+PRE-FLIGHT CHECK	飞行前检查
+MENU	菜单
+Warning rules	警告规则
+Pre-flight checks	飞行前检查项
+Sound rules: {0} error(s). Open the rules editor.	语音规则: {0} 个错误。请打开规则编辑器。
+Pre-flight checks: {0} error(s). Open Settings, then the checks.	飞行前检查项: {0} 个错误。请打开设置, 再打开检查项。
+Warning rules: {0} error(s). Open Settings, then the warning rules.	警告规则: {0} 个错误。请打开设置, 再打开警告规则。
+NO VIDEO  ·  {0}	无视频  ·  {0}
+TEST CHANNELS ARE ON - the radio is not being read\n	测试通道已开启 - 未读取遥控器\n
+NO SDK IN THIS BUILD - the radio is not being read\n	此版本不含 SDK - 未读取遥控器\n
+SDK IS NOT RUNNING - the radio is not being read\n	SDK 未运行 - 未读取遥控器\n
+Android lists no cameras	Android 未列出任何摄像头
+Choose the HDMI camera	选择 HDMI 摄像头
+Speech is off	语音已关闭
+Sound test	语音测试
+Automatic ({0})	自动 ({0})
+Same as the app ({0})	与应用相同 ({0})
+The voice now speaks {0}.	语音现在使用 {0}。
+Installed: version {0} (build {1})   Channel: {2}	已安装: 版本 {0} (构建 {1})   渠道: {2}
+Stable	稳定版
+Nightly	Nightly
+Stable (tested releases only)	稳定版 (仅经过测试的正式版本)
+Nightly (newest build of every push)	Nightly (每次提交的最新构建)
+top	顶部
+bottom	底部
+BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
+small	小
+medium	中
+large	大
+bottom center	底部居中
+bottom left	左下
+bottom right	右下
+top left	左上
+top right	右上
+center	居中
+SPEED	速度
+HEIGHT	高度
+CURRENT	电流
+DISTANCE	距离
+MIN LINK	最低链路
+MIN CELL	最低单节
+FLIGHT  	飞行  
+LAST FLIGHT  	上次飞行  
+READY	就绪
+NOT READY: 1 check failed	未就绪: 1 项检查未通过
+NOT READY: {0} checks failed	未就绪: {0} 项检查未通过
+WAITING FOR DATA	等待数据
+Arm switch channel (1 to 16, AUX1 is channel 5)	解锁开关通道 (1 到 16, AUX1 为通道 5)
+Counts as armed at or above (microseconds)	大于等于此值视为已解锁 (微秒)
+Counts as disarmed below (microseconds)	低于此值视为已上锁 (微秒)
+Cells in the pack (for the lowest volts per cell)	电池节数 (用于最低每节电压)
+The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	两个阈值之间的间隔可防止碰到开关时误触发统计的开始或结束。开关必须保持 0.3 秒。
+Arm detection	解锁检测
+Save	保存
+Cancel	取消
+The channel is 1 to 16	通道为 1 到 16
+Use microseconds, with the disarmed value not above the armed one	请使用微秒, 且上锁值不能高于解锁值
+Cells: 1 to 12	节数: 1 到 12
+Speed (now / maximum)	速度 (当前 / 最大)
+Height above the arming point (now / maximum)	相对解锁点的高度 (当前 / 最大)
+Current (now / peak, with a limit line)	电流 (当前 / 峰值, 带限值线)
+Distance from home (now / maximum)	距离起点 (当前 / 最大)
+Lowest link quality	最低链路质量
+Lowest volts per cell	最低每节电压
+Current limit line (amps)	电流限值线 (安)
+Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.	高度来自相对解锁位置的 GPS 海拔, 可能有几米误差。电流超过限值线时, 条会变红。
+Flight statistics rows	飞行统计项
+The current limit is 5 to 300 amps	电流限值为 5 到 300 安
+Left of the sticks	摇杆左侧
+Right of the sticks	摇杆右侧
+on      channel      name on the overlay                 reverse	开启      通道      叠加显示名称                 反向
+A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	条会随通道数值填充。灰蓝 = 低, 琥珀 = 中, 绿色 = 高。名称沿条书写, 名称短一些更易读。\n\n反向: 如果遥控器中该开关是反向的, 请勾选, 这样条就会按你拨动开关的方向显示 (向上 = 满格且为绿色)。只改变显示: 语音和警告规则仍使用真实的通道数值。
+Channel bars	通道条
+Defaults	默认
+Bar {0}: the channel must be 1 to 16	第 {0} 个条: 通道必须是 1 到 16
+Mode 1: left = pitch + yaw, right = throttle + roll	模式 1: 左 = 俯仰 + 偏航, 右 = 油门 + 横滚
+Mode 2: left = throttle + yaw, right = pitch + roll	模式 2: 左 = 油门 + 偏航, 右 = 俯仰 + 横滚
+Mode 3: left = throttle + roll, right = pitch + yaw	模式 3: 左 = 油门 + 横滚, 右 = 俯仰 + 偏航
+Mode 4: left = pitch + roll, right = throttle + yaw	模式 4: 左 = 俯仰 + 横滚, 右 = 油门 + 偏航
+Roll channel (1 to 16)	横滚通道 (1 到 16)
+Pitch channel	俯仰通道
+Throttle channel	油门通道
+Yaw channel	偏航通道
+Left stick up/down drawn reversed	左摇杆上下反向显示
+Left stick left/right drawn reversed	左摇杆左右反向显示
+Right stick up/down drawn reversed	右摇杆上下反向显示
+Right stick left/right drawn reversed	右摇杆左右反向显示
+The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	摇杆显示遥控器发送的通道数值。常见顺序: 横滚 1, 俯仰 2, 油门 3, 偏航 4。如果圆点移动方向不对, 请反转该方向。
+Stick view	摇杆视图
+Channels are numbers from 1 to 16	通道为 1 到 16 的数字
+Each of the four needs its own channel	四项各需要独立的通道
+Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Android 未安装 {0} 语音。请在 Android 设置的文字转语音输出中安装。
+Built without the RadioMaster SDK files (test channels only).	构建时未包含 RadioMaster SDK 文件 (仅测试通道)。
+RadioMaster SDK: running.	RadioMaster SDK: 运行中。
+RadioMaster SDK: not running{0}.	RadioMaster SDK: 未运行{0}。
+AX12 Video Monitor and Announcer, version {0}\n{1}	AX12 视频监视器与语音播报, 版本 {0}\n{1}
+Thanks to RadioMaster for publishing the AX SDK.	感谢 RadioMaster 公开发布 AX SDK。
+Sound rules saved	语音规则已保存
+This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	此设备没有文件选择器, 因此文件已保存在这里:\n{0}\n\n请用 USB 线或 adb 复制。导入时, 把同名文件放进该文件夹。
+Could not save the rules: {0}	无法保存规则: {0}
+No file picker, and no {0} to import	没有文件选择器, 也没有可导入的 {0}
+Could not open the file	无法打开文件
+Could not read the file: {0}	无法读取文件: {0}
+Cannot import	无法导入
+Import sound rules	导入语音规则
+The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中恢复。
+Import	导入
+Imported {0} rules	已导入 {0} 条规则
+Sound rules	语音规则
+Settings	设置
+Mute speech	静音语音
+Speech is OFF - tap to turn on	语音已关闭 - 点按开启
+test sliders	测试滑块
+test sliders (no radio)	测试滑块 (无遥控器)
+RadioMaster SDK	RadioMaster SDK
+This build has no RadioMaster SDK files (see the README)	此版本不含 RadioMaster SDK 文件 (见 README)
+SDK worker thread failed to start	SDK 工作线程启动失败
+The SDK could not open the radio's serial link (see README: serial lock)	SDK 无法打开遥控器的串口连接 (见 README: 串口锁)
+SDK start failed (code {0})	SDK 启动失败 (代码 {0})
+line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
+line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
+line {0}: nothing to say after '->'	第 {0} 行: '->' 之后没有要播报的内容
+line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	第 {0} 行: 无法读取条件 '{1}'  (请使用  ch5 >= 1500   或   vbat / 6 < 3.5   或   fm ~ "RTH" )
+line {0}: cannot divide by zero  ({1})	第 {0} 行: 不能除以零  ({1})
+line {0}: bad value for {1} ({2})	第 {0} 行: {1} 的值无效 ({2})
+Add at least one condition.	请至少添加一个条件。
+Pick a variable (letters, digits and _ only).	请选择变量 (仅限字母、数字和 _)。
+Text can use is, is not or contains.	文本只能使用 等于、不等于 或 包含。
+Text must not contain quotation marks.	文本不能包含引号。
+'contains' works on text variables only.	“包含”仅适用于文本变量。
+Enter a value for {0}.	请输入 {0} 的值。
+'{0}' is not a number.	“{0}”不是数字。
+The divisor cannot be 0.	除数不能为 0。
+Type what to say.	请输入要播报的内容。
+The spoken text cannot contain | or ->.	播报内容不能包含 | 或 ->。
+The spoken text cannot end with @number.	播报内容不能以 @数字 结尾。
+The rule could not be read.	无法读取该规则。
+{0} contains “{1}”	{0} 包含 “{1}”
+{0} is “{1}”	{0} 等于 “{1}”
+{0} is not “{1}”	{0} 不等于 “{1}”
+{0} or {1}	{0} 或 {1}
+{0} and {1}	{0} 且 {1}
+passes when {0}: ✓ “{1}”	当 {0} 时通过: ✓ “{1}”
+CRITICAL	严重
+INFO	信息
+WARNING	警告
+, hides after {0} s	, {0} 秒后隐藏
+when {0}: show “{1}”	当 {0} 时: 显示 “{1}”
+when {0}: say “{1}”	当 {0} 时: 播报 “{1}”
+, then “{0}” when it turns false	, 条件变为假时播报 “{0}”
+, every {0} s while true	, 条件为真时每 {0} 秒一次
+ (urgent)	 (紧急)
+Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	文本规则 - 每行一条:   ch5 >= 1500 -> 已解锁 | 已上锁
+and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	可使用 and / or。  ! = 紧急。  @10 = 每 10 秒重复。  设置: hysteresis = 25, hold = 100, initial = on/off。  # = 注释。
+Check	检查
+Sample	示例
+Close	关闭
+OK: {0} rules	正常: {0} 条规则
+The file is empty.	文件为空。
+The file is too large to be a rules file.	文件太大, 不是规则文件。
+This does not look like a text file.	这看起来不是文本文件。
+No rules found in this file.	此文件中没有找到规则。
+No usable rules found. First problem: {0}	没有找到可用的规则。第一个问题: {0}
+1 rule	1 条规则
+{0} rules	{0} 条规则
+ ({0} switched off)	 (其中 {0} 条已关闭)
+. 1 line has a problem and will not work. First: {0}	。有 1 行有问题, 将不会生效。第一个: {0}
+. {0} lines have a problem and will not work. First: {1}	。有 {0} 行有问题, 将不会生效。第一个: {1}
+, no problems found.	, 未发现问题。
++ Add rule	+ 添加规则
+Text editor	文本编辑器
+Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	每项检查在你解锁之前, 条件为真时显示对勾, 否则显示叉。左侧的开关可以关闭某项检查而不删除它。
+A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	警告在条件为真时显示在状态栏中。严重 = 红色并闪烁, 警告 = 琥珀色, 信息 = 蓝色。左侧的开关可以关闭某条规则而不删除它。
+A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	规则在条件变为真时播报。左侧的开关可以关闭某条规则而不删除它。
+Speech is muted (MENU, Mute speech)	语音已静音 (菜单, 静音语音)
+No rules yet. Tap + Add rule.	还没有规则。点按 + 添加规则。
+Advanced rule (open the text editor): {0}	高级规则 (请打开文本编辑器): {0}
+Edit	编辑
+Test	测试
+Delete this rule?	删除此规则?
+Delete	删除
+Channel hysteresis, microseconds (stops chatter near a switch threshold)	通道回差, 微秒 (防止在开关阈值附近抖动)
+Voltage and link hysteresis, percent of the threshold	电压与链路回差, 阈值的百分比
+Hold time, milliseconds (ignore changes shorter than this)	保持时间, 毫秒 (忽略比此更短的变化)
+Speak rules that are already true at start-up	启动时已为真的规则也播报
+Unit of the radio's channel numbers (auto is fine)	遥控器通道数值的单位 (自动即可)
+Rule settings	规则设置
+Enter numbers (0 or more)	请输入数字 (0 或更大)
+now: {0}	当前: {0}
+no value now	当前无数值
+Pick a channel or value	选择通道或数值
+≥ at least	≥ 至少
+≤ at most	≤ 至多
+> above	> 高于
+< below	< 低于
+= equals	= 等于
+≠ not equal	≠ 不等于
+contains (text)	包含 (文本)
+variable (type, or tap List)	变量 (输入, 或点按列表)
+List	列表
+  divide by	  除以
+now: {0}{1}	当前: {0}{1}
+Level: INFO (blue)  - tap to change	级别: 信息 (蓝色)  - 点按更改
+Level: CRITICAL (red, blinking)  - tap to change	级别: 严重 (红色, 闪烁)  - 点按更改
+Level: WARNING (amber)  - tap to change	级别: 警告 (琥珀色)  - 点按更改
+The timeout needs a number of seconds, 2 or more.	超时需要 2 秒或更大的秒数。
+Repeat needs a number of seconds, 2 or more.	重复需要 2 秒或更大的秒数。
+No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	还没有通道数值 (遥控器已连接吗? 请查看 设置, 诊断, 显示变量)
+Move the switch now...	请现在拨动开关...
+No switch moved.	没有检测到开关动作。
+Detected {0} at {1}	检测到 {0}, 值 {1}
+When	当
+all of these are true	以下全部为真
+any of these is true	以下任一为真
++ condition	+ 条件
+Detect switch	检测开关
+Check label (shown with a tick or a cross)	检查标签 (显示对勾或叉)
+Show in the status bar	在状态栏显示
+Say	播报
+label, for example GPS {sats} satellites	标签, 例如 GPS {sats} 颗卫星
+text, for example BATTERY {vbat/6:2} V	文字, 例如 电池 {vbat/6:2} V
+words to speak	要播报的文字
+Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	实时数值: {vbat/6:2} = 每节电压 (2 位小数), {up_lq}, {sats}, {fm}
+Urgent (interrupts what is being said)	紧急 (打断正在播报的内容)
+Also say something when it turns false	条件变为假时也播报
+words when it turns false	条件变为假时播报的文字
+Hide after (seconds), even if the condition stays true	多少秒后隐藏, 即使条件仍为真
+Repeat while it stays true, every (seconds)	条件为真时重复, 每隔 (秒)
+The rule as text	文本形式的规则
+New check	新建检查
+Edit check	编辑检查
+New warning	新建警告
+Edit warning	编辑警告
+New rule	新建规则
+Edit rule	编辑规则
+Label now: {0}	当前标签: {0}
+   Size: {0}  (tap to change)	   大小: {0}  (点按更改)
+   Position: {0}  (tap to change)	   位置: {0}  (点按更改)
+   Opacity: {0}  (tap to change)	   不透明度: {0}  (点按更改)
+Language: {0}  (tap to change)	语言: {0}  (点按更改)
+Speech language: {0}  (tap to change)	语音语言: {0}  (点按更改)
+The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	屏幕和语音可以使用不同的语言。你的规则保持原有文字: “将规则重置为默认值” 会以语音的语言载入初始规则。
+Display	显示
+Always show the MENU button	始终显示菜单按钮
+Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
+Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)
+OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)
+Stick view: roll, pitch, yaw and throttle	摇杆视图: 横滚、俯仰、偏航和油门
+Stick size: {0}  (tap to change)	摇杆大小: {0}  (点按更改)
+Stick position: {0}  (tap to change)	摇杆位置: {0}  (点按更改)
+Stick opacity: {0}  (tap to change)	摇杆不透明度: {0}  (点按更改)
+Stick mode, channels and direction...	摇杆模式、通道和方向...
+Channel bars beside the sticks (aux switches)	摇杆旁的通道条 (辅助开关)
+Channel bars: names, channels, on and off...	通道条: 名称、通道、开关...
+Tip: press and hold the stick view on the video to open the channel bars.	提示: 在视频上长按摇杆视图可打开通道条。
+Warning status bar	警告状态栏
+Warning bar position: {0}  (tap to change)	警告栏位置: {0}  (点按更改)
+Edit the warning rules (thresholds and logic)...	编辑警告规则 (阈值与逻辑)...
+Preview the warning bar (4 seconds)	预览警告栏 (4 秒)
+Warnings show while their condition is true, so thresholds and logic are yours to set.	警告在条件为真时显示, 阈值和逻辑由你自己设定。
+Flight overlays (statistics, radar, checklist)	飞行叠加层 (统计、雷达、检查清单)
+The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing.	解锁开关决定一次飞行的开始与结束: 解锁时统计重新开始, 降落后仍可查看。
+Arm detection: channel, thresholds, cells in the pack...	解锁检测: 通道、阈值、电池节数...
+Flight statistics: max speed, max height, peak current	飞行统计: 最大速度、最大高度、峰值电流
+Rows and current limit...	显示项与电流限值...
+Radar map: home in the centre, your track and range rings	雷达图: 起点居中, 显示航迹和距离环
+Pre-flight checklist (shown while disarmed)	飞行前检查清单 (上锁时显示)
+Edit the checks (thresholds and logic)...	编辑检查项 (阈值与逻辑)...
+Video	视频
+Camera: {0}  (tap to choose the HDMI input)	摄像头: {0}  (点按选择 HDMI 输入)
+Rotate video: now {0} degrees  (tap to turn 90)	旋转视频: 当前 {0} 度  (点按旋转 90 度)
+Scale: {0}  (tap to change)	缩放: {0}  (点按更改)
+fill (stretch)	填充 (拉伸)
+Speech	语音
+Speech on	语音开启
+Speak a test sentence	播报一句测试语
+Export sound rules to a file...	将语音规则导出到文件...
+Import sound rules from a file...	从文件导入语音规则...
+Restore the rules from before the last import, reset or restore	恢复上次导入、重置或恢复之前的规则
+Swap back to the previous rules? The current rules are kept, so you can swap again.	切换回之前的规则? 当前规则会保留, 可以再次切换。
+Restore	恢复
+Reset the rules to the defaults	将规则重置为默认值
+Replace your rules with the defaults? Your current rules are kept as a backup.	用默认规则替换你的规则? 当前规则会保留为备份。
+Reset	重置
+Edit the rules as text (advanced)	以文本方式编辑规则 (高级)
+Diagnostics	诊断
+Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
+Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
+Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
+Updates (from GitHub)	更新 (来自 GitHub)
+Check for updates now	立即检查更新
+Channel: {0}  (tap to change)	渠道: {0}  (点按更改)
+Check at start-up (needs internet)	启动时检查 (需要联网)
+Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android 会要求你确认每次更新。第一次还会要求你允许 AX-HUD 安装应用。切勿在飞行中更新。
+About	关于
+AX12 video monitor, HUD and announcer	AX12 视频监视器、HUD 与语音播报
+AX-HUD  version {0}  (build {1})	AX-HUD  版本 {0}  (构建 {1})
+Use {variable} for a live value, for example {vbat/6:2}.	使用 {variable} 显示实时数值, 例如 {vbat/6:2}。
+A divisor in { } cannot be 0.	{ } 中的除数不能为 0。
+Cancelled	已取消
+Only https:// addresses are allowed	仅允许 https:// 地址
+Not a valid address	不是有效的地址
+The server answered {0}	服务器返回 {0}
+The answer is too large	响应数据过大
+The file is too large	文件过大
+The file has an unexpected size	文件大小不符合预期
+The download is incomplete or the wrong size	下载不完整或大小不对
+The checksum does not match: the file is damaged or not the published one	校验和不匹配: 文件已损坏或不是发布的文件
+Cannot replace the old file	无法替换旧文件
+Cannot save the file	无法保存文件
+SHA-256 is not available	SHA-256 不可用
+Already checking	正在检查中
+Looking for an update on github.com ...	正在 github.com 上查找更新 ...
+The update information could not be read	无法读取更新信息
+No connection	无网络连接
+No build has been published on this channel yet.	此渠道尚未发布任何构建。
+Could not check: {0}\n\nIs the phone hotspot on?	无法检查: {0}\n\n手机热点已开启吗?
+no connection	无网络连接
+Updates	更新
+You have the latest build: version {0} (build {1})	已是最新构建: 版本 {0} (构建 {1})
+AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD 有可用更新: {0} (构建 {1})。请打开 设置, 再打开 更新。
+Update available	有可用更新
+New: version {0} (build {1}, {2} MB)\nInstalled: version {3} (build {4}){5}\n\nDo not do this during a flight.	新版本: {0} (构建 {1}, {2} MB)\n已安装: 版本 {3} (构建 {4}){5}\n\n请勿在飞行中操作。
+Download and install	下载并安装
+Later	稍后
+Starting ...	正在开始 ...
+Downloading {0}	正在下载 {0}
+Download failed	下载失败
+Allow installing	允许安装
+Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android 需要你的许可, AX-HUD 才能安装更新。请打开该页面, 为 AX-HUD 打开此选项, 然后返回并重新运行更新。已下载的文件会保留, 不会重复下载。
+Open the page	打开设置页
+Could not start the installation	无法开始安装
+unknown error	未知错误
+Updated. The app will reopen.	已更新。应用将重新打开。
+Installation cancelled	安装已取消
+\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\n已安装的版本使用了不同的密钥签名。请先导出规则 (设置), 卸载一次 AX-HUD, 再安装此构建; 之后更新即可正常使用。详见 UPDATES.md。
+\n\nThis build is older than the installed one.	\n\n此构建比已安装的版本更旧。
+Installation stopped	安装已停止
+Android did not say why (code {0}).	Android 未说明原因 (代码 {0})。
+battery volts (flight controller); divide by the cell count for volts per cell	电池电压 (飞控); 除以节数得到每节电压
+battery current, amps	电池电流, 安
+capacity used, mAh	已用容量, mAh
+battery remaining, percent	剩余电量, 百分比
+uplink link quality, percent (0 = no link)	上行链路质量, 百分比 (0 = 无链路)
+uplink signal strength, antenna 1, dBm (negative)	上行信号强度, 天线 1, dBm (负值)
+uplink signal strength, antenna 2, dBm (negative)	上行信号强度, 天线 2, dBm (负值)
+uplink signal to noise, dB	上行信噪比, dB
+downlink link quality, percent	下行链路质量, 百分比
+downlink signal strength, dBm	下行信号强度, dBm
+downlink signal to noise, dB	下行信噪比, dB
+ExpressLRS packet rate mode number	ExpressLRS 包速率模式编号
+transmitter power, mW	发射功率, mW
+link quality from the radio, percent	遥控器报告的链路质量, 百分比
+signal strength from the radio	遥控器报告的信号强度
+radio's lost-frame counter	遥控器的丢帧计数
+radio battery volts	遥控器电池电压
+receiver volts	接收机电压
+telemetry present: 1 yes, 0 lost	遥测存在: 1 是, 0 丢失
+GPS satellites	GPS 卫星数
+ground speed, km/h	地速, km/h
+GPS altitude, metres	GPS 海拔, 米
+GPS heading, degrees	GPS 航向, 度
+latitude	纬度
+longitude	经度
+pitch angle, degrees	俯仰角, 度
+roll angle, degrees	横滚角, 度
+yaw / heading, degrees	偏航 / 航向, 度
+climb rate, m/s	爬升率, m/s
+flight mode name from the flight controller (text)	飞控报告的飞行模式名称 (文本)
+Switches and sticks (channels, 1000 to 2000)	开关和摇杆 (通道, 1000 到 2000)
+Battery (from the flight controller)	电池 (来自飞控)
+Link quality and signal	链路质量与信号
+Radio status	遥控器状态
+GPS and attitude	GPS 与姿态
+Flight mode (text)	飞行模式 (文本)
+Other values from the radio	遥控器的其他数值
+Advanced: the radio's own channel numbers	高级: 遥控器自身的通道数值
+Advanced: the radio's logic values	高级: 遥控器的逻辑值
+channel {0}, 1000 to 2000 microseconds	通道 {0}, 1000 到 2000 微秒
+the radio's own channel number	遥控器自身的通道数值
+the radio's logic value	遥控器的逻辑值

@@ -191,78 +191,74 @@ public final class RuleText {
 
     /** @return null if the rule is fine, otherwise a short message for the user */
     public static String validate(Spec s) {
-        if (s.conds.isEmpty()) return "Add at least one condition.";
+        if (s.conds.isEmpty()) return I18n.t("Add at least one condition.");
         for (Cond c : s.conds) {
-            if (!NAME.matcher(c.variable.trim()).matches()) return "Pick a variable (letters, digits and _ only).";
+            if (!NAME.matcher(c.variable.trim()).matches()) return I18n.t("Pick a variable (letters, digits and _ only).");
             if (c.text) {
-                if (!(c.op.equals("==") || c.op.equals("!=") || c.op.equals("~"))) return "Text can use is, is not or contains.";
-                if (c.value.contains("\"")) return "Text must not contain quotation marks.";
+                if (!(c.op.equals("==") || c.op.equals("!=") || c.op.equals("~"))) return I18n.t("Text can use is, is not or contains.");
+                if (c.value.contains("\"")) return I18n.t("Text must not contain quotation marks.");
             } else {
-                if (c.op.equals("~")) return "'contains' works on text variables only.";
-                if (c.value.trim().isEmpty()) return "Enter a value for " + c.variable.trim() + ".";
+                if (c.op.equals("~")) return I18n.t("'contains' works on text variables only.");
+                if (c.value.trim().isEmpty()) return I18n.t("Enter a value for {0}.", c.variable.trim());
                 try {
                     Double.parseDouble(c.value.trim());
                 } catch (NumberFormatException e) {
-                    return "'" + c.value.trim() + "' is not a number.";
+                    return I18n.t("'{0}' is not a number.", c.value.trim());
                 }
-                if (c.divisor == 0.0) return "The divisor cannot be 0.";
+                if (c.divisor == 0.0) return I18n.t("The divisor cannot be 0.");
             }
         }
-        if (s.onTrue.trim().isEmpty()) return "Type what to say.";
+        if (s.onTrue.trim().isEmpty()) return I18n.t("Type what to say.");
         for (String t : new String[]{s.onTrue, s.onFalse}) {
             String tpl = TextTemplate.check(t);
             if (tpl != null) return tpl;
-            if (t.contains("|") || t.contains("->")) return "The spoken text cannot contain | or ->.";
-            if (TRAILING_REPEAT.matcher(" " + t).find()) return "The spoken text cannot end with @number.";
+            if (t.contains("|") || t.contains("->")) return I18n.t("The spoken text cannot contain | or ->.");
+            if (TRAILING_REPEAT.matcher(" " + t).find()) return I18n.t("The spoken text cannot end with @number.");
         }
         RuleParser.Result r = RuleParser.parse(line(s));
         if (!r.errors.isEmpty()) return r.errors.get(0);
-        if (r.rules.size() != 1) return "The rule could not be read.";
+        if (r.rules.size() != 1) return I18n.t("The rule could not be read.");
         return null;
+    }
+
+    /** The conditions of a rule as words: "vbat < 3.5 and ch5 >= 1500". The joining words come from the language. */
+    private static String conditionsText(Spec s) {
+        String all = null;
+        for (int i = 0; i < s.conds.size(); i++) {
+            Cond c = s.conds.get(i);
+            String one;
+            if (c.text) {
+                String q = c.value;
+                one = c.op.equals("~") ? I18n.t("{0} contains \u201C{1}\u201D", c.variable, q)
+                    : c.op.equals("==") ? I18n.t("{0} is \u201C{1}\u201D", c.variable, q)
+                    : I18n.t("{0} is not \u201C{1}\u201D", c.variable, q);
+            } else {
+                one = c.variable + (c.divisor != 1.0 ? " \u00F7 " + fmt(c.divisor) : "") + " " + symbol(c.op) + " " + c.value;
+            }
+            all = all == null ? one : (s.any ? I18n.t("{0} or {1}", all, one) : I18n.t("{0} and {1}", all, one));
+        }
+        return all == null ? "" : all;
     }
 
     /** One readable sentence for the list of pre-flight checks. */
     public static String describeCheck(Spec s) {
-        Spec shown = s.copy();
-        shown.urgentTrue = false;
-        shown.onFalse = "";
-        shown.repeatSec = 0;
-        String d = describe(shown);
-        return d.replaceFirst("^when ", "passes when ").replaceFirst(": say ", ": \u2713 ");
+        return I18n.t("passes when {0}: \u2713 \u201C{1}\u201D", conditionsText(s), s.onTrue);
     }
 
     /** One readable sentence for the list of warnings. */
     public static String describeWarning(Spec s) {
-        String level = s.urgentTrue ? "CRITICAL" : s.onTrue.startsWith("*") ? "INFO" : "WARNING";
-        Spec shown = s.copy();
-        if (shown.onTrue.startsWith("*")) shown.onTrue = shown.onTrue.substring(1);
-        shown.urgentTrue = false;
-        shown.onFalse = "";
-        shown.repeatSec = 0;
-        String d = describe(shown);
-        String timeout = s.repeatSec > 0 ? ", hides after " + s.repeatSec + " s" : "";
-        return "[" + level + "] " + d.replaceFirst(": say ", ": show ") + timeout;
+        String level = s.urgentTrue ? I18n.t("CRITICAL") : s.onTrue.startsWith("*") ? I18n.t("INFO") : I18n.t("WARNING");
+        String text = s.onTrue.startsWith("*") ? s.onTrue.substring(1) : s.onTrue;
+        String timeout = s.repeatSec > 0 ? I18n.t(", hides after {0} s", s.repeatSec) : "";
+        return "[" + level + "] " + I18n.t("when {0}: show \u201C{1}\u201D", conditionsText(s), text) + timeout;
     }
 
     /** One readable sentence for the list. */
     public static String describe(Spec s) {
-        StringBuilder sb = new StringBuilder("when ");
-        for (int i = 0; i < s.conds.size(); i++) {
-            if (i > 0) sb.append(s.any ? " or " : " and ");
-            Cond c = s.conds.get(i);
-            sb.append(c.variable);
-            if (c.text) {
-                sb.append(c.op.equals("~") ? " contains " : c.op.equals("==") ? " is " : " is not ");
-                sb.append('\u201C').append(c.value).append('\u201D');
-            } else {
-                if (c.divisor != 1.0) sb.append(" \u00F7 ").append(fmt(c.divisor));
-                sb.append(' ').append(symbol(c.op)).append(' ').append(c.value);
-            }
-        }
-        sb.append(": say \u201C").append(s.onTrue).append('\u201D');
-        if (!s.onFalse.trim().isEmpty()) sb.append(", then \u201C").append(s.onFalse).append("\u201D when it turns false");
-        if (s.repeatSec > 0) sb.append(", every ").append(s.repeatSec).append(" s while true");
-        if (s.urgentTrue) sb.append(" (urgent)");
+        StringBuilder sb = new StringBuilder(I18n.t("when {0}: say \u201C{1}\u201D", conditionsText(s), s.onTrue));
+        if (!s.onFalse.trim().isEmpty()) sb.append(I18n.t(", then \u201C{0}\u201D when it turns false", s.onFalse));
+        if (s.repeatSec > 0) sb.append(I18n.t(", every {0} s while true", s.repeatSec));
+        if (s.urgentTrue) sb.append(I18n.t(" (urgent)"));
         return sb.toString();
     }
 

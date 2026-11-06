@@ -120,7 +120,7 @@ public class OverlayTests {
         check(StickLayout.axisName(k2, 2, true, true, 1, 2, 3, 4).equals("T") && StickLayout.axisName(k2, 2, false, false, 1, 2, 3, 4).equals("R"), "axis names");
 
         // ---------- the shipped default warning rules ----------
-        String dw = readQuoted("app/src/main/java/dev/ax12/announcer/DefaultWarnings.kt");
+        String dw = readFile("app/src/main/assets/i18n/warnings.en.txt");
         check(!dw.isEmpty(), "default warning rules found");
         RuleParser.Result dwp = RuleParser.parse(dw);
         check(dwp.errors.isEmpty() && dwp.rules.size() == 8, "default warnings parse: " + dwp.errors + " " + dwp.rules.size());
@@ -207,7 +207,7 @@ public class OverlayTests {
         check(RuleText.line(ts).equals("ch5 >= 1950 -> *ARMED"), "no timeout: no @");
         check(!RuleText.describeWarning(ts).contains("hides"), "no timeout: nothing in the description");
         // the shipped defaults
-        RuleParser.Result dwt = RuleParser.parse(readQuoted("app/src/main/java/dev/ax12/announcer/DefaultWarnings.kt"));
+        RuleParser.Result dwt = RuleParser.parse(readFile("app/src/main/assets/i18n/warnings.en.txt"));
         int timed = 0;
         for (Rule rr : dwt.rules) if (rr.repeatSec > 0) { timed++; check(rr.onTrue.equals("*ARMED") && rr.repeatSec == 5, "the ARMED label is the timed one"); }
         check(timed == 1 && dwt.errors.isEmpty(), "the default warnings have exactly one timed rule: " + timed);
@@ -216,11 +216,9 @@ public class OverlayTests {
         System.exit(failures == 0 ? 0 : 1);
     }
 
-    static String readQuoted(String path) {
+    static String readFile(String path) {
         try {
-            String src = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(path)), java.nio.charset.StandardCharsets.UTF_8);
-            int a = src.indexOf("\"\"\"") + 3, b = src.indexOf("\"\"\"", a);
-            return src.substring(a, b);
+            return new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(path)), java.nio.charset.StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "";
         }

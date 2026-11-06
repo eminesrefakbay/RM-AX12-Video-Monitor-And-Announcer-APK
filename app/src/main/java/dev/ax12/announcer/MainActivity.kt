@@ -107,10 +107,12 @@ class MainActivity : Activity() {
         varsText = findViewById(R.id.varsText)
 
         speaker = Speaker(this)
+        speaker.setLanguage(Lang.locale(Lang.speechCode(this)))
         camera = CameraPreview(this, texture)
 
         buildTestPanel()
         menuButton = findViewById(R.id.menuButton)
+        menuButton.text = tr("MENU")
         menuButton.setOnClickListener { mainMenu.show() }
 
         val liveValues = object : LiveValues {
@@ -160,7 +162,7 @@ class MainActivity : Activity() {
             { Prefs.warningRules(this) },
             { Prefs.setWarningRules(this, it) },
             warning = true,
-            titleText = "Warning rules",
+            titleText = tr("Warning rules"),
             testWarning = { text, level -> warningBar.showTest(text, level, SystemClock.elapsedRealtime()) }
         )
         checkPanel = RulesPanel(
@@ -169,7 +171,7 @@ class MainActivity : Activity() {
             { startActivity(Intent(this, RulesActivity::class.java).putExtra("checks", true)) },
             { Prefs.checkRules(this) },
             { Prefs.setCheckRules(this, it) },
-            titleText = "Pre-flight checks",
+            titleText = tr("Pre-flight checks"),
             check = true
         )
         settingsPanel = SettingsPanel(this, settingsHost)
@@ -302,7 +304,7 @@ class MainActivity : Activity() {
             else -> ChannelScaler(true, ChannelScaler.Mode.PERCENT)
         }
         if (parsed.errors.isNotEmpty()) {
-            Toast.makeText(this, "Sound rules: " + parsed.errors.size + " error(s). Open the rules editor.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, tr("Sound rules: {0} error(s). Open the rules editor.", parsed.errors.size), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -313,7 +315,7 @@ class MainActivity : Activity() {
         checkModel = model
         checkEngine = RuleEngine(parsed, null, model)
         if (parsed.errors.isNotEmpty()) {
-            Toast.makeText(this, "Pre-flight checks: " + parsed.errors.size + " error(s). Open Settings, then the checks.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, tr("Pre-flight checks: {0} error(s). Open Settings, then the checks.", parsed.errors.size), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -322,7 +324,7 @@ class MainActivity : Activity() {
         warningBar.load(text)
         val errors = RuleParser.parse(text).errors
         if (errors.isNotEmpty()) {
-            Toast.makeText(this, "Warning rules: " + errors.size + " error(s). Open Settings, then the warning rules.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, tr("Warning rules: {0} error(s). Open Settings, then the warning rules.", errors.size), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -335,7 +337,7 @@ class MainActivity : Activity() {
 
             val stale = now - camera.lastFrameMs > 1000
             noFeed.visibility = if (stale) View.VISIBLE else View.GONE
-            if (stale) noFeedDetail.text = "NO VIDEO  \u00B7  " + camera.barText()
+            if (stale) noFeedDetail.text = tr("NO VIDEO  \u00B7  {0}", camera.barText())
 
             // the MENU button must not sit on top of a panel's own buttons
             if (anyOverlayOpen()) {
@@ -390,9 +392,9 @@ class MainActivity : Activity() {
         sb.append('\n')
         if (link is FakeRadioLink) {
             sb.append(
-                if (testVisible) "TEST CHANNELS ARE ON - the radio is not being read\n"
-                else if (sdkLink == null) "NO SDK IN THIS BUILD - the radio is not being read\n"
-                else "SDK IS NOT RUNNING - the radio is not being read\n"
+                if (testVisible) tr("TEST CHANNELS ARE ON - the radio is not being read\n")
+                else if (sdkLink == null) tr("NO SDK IN THIS BUILD - the radio is not being read\n")
+                else tr("SDK IS NOT RUNNING - the radio is not being read\n")
             )
         }
         if (sdkError != null) sb.append("SDK: ").append(sdkError).append('\n')
@@ -422,13 +424,13 @@ class MainActivity : Activity() {
     private fun chooseCamera() {
         val list = camera.listCameras()
         if (list.isEmpty()) {
-            Toast.makeText(this, "Android lists no cameras", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, tr("Android lists no cameras"), Toast.LENGTH_LONG).show()
             return
         }
         val names = Array(list.size) { list[it].second }
         Immersive.show(
             AlertDialog.Builder(this)
-                .setTitle("Choose the HDMI camera")
+                .setTitle(tr("Choose the HDMI camera"))
                 .setItems(names) { _, which -> camera.select(list[which].first) }
                 .create()
         )
@@ -449,7 +451,7 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ settings and rules files
 
     private val settingsHost = object : SettingsHost {
-        override fun cameraId(): String = camera.cameraId ?: "auto"
+        override fun cameraId(): String = camera.cameraId ?: tr("auto")
         override fun chooseCamera() = this@MainActivity.chooseCamera()
         override fun rotation(): Int = camera.rotation
         override fun rotateVideo() = camera.rotateNext()
@@ -458,8 +460,31 @@ class MainActivity : Activity() {
         override fun speechOn(): Boolean = !speaker.muted
         override fun setSpeechOn(on: Boolean) { speaker.muted = !on }
         override fun speakTest() {
-            if (speaker.muted) Toast.makeText(this@MainActivity, "Speech is off", Toast.LENGTH_SHORT).show()
-            else speaker.say("Sound test", true)
+            if (speaker.muted) Toast.makeText(this@MainActivity, tr("Speech is off"), Toast.LENGTH_SHORT).show()
+            else if (!speaker.languageOk()) Toast.makeText(this@MainActivity, voiceMissingText(), Toast.LENGTH_LONG).show()
+            else speaker.say(I18n.tIn(Lang.speechCode(this@MainActivity), "Sound test"), true)
+        }
+
+        override fun languageLabel(): String {
+            val pref = Prefs.language(this@MainActivity)
+            return if (pref == "auto") tr("Automatic ({0})", Lang.nativeName(I18n.language())) else Lang.nativeName(pref)
+        }
+        override fun cycleLanguage() {
+            val i = Lang.choices.indexOf(Prefs.language(this@MainActivity)).coerceAtLeast(0)
+            Prefs.setLanguage(this@MainActivity, Lang.choices[(i + 1) % Lang.choices.size])
+            Lang.apply(this@MainActivity)
+            this@MainActivity.recreate()          // every screen is built again in the new language
+        }
+        override fun speechLanguageLabel(): String {
+            val p = Prefs.speechLanguage(this@MainActivity)
+            return if (p == "same" || !I18n.isSupported(p)) tr("Same as the app ({0})", Lang.nativeName(I18n.language())) else Lang.nativeName(p)
+        }
+        override fun cycleSpeechLanguage() {
+            val order = arrayOf("same", "en", "tr", "de", "zh")
+            val i = order.indexOf(Prefs.speechLanguage(this@MainActivity)).coerceAtLeast(0)
+            Prefs.setSpeechLanguage(this@MainActivity, order[(i + 1) % order.size])
+            speaker.setLanguage(Lang.locale(Lang.speechCode(this@MainActivity)))
+            Toast.makeText(this@MainActivity, if (speaker.languageOk()) tr("The voice now speaks {0}.", Lang.nativeName(Lang.speechCode(this@MainActivity))) else voiceMissingText(), Toast.LENGTH_LONG).show()
         }
         override fun exportRules() = this@MainActivity.exportRules()
         override fun importRules() = this@MainActivity.importRules()
@@ -467,13 +492,12 @@ class MainActivity : Activity() {
         override fun restoreRules() = this@MainActivity.restoreRules()
         override fun resetRules() = this@MainActivity.resetRules()
         override fun openRulesText() { startActivity(Intent(this@MainActivity, RulesActivity::class.java)) }
-        override fun updateLine(): String = "Installed: version " + updater.installedName() + " (build " + updater.installedCode() +
-                ")   Channel: " + (if (updater.channel() == "stable") "Stable" else "Nightly")
+        override fun updateLine(): String = tr("Installed: version {0} (build {1})   Channel: {2}", updater.installedName(), updater.installedCode(), (if (updater.channel() == "stable") tr("Stable") else tr("Nightly")))
         override fun checkUpdatesNow() {
             settingsPanel.hide()
             updater.check(true)
         }
-        override fun updateChannelLabel(): String = if (updater.channel() == "stable") "Stable (tested releases only)" else "Nightly (newest build of every push)"
+        override fun updateChannelLabel(): String = if (updater.channel() == "stable") tr("Stable (tested releases only)") else tr("Nightly (newest build of every push)")
         override fun cycleUpdateChannel() {
             Prefs.setUpdateChannel(this@MainActivity, if (updater.channel() == "stable") "nightly" else "stable")
         }
@@ -533,7 +557,7 @@ class MainActivity : Activity() {
             Prefs.setBool(this@MainActivity, "warnBarOn", on)
             applyOverlayPrefs()
         }
-        override fun warningBarPositionLabel(): String = if (Prefs.int(this@MainActivity, "warnBarPos", 0) == 0) "top" else "bottom"
+        override fun warningBarPositionLabel(): String = if (Prefs.int(this@MainActivity, "warnBarPos", 0) == 0) tr("top") else tr("bottom")
         override fun cycleWarningBarPosition() = cyclePref("warnBarPos", 0, 2)
         override fun editWarningRules() {
             settingsPanel.hide()
@@ -541,13 +565,13 @@ class MainActivity : Activity() {
         }
         override fun previewWarnings() {
             val now = SystemClock.elapsedRealtime()
-            warningBar.showTest("BATTERY CRITICAL 3.48 V per cell", 2, now, 4000)
+            warningBar.showTest(tr("BATTERY CRITICAL 3.48 V per cell"), 2, now, 4000)
             settingsPanel.hide()
         }
     }
 
-    private val sizeNames = arrayOf("small", "medium", "large")
-    private val positionNames = arrayOf("bottom center", "bottom left", "bottom right", "top left", "top right")
+    private val sizeNames = arrayOf(tr("small"), tr("medium"), tr("large"))
+    private val positionNames = arrayOf(tr("bottom center"), tr("bottom left"), tr("bottom right"), tr("top left"), tr("top right"))
     private val opacityNames = arrayOf("35%", "65%", "95%")
 
     private fun cyclePref(key: String, def: Int, count: Int) {
@@ -557,7 +581,7 @@ class MainActivity : Activity() {
 
     // ------------------------------------------------------------------ flight overlays
 
-    private val tilePositionNames = arrayOf("top left", "top right", "bottom left", "bottom right", "center")
+    private val tilePositionNames = arrayOf(tr("top left"), tr("top right"), tr("bottom left"), tr("bottom right"), tr("center"))
     private val tileOpacityNames = arrayOf("50%", "75%", "100%")
 
     private fun defaultTilePosition(tile: String): Int = when (tile) {
@@ -624,20 +648,20 @@ class MainActivity : Activity() {
         if (showStats) {
             val rows = Prefs.int(this, "statsRows", 7)
             val lines = ArrayList<FlightStatsView.Line>()
-            if (rows and 1 != 0) lines.add(FlightStatsView.Line("SPEED", num0(fs.speedNow()) + " / " + num0(fs.maxSpeed()) + " km/h"))
-            if (rows and 2 != 0) lines.add(FlightStatsView.Line("HEIGHT", num0(fs.heightNow()) + " / " + num0(fs.maxHeight()) + " m"))
+            if (rows and 1 != 0) lines.add(FlightStatsView.Line(tr("SPEED"), num0(fs.speedNow()) + " / " + num0(fs.maxSpeed()) + " km/h"))
+            if (rows and 2 != 0) lines.add(FlightStatsView.Line(tr("HEIGHT"), num0(fs.heightNow()) + " / " + num0(fs.maxHeight()) + " m"))
             if (rows and 4 != 0) {
                 val limit = Prefs.int(this, "currentLimit", 50).toDouble()
                 val scale = maxOf(limit * 1.2, if (fs.peakCurrent().isNaN()) 0.0 else fs.peakCurrent() * 1.05, 20.0)
-                lines.add(FlightStatsView.Line("CURRENT", num1(fs.currentNow()) + " / " + num1(fs.peakCurrent()) + " A",
+                lines.add(FlightStatsView.Line(tr("CURRENT"), num1(fs.currentNow()) + " / " + num1(fs.peakCurrent()) + " A",
                     if (fs.currentNow().isNaN()) Double.NaN else fs.currentNow() / scale,
                     if (fs.peakCurrent().isNaN()) Double.NaN else fs.peakCurrent() / scale,
                     limit / scale))
             }
-            if (rows and 8 != 0) lines.add(FlightStatsView.Line("DISTANCE", num0(fs.distanceNow()) + " / " + num0(fs.maxDistance()) + " m"))
-            if (rows and 16 != 0) lines.add(FlightStatsView.Line("MIN LINK", num0(fs.minLinkQuality()) + " %"))
-            if (rows and 32 != 0) lines.add(FlightStatsView.Line("MIN CELL", if (fs.minCellVolts().isNaN()) "-" else String.format(Locale.US, "%.2f V", fs.minCellVolts())))
-            statsView.setContent((if (fs.armed()) "FLIGHT  " else "LAST FLIGHT  ") + clock(fs.armedMs(now)), lines)
+            if (rows and 8 != 0) lines.add(FlightStatsView.Line(tr("DISTANCE"), num0(fs.distanceNow()) + " / " + num0(fs.maxDistance()) + " m"))
+            if (rows and 16 != 0) lines.add(FlightStatsView.Line(tr("MIN LINK"), num0(fs.minLinkQuality()) + " %"))
+            if (rows and 32 != 0) lines.add(FlightStatsView.Line(tr("MIN CELL"), if (fs.minCellVolts().isNaN()) "-" else String.format(Locale.US, "%.2f V", fs.minCellVolts())))
+            statsView.setContent((if (fs.armed()) tr("FLIGHT  ") else tr("LAST FLIGHT  ")) + clock(fs.armedMs(now)), lines)
         }
 
         val showRadar = radarOn && fs.hasHome()
@@ -659,13 +683,13 @@ class MainActivity : Activity() {
             val footer: String
             val color: Int
             if (cm.ready()) {
-                footer = "READY"
+                footer = tr("READY")
                 color = 0xFF66BB6A.toInt()
             } else if (cm.fail() > 0) {
-                footer = "NOT READY: " + cm.fail() + (if (cm.fail() == 1) " check failed" else " checks failed")
+                footer = if (cm.fail() == 1) tr("NOT READY: 1 check failed") else tr("NOT READY: {0} checks failed", cm.fail())
                 color = 0xFFEF5350.toInt()
             } else {
-                footer = "WAITING FOR DATA"
+                footer = tr("WAITING FOR DATA")
                 color = 0xFFB0BEC5.toInt()
             }
             checkView.setContent(rows, footer, color)
@@ -688,23 +712,22 @@ class MainActivity : Activity() {
             body.addView(e)
             return e
         }
-        val ch = field("Arm switch channel (1 to 16, AUX1 is channel 5)", Prefs.int(this, "armCh", 5))
-        val high = field("Counts as armed at or above (microseconds)", Prefs.int(this, "armHigh", 1750))
-        val low = field("Counts as disarmed below (microseconds)", Prefs.int(this, "armLow", 1650))
-        val cells = field("Cells in the pack (for the lowest volts per cell)", Prefs.int(this, "cells", 6))
+        val ch = field(tr("Arm switch channel (1 to 16, AUX1 is channel 5)"), Prefs.int(this, "armCh", 5))
+        val high = field(tr("Counts as armed at or above (microseconds)"), Prefs.int(this, "armHigh", 1750))
+        val low = field(tr("Counts as disarmed below (microseconds)"), Prefs.int(this, "armLow", 1650))
+        val cells = field(tr("Cells in the pack (for the lowest volts per cell)"), Prefs.int(this, "cells", 6))
         val hint = TextView(this)
-        hint.text = "The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. " +
-                "The switch must stay put for 0.3 seconds."
+        hint.text = tr("The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.")
         hint.textSize = 12f
         hint.setPadding(0, dp(8), 0, 0)
         body.addView(hint)
         val scroll = ScrollView(this)
         scroll.addView(body)
         val dlg = AlertDialog.Builder(this)
-            .setTitle("Arm detection")
+            .setTitle(tr("Arm detection"))
             .setView(scroll)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel", null)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
             .create()
         Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
@@ -712,9 +735,9 @@ class MainActivity : Activity() {
             val h = high.text.toString().trim().toIntOrNull()
             val l = low.text.toString().trim().toIntOrNull()
             val n = cells.text.toString().trim().toIntOrNull()
-            if (c == null || c < 1 || c > 16) Toast.makeText(this, "The channel is 1 to 16", Toast.LENGTH_SHORT).show()
-            else if (h == null || l == null || h < 1000 || h > 2100 || l < 900 || l > h) Toast.makeText(this, "Use microseconds, with the disarmed value not above the armed one", Toast.LENGTH_LONG).show()
-            else if (n == null || n < 1 || n > 12) Toast.makeText(this, "Cells: 1 to 12", Toast.LENGTH_SHORT).show()
+            if (c == null || c < 1 || c > 16) Toast.makeText(this, tr("The channel is 1 to 16"), Toast.LENGTH_SHORT).show()
+            else if (h == null || l == null || h < 1000 || h > 2100 || l < 900 || l > h) Toast.makeText(this, tr("Use microseconds, with the disarmed value not above the armed one"), Toast.LENGTH_LONG).show()
+            else if (n == null || n < 1 || n > 12) Toast.makeText(this, tr("Cells: 1 to 12"), Toast.LENGTH_SHORT).show()
             else {
                 Prefs.setInt(this, "armCh", c)
                 Prefs.setInt(this, "armHigh", h)
@@ -731,8 +754,8 @@ class MainActivity : Activity() {
         val body = LinearLayout(this)
         body.orientation = LinearLayout.VERTICAL
         body.setPadding(dp(16), dp(8), dp(16), dp(8))
-        val names = arrayOf("Speed (now / maximum)", "Height above the arming point (now / maximum)", "Current (now / peak, with a limit line)",
-            "Distance from home (now / maximum)", "Lowest link quality", "Lowest volts per cell")
+        val names = arrayOf(tr("Speed (now / maximum)"), tr("Height above the arming point (now / maximum)"), tr("Current (now / peak, with a limit line)"),
+            tr("Distance from home (now / maximum)"), tr("Lowest link quality"), tr("Lowest volts per cell"))
         val mask = Prefs.int(this, "statsRows", 7)
         val boxes = ArrayList<CheckBox>()
         for (i in names.indices) {
@@ -743,7 +766,7 @@ class MainActivity : Activity() {
             boxes.add(c)
         }
         val t = TextView(this)
-        t.text = "Current limit line (amps)"
+        t.text = tr("Current limit line (amps)")
         t.setPadding(0, dp(10), 0, 0)
         body.addView(t)
         val limit = EditText(this)
@@ -751,24 +774,23 @@ class MainActivity : Activity() {
         limit.setText(Prefs.int(this, "currentLimit", 50).toString())
         body.addView(limit)
         val hint = TextView(this)
-        hint.text = "Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. " +
-                "The bar turns red when the current is above the limit line."
+        hint.text = tr("Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.")
         hint.textSize = 12f
         hint.setPadding(0, dp(8), 0, 0)
         body.addView(hint)
         val scroll = ScrollView(this)
         scroll.addView(body)
         val dlg = AlertDialog.Builder(this)
-            .setTitle("Flight statistics rows")
+            .setTitle(tr("Flight statistics rows"))
             .setView(scroll)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel", null)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
             .create()
         Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val a = limit.text.toString().trim().toIntOrNull()
             if (a == null || a < 5 || a > 300) {
-                Toast.makeText(this, "The current limit is 5 to 300 amps", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, tr("The current limit is 5 to 300 amps"), Toast.LENGTH_SHORT).show()
             } else {
                 var m = 0
                 for (i in names.indices) if (boxes[i].isChecked) m = m or (1 shl i)
@@ -838,14 +860,14 @@ class MainActivity : Activity() {
         for (i in 0 until AuxBars.SLOTS) {
             if (i == 0 || i == 4) {
                 val head = TextView(this)
-                head.text = if (i == 0) "Left of the sticks" else "Right of the sticks"
+                head.text = if (i == 0) tr("Left of the sticks") else tr("Right of the sticks")
                 head.textSize = 14f
                 head.setTypeface(null, Typeface.BOLD)
                 head.setTextColor(0xFF9CDCFE.toInt())
                 head.setPadding(0, dp(12), 0, dp(2))
                 body.addView(head)
                 val cols = TextView(this)
-                cols.text = "on      channel      name on the overlay                 reverse"
+                cols.text = tr("on      channel      name on the overlay                 reverse")
                 cols.textSize = 11f
                 body.addView(cols)
             }
@@ -875,10 +897,7 @@ class MainActivity : Activity() {
             nameFields.add(name)
         }
         val hint = TextView(this)
-        hint.text = "A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. " +
-                "Names are written along the bar; a short name reads best.\n\n" +
-                "Reverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it " +
-                "(up = full and green). Only the picture changes: sound and warning rules still use the real channel values."
+        hint.text = tr("A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.")
         hint.textSize = 12f
         hint.setPadding(0, dp(10), 0, 0)
         body.addView(hint)
@@ -886,11 +905,11 @@ class MainActivity : Activity() {
         val scroll = ScrollView(this)
         scroll.addView(body)
         val dlg = AlertDialog.Builder(this)
-            .setTitle("Channel bars")
+            .setTitle(tr("Channel bars"))
             .setView(scroll)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel", null)
-            .setNeutralButton("Defaults", null)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
+            .setNeutralButton(tr("Defaults"), null)
             .create()
         Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
@@ -908,7 +927,7 @@ class MainActivity : Activity() {
             for (i in 0 until AuxBars.SLOTS) {
                 val ch = chans[i].text.toString().trim().toIntOrNull()
                 if (ch == null || ch < 1 || ch > 16) {
-                    bad = "Bar " + (i + 1) + ": the channel must be 1 to 16"
+                    bad = tr("Bar {0}: the channel must be 1 to 16", (i + 1))
                     break
                 }
                 list.add(AuxBars.Bar(boxes[i].isChecked, ch, AuxBars.cleanName(nameFields[i].text.toString(), ch), reverseBoxes[i].isChecked))
@@ -931,10 +950,10 @@ class MainActivity : Activity() {
 
         var mode = Prefs.int(this, "stickMode", 2).coerceIn(1, 4)
         val modeNames = arrayOf(
-            "Mode 1: left = pitch + yaw, right = throttle + roll",
-            "Mode 2: left = throttle + yaw, right = pitch + roll",
-            "Mode 3: left = throttle + roll, right = pitch + yaw",
-            "Mode 4: left = pitch + roll, right = throttle + yaw"
+            tr("Mode 1: left = pitch + yaw, right = throttle + roll"),
+            tr("Mode 2: left = throttle + yaw, right = pitch + roll"),
+            tr("Mode 3: left = throttle + roll, right = pitch + yaw"),
+            tr("Mode 4: left = pitch + roll, right = throttle + yaw")
         )
         val modeButton = Button(this)
         modeButton.isAllCaps = false
@@ -956,14 +975,14 @@ class MainActivity : Activity() {
             body.addView(e)
             return e
         }
-        val roll = field("Roll channel (1 to 16)", Prefs.int(this, "stickRoll", 1))
-        val pitch = field("Pitch channel", Prefs.int(this, "stickPitch", 2))
-        val throttle = field("Throttle channel", Prefs.int(this, "stickThrottle", 3))
-        val yaw = field("Yaw channel", Prefs.int(this, "stickYaw", 4))
+        val roll = field(tr("Roll channel (1 to 16)"), Prefs.int(this, "stickRoll", 1))
+        val pitch = field(tr("Pitch channel"), Prefs.int(this, "stickPitch", 2))
+        val throttle = field(tr("Throttle channel"), Prefs.int(this, "stickThrottle", 3))
+        val yaw = field(tr("Yaw channel"), Prefs.int(this, "stickYaw", 4))
 
         val mask = Prefs.int(this, "stickInvert", 0)
-        val labels = arrayOf("Left stick up/down drawn reversed", "Left stick left/right drawn reversed",
-            "Right stick up/down drawn reversed", "Right stick left/right drawn reversed")
+        val labels = arrayOf(tr("Left stick up/down drawn reversed"), tr("Left stick left/right drawn reversed"),
+            tr("Right stick up/down drawn reversed"), tr("Right stick left/right drawn reversed"))
         val flags = intArrayOf(StickLayout.INV_LEFT_V, StickLayout.INV_LEFT_H, StickLayout.INV_RIGHT_V, StickLayout.INV_RIGHT_H)
         val boxes = ArrayList<CheckBox>()
         for (i in 0 until 4) {
@@ -974,8 +993,7 @@ class MainActivity : Activity() {
             boxes.add(c)
         }
         val hint = TextView(this)
-        hint.text = "The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. " +
-                "Turn a direction round if the dot moves the wrong way."
+        hint.text = tr("The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.")
         hint.textSize = 12f
         hint.setPadding(0, dp(8), 0, 0)
         body.addView(hint)
@@ -983,18 +1001,18 @@ class MainActivity : Activity() {
         val scroll = ScrollView(this)
         scroll.addView(body)
         val dlg = AlertDialog.Builder(this)
-            .setTitle("Stick view")
+            .setTitle(tr("Stick view"))
             .setView(scroll)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel", null)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
             .create()
         Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val values = listOf(roll, pitch, throttle, yaw).map { it.text.toString().trim().toIntOrNull() }
             if (values.any { it == null || it < 1 || it > 16 }) {
-                Toast.makeText(this, "Channels are numbers from 1 to 16", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, tr("Channels are numbers from 1 to 16"), Toast.LENGTH_SHORT).show()
             } else if (values.toSet().size < 4) {
-                Toast.makeText(this, "Each of the four needs its own channel", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, tr("Each of the four needs its own channel"), Toast.LENGTH_SHORT).show()
             } else {
                 Prefs.setInt(this, "stickMode", mode)
                 Prefs.setInt(this, "stickRoll", values[0]!!)
@@ -1010,16 +1028,19 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun voiceMissingText(): String =
+        tr("Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.", Lang.nativeName(Lang.speechCode(this)))
+
     private fun aboutText(): String {
         val version = try {
             packageManager.getPackageInfo(packageName, 0).versionName ?: "?"
         } catch (e: Exception) {
             "?"
         }
-        val sdk = if (!AxSdkJni.loaded) "Built without the RadioMaster SDK files (test channels only)."
-        else if (sdkRunning) "RadioMaster SDK: running."
-        else "RadioMaster SDK: not running" + (sdkError?.let { " ($it)" } ?: "") + "."
-        return "AX12 Video Monitor and Announcer, version " + version + "\n" + sdk
+        val sdk = if (!AxSdkJni.loaded) tr("Built without the RadioMaster SDK files (test channels only).")
+        else if (sdkRunning) tr("RadioMaster SDK: running.")
+        else tr("RadioMaster SDK: not running{0}.", (sdkError?.let { " ($it)" } ?: ""))
+        return tr("AX12 Video Monitor and Announcer, version {0}\n{1}", version, sdk) + "\n" + tr("Thanks to RadioMaster for publishing the AX SDK.")
     }
 
     private val requestExport = 41
@@ -1049,14 +1070,13 @@ class MainActivity : Activity() {
             f.writeText(exportText(), Charsets.UTF_8)
             Immersive.show(
                 AlertDialog.Builder(this)
-                    .setTitle("Sound rules saved")
-                    .setMessage("This device has no file picker, so the file was saved here:\n" + f.absolutePath +
-                            "\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.")
+                    .setTitle(tr("Sound rules saved"))
+                    .setMessage(tr("This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.", f.absolutePath))
                     .setPositiveButton("OK", null)
                     .create()
             )
         } catch (e: Exception) {
-            Toast.makeText(this, "Could not save the rules: " + e.message, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, tr("Could not save the rules: {0}", e.message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -1069,7 +1089,7 @@ class MainActivity : Activity() {
         } catch (e: ActivityNotFoundException) {
             val f = File(getExternalFilesDir(null) ?: filesDir, fileName)
             if (f.exists()) askImport(readTextLimited(f.inputStream())) else {
-                Toast.makeText(this, "No file picker, and no " + f.absolutePath + " to import", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, tr("No file picker, and no {0} to import", f.absolutePath), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -1081,17 +1101,17 @@ class MainActivity : Activity() {
         if (requestCode == requestExport) {
             try {
                 contentResolver.openOutputStream(uri, "wt")?.use { it.write(exportText().toByteArray(Charsets.UTF_8)) }
-                Toast.makeText(this, "Sound rules saved", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, tr("Sound rules saved"), Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
-                Toast.makeText(this, "Could not save the rules: " + e.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, tr("Could not save the rules: {0}", e.message), Toast.LENGTH_LONG).show()
             }
         } else if (requestCode == requestImport) {
             try {
                 val stream = contentResolver.openInputStream(uri)
-                if (stream == null) Toast.makeText(this, "Could not open the file", Toast.LENGTH_LONG).show()
+                if (stream == null) Toast.makeText(this, tr("Could not open the file"), Toast.LENGTH_LONG).show()
                 else askImport(readTextLimited(stream))
             } catch (e: Exception) {
-                Toast.makeText(this, "Could not read the file: " + e.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, tr("Could not read the file: {0}", e.message), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -1113,21 +1133,21 @@ class MainActivity : Activity() {
         val text = RulesFile.normalize(raw)
         val summary = RulesFile.inspect(text)
         if (!summary.usable) {
-            Immersive.show(AlertDialog.Builder(this).setTitle("Cannot import").setMessage(summary.message).setPositiveButton("OK", null).create())
+            Immersive.show(AlertDialog.Builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
             return
         }
         Immersive.show(
             AlertDialog.Builder(this)
-            .setTitle("Import sound rules")
-            .setMessage("The file has " + summary.message + "\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.")
-            .setPositiveButton("Import") { _, _ ->
+            .setTitle(tr("Import sound rules"))
+            .setMessage(tr("The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.", summary.message))
+            .setPositiveButton(tr("Import")) { _, _ ->
                 Prefs.setRulesBackup(this, Prefs.rules(this))
                 Prefs.setRules(this, text)
                 reloadRules()
-                Toast.makeText(this, "Imported " + summary.rules + " rules", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, tr("Imported {0} rules", summary.rules), Toast.LENGTH_LONG).show()
                 settingsPanel.refresh()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(tr("Cancel"), null)
             .create()
         )
     }
@@ -1142,7 +1162,7 @@ class MainActivity : Activity() {
 
     private fun resetRules() {
         Prefs.setRulesBackup(this, Prefs.rules(this))
-        Prefs.setRules(this, DefaultRules.TEXT)
+        Prefs.setRules(this, DefaultRules.text(this))
         reloadRules()
     }
 

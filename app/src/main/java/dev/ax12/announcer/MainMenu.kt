@@ -39,7 +39,7 @@ class MainMenu(
         box.setPadding(dp(8), dp(8), dp(8), dp(8))
         box.isClickable = true
 
-        box.addView(item("Sound rules") { onRules() })
+        box.addView(item(tr("Sound rules")) { onRules() })
         box.addView(speechButton.also { b ->
             b.isAllCaps = false
             b.textSize = 16f
@@ -49,7 +49,7 @@ class MainMenu(
                 onToggleSpeech()
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        box.addView(item("Settings") { onSettings() })
+        box.addView(item(tr("Settings")) { onSettings() })
 
         val lp = FrameLayout.LayoutParams(dp(300), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
         lp.topMargin = dp(56)
@@ -72,7 +72,7 @@ class MainMenu(
     }
 
     fun show() {
-        speechButton.text = if (speechOn()) "Mute speech" else "Speech is OFF - tap to turn on"
+        speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is OFF - tap to turn on")
         root.visibility = View.VISIBLE
     }
 

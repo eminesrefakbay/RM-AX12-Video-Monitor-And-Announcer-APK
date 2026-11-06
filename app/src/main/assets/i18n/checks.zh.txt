@@ -1,0 +1,13 @@
+# 飞行前检查:   条件 -> 标签      (条件为真显示对勾, 否则显示叉)
+# 标签中的实时数值: {sats}, {up_lq}, {vbat/6:2} = 每节电压
+hysteresis = 25
+var_hysteresis = 1
+hold = 500
+scale = auto
+
+vbat > 12 -> 电池已连接
+vbat / 6 >= 4.15 -> 电池已充满 每节 {vbat/6:2} V
+sats >= 10 -> GPS {sats} 颗卫星 (需要 10 颗)
+up_lq >= 95 -> 链路质量 {up_lq}%
+ch9 <= 1100 -> Airmode 开关已打开
+ch5 < 1500 -> 解锁开关已关闭

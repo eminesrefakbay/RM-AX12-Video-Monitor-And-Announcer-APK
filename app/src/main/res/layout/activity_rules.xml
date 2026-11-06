@@ -7,17 +7,17 @@
     android:padding="12dp">
 
     <TextView
+        android:id="@+id/rulesTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sound rules - one per line:   ch5 >= 1500 -> drone armed | drone disarmed"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/rulesHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment."
         android:textColor="#BDBDBD"
         android:textSize="14sp" />
 
@@ -48,9 +48,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button android:id="@+id/btnCheck" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Check" />
-        <Button android:id="@+id/btnSave" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Save" />
-        <Button android:id="@+id/btnSample" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Sample" />
-        <Button android:id="@+id/btnClose" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Close" />
+        <Button android:id="@+id/btnCheck" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+        <Button android:id="@+id/btnSave" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+        <Button android:id="@+id/btnSample" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+        <Button android:id="@+id/btnClose" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>

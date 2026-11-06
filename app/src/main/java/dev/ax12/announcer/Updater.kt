@@ -75,21 +75,21 @@ class Updater(private val activity: Activity) {
     /** @param manual true when the user asked (answers are shown); false at start-up (only a short notice if there is news) */
     fun check(manual: Boolean) {
         if (busy) {
-            if (manual) toast("Already checking")
+            if (manual) toast(tr("Already checking"))
             return
         }
         busy = true
         val ch = channel()
-        if (manual) toast("Looking for an update on github.com ...")
+        if (manual) toast(tr("Looking for an update on github.com ..."))
         Thread {
             var info: UpdateInfo? = null
             var error: String? = null
             try {
                 val text = UpdateClient.fetchText(UpdateConfig.baseUrl(ch) + "update.json", 8000, 20000)
                 info = UpdateInfo.parse(text)
-                if (info == null) error = "The update information could not be read"
+                if (info == null) error = tr("The update information could not be read")
             } catch (e: Exception) {
-                error = e.message ?: "No connection"
+                error = e.message ?: tr("No connection")
             }
             ui.post {
                 busy = false
@@ -101,30 +101,28 @@ class Updater(private val activity: Activity) {
     private fun onChecked(info: UpdateInfo?, error: String?, manual: Boolean, channel: String) {
         if (info == null) {
             if (manual) {
-                val friendly = if (error != null && error.contains("404")) "No build has been published on this channel yet."
-                else "Could not check: " + (error ?: "no connection") + "\n\nIs the phone hotspot on?"
-                message("Updates", friendly)
+                val friendly = if (error != null && error.contains("404")) tr("No build has been published on this channel yet.")
+                else tr("Could not check: {0}\n\nIs the phone hotspot on?", (error ?: tr("no connection")))
+                message(tr("Updates"), friendly)
             }
             return
         }
         val have = installedCode()
         if (!info.isNewerThan(have.toInt())) {
-            if (manual) toast("You have the latest build: version " + installedName() + " (build " + have + ")")
+            if (manual) toast(tr("You have the latest build: version {0} (build {1})", installedName(), have))
             return
         }
         if (!manual) {
-            toast("AX-HUD update available: " + info.versionName + " (build " + info.versionCode + "). Open Settings, then Updates.")
+            toast(tr("AX-HUD update available: {0} (build {1}). Open Settings, then Updates.", info.versionName, info.versionCode))
             return
         }
         val notes = if (info.notes.isEmpty()) "" else "\n\n" + info.notes
         Immersive.show(
             AlertDialog.Builder(activity)
-                .setTitle("Update available")
-                .setMessage("New: version " + info.versionName + " (build " + info.versionCode + ", " + (info.size / 1024 / 1024) + " MB)\n" +
-                        "Installed: version " + installedName() + " (build " + have + ")" + notes +
-                        "\n\nDo not do this during a flight.")
-                .setPositiveButton("Download and install") { _, _ -> download(info, channel) }
-                .setNegativeButton("Later", null)
+                .setTitle(tr("Update available"))
+                .setMessage(tr("New: version {0} (build {1}, {2} MB)\nInstalled: version {3} (build {4}){5}\n\nDo not do this during a flight.", info.versionName, info.versionCode, (info.size / 1024 / 1024), installedName(), have, notes))
+                .setPositiveButton(tr("Download and install")) { _, _ -> download(info, channel) }
+                .setNegativeButton(tr("Later"), null)
                 .create()
         )
     }
@@ -142,16 +140,16 @@ class Updater(private val activity: Activity) {
         val pad = (16 * activity.resources.displayMetrics.density).toInt()
         body.setPadding(pad, pad, pad, pad)
         val label = TextView(activity)
-        label.text = "Starting ..."
+        label.text = tr("Starting ...")
         val bar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal)
         bar.max = 1000
         body.addView(label)
         body.addView(bar)
         val dlg = AlertDialog.Builder(activity)
-            .setTitle("Downloading " + info.versionName)
+            .setTitle(tr("Downloading {0}", info.versionName))
             .setView(body)
             .setCancelable(false)
-            .setNegativeButton("Cancel") { _, _ -> cancelled.set(true) }
+            .setNegativeButton(tr("Cancel")) { _, _ -> cancelled.set(true) }
             .create()
         Immersive.show(dlg)
 
@@ -174,12 +172,12 @@ class Updater(private val activity: Activity) {
                         override fun cancelled(): Boolean = cancelled.get()
                     })
             } catch (e: Exception) {
-                err = e.message ?: "Download failed"
+                err = e.message ?: tr("Download failed")
             }
             ui.post {
                 dlg.dismiss()
                 if (err == null) install(dest)
-                else if (err != "Cancelled") message("Download failed", err)
+                else if (!cancelled.get()) message(tr("Download failed"), err)
             }
         }.start()
     }
@@ -190,13 +188,12 @@ class Updater(private val activity: Activity) {
         if (Build.VERSION.SDK_INT >= 26 && !activity.packageManager.canRequestPackageInstalls()) {
             Immersive.show(
                 AlertDialog.Builder(activity)
-                    .setTitle("Allow installing")
-                    .setMessage("Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, " +
-                            "come back and run the update again. The download is kept, so it will not be downloaded twice.")
-                    .setPositiveButton("Open the page") { _, _ ->
+                    .setTitle(tr("Allow installing"))
+                    .setMessage(tr("Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice."))
+                    .setPositiveButton(tr("Open the page")) { _, _ ->
                         activity.startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + activity.packageName)))
                     }
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(tr("Cancel"), null)
                     .create()
             )
             return
@@ -222,7 +219,7 @@ class Updater(private val activity: Activity) {
                 session.close()
             }
         } catch (e: Exception) {
-            message("Could not start the installation", e.message ?: "unknown error")
+            message(tr("Could not start the installation"), e.message ?: tr("unknown error"))
         }
     }
 
@@ -237,15 +234,14 @@ class Updater(private val activity: Activity) {
                         val confirm = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
                         if (confirm != null) activity.startActivity(confirm)
                     }
-                    PackageInstaller.STATUS_SUCCESS -> toast("Updated. The app will reopen.")
-                    PackageInstaller.STATUS_FAILURE_ABORTED -> toast("Installation cancelled")
+                    PackageInstaller.STATUS_SUCCESS -> toast(tr("Updated. The app will reopen."))
+                    PackageInstaller.STATUS_FAILURE_ABORTED -> toast(tr("Installation cancelled"))
                     else -> {
                         val help = if (status == PackageInstaller.STATUS_FAILURE_CONFLICT || text.contains("UPDATE_INCOMPATIBLE"))
-                            "\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install " +
-                                    "this build; after that updates work. See UPDATES.md."
-                        else if (text.contains("DOWNGRADE")) "\n\nThis build is older than the installed one."
+                            tr("\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.")
+                        else if (text.contains("DOWNGRADE")) tr("\n\nThis build is older than the installed one.")
                         else ""
-                        message("Installation stopped", (if (text.isEmpty()) "Android did not say why (code " + status + ")." else text) + help)
+                        message(tr("Installation stopped"), (if (text.isEmpty()) tr("Android did not say why (code {0}).", status) else text) + help)
                     }
                 }
             }

@@ -142,13 +142,11 @@ public class RuleTextTests {
         System.exit(failures == 0 ? 0 : 1);
     }
 
-    /** The default rules live in DefaultRules.kt; read the text between the triple quotes. */
+    /** The default rules live in assets/i18n/rules.en.txt. */
     static String readDefaultRules() {
         try {
-            String src = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(
-                System.getProperty("defaultRules", "app/src/main/java/dev/ax12/announcer/DefaultRules.kt"))), java.nio.charset.StandardCharsets.UTF_8);
-            int a = src.indexOf("\"\"\"") + 3, b = src.indexOf("\"\"\"", a);
-            return src.substring(a, b);
+            return new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(
+                System.getProperty("defaultRules", "app/src/main/assets/i18n/rules.en.txt"))), java.nio.charset.StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "";
         }

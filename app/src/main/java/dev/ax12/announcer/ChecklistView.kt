@@ -77,7 +77,7 @@ class ChecklistView(context: Context) : View(context) {
     private fun markW() = textPx * 1.2f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var w = maxOf(titlePaint.measureText("PRE-FLIGHT CHECK"), footPaint.measureText(footer))
+        var w = maxOf(titlePaint.measureText(tr("PRE-FLIGHT CHECK")), footPaint.measureText(footer))
         for (r in rows) w = maxOf(w, markW() + labelPaint.measureText(r.label))
         val h = pad() * 2 + rowH() * (rows.size + 2)
         setMeasuredDimension((w + pad() * 2).toInt() + 2, h.toInt() + 2)
@@ -88,7 +88,7 @@ class ChecklistView(context: Context) : View(context) {
         canvas.drawRoundRect(rect, 10f * density, 10f * density, bg)
         canvas.drawRoundRect(rect, 10f * density, 10f * density, edge)
         var y = pad() + textPx
-        canvas.drawText("PRE-FLIGHT CHECK", pad(), y, titlePaint)
+        canvas.drawText(tr("PRE-FLIGHT CHECK"), pad(), y, titlePaint)
         for (r in rows) {
             y += rowH()
             drawMark(canvas, pad() + markW() * 0.4f, y - textPx * 0.33f, r.state)

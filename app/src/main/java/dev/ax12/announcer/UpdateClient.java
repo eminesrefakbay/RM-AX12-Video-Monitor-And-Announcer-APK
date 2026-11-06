@@ -23,12 +23,21 @@ public final class UpdateClient {
         boolean cancelled();
     }
 
+    /** The user cancelled the download. */
+    public static final class Cancelled extends IOException {
+        private static final long serialVersionUID = 1L;
+
+        public Cancelled() {
+            super(I18n.t("Cancelled"));
+        }
+    }
+
     private UpdateClient() {}
 
     private static void checkUrl(String url) throws IOException {
         if (url.startsWith("https://")) return;
         if (url.startsWith("http://127.0.0.1:") || url.startsWith("http://localhost:")) return;     // tests only
-        throw new IOException("Only https:// addresses are allowed");
+        throw new IOException(I18n.t("Only https:// addresses are allowed"));
     }
 
     private static HttpURLConnection open(String url, int timeoutMs) throws IOException {
@@ -37,7 +46,7 @@ public final class UpdateClient {
         try {
             parsed = java.net.URI.create(url).toURL();
         } catch (IllegalArgumentException e) {
-            throw new IOException("Not a valid address");
+            throw new IOException(I18n.t("Not a valid address"));
         }
         HttpURLConnection c = (HttpURLConnection) parsed.openConnection();
         c.setConnectTimeout(timeoutMs);
@@ -53,14 +62,14 @@ public final class UpdateClient {
         HttpURLConnection c = open(url, timeoutMs);
         try {
             int code = c.getResponseCode();
-            if (code != 200) throw new IOException("The server answered " + code);
+            if (code != 200) throw new IOException(I18n.t("The server answered {0}", code));
             try (InputStream in = c.getInputStream()) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 byte[] buf = new byte[4096];
                 int n;
                 while ((n = in.read(buf)) > 0) {
                     out.write(buf, 0, n);
-                    if (out.size() > maxBytes) throw new IOException("The answer is too large");
+                    if (out.size() > maxBytes) throw new IOException(I18n.t("The answer is too large"));
                 }
                 return new String(out.toByteArray(), "UTF-8");
             }
@@ -81,31 +90,31 @@ public final class UpdateClient {
         boolean ok = false;
         try {
             int code = c.getResponseCode();
-            if (code != 200) throw new IOException("The server answered " + code);
+            if (code != 200) throw new IOException(I18n.t("The server answered {0}", code));
             long total = c.getContentLengthLong();
-            if (total > UpdateInfo.MAX_APK_BYTES || expectedSize > UpdateInfo.MAX_APK_BYTES) throw new IOException("The file is too large");
-            if (expectedSize > 0 && total > 0 && total != expectedSize) throw new IOException("The file has an unexpected size");
+            if (total > UpdateInfo.MAX_APK_BYTES || expectedSize > UpdateInfo.MAX_APK_BYTES) throw new IOException(I18n.t("The file is too large"));
+            if (expectedSize > 0 && total > 0 && total != expectedSize) throw new IOException(I18n.t("The file has an unexpected size"));
             MessageDigest md = newDigest();
             long done = 0;
             try (InputStream in = c.getInputStream(); FileOutputStream out = new FileOutputStream(part)) {
                 byte[] buf = new byte[64 * 1024];
                 int n;
                 while ((n = in.read(buf)) > 0) {
-                    if (progress != null && progress.cancelled()) throw new IOException("Cancelled");
+                    if (progress != null && progress.cancelled()) throw new Cancelled();
                     out.write(buf, 0, n);
                     md.update(buf, 0, n);
                     done += n;
-                    if (done > UpdateInfo.MAX_APK_BYTES) throw new IOException("The file is too large");
+                    if (done > UpdateInfo.MAX_APK_BYTES) throw new IOException(I18n.t("The file is too large"));
                     if (progress != null) progress.onProgress(done, total > 0 ? total : expectedSize);
                 }
                 out.getFD().sync();
             }
-            if (expectedSize > 0 && done != expectedSize) throw new IOException("The download is incomplete or the wrong size");
+            if (expectedSize > 0 && done != expectedSize) throw new IOException(I18n.t("The download is incomplete or the wrong size"));
             if (expectedSha256 != null && !hex(md.digest()).equalsIgnoreCase(expectedSha256)) {
-                throw new IOException("The checksum does not match: the file is damaged or not the published one");
+                throw new IOException(I18n.t("The checksum does not match: the file is damaged or not the published one"));
             }
-            if (dest.exists() && !dest.delete()) throw new IOException("Cannot replace the old file");
-            if (!part.renameTo(dest)) throw new IOException("Cannot save the file");
+            if (dest.exists() && !dest.delete()) throw new IOException(I18n.t("Cannot replace the old file"));
+            if (!part.renameTo(dest)) throw new IOException(I18n.t("Cannot save the file"));
             ok = true;
         } finally {
             c.disconnect();
@@ -119,7 +128,7 @@ public final class UpdateClient {
         try {
             return MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            throw new IOException("SHA-256 is not available");
+            throw new IOException(I18n.t("SHA-256 is not available"));
         }
     }
 

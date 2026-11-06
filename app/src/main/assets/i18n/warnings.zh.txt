@@ -1,0 +1,17 @@
+# 状态栏警告:   条件 -> 文字      (条件为真时显示)
+# !文字 = 严重 (红色)    文字 = 警告 (琥珀色)    *文字 = 信息 (蓝色)
+# 文字中的实时数值: {vbat/6:2} = 每节电压, {up_lq}, {sats}, {fm}
+# 结尾的 @5 = 即使条件仍为真也在 5 秒后隐藏 (条件下次再次变为真时重新显示)
+hysteresis = 25
+var_hysteresis = 1
+hold = 300
+scale = auto
+
+vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> 电池电量低 每节 {vbat/6:2} V
+vbat / 6 < 3.55 and vbat > 12 -> !电池电量严重不足 每节 {vbat/6:2} V
+up_lq < 70 and up_lq >= 40 and ch5 >= 1950 -> 链路质量 {up_lq}%
+up_lq < 40 and ch5 >= 1950 -> !链路质量危急 {up_lq}%
+tlm == 0 and ch5 >= 1950 -> !遥测丢失
+sats < 8 and sats > 0 -> GPS {sats} 颗卫星
+fm ~ "RTH" -> !返航中
+ch5 >= 1950 -> *已解锁 @5

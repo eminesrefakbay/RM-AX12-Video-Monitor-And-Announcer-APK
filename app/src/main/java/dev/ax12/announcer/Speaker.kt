@@ -17,12 +17,15 @@ class Speaker(context: Context) : Announcer {
     @Volatile var muted = false
     private var lastText = ""
     private var lastTime = 0L
+    private var locale: Locale = Locale.getDefault()
+    /** The result of the last setLanguage: TextToSpeech.LANG_AVAILABLE or better means the voice exists. */
+    @Volatile var languageResult: Int = TextToSpeech.LANG_AVAILABLE
 
     init {
         tts = TextToSpeech(context.applicationContext) { status ->
             val engine = tts
             if (status == TextToSpeech.SUCCESS && engine != null) {
-                engine.setLanguage(Locale.getDefault())
+                languageResult = engine.setLanguage(locale)
                 engine.setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
@@ -36,6 +39,16 @@ class Speaker(context: Context) : Announcer {
             }
         }
     }
+
+    /** The language the voice speaks. */
+    fun setLanguage(l: Locale) {
+        locale = l
+        val engine = tts
+        if (ready && engine != null) languageResult = engine.setLanguage(l)
+    }
+
+    /** False when Android has no voice for the chosen language (install it in Settings, Text-to-speech). */
+    fun languageOk(): Boolean = languageResult >= TextToSpeech.LANG_AVAILABLE
 
     override fun say(text: String, urgent: Boolean) {
         if (muted) return
