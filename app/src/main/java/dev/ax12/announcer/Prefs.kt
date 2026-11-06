@@ -12,6 +12,9 @@ object Prefs {
     fun cameraId(c: Context): String? = p(c).getString("camera", null)
     fun setCameraId(c: Context, id: String) { p(c).edit().putString("camera", id).apply() }
 
+    fun fill(c: Context): Boolean = p(c).getBoolean("fill", false)
+    fun setFill(c: Context, on: Boolean) { p(c).edit().putBoolean("fill", on).apply() }
+
     fun rotation(c: Context): Int = p(c).getInt("rotation", 0)
     fun setRotation(c: Context, deg: Int) { p(c).edit().putInt("rotation", deg).apply() }
 }

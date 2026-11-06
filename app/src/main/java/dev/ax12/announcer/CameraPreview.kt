@@ -49,6 +49,11 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     var cameraId: String? = Prefs.cameraId(activity)
         private set
 
+    /** false = fit (keep the picture's own shape); true = stretch to fill the view.
+     *  Some HDMI sources arrive rotated AND stretched; turn the picture back with Rotate, then use Fill. */
+    var fill: Boolean = Prefs.fill(activity)
+        private set
+
     private val retry = Runnable { if (running) openCamera() }
 
     init {
@@ -83,7 +88,8 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     }
 
     /** One line for the "NO VIDEO" panel. */
-    fun statusLine(): String = "Camera " + (cameraId ?: "auto") + "   " + bufW + "x" + bufH + "\n" + message
+    fun statusLine(): String = "Camera " + (cameraId ?: "auto") + "   buffer " + bufW + "x" + bufH +
+            "   rotation " + rotation + (if (fill) " fill" else " fit") + "   view " + view.width + "x" + view.height + "\n" + message
 
     /** (id, description) of every camera Android shows. Pick the HDMI input here. */
     fun listCameras(): List<Pair<String, String>> {
@@ -108,6 +114,12 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
         main.removeCallbacks(retry)
         closeCamera()
         if (running) openCamera()
+    }
+
+    fun toggleFill() {
+        fill = !fill
+        Prefs.setFill(activity, fill)
+        applyTransform()
     }
 
     fun rotateNext() {
@@ -236,19 +248,27 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
         device = null
     }
 
-    /** Fit the picture inside the view without stretching, then apply the chosen rotation. */
+    /** Rotate the picture, either fitted inside the view or stretched to fill it. */
     fun applyTransform() {
         val vw = view.width.toFloat()
         val vh = view.height.toFloat()
         if (vw == 0f || vh == 0f) return
         val rot = ((rotation % 360) + 360) % 360
-        val dispW = if (rot % 180 == 0) bufW.toFloat() else bufH.toFloat()
-        val dispH = if (rot % 180 == 0) bufH.toFloat() else bufW.toFloat()
-        val f = minOf(vw / dispW, vh / dispH)
+        val cx = vw / 2f
+        val cy = vh / 2f
         val m = Matrix()
-        // The texture is stretched over the whole view; undo the stretch, then rotate about the centre.
-        m.setScale(bufW * f / vw, bufH * f / vh, vw / 2f, vh / 2f)
-        m.postRotate(rot.toFloat(), vw / 2f, vh / 2f)
+        if (fill) {
+            // The texture is already stretched over the whole view. After a 90/270 turn it would sit
+            // sideways, so swap the stretch first: the turned picture then fills the view exactly.
+            if (rot % 180 == 0) m.setScale(1f, 1f, cx, cy) else m.setScale(vh / vw, vw / vh, cx, cy)
+        } else {
+            val dispW = if (rot % 180 == 0) bufW.toFloat() else bufH.toFloat()
+            val dispH = if (rot % 180 == 0) bufH.toFloat() else bufW.toFloat()
+            val f = minOf(vw / dispW, vh / dispH)
+            // Undo the stretch of the texture, then turn about the centre.
+            m.setScale(bufW * f / vw, bufH * f / vh, cx, cy)
+        }
+        m.postRotate(rot.toFloat(), cx, cy)
         view.setTransform(m)
     }
 }

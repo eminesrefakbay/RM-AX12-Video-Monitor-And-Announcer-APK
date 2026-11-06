@@ -123,7 +123,7 @@ class MainActivity : Activity() {
                 if (testVisible) {
                     val sb = StringBuilder()
                     for (i in v.indices) sb.append("ch").append(i + 1).append("=").append(v[i].toInt()).append(if (i % 4 == 3) "\n" else "  ")
-                    status.text = sb.toString().trim()
+                    status.text = sb.toString().trim() + "\n" + camera.statusLine()
                 }
             }
             ui.postDelayed(this, 50)
@@ -137,6 +137,7 @@ class MainActivity : Activity() {
         popup.menu.add(0, 3, 2, "Rotate video (now " + camera.rotation + " deg)")
         popup.menu.add(0, 4, 3, if (testVisible) "Hide test channels" else "Test channels")
         popup.menu.add(0, 5, 4, "Speak test")
+        popup.menu.add(0, 6, 5, "Scale: " + (if (camera.fill) "fill (stretch)" else "fit") + "  - tap to change")
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 1 -> startActivity(android.content.Intent(this, RulesActivity::class.java))
@@ -144,6 +145,7 @@ class MainActivity : Activity() {
                 3 -> camera.rotateNext()
                 4 -> setTestVisible(!testVisible)
                 5 -> speaker.say("Sound test", true)
+                6 -> camera.toggleFill()
             }
             true
         }
