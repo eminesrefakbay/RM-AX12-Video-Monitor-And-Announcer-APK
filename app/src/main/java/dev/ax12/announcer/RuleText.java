@@ -240,7 +240,8 @@ public final class RuleText {
         shown.onFalse = "";
         shown.repeatSec = 0;
         String d = describe(shown);
-        return "[" + level + "] " + d.replaceFirst(": say ", ": show ");
+        String timeout = s.repeatSec > 0 ? ", hides after " + s.repeatSec + " s" : "";
+        return "[" + level + "] " + d.replaceFirst(": say ", ": show ") + timeout;
     }
 
     /** One readable sentence for the list. */

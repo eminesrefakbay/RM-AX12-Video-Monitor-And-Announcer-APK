@@ -9,6 +9,7 @@ object DefaultWarnings {
     const val TEXT = """# warnings for the status bar:   condition -> text      (shown while the condition is true)
 # !text = critical (red)    text = warning (amber)    *text = info (blue)
 # live values in the text: {vbat/6:2} = volts per cell, {up_lq}, {sats}, {fm}
+# @5 at the end = hide after 5 seconds even if the condition stays true (it shows again next time it turns on)
 hysteresis = 25
 var_hysteresis = 1
 hold = 300
@@ -21,6 +22,6 @@ up_lq < 40 and ch5 >= 1950 -> !LINK CRITICAL {up_lq}%
 tlm == 0 and ch5 >= 1950 -> !TELEMETRY LOST
 sats < 8 and sats > 0 -> GPS {sats} SATELLITES
 fm ~ "RTH" -> !RETURN TO HOME
-ch5 >= 1950 -> *ARMED
+ch5 >= 1950 -> *ARMED @5
 """
 }

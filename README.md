@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.png" width="160" alt="AX-HUD logo"></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.6.2)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.6.4)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -14,7 +14,7 @@
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 325 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 345 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
@@ -59,7 +59,9 @@ centre) and opacity.
   **critical = red and blinking, warning = amber, info = blue**. Warnings are **rules**, edited like the sound
   rules (Settings > OSD overlays > *Edit the warning rules*): pick variables from the list, thresholds, `and` / `or`,
   *Detect switch*, text. A warning is shown **while its condition is true** (a sound rule speaks once when it becomes
-  true). Severity is part of the rule text: `!text` critical, `*text` info, `text` warning. A warning whose input
+  true). Severity is part of the rule text: `!text` critical, `*text` info, `text` warning. A **timeout** (`@5` after the text, or
+  the *Hide after* box in the editor) hides a warning N seconds after it turned on even if its condition stays true, for
+  example `ch5 >= 1950 -> *ARMED @5`; it shows again the next time the condition turns on. A warning whose input
   disappears (for example the battery value when the aircraft is switched off) is removed instead of staying on
   screen. *Preview the warning bar* shows a sample for four seconds; each rule has a *Test* button.
 * **Live values in texts**, for warnings and for spoken rules: `{vbat/6:2}` is volts per cell with two decimals,
@@ -170,6 +172,14 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 ## Privacy
 
 GPS coordinates are shown on screen only. Do not commit flight logs or screenshots that show where you fly.
+
+## Start-up splash screen
+
+On a fresh start the app shows the logo with the version (name, version number and build number, read from the app
+itself) for **2 seconds**, then fades out. Two seconds is the usual range for a splash screen (1 to 3 s): long enough to
+read, short enough not to get in the way. A tap or the Back key skips it. The app starts up behind it (camera, radio
+link, settings), so it adds no waiting. Android's own start-up screen already shows the same navy and logo, so there is no
+white flash before it. A switch in Settings > Display turns the splash off.
 
 ## Logo
 

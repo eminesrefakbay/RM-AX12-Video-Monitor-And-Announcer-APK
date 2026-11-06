@@ -11,6 +11,8 @@ import java.util.Map;
  * "on" while its condition is true) and turned into the texts for the status bar.
  *
  * Severity comes from the rule text:   !text = critical,  *text = info,  text = warning.
+ * A timeout, written @N after the text, hides the warning N seconds after it turned on even if its condition
+ * stays true (for example "ARMED @5"). It comes back the next time the condition turns on again.
  */
 public final class WarningModel implements RuleEngine.StateListener {
 
@@ -30,15 +32,31 @@ public final class WarningModel implements RuleEngine.StateListener {
 
     private final List<Rule> rules;
     private final boolean[] active;
+    private final long[] since;
+    private long now;
 
     public WarningModel(List<Rule> rules) {
         this.rules = rules;
         this.active = new boolean[rules.size()];
+        this.since = new long[rules.size()];
+    }
+
+    /** The time of the update the engine is about to do (milliseconds). Call before every engine update. */
+    public void setNow(long nowMs) {
+        this.now = nowMs;
     }
 
     @Override
     public void changed(int index, Rule rule, boolean on) {
-        if (index >= 0 && index < active.length) active[index] = on;
+        if (index < 0 || index >= active.length) return;
+        if (on && !active[index]) since[index] = now;          // switched on just now: the timeout starts
+        active[index] = on;
+    }
+
+    private boolean visible(int i) {
+        if (!active[i]) return false;
+        int timeout = rules.get(i).repeatSec;
+        return timeout <= 0 || now - since[i] < timeout * 1000L;
     }
 
     public static Level levelOf(Rule r) {
@@ -58,7 +76,7 @@ public final class WarningModel implements RuleEngine.StateListener {
     public List<Item> items(Map<String, Double> numbers, Map<String, String> texts) {
         List<Item> out = new ArrayList<Item>();
         for (int i = 0; i < rules.size(); i++) {
-            if (!active[i]) continue;
+            if (!visible(i)) continue;
             Rule r = rules.get(i);
             out.add(new Item(TextTemplate.expand(textOf(r), numbers, texts), levelOf(r), i));
         }

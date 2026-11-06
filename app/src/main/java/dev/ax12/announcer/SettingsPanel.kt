@@ -30,6 +30,8 @@ interface SettingsHost {
     fun restoreRules()
     fun resetRules()
     fun openRulesText()
+    fun splashOn(): Boolean
+    fun setSplashOn(on: Boolean)
     fun menuAlways(): Boolean
     fun setMenuAlways(on: Boolean)
     fun variablesOn(): Boolean
@@ -205,6 +207,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         section("Display")
         toggle("Always show the MENU button", host.menuAlways()) { host.setMenuAlways(it) }
         note("Off: the button hides and appears when you touch the screen.")
+        toggle("Start-up splash screen (logo and version, 2 seconds)", host.splashOn()) { host.setSplashOn(it) }
 
         section("OSD overlays (drawn over the video)")
         toggle("Stick view: roll, pitch, yaw and throttle", host.sticksOn()) {

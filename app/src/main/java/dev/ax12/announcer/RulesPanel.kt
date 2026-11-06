@@ -547,7 +547,7 @@ class RulesPanel(
                 s.urgentTrue = severity == 2
                 s.onFalse = ""
                 s.urgentFalse = false
-                s.repeatSec = 0
+                s.repeatSec = if (repeatCheck.isChecked) (repeatField.text.toString().trim().toIntOrNull() ?: 0) else 0      // the timeout
             } else if (check) {
                 s.onTrue = sayField.text.toString()
                 s.urgentTrue = false
@@ -574,7 +574,7 @@ class RulesPanel(
             if (building) return
             val s = readSpec()
             var err = RuleText.validate(s)
-            if (err == null && repeatCheck.isChecked && s.repeatSec < 2) err = "Repeat needs a number of seconds, 2 or more."
+            if (err == null && repeatCheck.isChecked && s.repeatSec < 2) err = if (warning) "The timeout needs a number of seconds, 2 or more." else "Repeat needs a number of seconds, 2 or more."
             errorView.text = err ?: ""
             preview.text = if (err == null) RuleText.line(s) else "-"
             dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = (err == null)
@@ -728,16 +728,16 @@ class RulesPanel(
             if (!warning && !check) body.addView(falseField)
 
             repeatCheck = CheckBox(activity)
-            repeatCheck.text = "Repeat while it stays true, every (seconds)"
+            repeatCheck.text = if (warning) "Hide after (seconds), even if the condition stays true" else "Repeat while it stays true, every (seconds)"
             repeatCheck.isChecked = spec.repeatSec > 0
             repeatCheck.setOnCheckedChangeListener { _, _ -> refreshPreview() }
-            if (!warning && !check) body.addView(repeatCheck)
+            if (!check) body.addView(repeatCheck)
             repeatField = EditText(activity)
             repeatField.inputType = InputType.TYPE_CLASS_NUMBER
             repeatField.setText(if (spec.repeatSec > 0) spec.repeatSec.toString() else "")
             repeatField.hint = "10"
             repeatField.addTextChangedListener(watcher { if (repeatField.text.isNotEmpty()) repeatCheck.isChecked = true; refreshPreview() })
-            if (!warning && !check) body.addView(repeatField, LinearLayout.LayoutParams(dp(100), ViewGroup.LayoutParams.WRAP_CONTENT))
+            if (!check) body.addView(repeatField, LinearLayout.LayoutParams(dp(100), ViewGroup.LayoutParams.WRAP_CONTENT))
 
             body.addView(label("The rule as text"))
             preview = TextView(activity)

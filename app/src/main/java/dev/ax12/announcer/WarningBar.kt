@@ -42,6 +42,7 @@ class WarningBar(private val bar: TextView) {
             bar.visibility = View.GONE
             return
         }
+        m.setNow(nowMs)
         e.update(numbers, texts, nowMs)
         val items = m.items(numbers, texts)
         val parts = ArrayList<String>()

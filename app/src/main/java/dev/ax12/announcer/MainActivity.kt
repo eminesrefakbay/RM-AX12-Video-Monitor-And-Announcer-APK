@@ -50,6 +50,8 @@ class MainActivity : Activity() {
     private lateinit var rulesPanel: RulesPanel
     private lateinit var settingsPanel: SettingsPanel
     private lateinit var mainMenu: MainMenu
+    private var splash: SplashOverlay? = null
+    private val splashHide = Runnable { splash?.dismiss() }
     private lateinit var warnPanel: RulesPanel
     private lateinit var checkPanel: RulesPanel
     private lateinit var statsView: FlightStatsView
@@ -187,12 +189,21 @@ class MainActivity : Activity() {
         applyOverlayPrefs()
         applyTiles()
         applyFlightConfig()
+
+        // a fresh start (not a turn of the screen or a return from the background): logo and version for 2 seconds
+        if (savedInstanceState == null && Prefs.bool(this, "splashOn", true)) {
+            val sp = SplashOverlay(this)
+            splash = sp
+            frame.addView(sp.root, FrameLayout.LayoutParams(full))
+            ui.postDelayed(splashHide, SplashOverlay.SHOW_MS)
+        }
     }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density + 0.5f).toInt()
 
     override fun onBackPressed() {
-        if (mainMenu.isShowing) mainMenu.hide()
+        if (splash?.isShowing == true) splash?.dismiss()
+        else if (mainMenu.isShowing) mainMenu.hide()
         else if (warnPanel.isShowing) warnPanel.hide()
         else if (checkPanel.isShowing) checkPanel.hide()
         else if (settingsPanel.isShowing) settingsPanel.hide()
@@ -240,6 +251,7 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
+        ui.removeCallbacks(splashHide)
         speaker.shutdown()
         super.onDestroy()
     }
@@ -450,6 +462,8 @@ class MainActivity : Activity() {
         override fun restoreRules() = this@MainActivity.restoreRules()
         override fun resetRules() = this@MainActivity.resetRules()
         override fun openRulesText() { startActivity(Intent(this@MainActivity, RulesActivity::class.java)) }
+        override fun splashOn(): Boolean = Prefs.bool(this@MainActivity, "splashOn", true)
+        override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)
         override fun setMenuAlways(on: Boolean) {
             Prefs.setMenuAlways(this@MainActivity, on)

@@ -160,6 +160,58 @@ public class OverlayTests {
         for (int i = 0; i < 10; i++) de.update(dv, dt, dn += 100);
         check(dm.items(dv, dt).isEmpty(), "aircraft off: no stale battery or flight-mode warning remains: " + show(dm.items(dv, dt)));
 
+        // ---------- warning timeout ----------
+        RuleParser.Result tp = RuleParser.parse("hold = 0\nch5 >= 1950 -> *ARMED @5\nvbat / 6 < 3.55 and vbat > 12 -> !BATTERY CRITICAL {vbat/6:2}");
+        check(tp.errors.isEmpty() && tp.rules.get(0).repeatSec == 5 && tp.rules.get(0).onTrue.equals("*ARMED") && tp.rules.get(1).repeatSec == 0, "@5 is read as a 5 second timeout: " + tp.errors);
+        WarningModel tm = new WarningModel(tp.rules);
+        RuleEngine te = new RuleEngine(tp, null, tm);
+        Map<String, Double> tv = new HashMap<String, Double>(); Map<String, String> tt = new HashMap<String, String>();
+        tv.put("ch5", 1000.0); tv.put("vbat", 25.0);
+        long tn = 0;
+        tm.setNow(tn += 100); te.update(tv, tt, tn);
+        check(tm.items(tv, tt).isEmpty(), "disarmed: nothing shown");
+        tv.put("ch5", 2000.0);                                   // arm at t = 200 ms
+        tm.setNow(tn += 100); te.update(tv, tt, tn);
+        check(show(tm.items(tv, tt)).equals("[INFO:ARMED; ]"), "armed label appears: " + show(tm.items(tv, tt)));
+        tm.setNow(tn + 4000); te.update(tv, tt, tn + 4000);
+        check(show(tm.items(tv, tt)).equals("[INFO:ARMED; ]"), "still shown after 4 seconds");
+        tm.setNow(tn + 5100); te.update(tv, tt, tn + 5100);
+        check(tm.items(tv, tt).isEmpty(), "gone after the 5 second timeout");
+        tm.setNow(tn + 60000); te.update(tv, tt, tn + 60000);
+        check(tm.items(tv, tt).isEmpty(), "stays gone while the condition stays true");
+        tv.put("vbat", 20.9);                                    // 3.48 V per cell: a warning without a timeout is not affected
+        tm.setNow(tn + 61000); te.update(tv, tt, tn + 61000);
+        check(show(tm.items(tv, tt)).startsWith("[CRITICAL:BATTERY CRITICAL 3.48"), "warnings without a timeout stay: " + show(tm.items(tv, tt)));
+        tm.setNow(tn + 400000); te.update(tv, tt, tn + 400000);
+        check(show(tm.items(tv, tt)).startsWith("[CRITICAL:BATTERY CRITICAL"), "even after a long time");
+        tv.put("ch5", 1000.0); tm.setNow(tn + 401000); te.update(tv, tt, tn + 401000);
+        check(show(tm.items(tv, tt)).startsWith("[CRITICAL") && tm.items(tv, tt).size() == 1, "disarmed: the armed label is not there");
+        tv.put("ch5", 2000.0); tm.setNow(tn + 402000); te.update(tv, tt, tn + 402000);
+        check(tm.items(tv, tt).size() == 2, "arming again shows the label again");
+        tm.setNow(tn + 402000 + 5200); te.update(tv, tt, tn + 402000 + 5200);
+        check(tm.items(tv, tt).size() == 1, "and it times out again");
+        // already true when the app starts: the timeout counts from the start
+        WarningModel sm = new WarningModel(tp.rules);
+        RuleEngine se2 = new RuleEngine(tp, null, sm);
+        Map<String, Double> sv2 = new HashMap<String, Double>(); sv2.put("ch5", 2000.0); sv2.put("vbat", 25.0);
+        sm.setNow(10000); se2.update(sv2, tt, 10000);
+        check(sm.items(sv2, tt).size() == 1, "armed when the app starts: shown");
+        sm.setNow(15500); se2.update(sv2, tt, 15500);
+        check(sm.items(sv2, tt).isEmpty(), "and hidden 5 seconds later");
+        // describing and editing a warning with a timeout
+        RuleText.Spec ts = RuleText.fromLine("ch5 >= 1950 -> *ARMED @5");
+        check(ts != null && ts.repeatSec == 5 && ts.onTrue.equals("*ARMED"), "the editor reads the timeout");
+        check(RuleText.describeWarning(ts).equals("[INFO] when ch5 \u2265 1950: show \u201CARMED\u201D, hides after 5 s"), "description: " + RuleText.describeWarning(ts));
+        check(RuleText.line(ts).equals("ch5 >= 1950 -> *ARMED @5") && RuleText.validate(ts) == null, "the editor writes the same line back: " + RuleText.line(ts));
+        ts.repeatSec = 0;
+        check(RuleText.line(ts).equals("ch5 >= 1950 -> *ARMED"), "no timeout: no @");
+        check(!RuleText.describeWarning(ts).contains("hides"), "no timeout: nothing in the description");
+        // the shipped defaults
+        RuleParser.Result dwt = RuleParser.parse(readQuoted("app/src/main/java/dev/ax12/announcer/DefaultWarnings.kt"));
+        int timed = 0;
+        for (Rule rr : dwt.rules) if (rr.repeatSec > 0) { timed++; check(rr.onTrue.equals("*ARMED") && rr.repeatSec == 5, "the ARMED label is the timed one"); }
+        check(timed == 1 && dwt.errors.isEmpty(), "the default warnings have exactly one timed rule: " + timed);
+
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);
     }
