@@ -15,11 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.Switch
@@ -265,6 +267,86 @@ class RulesPanel(
         override fun onNothingSelected(parent: AdapterView<*>?) {}
     }
 
+    // ------------------------------------------------------------------ variable picker
+
+    private class PickRow(val header: String?, val name: String?)
+
+    private fun liveText(name: String, nums: Map<String, Double>, txts: Map<String, String>): String? {
+        val t = txts[name]
+        if (t != null) return "\u201C" + t + "\u201D"
+        val n = nums[name] ?: return null
+        val base = RuleText.fmt(Math.round(n * 100.0) / 100.0)
+        if (name.startsWith("ch") && name.substring(2).toIntOrNull() != null) {
+            val pos = if (n < 1300) "low" else if (n > 1700) "high" else "middle"
+            return base + " (" + pos + ")"
+        }
+        return base
+    }
+
+    /** A list of every channel and telemetry value, grouped, with its live value. Tap one to choose it. */
+    private fun pickVariable(onPicked: (String) -> Unit) {
+        val nums = live.numbers()
+        val txts = live.texts()
+        val rows = ArrayList<PickRow>()
+        for (g in VariableCatalog.groups(nums.keys + txts.keys)) {
+            rows.add(PickRow(g.title, null))
+            for (n in g.names) rows.add(PickRow(null, n))
+        }
+        val listView = ListView(activity)
+        val adapter = object : BaseAdapter() {
+            override fun getCount(): Int = rows.size
+            override fun getItem(position: Int): Any = rows[position]
+            override fun getItemId(position: Int): Long = position.toLong()
+            override fun isEnabled(position: Int): Boolean = rows[position].name != null
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+                val row = rows[position]
+                if (row.header != null) {
+                    val h = TextView(activity)
+                    h.text = row.header
+                    h.textSize = 13f
+                    h.setTypeface(null, Typeface.BOLD)
+                    h.setTextColor(0xFF9CDCFE.toInt())
+                    h.setPadding(dp(12), dp(14), dp(12), dp(4))
+                    return h
+                }
+                val name = row.name ?: ""
+                val box = LinearLayout(activity)
+                box.orientation = LinearLayout.VERTICAL
+                box.setPadding(dp(12), dp(6), dp(12), dp(6))
+                val shown = liveText(name, nums, txts)
+                val line1 = TextView(activity)
+                line1.text = name + "      " + (if (shown != null) "now: " + shown else "no value now")
+                line1.textSize = 16f
+                line1.setTextColor(Color.WHITE)
+                box.addView(line1)
+                val help = VariableCatalog.help(name)
+                if (help.isNotEmpty()) {
+                    val line2 = TextView(activity)
+                    line2.text = help
+                    line2.textSize = 12f
+                    line2.setTextColor(0xFFBDBDBD.toInt())
+                    box.addView(line2)
+                }
+                box.alpha = if (shown != null) 1f else 0.55f
+                return box
+            }
+        }
+        listView.adapter = adapter
+        val dlg = AlertDialog.Builder(activity)
+            .setTitle("Pick a channel or value")
+            .setView(listView)
+            .setNegativeButton("Cancel", null)
+            .create()
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val n = rows[position].name
+            if (n != null) {
+                onPicked(n)
+                dlg.dismiss()
+            }
+        }
+        dlg.show()
+    }
+
     private fun isTextVariable(name: String): Boolean = name == "fm" || live.texts().containsKey(name)
 
     private inner class RuleEditor(private val existing: RuleText.Item?) {
@@ -303,55 +385,65 @@ class RulesPanel(
                 view.orientation = LinearLayout.VERTICAL
                 view.setPadding(0, dp(6), 0, dp(6))
 
-                val top = LinearLayout(activity)
-                top.orientation = LinearLayout.HORIZONTAL
-                top.gravity = Gravity.CENTER_VERTICAL
+                val lineA = LinearLayout(activity)
+                lineA.orientation = LinearLayout.HORIZONTAL
+                lineA.gravity = Gravity.CENTER_VERTICAL
 
                 val names = VariableCatalog.names(live.numbers().keys + live.texts().keys)
                 varField.setAdapter(ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line, names))
                 varField.threshold = 0
                 varField.setSingleLine(true)
-                varField.hint = "variable"
+                varField.hint = "variable (type, or tap List)"
                 varField.setText(c.variable)
                 varField.setOnClickListener { varField.showDropDown() }
-                varField.setOnFocusChangeListener { _, has -> if (has) varField.showDropDown() }
-                top.addView(varField, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                lineA.addView(varField, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+
+                val pick = Button(activity)
+                pick.text = "List"
+                pick.setOnClickListener {
+                    pickVariable { chosen ->
+                        varField.setText(chosen)
+                        varField.setSelection(chosen.length)
+                    }
+                }
+                lineA.addView(pick)
+
+                val remove = Button(activity)
+                remove.text = "X"
+                remove.setOnClickListener { removeRow(this@CondRow) }
+                lineA.addView(remove)
+                view.addView(lineA)
+
+                val lineB = LinearLayout(activity)
+                lineB.orientation = LinearLayout.HORIZONTAL
+                lineB.gravity = Gravity.CENTER_VERTICAL
 
                 val ops = ArrayAdapter(activity, android.R.layout.simple_spinner_item, opLabels)
                 ops.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 opSpinner.adapter = ops
                 opSpinner.setSelection(maxOf(0, opCodes.indexOf(c.op)))
-                top.addView(opSpinner)
+                lineB.addView(opSpinner)
 
                 valueField.setSingleLine(true)
                 valueField.hint = "value"
                 valueField.setText(c.value)
-                top.addView(valueField, LinearLayout.LayoutParams(dp(110), ViewGroup.LayoutParams.WRAP_CONTENT))
+                lineB.addView(valueField, LinearLayout.LayoutParams(dp(110), ViewGroup.LayoutParams.WRAP_CONTENT))
 
-                val remove = Button(activity)
-                remove.text = "X"
-                remove.setOnClickListener { removeRow(this@CondRow) }
-                top.addView(remove)
-                view.addView(top)
-
-                val second = LinearLayout(activity)
-                second.orientation = LinearLayout.HORIZONTAL
-                second.gravity = Gravity.CENTER_VERTICAL
                 val divLabel = TextView(activity)
-                divLabel.text = "divide by"
+                divLabel.text = "  divide by"
                 divLabel.textSize = 12f
-                second.addView(divLabel)
+                lineB.addView(divLabel)
                 divField.setSingleLine(true)
                 divField.hint = "1"
                 divField.textSize = 12f
                 divField.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
                 if (c.divisor != 1.0) divField.setText(RuleText.fmt(c.divisor))
-                second.addView(divField, LinearLayout.LayoutParams(dp(60), ViewGroup.LayoutParams.WRAP_CONTENT))
+                lineB.addView(divField, LinearLayout.LayoutParams(dp(60), ViewGroup.LayoutParams.WRAP_CONTENT))
+                view.addView(lineB)
+
                 nowText.textSize = 12f
                 nowText.setTextColor(0xFF9CDCFE.toInt())
-                nowText.setPadding(dp(10), 0, 0, 0)
-                second.addView(nowText)
-                view.addView(second)
+                view.addView(nowText)
 
                 updateKeyboard()
                 varField.addTextChangedListener(watcher { updateKeyboard(); refreshPreview() })
@@ -364,6 +456,9 @@ class RulesPanel(
                 val numeric = !isTextVariable(varField.text.toString().trim())
                 if (numeric != numericKeyboard) {
                     numericKeyboard = numeric
+                    val tilde = opCodes.indexOf("~")
+                    if (!numeric && opSpinner.selectedItemPosition < 4) opSpinner.setSelection(tilde)
+                    if (numeric && opSpinner.selectedItemPosition == tilde) opSpinner.setSelection(0)
                     valueField.inputType = if (numeric)
                         InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
                     else InputType.TYPE_CLASS_TEXT

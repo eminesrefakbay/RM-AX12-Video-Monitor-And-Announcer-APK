@@ -1,4 +1,4 @@
-# AX12 Video Monitor and Announcer (v0.3)
+# AX12 Video Monitor and Announcer (v0.3.1)
 
 An Android app for the RadioMaster AX12:
 
@@ -20,7 +20,7 @@ An Android app for the RadioMaster AX12:
 ## Rules
 
 **MENU > Sound rules** opens a list you can tap: switch a rule on or off, **Edit**, **Test** (speaks it), **X** (delete),
-**+ Add rule**. In the editor pick a variable from the list, an operator and a value, type what to say, and press
+**+ Add rule**. In the editor press **List** to pick a channel or telemetry value from a grouped list with live values (or type a name), then pick an operator and a value, type what to say, and press
 **Detect switch** then move a switch on the radio: the channel and a sensible threshold are filled in for you. The
 editor shows the live value of each variable ("now: 1500") and the rule as text. **Settings** holds the hysteresis,
 hold time, start-up behaviour and unit. The GUI and the text editor edit the same text, so they always agree;

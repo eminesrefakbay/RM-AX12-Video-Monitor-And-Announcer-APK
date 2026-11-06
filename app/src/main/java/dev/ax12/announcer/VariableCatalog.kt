@@ -51,6 +51,26 @@ object VariableCatalog {
         "fm" to "flight mode name from the flight controller (text)"
     )
 
+    class Group(val title: String, val names: List<String>)
+
+    /** The picker's sections. Every name appears once; live names the catalog does not know go to "Other". */
+    fun groups(live: Collection<String>): List<Group> {
+        val used = HashSet<String>()
+        fun take(names: List<String>): List<String> = names.filter { used.add(it) }
+        val out = ArrayList<Group>()
+        out.add(Group("Switches and sticks (channels, 1000 to 2000)", take((1..16).map { "ch$it" })))
+        out.add(Group("Battery (from the flight controller)", take(listOf("vbat", "curr", "capa", "batpct"))))
+        out.add(Group("Link quality and signal", take(listOf("up_lq", "up_rssi1", "up_rssi2", "up_snr", "dn_lq", "dn_rssi", "dn_snr", "rf_mode", "tx_power"))))
+        out.add(Group("Radio status", take(listOf("lq", "dbm", "lost", "txv", "rxv", "tlm"))))
+        out.add(Group("GPS and attitude", take(listOf("sats", "gps_speed", "gps_alt", "gps_heading", "gps_lat", "gps_lon", "pitch", "roll", "yaw", "vspeed"))))
+        out.add(Group("Flight mode (text)", take(listOf("fm"))))
+        val other = take(live.sorted())
+        if (other.isNotEmpty()) out.add(Group("Other values from the radio", other))
+        out.add(Group("Advanced: the radio's own channel numbers", take((1..16).map { "raw$it" })))
+        out.add(Group("Advanced: the radio's logic values", take((1..16).map { "lv$it" })))
+        return out
+    }
+
     fun names(live: Collection<String>): List<String> {
         val out = ArrayList<String>(fixed)
         for (n in live.sorted()) if (!out.contains(n)) out.add(n)
