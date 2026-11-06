@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E1E1E"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sound rules - one per line:   ch5 >= 1500 -> drone armed | drone disarmed"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment."
+        android:textColor="#BDBDBD"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/rulesEdit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:background="#2B2B2B"
+        android:gravity="top|start"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:padding="8dp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/rulesInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines="2"
+        android:paddingTop="6dp"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button android:id="@+id/btnCheck" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Check" />
+        <Button android:id="@+id/btnSave" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Save" />
+        <Button android:id="@+id/btnSample" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Sample" />
+        <Button android:id="@+id/btnClose" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Close" />
+    </LinearLayout>
+</LinearLayout>

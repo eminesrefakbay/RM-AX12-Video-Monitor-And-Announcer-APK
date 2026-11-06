@@ -1,0 +1,124 @@
+package dev.ax12.announcer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Evaluates the rules against channel values and speaks through an Announcer.
+ * Call update() about 20 times per second. Not thread safe: call it from one thread.
+ *
+ * Behaviour:
+ *  - A rule speaks when its condition BECOMES true (edge), not while it stays true,
+ *    unless it has an @N repeat.
+ *  - Hysteresis stops chatter around a threshold; hold requires a change to last a moment.
+ *  - The first reading only sets the starting state (silent) unless "initial = on".
+ *  - A rule whose channel has no value is skipped.
+ */
+public final class RuleEngine {
+
+    private static final class State {
+        final boolean[][] atomOn;
+        boolean initialized;
+        boolean committed;
+        boolean candidate;
+        long candidateSince;
+        long lastSpoken;
+
+        State(Rule r) {
+            atomOn = new boolean[r.orGroups.size()][];
+            for (int g = 0; g < atomOn.length; g++) atomOn[g] = new boolean[r.orGroups.get(g).size()];
+        }
+    }
+
+    private final List<Rule> rules;
+    private final RuleParser.Settings settings;
+    private final Announcer out;
+    private final List<State> states = new ArrayList<State>();
+
+    public RuleEngine(RuleParser.Result parsed, Announcer out) {
+        this.rules = parsed.rules;
+        this.settings = parsed.settings;
+        this.out = out;
+        for (Rule r : rules) states.add(new State(r));
+    }
+
+    /** Forget all state (use after reloading channels or a link loss) so the next reading is silent again. */
+    public void reset() {
+        for (int i = 0; i < states.size(); i++) {
+            State s = states.get(i);
+            s.initialized = false;
+        }
+    }
+
+    public int ruleCount() { return rules.size(); }
+
+    public void update(Map<String, Double> values, long nowMs) {
+        for (int i = 0; i < rules.size(); i++) {
+            Rule r = rules.get(i);
+            State s = states.get(i);
+            Boolean cond = evaluate(r, s, values);
+            if (cond == null) continue;
+
+            if (!s.initialized) {
+                s.initialized = true;
+                s.committed = cond;
+                s.candidate = cond;
+                s.candidateSince = nowMs;
+                if (cond && settings.announceInitial) {
+                    out.say(r.onTrue, r.urgentTrue);
+                    s.lastSpoken = nowMs;
+                }
+                continue;
+            }
+
+            if (cond != s.candidate) {
+                s.candidate = cond;
+                s.candidateSince = nowMs;
+            }
+
+            if (s.candidate != s.committed && nowMs - s.candidateSince >= settings.holdMs) {
+                s.committed = s.candidate;
+                if (s.committed) {
+                    out.say(r.onTrue, r.urgentTrue);
+                    s.lastSpoken = nowMs;
+                } else if (r.onFalse != null) {
+                    out.say(r.onFalse, r.urgentFalse);
+                }
+            } else if (s.committed && r.repeatSec > 0 && nowMs - s.lastSpoken >= r.repeatSec * 1000L) {
+                out.say(r.onTrue, r.urgentTrue);
+                s.lastSpoken = nowMs;
+            }
+        }
+    }
+
+    /** @return null if a needed value is missing. */
+    private Boolean evaluate(Rule r, State s, Map<String, Double> values) {
+        boolean anyGroup = false;
+        for (int g = 0; g < r.orGroups.size(); g++) {
+            List<Rule.Atom> atoms = r.orGroups.get(g);
+            boolean all = true;
+            for (int k = 0; k < atoms.size(); k++) {
+                Rule.Atom a = atoms.get(k);
+                Double v = values.get(a.name);
+                if (v == null) return null;
+                boolean on = atomState(a, s.atomOn[g][k], v.doubleValue());
+                s.atomOn[g][k] = on;
+                if (!on) all = false;
+            }
+            if (all) anyGroup = true;
+        }
+        return anyGroup;
+    }
+
+    private boolean atomState(Rule.Atom a, boolean prev, double x) {
+        double h = settings.hysteresis;
+        String op = a.op;
+        if (op.equals(">=")) return prev ? !(x < a.value - h) : x >= a.value;
+        if (op.equals(">"))  return prev ? !(x <= a.value - h) : x > a.value;
+        if (op.equals("<=")) return prev ? !(x > a.value + h) : x <= a.value;
+        if (op.equals("<"))  return prev ? !(x >= a.value + h) : x < a.value;
+        if (op.equals("==")) return Math.abs(x - a.value) <= h;
+        return Math.abs(x - a.value) > h;   // "!="
+    }
+}
