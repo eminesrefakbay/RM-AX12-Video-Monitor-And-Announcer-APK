@@ -51,8 +51,16 @@ jobs:
         with:
           gradle-version: '8.7'
       - name: Build debug APK
-        run: gradle :app:assembleDebug --no-daemon
+        run: |
+          mkdir -p dist
+          gradle :app:assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/*.apk dist/ax12-announcer-debug.apk
+      - name: Build debug APK with the optional serial-lock patch
+        run: |
+          gradle :app:clean --no-daemon
+          gradle :app:assembleDebug --no-daemon -PaxLockPatch=true
+          cp app/build/outputs/apk/debug/*.apk dist/ax12-announcer-debug-lockpatch.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: ax12-announcer-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: ax12-announcer-apks
+          path: dist/*.apk

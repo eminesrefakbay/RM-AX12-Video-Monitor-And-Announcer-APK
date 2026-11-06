@@ -44,7 +44,9 @@ Java_dev_ax12_announcer_AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDat
     const char* chars = env->GetStringUTFChars(appDataPath, nullptr);
     const std::string path(chars != nullptr ? chars : "");
     if (chars != nullptr) env->ReleaseStringUTFChars(appDataPath, chars);
-    return ax12::start(path);
+    const int result = ax12::start(path);
+    LOGI("nativeStart: path=%s result=%d (0 ok, 1 already running, 2 thread failed, 3 communication failed)", path.c_str(), result);
+    return result;
 }
 
 extern "C" JNIEXPORT void JNICALL

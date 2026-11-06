@@ -13,7 +13,7 @@ An Android app for the RadioMaster AX12:
 | Part | State |
 | --- | --- |
 | Rule engine, CRSF parser, channel scaler (plain Java) | 74 automated checks pass |
-| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 36 checks pass |
+| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
 
@@ -62,11 +62,17 @@ Locally: JDK 17, Android SDK + NDK, `gradle :app:assembleDebug` (copy the SDK fi
 
 ## Serial lock (open question)
 
-Qt's serial port refuses to open without a lock file, and an Android app has no writable lock directory, so the
-SDK may fail to open the radio's link (the app then says so on screen). RadioMaster's demo works around this by
-patching two instructions of the bundled Qt serial library at run time. That is included here as an **optional**
-step, off by default, checked instruction-by-instruction before it changes anything: build with
-`gradle :app:assembleDebug -PaxLockPatch=true`. The better fix is an official way from RadioMaster; ask them.
+The SDK talks to the radio over a serial link that Qt's `QSerialPort` opens only after creating a lock file.
+An Android app has no writable lock directory, so the link may never open: then the Show variables panel says
+`radio config: NOT loaded yet` and `mixout msgs` stays 0.
+
+* The app always points Qt's temp folder (`TMPDIR`) at its own data folder before the SDK starts (as RadioMaster's demo does).
+* RadioMaster's demo also patches two instructions of the bundled Qt serial library at run time. That is the
+  **second APK** the CI builds, `ax12-announcer-debug-lockpatch.apk` (Gradle flag `-PaxLockPatch=true`).
+  It checks both instructions are exactly the expected ones before changing anything. Off in the plain APK.
+* Close RadioMaster's own AX app first: two programs must not read the same serial port.
+* Look for the cause in `adb logcat`: lines with `qt`, `serial`, `lock` or `ax12bridge` ("Failed to create a lock file").
+* The proper fix is an official way from RadioMaster to open the link; please ask them.
 
 ## Try it without the radio
 

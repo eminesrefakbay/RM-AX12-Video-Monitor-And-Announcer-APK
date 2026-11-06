@@ -8,6 +8,10 @@
 #include <mutex>
 #include <thread>
 
+#include <cerrno>
+#include <cstdlib>
+#include <sys/stat.h>
+
 #include "rmAxSdkApi.h"
 
 namespace ax12 {
@@ -32,6 +36,16 @@ struct State {
 State& st() {
     static State s;
     return s;
+}
+
+// Qt's QSerialPort wants to create "LCK..<port>" lock files under QDir::tempPath(), which reads the
+// TMPDIR environment variable. Android's default temp location is not writable for an app, so
+// point TMPDIR at a folder inside the app's private data (RadioMaster's demo does the same, and
+// it must happen BEFORE initialize(), which creates the Qt application object).
+void redirectTempDir(const std::string& appDataPath) {
+    const std::string tmp = appDataPath + "/qt_tmp";
+    if (mkdir(tmp.c_str(), 0700) != 0 && errno != EEXIST) return;
+    setenv("TMPDIR", tmp.c_str(), 1);
 }
 
 constexpr std::size_t kMaxQueuedFrames = 128;
@@ -146,6 +160,7 @@ int start(const std::string& appDataPath) {
         std::lock_guard<std::mutex> lock(s.m);
         if (s.running) return static_cast<int>(rmaxSdk::InitResult::AlreadyInitialized);
     }
+    redirectTempDir(appDataPath);
     const auto result = rmaxSdk::initialize(appDataPath);
     if (result != rmaxSdk::InitResult::Success && result != rmaxSdk::InitResult::AlreadyInitialized) {
         return static_cast<int>(result);

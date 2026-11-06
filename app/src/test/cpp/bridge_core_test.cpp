@@ -4,7 +4,9 @@
 #include <chrono>
 #include <cstdio>
 #include <functional>
+#include <cstdlib>
 #include <memory>
+#include <sys/stat.h>
 #include <mutex>
 #include <thread>
 #include <vector>
@@ -73,6 +75,18 @@ int main() {
     fake::initResult = rmaxSdk::InitResult::Success;
 
     ax12::setConfigRetryMs(100);
+    char tmpl[] = "/tmp/ax12testXXXXXX";
+    const char* dir = mkdtemp(tmpl);
+    CHECK(dir != nullptr, "temp dir for the test");
+    unsetenv("TMPDIR");
+    CHECK(ax12::start(dir) == 0, "start with a real data directory");
+    {
+        const char* t = std::getenv("TMPDIR");
+        struct stat st {};
+        CHECK(t != nullptr && std::string(t) == std::string(dir) + "/qt_tmp" && stat(t, &st) == 0 && S_ISDIR(st.st_mode),
+              "TMPDIR points at <appData>/qt_tmp, which exists, before the SDK is initialised");
+    }
+    ax12::stop();
     fake::cfgReadCalls = 0;
     CHECK(ax12::start("/tmp") == 0, "start succeeds");
     CHECK(ax12::snapshot().v[ax12::kSnapState] == 1, "running");
