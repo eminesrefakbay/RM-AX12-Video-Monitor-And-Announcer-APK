@@ -2,11 +2,27 @@ name: build
 
 on:
   push:
+    branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'To make a STABLE release type its tag here, for example v0.7.1. Leave empty for a normal build.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write        # to publish the nightly build and releases
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   SDK_REPO: https://github.com/Radiomaster-RC/RadiomasterAX_SDK
+  # a stable build: a pushed v* tag, or this workflow started by hand with a release tag
+  IS_STABLE: ${{ startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag != '') }}
 
 jobs:
   tests:
@@ -17,18 +33,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Rule engine, CRSF parser, scaler and rules-text tests (plain Java)
+      - name: Plain Java tests (rules, parser, overlays, updater and more)
         run: |
           mkdir -p out
           javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
-          java -cp out dev.ax12.announcer.RuleEngineTest
-          java -cp out dev.ax12.announcer.ExtraTests
-          java -cp out dev.ax12.announcer.RuleTextTests
-          java -cp out dev.ax12.announcer.RulesFileTests
-          java -cp out dev.ax12.announcer.TimingStatsTests
-          java -cp out dev.ax12.announcer.OverlayTests
-          java -cp out dev.ax12.announcer.AuxBarsTests
-          java -cp out dev.ax12.announcer.FlightTests
+          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests; do
+            java -cp out dev.ax12.announcer.$t
+          done
       - name: Native bridge core with a fake SDK (needs only the SDK headers)
         run: |
           git clone --depth 1 "$SDK_REPO" sdk-src
@@ -45,6 +56,21 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Work out the channel and the version name
+        env:
+          RELEASE_TAG: ${{ github.event.inputs.release_tag }}
+        run: |
+          BASE="$(sed -n 's/^val baseVersion = "\([^"]*\)".*/\1/p' app/build.gradle.kts | head -1)"
+          if [ "$IS_STABLE" = "true" ]; then
+            echo "CHANNEL=stable" >> "$GITHUB_ENV"
+            echo "VERSION_SUFFIX=" >> "$GITHUB_ENV"
+            echo "VERSION_NAME=$BASE" >> "$GITHUB_ENV"
+            echo "STABLE_TAG=${RELEASE_TAG:-$GITHUB_REF_NAME}" >> "$GITHUB_ENV"
+          else
+            echo "CHANNEL=nightly" >> "$GITHUB_ENV"
+            echo "VERSION_SUFFIX=-nightly.${{ github.run_number }}" >> "$GITHUB_ENV"
+            echo "VERSION_NAME=$BASE-nightly.${{ github.run_number }}" >> "$GITHUB_ENV"
+          fi
       - name: Fetch the RadioMaster SDK (kept out of this repository)
         run: |
           git clone --depth 1 "$SDK_REPO" sdk-src
@@ -56,17 +82,56 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
-      - name: Build debug APK
+      - name: Prepare the stable signing key (from the repository secrets)
+        env:
+          KEYSTORE_B64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/ax-hud.jks"
+            echo "SIGNING_KEYSTORE_FILE=$RUNNER_TEMP/ax-hud.jks" >> "$GITHUB_ENV"
+            echo "Signing with the stable key."
+          else
+            echo "::warning::No signing secrets found. These APKs get a throw-away debug key and cannot update an installed app (see UPDATES.md)."
+          fi
+      - name: Build the APKs (ax-hud.apk has the serial-lock patch, ax-hud-plain.apk does not)
+        env:
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           mkdir -p dist
-          gradle :app:assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/*.apk dist/ax12-announcer-debug.apk
-      - name: Build debug APK with the optional serial-lock patch
-        run: |
-          gradle :app:clean --no-daemon
           gradle :app:assembleDebug --no-daemon -PaxLockPatch=true
-          cp app/build/outputs/apk/debug/*.apk dist/ax12-announcer-debug-lockpatch.apk
+          cp app/build/outputs/apk/debug/*.apk dist/ax-hud.apk
+          gradle :app:clean --no-daemon
+          gradle :app:assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/*.apk dist/ax-hud-plain.apk
+      - name: Write the update files for the app's updater
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+          NOTES: ${{ github.event.head_commit.message }}
+        run: bash tools/package-update.sh dist/ax-hud.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: ax12-announcer-apks
-          path: dist/*.apk
+          name: ax-hud-build
+          path: dist/*
+      - name: Publish the nightly build (the app's Nightly channel)
+        if: env.IS_STABLE != 'true' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete nightly --cleanup-tag --yes || true
+          gh release create nightly dist/ax-hud.apk dist/ax-hud-plain.apk dist/update.json dist/SHA256SUMS \
+            --prerelease --target "$GITHUB_SHA" --title "Nightly build ${{ github.run_number }} ($VERSION_NAME)" \
+            --notes "Automatic build of the latest commit on main. The app's Nightly channel follows this release."
+      - name: Publish the stable release (the app's Stable channel)
+        if: env.IS_STABLE == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$STABLE_TAG" >/dev/null 2>&1; then
+            # a release made by hand on GitHub: attach the build to it
+            gh release upload "$STABLE_TAG" dist/ax-hud.apk dist/ax-hud-plain.apk dist/update.json dist/SHA256SUMS --clobber
+          else
+            gh release create "$STABLE_TAG" dist/ax-hud.apk dist/ax-hud-plain.apk dist/update.json dist/SHA256SUMS \
+              --target "$GITHUB_SHA" --title "AX-HUD $STABLE_TAG" --generate-notes
+          fi

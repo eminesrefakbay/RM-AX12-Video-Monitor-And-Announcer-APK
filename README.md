@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.png" width="160" alt="AX-HUD logo"></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.6.4)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.7.1)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -14,7 +14,7 @@
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 345 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 372 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
@@ -172,6 +172,16 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 ## Privacy
 
 GPS coordinates are shown on screen only. Do not commit flight logs or screenshots that show where you fly.
+
+## Updates from GitHub
+
+**Settings > Updates > Check for updates now** looks on GitHub for a newer build, downloads it, checks its SHA-256, and
+hands it to Android's installer, which asks you to confirm. Two channels: **Nightly** (the newest build, published by CI on every push to `main`, versions like `0.7.1-nightly.45`) and
+**Stable** (the latest GitHub release, made with one click from the Actions tab or by pushing a tag such as `v0.7.1`). The app can
+also look for news a few seconds after it starts (switchable). Every build is signed with **one permanent key** kept in GitHub
+secrets, which is what lets each build install over the last one without uninstalling. The one-time setup, the daily routine and
+the error messages are in **[UPDATES.md](UPDATES.md)**. The only network use is fetching two files from github.com; the app has
+the internet permission for that and nothing else.
 
 ## Start-up splash screen
 

@@ -37,6 +37,9 @@ object Prefs {
     fun int(c: Context, key: String, def: Int): Int = p(c).getInt(key, def)
     fun setInt(c: Context, key: String, v: Int) { p(c).edit().putInt(key, v).apply() }
 
+    fun updateChannel(c: Context): String = if (p(c).getString("updateChannel", "nightly") == "stable") "stable" else "nightly"
+    fun setUpdateChannel(c: Context, ch: String) { p(c).edit().putString("updateChannel", ch).apply() }
+
     fun rotation(c: Context): Int = p(c).getInt("rotation", 0)
     fun setRotation(c: Context, deg: Int) { p(c).edit().putInt("rotation", deg).apply() }
 }

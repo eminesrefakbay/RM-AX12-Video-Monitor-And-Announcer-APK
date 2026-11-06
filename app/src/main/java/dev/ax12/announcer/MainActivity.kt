@@ -50,6 +50,8 @@ class MainActivity : Activity() {
     private lateinit var rulesPanel: RulesPanel
     private lateinit var settingsPanel: SettingsPanel
     private lateinit var mainMenu: MainMenu
+    private val updater by lazy { Updater(this) }
+    private val autoCheck = Runnable { if (Prefs.bool(this, "updateAuto", true)) updater.check(false) }
     private var splash: SplashOverlay? = null
     private val splashHide = Runnable { splash?.dismiss() }
     private lateinit var warnPanel: RulesPanel
@@ -196,6 +198,7 @@ class MainActivity : Activity() {
             splash = sp
             frame.addView(sp.root, FrameLayout.LayoutParams(full))
             ui.postDelayed(splashHide, SplashOverlay.SHOW_MS)
+            ui.postDelayed(autoCheck, 6000)          // a quiet look for news a few seconds after a fresh start
         }
     }
 
@@ -252,6 +255,8 @@ class MainActivity : Activity() {
 
     override fun onDestroy() {
         ui.removeCallbacks(splashHide)
+        ui.removeCallbacks(autoCheck)
+        updater.release()
         speaker.shutdown()
         super.onDestroy()
     }
@@ -462,6 +467,18 @@ class MainActivity : Activity() {
         override fun restoreRules() = this@MainActivity.restoreRules()
         override fun resetRules() = this@MainActivity.resetRules()
         override fun openRulesText() { startActivity(Intent(this@MainActivity, RulesActivity::class.java)) }
+        override fun updateLine(): String = "Installed: version " + updater.installedName() + " (build " + updater.installedCode() +
+                ")   Channel: " + (if (updater.channel() == "stable") "Stable" else "Nightly")
+        override fun checkUpdatesNow() {
+            settingsPanel.hide()
+            updater.check(true)
+        }
+        override fun updateChannelLabel(): String = if (updater.channel() == "stable") "Stable (tested releases only)" else "Nightly (newest build of every push)"
+        override fun cycleUpdateChannel() {
+            Prefs.setUpdateChannel(this@MainActivity, if (updater.channel() == "stable") "nightly" else "stable")
+        }
+        override fun updateAuto(): Boolean = Prefs.bool(this@MainActivity, "updateAuto", true)
+        override fun setUpdateAuto(on: Boolean) { Prefs.setBool(this@MainActivity, "updateAuto", on) }
         override fun splashOn(): Boolean = Prefs.bool(this@MainActivity, "splashOn", true)
         override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)

@@ -11,6 +11,17 @@ val withSdk = sdkLib.exists()
 // -PaxLockPatch=true turns on the optional serial-lock patch (see serial_lock_patch.cpp)
 val lockPatch = (project.findProperty("axLockPatch") ?: "false") == "true"
 
+// A stable signing key lets every build update the one before it (Android refuses an update signed with a different
+// key). CI provides the key from GitHub secrets; without it the build uses a throw-away debug key.
+val keystorePath: String? = System.getenv("SIGNING_KEYSTORE_FILE")
+val keystorePassword: String? = System.getenv("SIGNING_PASSWORD")
+// The version code must grow with every build, or Android treats a newer APK as a downgrade.
+val ciRun: Int? = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
+// The version people read. Nightly builds get a suffix from CI ("-nightly.45"), stable builds do not.
+// Change baseVersion before you make a stable release.
+val baseVersion = "0.7.1"
+val versionSuffix: String = System.getenv("VERSION_SUFFIX") ?: ""
+
 android {
     namespace = "dev.ax12.announcer"
     compileSdk = 34
@@ -19,8 +30,8 @@ android {
         applicationId = "dev.ax12.announcer"
         minSdk = 24
         targetSdk = 28          // the AX12 runs Android 9
-        versionCode = 15
-        versionName = "0.6.4"
+        versionCode = if (ciRun != null) 1000 + ciRun else 16
+        versionName = baseVersion + versionSuffix
 
         if (withSdk) {
             ndk { abiFilters += listOf("arm64-v8a") }       // the SDK ships arm64-v8a only
@@ -48,7 +59,21 @@ android {
         jniLibs { useLegacyPackaging = true }   // the SDK needs all its .so files extracted at install
     }
 
+    signingConfigs {
+        if (keystorePath != null && keystorePassword != null && file(keystorePath).exists()) {
+            create("stable") {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = "ax-hud"
+                keyPassword = keystorePassword
+            }
+        }
+    }
+
     buildTypes {
+        getByName("debug") {
+            signingConfigs.findByName("stable")?.let { signingConfig = it }
+        }
         release { isMinifyEnabled = false }
     }
     compileOptions {

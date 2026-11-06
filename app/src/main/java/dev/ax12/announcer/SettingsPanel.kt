@@ -72,6 +72,14 @@ interface SettingsHost {
     fun editArmDetection()
     fun editStatsRows()
     fun editCheckRules()
+
+    // updates from GitHub
+    fun updateLine(): String
+    fun checkUpdatesNow()
+    fun updateChannelLabel(): String
+    fun cycleUpdateChannel()
+    fun updateAuto(): Boolean
+    fun setUpdateAuto(on: Boolean)
 }
 
 /**
@@ -288,6 +296,16 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         toggle("Show the variables panel (every value the radio sends)", host.variablesOn()) { host.setVariablesOn(it) }
         toggle("Test channels: sliders instead of the radio", host.testChannelsOn()) { host.setTestChannelsOn(it) }
         note("Close Settings to see the panels over the video.")
+
+        section("Updates (from GitHub)")
+        note(host.updateLine())
+        action("Check for updates now") { host.checkUpdatesNow() }
+        action("Channel: " + host.updateChannelLabel() + "  (tap to change)") {
+            host.cycleUpdateChannel()
+            refresh()
+        }
+        toggle("Check at start-up (needs internet)", host.updateAuto()) { host.setUpdateAuto(it) }
+        note("Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.")
 
         section("About")
         note(host.about())
