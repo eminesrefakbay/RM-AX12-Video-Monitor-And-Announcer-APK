@@ -12,34 +12,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- No-feed panel: grey background, big readable text. -->
-    <LinearLayout
+    <!-- No video: a plain grey screen with one slim status bar at the bottom. -->
+    <FrameLayout
         android:id="@+id/noFeed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FF3A3A3A"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <TextView
-            android:id="@+id/noFeedText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="NO VIDEO"
-            android:textColor="#FFFFFF"
-            android:textSize="48sp"
-            android:textStyle="bold" />
+        android:background="#FF3A3A3A">
 
         <TextView
             android:id="@+id/noFeedDetail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:background="#FF1E1E1E"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="6dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="6dp"
             android:textColor="#E0E0E0"
-            android:textSize="22sp" />
-    </LinearLayout>
+            android:textSize="14sp" />
+    </FrameLayout>
 
     <!-- Channel read-out, only used while the test panel is open. -->
     <TextView

@@ -61,6 +61,7 @@ class RulesPanel(
         root.setPadding(dp(16), dp(10), dp(16), dp(10))
         root.visibility = View.GONE
         root.isClickable = true                       // swallow touches so the video behind is not used
+        root.elevation = dp(24).toFloat()             // above the MENU button and every other view
 
         val title = TextView(activity)
         title.text = "Sound rules"
@@ -167,15 +168,17 @@ class RulesPanel(
         r.addView(button("Edit") { if (item.spec != null) editRule(item) else openTextEditor() })
         r.addView(button("Test") { if (item.spec != null) testSpeak(item.spec!!.onTrue, item.spec!!.urgentTrue) })
         r.addView(button("X") {
-            AlertDialog.Builder(activity)
-                .setMessage("Delete this rule?")
-                .setPositiveButton("Delete") { _, _ ->
-                    items.remove(item)
-                    save()
-                    refresh()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
+            Immersive.show(
+                AlertDialog.Builder(activity)
+                    .setMessage("Delete this rule?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        items.remove(item)
+                        save()
+                        refresh()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .create()
+            )
         })
         return r
     }
@@ -231,7 +234,7 @@ class RulesPanel(
             .setPositiveButton("Save", null)
             .setNegativeButton("Cancel", null)
             .create()
-        dlg.show()
+        Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val h = hys.text.toString().trim().toDoubleOrNull()
             val v = vhys.text.toString().trim().toDoubleOrNull()
@@ -344,7 +347,7 @@ class RulesPanel(
                 dlg.dismiss()
             }
         }
-        dlg.show()
+        Immersive.show(dlg)
     }
 
     private fun isTextVariable(name: String): Boolean = name == "fm" || live.texts().containsKey(name)
@@ -694,7 +697,7 @@ class RulesPanel(
                 .create()
             dialog = dlg
             dlg.setOnDismissListener { ui.removeCallbacks(tick) }
-            dlg.show()
+            Immersive.show(dlg)
             dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
                 if (sayField.text.isNotBlank()) testSpeak(sayField.text.toString().trim(), urgent.isChecked)
             }

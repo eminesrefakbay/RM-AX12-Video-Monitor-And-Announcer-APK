@@ -1,9 +1,9 @@
-# AX12 Video Monitor and Announcer (v0.4.1)
+# AX12 Video Monitor and Announcer (v0.4.2)
 
 An Android app for the RadioMaster AX12:
 
 * opens straight into **full-screen video** from the HDMI input;
-* shows a **grey "NO VIDEO" panel** with big readable text when no frames arrive, and reconnects by itself;
+* shows a plain grey screen with one slim **status bar at the bottom** ("NO VIDEO · camera · size · reason") when no frames arrive, and reconnects by itself;
 * **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
 * only **reads** from the radio. It never writes a setting.
@@ -28,8 +28,9 @@ Settings > Diagnostics > Show variables prints the frame rate, the gaps between 
 
 ## Menu and settings
 
-The MENU button hides itself and comes back for a few seconds whenever you touch the screen (Settings can keep it
-always visible). The menu holds only the daily items: **Sound rules**, **Mute speech** and **Settings**.
+The MENU button opens an in-screen panel (not a popup window: a popup takes the keyboard focus and Android then
+shows its navigation buttons). Dialogs are shown full-screen safe in the same way. The MENU button hides itself and comes back for a few seconds whenever you touch the screen (Settings can keep it
+always visible), and it hides while a panel is open so it never covers a panel's own buttons. The menu holds only the daily items: **Sound rules**, **Mute speech** and **Settings**.
 **Settings** holds the rest: the MENU button option, video (camera, rotate, fit or fill), speech (on/off, test),
 the sound rules files, and the diagnostics (variables panel, test channels).
 

@@ -17,7 +17,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.PopupMenu
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -44,10 +43,11 @@ class MainActivity : Activity() {
     private lateinit var speaker: Speaker
     private lateinit var rulesPanel: RulesPanel
     private lateinit var settingsPanel: SettingsPanel
+    private lateinit var mainMenu: MainMenu
     private lateinit var menuButton: Button
-    private var menuPopupOpen = false
+    private var overlayWasOpen = false
     private val hideMenuRunnable = Runnable {
-        if (!menuPopupOpen && !Prefs.menuAlways(this)) menuButton.visibility = View.GONE
+        if (!Prefs.menuAlways(this) && !anyOverlayOpen()) menuButton.visibility = View.GONE
     }
     private var latestNumbers: Map<String, Double> = HashMap()
     private var latestTexts: Map<String, String> = HashMap()
@@ -85,7 +85,7 @@ class MainActivity : Activity() {
 
         buildTestPanel()
         menuButton = findViewById(R.id.menuButton)
-        menuButton.setOnClickListener { showMenu(it) }
+        menuButton.setOnClickListener { mainMenu.show() }
 
         rulesPanel = RulesPanel(
             this, speaker,
@@ -102,11 +102,21 @@ class MainActivity : Activity() {
         frame.addView(rulesPanel.root, full)
         frame.addView(settingsPanel.root, FrameLayout.LayoutParams(full))
 
+        mainMenu = MainMenu(
+            this,
+            { !speaker.muted },
+            { rulesPanel.show() },
+            { speaker.muted = !speaker.muted },
+            { settingsPanel.show() }
+        )
+        frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
+
         applyMenuMode()
     }
 
     override fun onBackPressed() {
-        if (settingsPanel.isShowing) settingsPanel.hide()
+        if (mainMenu.isShowing) mainMenu.hide()
+        else if (settingsPanel.isShowing) settingsPanel.hide()
         else if (rulesPanel.isShowing) rulesPanel.hide()
         else super.onBackPressed()
     }
@@ -115,9 +125,11 @@ class MainActivity : Activity() {
 
     /** Any touch on the screen brings the MENU button back for a few seconds. */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) showMenuButton(4000)
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN && !anyOverlayOpen()) showMenuButton(4000)
         return super.dispatchTouchEvent(ev)
     }
+
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || settingsPanel.isShowing
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -164,14 +176,8 @@ class MainActivity : Activity() {
     private fun hasCameraPermission() =
         checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
 
-    @Suppress("DEPRECATION")
     private fun hideSystemUi() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+        Immersive.apply(this)
     }
 
     // ------------------------------------------------------------------ radio link
@@ -211,7 +217,16 @@ class MainActivity : Activity() {
 
             val stale = now - camera.lastFrameMs > 1000
             noFeed.visibility = if (stale) View.VISIBLE else View.GONE
-            if (stale) noFeedDetail.text = camera.statusLine()
+            if (stale) noFeedDetail.text = "NO VIDEO  \u00B7  " + camera.barText()
+
+            // the MENU button must not sit on top of a panel's own buttons
+            if (anyOverlayOpen()) {
+                menuButton.visibility = View.GONE
+                overlayWasOpen = true
+            } else if (overlayWasOpen) {
+                overlayWasOpen = false
+                if (Prefs.menuAlways(this@MainActivity)) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
+            }
 
             val useFake = testVisible || sdkLink == null || !sdkRunning
             val link: RadioLink = if (useFake) fakeLink else sdkLink!!
@@ -274,27 +289,6 @@ class MainActivity : Activity() {
 
     // ------------------------------------------------------------------ menu
 
-    private fun showMenu(anchor: View) {
-        val popup = PopupMenu(this, anchor)
-        popup.menu.add(0, 1, 0, "Sound rules")
-        popup.menu.add(0, 2, 1, if (speaker.muted) "Speech is OFF - tap to turn on" else "Mute speech")
-        popup.menu.add(0, 3, 2, "Settings")
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                1 -> rulesPanel.show()
-                2 -> speaker.muted = !speaker.muted
-                3 -> settingsPanel.show()
-            }
-            true
-        }
-        menuPopupOpen = true
-        popup.setOnDismissListener {
-            menuPopupOpen = false
-            showMenuButton(4000)
-        }
-        popup.show()
-    }
-
     private fun chooseCamera() {
         val list = camera.listCameras()
         if (list.isEmpty()) {
@@ -302,10 +296,12 @@ class MainActivity : Activity() {
             return
         }
         val names = Array(list.size) { list[it].second }
-        AlertDialog.Builder(this)
-            .setTitle("Choose the HDMI camera")
-            .setItems(names) { _, which -> camera.select(list[which].first) }
-            .show()
+        Immersive.show(
+            AlertDialog.Builder(this)
+                .setTitle("Choose the HDMI camera")
+                .setItems(names) { _, which -> camera.select(list[which].first) }
+                .create()
+        )
     }
 
     private fun setTestVisible(on: Boolean) {
@@ -390,12 +386,14 @@ class MainActivity : Activity() {
             val dir = getExternalFilesDir(null) ?: filesDir
             val f = File(dir, fileName)
             f.writeText(exportText(), Charsets.UTF_8)
-            AlertDialog.Builder(this)
-                .setTitle("Sound rules saved")
-                .setMessage("This device has no file picker, so the file was saved here:\n" + f.absolutePath +
-                        "\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.")
-                .setPositiveButton("OK", null)
-                .show()
+            Immersive.show(
+                AlertDialog.Builder(this)
+                    .setTitle("Sound rules saved")
+                    .setMessage("This device has no file picker, so the file was saved here:\n" + f.absolutePath +
+                            "\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.")
+                    .setPositiveButton("OK", null)
+                    .create()
+            )
         } catch (e: Exception) {
             Toast.makeText(this, "Could not save the rules: " + e.message, Toast.LENGTH_LONG).show()
         }
@@ -454,10 +452,11 @@ class MainActivity : Activity() {
         val text = RulesFile.normalize(raw)
         val summary = RulesFile.inspect(text)
         if (!summary.usable) {
-            AlertDialog.Builder(this).setTitle("Cannot import").setMessage(summary.message).setPositiveButton("OK", null).show()
+            Immersive.show(AlertDialog.Builder(this).setTitle("Cannot import").setMessage(summary.message).setPositiveButton("OK", null).create())
             return
         }
-        AlertDialog.Builder(this)
+        Immersive.show(
+            AlertDialog.Builder(this)
             .setTitle("Import sound rules")
             .setMessage("The file has " + summary.message + "\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.")
             .setPositiveButton("Import") { _, _ ->
@@ -468,7 +467,8 @@ class MainActivity : Activity() {
                 settingsPanel.refresh()
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .create()
+        )
     }
 
     private fun restoreRules() {

@@ -33,6 +33,11 @@ class RulesActivity : Activity() {
         findViewById<Button>(R.id.btnClose).setOnClickListener { finish() }
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) Immersive.apply(this)
+    }
+
     private fun check(): Boolean {
         val result = RuleParser.parse(edit.text.toString())
         return if (result.errors.isEmpty()) {

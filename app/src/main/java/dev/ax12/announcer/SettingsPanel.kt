@@ -57,6 +57,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         root.setPadding(dp(16), dp(10), dp(16), dp(10))
         root.visibility = View.GONE
         root.isClickable = true
+        root.elevation = dp(24).toFloat()          // above the MENU button and every other view
 
         val bar = LinearLayout(activity)
         bar.orientation = LinearLayout.HORIZONTAL
@@ -131,11 +132,13 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
     }
 
     private fun confirm(message: String, positive: String, onYes: () -> Unit) {
-        AlertDialog.Builder(activity)
-            .setMessage(message)
-            .setPositiveButton(positive) { _, _ -> onYes() }
-            .setNegativeButton("Cancel", null)
-            .show()
+        Immersive.show(
+            AlertDialog.Builder(activity)
+                .setMessage(message)
+                .setPositiveButton(positive) { _, _ -> onYes() }
+                .setNegativeButton("Cancel", null)
+                .create()
+        )
     }
 
     // ------------------------------------------------------------------ the screen
