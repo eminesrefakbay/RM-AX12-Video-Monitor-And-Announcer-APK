@@ -42,7 +42,7 @@ public class RuleTextTests {
 
         // read the shapes
         RuleText.Spec arm = items.get(4).spec;
-        check(arm.conds.size() == 1 && arm.conds.get(0).var.equals("ch5") && arm.conds.get(0).op.equals(">=") && arm.conds.get(0).value.equals("1950"), "simple rule read");
+        check(arm.conds.size() == 1 && arm.conds.get(0).variable.equals("ch5") && arm.conds.get(0).op.equals(">=") && arm.conds.get(0).value.equals("1950"), "simple rule read");
         check(arm.onTrue.equals("armed") && arm.onFalse.equals("disarmed") && !arm.any, "texts read");
         RuleText.Spec hor = items.get(5).spec;
         check(hor.conds.size() == 2 && !hor.any, "AND rule read");
@@ -87,7 +87,7 @@ public class RuleTextTests {
 
         // add and remove
         RuleText.Spec s = RuleText.Spec.blank();
-        s.conds.get(0).var = "up_lq"; s.conds.get(0).op = "<"; s.conds.get(0).value = "40";
+        s.conds.get(0).variable = "up_lq"; s.conds.get(0).op = "<"; s.conds.get(0).value = "40";
         s.onTrue = "link critical"; s.urgentTrue = true; s.repeatSec = 5;
         check(RuleText.validate(s) == null, "new rule is valid");
         items.add(RuleText.newRule(s));
@@ -97,7 +97,7 @@ public class RuleTextTests {
         // validation messages
         RuleText.Spec v = RuleText.Spec.blank();
         check(RuleText.validate(v) != null, "empty rule rejected");
-        v.conds.get(0).var = "ch5"; v.conds.get(0).value = "abc"; v.onTrue = "x";
+        v.conds.get(0).variable = "ch5"; v.conds.get(0).value = "abc"; v.onTrue = "x";
         check(RuleText.validate(v).contains("not a number"), "bad number explained: " + RuleText.validate(v));
         v.conds.get(0).value = "1500"; v.onTrue = "";
         check(RuleText.validate(v).contains("what to say"), "missing text explained");
@@ -105,9 +105,9 @@ public class RuleTextTests {
         check(RuleText.validate(v).contains("cannot contain"), "pipe in text refused");
         v.onTrue = "wait @5";
         check(RuleText.validate(v).contains("@number"), "text ending in @5 refused");
-        v.onTrue = "ok"; v.conds.get(0).var = "ch 5";
+        v.onTrue = "ok"; v.conds.get(0).variable = "ch 5";
         check(RuleText.validate(v).contains("variable"), "bad variable name refused");
-        v.conds.get(0).var = "vbat"; v.conds.get(0).divisor = 0;
+        v.conds.get(0).variable = "vbat"; v.conds.get(0).divisor = 0;
         check(RuleText.validate(v).contains("divisor"), "zero divisor refused");
 
         // settings

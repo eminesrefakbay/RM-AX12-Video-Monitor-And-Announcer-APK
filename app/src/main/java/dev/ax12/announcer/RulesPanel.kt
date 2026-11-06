@@ -312,7 +312,7 @@ class RulesPanel(
                 varField.threshold = 0
                 varField.setSingleLine(true)
                 varField.hint = "variable"
-                varField.setText(c.var)
+                varField.setText(c.variable)
                 varField.setOnClickListener { varField.showDropDown() }
                 varField.setOnFocusChangeListener { _, has -> if (has) varField.showDropDown() }
                 top.addView(varField, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))

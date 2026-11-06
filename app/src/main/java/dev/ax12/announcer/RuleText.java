@@ -23,7 +23,7 @@ public final class RuleText {
 
     /** One condition: var [/ divisor] op value   or   var op "text". */
     public static final class Cond {
-        public String var = "";
+        public String variable = "";
         public String op = ">=";
         public String value = "";
         public double divisor = 1.0;
@@ -31,15 +31,15 @@ public final class RuleText {
 
         public Cond() {}
 
-        public Cond(String var, String op, String value, double divisor, boolean text) {
-            this.var = var;
+        public Cond(String variable, String op, String value, double divisor, boolean text) {
+            this.variable = variable;
             this.op = op;
             this.value = value;
             this.divisor = divisor;
             this.text = text;
         }
 
-        public Cond copy() { return new Cond(var, op, value, divisor, text); }
+        public Cond copy() { return new Cond(variable, op, value, divisor, text); }
     }
 
     /** What the rule editor shows. */
@@ -169,7 +169,7 @@ public final class RuleText {
         for (int i = 0; i < s.conds.size(); i++) {
             Cond c = s.conds.get(i);
             if (i > 0) sb.append(s.any ? " or " : " and ");
-            sb.append(c.var.trim());
+            sb.append(c.variable.trim());
             if (c.text) {
                 sb.append(' ').append(c.op).append(" \"").append(c.value).append('"');
             } else {
@@ -193,13 +193,13 @@ public final class RuleText {
     public static String validate(Spec s) {
         if (s.conds.isEmpty()) return "Add at least one condition.";
         for (Cond c : s.conds) {
-            if (!NAME.matcher(c.var.trim()).matches()) return "Pick a variable (letters, digits and _ only).";
+            if (!NAME.matcher(c.variable.trim()).matches()) return "Pick a variable (letters, digits and _ only).";
             if (c.text) {
                 if (!(c.op.equals("==") || c.op.equals("!=") || c.op.equals("~"))) return "Text can use is, is not or contains.";
                 if (c.value.contains("\"")) return "Text must not contain quotation marks.";
             } else {
                 if (c.op.equals("~")) return "'contains' works on text variables only.";
-                if (c.value.trim().isEmpty()) return "Enter a value for " + c.var.trim() + ".";
+                if (c.value.trim().isEmpty()) return "Enter a value for " + c.variable.trim() + ".";
                 try {
                     Double.parseDouble(c.value.trim());
                 } catch (NumberFormatException e) {
@@ -225,7 +225,7 @@ public final class RuleText {
         for (int i = 0; i < s.conds.size(); i++) {
             if (i > 0) sb.append(s.any ? " or " : " and ");
             Cond c = s.conds.get(i);
-            sb.append(c.var);
+            sb.append(c.variable);
             if (c.text) {
                 sb.append(c.op.equals("~") ? " contains " : c.op.equals("==") ? " is " : " is not ");
                 sb.append('\u201C').append(c.value).append('\u201D');
