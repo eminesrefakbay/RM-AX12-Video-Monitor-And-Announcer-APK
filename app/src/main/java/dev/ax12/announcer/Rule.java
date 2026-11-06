@@ -6,20 +6,32 @@ import java.util.List;
 public final class Rule {
 
     public static final class Atom {
-        public final String name;   // e.g. "ch5"
-        public final String op;     // >=  <=  >  <  ==  !=
-        public final double value;
+        public final String name;     // e.g. "ch5" or "vbat"
+        public final String op;       // >=  <=  >  <  ==  !=   (text rules: ==  !=  ~ for "contains")
+        public final double value;    // number to compare with (numeric rules)
+        public final double divisor;  // the variable is divided by this first:  vbat / 6 < 3.5
+        public final String text;     // non-null for text rules:  fm ~ "RTH"
 
         public Atom(String name, String op, double value) {
+            this(name, op, value, 1.0, null);
+        }
+
+        public Atom(String name, String op, double value, double divisor, String text) {
             this.name = name;
             this.op = op;
             this.value = value;
+            this.divisor = divisor;
+            this.text = text;
         }
+
+        public boolean isText() { return text != null; }
 
         @Override
         public String toString() {
+            if (text != null) return name + " " + op + " \"" + text + "\"";
             String v = (value == Math.rint(value)) ? Long.toString((long) value) : Double.toString(value);
-            return name + " " + op + " " + v;
+            String d = (divisor == 1.0) ? "" : " / " + (divisor == Math.rint(divisor) ? Long.toString((long) divisor) : Double.toString(divisor));
+            return name + d + " " + op + " " + v;
         }
     }
 

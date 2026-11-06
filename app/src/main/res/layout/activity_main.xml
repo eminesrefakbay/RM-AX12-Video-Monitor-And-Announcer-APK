@@ -52,6 +52,26 @@
         android:textSize="14sp"
         android:visibility="gone" />
 
+    <!-- Every variable the rules can use, with its live value (MENU > Show variables). -->
+    <ScrollView
+        android:id="@+id/varsPanel"
+        android:layout_width="380dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_marginTop="56dp"
+        android:background="#C0000000"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/varsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textColor="#E0E0E0"
+            android:textSize="12sp"
+            android:typeface="monospace" />
+    </ScrollView>
+
     <Button
         android:id="@+id/menuButton"
         android:layout_width="wrap_content"

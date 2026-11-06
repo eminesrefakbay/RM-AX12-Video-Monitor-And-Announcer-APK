@@ -3,6 +3,7 @@ package dev.ax12.announcer
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -17,10 +18,11 @@ import android.widget.PopupMenu
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import java.util.TreeMap
 
 /**
- * Full-screen video; grey "NO VIDEO" panel when no frames arrive; spoken announcements
- * from the sound rules. Everything the radio does stays untouched: this app only reads.
+ * Full-screen video; grey "NO VIDEO" panel when no frames arrive; spoken announcements from the
+ * sound rules. The radio is only read, never written.
  */
 class MainActivity : Activity() {
 
@@ -29,13 +31,23 @@ class MainActivity : Activity() {
     private lateinit var noFeedDetail: TextView
     private lateinit var status: TextView
     private lateinit var testPanel: View
+    private lateinit var varsPanel: View
+    private lateinit var varsText: TextView
     private lateinit var camera: CameraPreview
     private lateinit var speaker: Speaker
 
     private var engine: RuleEngine? = null
-    private val fake = FakeChannelSource()
-    private val sdk = AxSdkChannelSource()
+    private var sdkScaler = ChannelScaler(true, ChannelScaler.Mode.PERCENT)
+    private val fakeScaler = ChannelScaler(false, ChannelScaler.Mode.MICROS)
+
+    private val fakeLink = FakeRadioLink()
+    private val sdkLink: RadioLink? by lazy { if (AxSdkJni.loaded) AxSdkRadioLink(this) else null }
+    private var sdkError: String? = null
+    private var sdkRunning = false
+
     private var testVisible = false
+    private var varsVisible = false
+    private var lastVarsUpdate = 0L
     private val ui = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +59,8 @@ class MainActivity : Activity() {
         noFeedDetail = findViewById(R.id.noFeedDetail)
         status = findViewById(R.id.status)
         testPanel = findViewById(R.id.testPanel)
+        varsPanel = findViewById(R.id.varsPanel)
+        varsText = findViewById(R.id.varsText)
 
         speaker = Speaker(this)
         camera = CameraPreview(this, texture)
@@ -59,6 +73,7 @@ class MainActivity : Activity() {
         super.onResume()
         hideSystemUi()
         reloadRules()
+        startSdk()
         if (hasCameraPermission()) camera.start() else requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
         ui.post(tick)
     }
@@ -66,6 +81,7 @@ class MainActivity : Activity() {
     override fun onPause() {
         ui.removeCallbacks(tick)
         camera.stop()
+        stopSdk()
         super.onPause()
     }
 
@@ -97,15 +113,35 @@ class MainActivity : Activity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
     }
 
+    // ------------------------------------------------------------------ radio link
+
+    private fun startSdk() {
+        val link = sdkLink ?: return
+        sdkError = link.start()
+        sdkRunning = sdkError == null
+        sdkError?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+    }
+
+    private fun stopSdk() {
+        if (sdkRunning) sdkLink?.stop()
+        sdkRunning = false
+    }
+
     private fun reloadRules() {
         val parsed = RuleParser.parse(Prefs.rules(this))
         engine = RuleEngine(parsed, speaker)          // a new engine starts silent
+        sdkScaler = when (parsed.settings.scale) {
+            "percent" -> ChannelScaler(false, ChannelScaler.Mode.PERCENT)
+            "permille" -> ChannelScaler(false, ChannelScaler.Mode.PERMILLE)
+            "us" -> ChannelScaler(false, ChannelScaler.Mode.MICROS)
+            else -> ChannelScaler(true, ChannelScaler.Mode.PERCENT)
+        }
         if (parsed.errors.isNotEmpty()) {
             Toast.makeText(this, "Sound rules: " + parsed.errors.size + " error(s). Open the rules editor.", Toast.LENGTH_LONG).show()
         }
     }
 
-    /** 20 times a second: show or hide the NO VIDEO panel, read channels, run the rules. */
+    /** 20 times a second: NO VIDEO panel, read the radio, run the rules, refresh the debug panels. */
     private val tick = object : Runnable {
         override fun run() {
             val now = SystemClock.elapsedRealtime()
@@ -114,38 +150,73 @@ class MainActivity : Activity() {
             noFeed.visibility = if (stale) View.VISIBLE else View.GONE
             if (stale) noFeedDetail.text = camera.statusLine()
 
-            val source: ChannelSource = if (testVisible || !sdk.available) fake else sdk
-            val v = source.read()
-            if (v != null) {
-                val map = HashMap<String, Double>()
-                for (i in v.indices) map["ch" + (i + 1)] = v[i]
-                engine?.update(map, now)
+            val useFake = testVisible || sdkLink == null || !sdkRunning
+            val link: RadioLink = if (useFake) fakeLink else sdkLink!!
+            val scaler = if (useFake) fakeScaler else sdkScaler
+            val sample = link.poll()
+            if (sample != null) {
+                if (scaler.observe(sample.raw)) engine?.reset()      // the radio's unit became clear: start silent again
+                val numbers = Variables.numbers(sample, scaler)
+                engine?.update(numbers, sample.texts, now)
                 if (testVisible) {
                     val sb = StringBuilder()
-                    for (i in v.indices) sb.append("ch").append(i + 1).append("=").append(v[i].toInt()).append(if (i % 4 == 3) "\n" else "  ")
-                    status.text = sb.toString().trim() + "\n" + camera.statusLine()
+                    for (i in 0 until 16) sb.append("ch").append(i + 1).append("=").append(numbers["ch" + (i + 1)]!!.toInt())
+                        .append(if (i % 4 == 3) "\n" else "  ")
+                    status.text = sb.toString().trim() + "\n" + link.name + ": " + sample.info + "\n" + camera.statusLine()
+                }
+                if (varsVisible && now - lastVarsUpdate > 250) {
+                    lastVarsUpdate = now
+                    varsText.text = describe(link, sample, numbers, scaler)
                 }
             }
             ui.postDelayed(this, 50)
         }
     }
 
+    private fun describe(link: RadioLink, sample: RadioSample, numbers: Map<String, Double>, scaler: ChannelScaler): String {
+        val sb = StringBuilder()
+        sb.append("source: ").append(link.name)
+        if (link !is FakeRadioLink || sdkLink != null) sb.append("   unit: ").append(scaler.mode())
+        sb.append('\n')
+        if (sdkError != null) sb.append("SDK: ").append(sdkError).append('\n')
+        sb.append(sample.info).append("\n\n")
+        val sorted = TreeMap<String, Double>(numbers)
+        for ((k, v) in sorted) {
+            if (k.startsWith("ch") || k.startsWith("raw") || k.startsWith("lv")) continue
+            sb.append(String.format("%-10s %s\n", k, trimNumber(v)))
+        }
+        for ((k, v) in TreeMap<String, String>(sample.texts)) sb.append(String.format("%-10s \"%s\"\n", k, v))
+        sb.append("\nchannels  raw  ->  us   (logic)\n")
+        for (i in 0 until 16) {
+            sb.append(String.format("ch%-2d %7s -> %4d   %s\n", i + 1, trimNumber(sample.raw[i]),
+                scaler.toMicros(sample.raw[i]).toInt(), trimNumber(sample.logic[i])))
+        }
+        return sb.toString()
+    }
+
+    private fun trimNumber(v: Double): String =
+        if (v == Math.rint(v) && Math.abs(v) < 1e9) v.toLong().toString() else String.format("%.2f", v)
+
+    // ------------------------------------------------------------------ menu
+
     private fun showMenu(anchor: View) {
         val popup = PopupMenu(this, anchor)
         popup.menu.add(0, 1, 0, "Edit sound rules")
         popup.menu.add(0, 2, 1, "Choose camera")
         popup.menu.add(0, 3, 2, "Rotate video (now " + camera.rotation + " deg)")
-        popup.menu.add(0, 4, 3, if (testVisible) "Hide test channels" else "Test channels")
+        popup.menu.add(0, 4, 3, if (testVisible) "Hide test channels (use the radio)" else "Test channels (instead of the radio)")
         popup.menu.add(0, 5, 4, "Speak test")
         popup.menu.add(0, 6, 5, "Scale: " + (if (camera.fill) "fill (stretch)" else "fit") + "  - tap to change")
+        popup.menu.add(0, 7, 6, if (varsVisible) "Hide variables" else "Show variables")
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                1 -> startActivity(android.content.Intent(this, RulesActivity::class.java))
+                1 -> startActivity(Intent(this, RulesActivity::class.java))
                 2 -> chooseCamera()
                 3 -> camera.rotateNext()
                 4 -> setTestVisible(!testVisible)
                 5 -> speaker.say("Sound test", true)
                 6 -> camera.toggleFill()
+                7 -> setVarsVisible(!varsVisible)
             }
             true
         }
@@ -169,6 +240,12 @@ class MainActivity : Activity() {
         testVisible = on
         testPanel.visibility = if (on) View.VISIBLE else View.GONE
         status.visibility = if (on) View.VISIBLE else View.GONE
+        engine?.reset()                                   // the source of the numbers changed
+    }
+
+    private fun setVarsVisible(on: Boolean) {
+        varsVisible = on
+        varsPanel.visibility = if (on) View.VISIBLE else View.GONE
     }
 
     private fun buildTestPanel() {
@@ -184,7 +261,7 @@ class MainActivity : Activity() {
             bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
                     val us = 1000 + progress
-                    fake.values[i] = us.toDouble()
+                    fakeLink.values[i] = us.toDouble()
                     label.text = "ch" + (i + 1) + "  " + us
                 }
                 override fun onStartTrackingTouch(sb: SeekBar?) {}

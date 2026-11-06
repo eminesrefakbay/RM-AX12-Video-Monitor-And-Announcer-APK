@@ -23,3 +23,8 @@ Thumbs.db
 # RadioMaster SDK: do not commit their headers or libraries (licence unclear); fetch them at build time
 sdk/
 *.so
+
+# SDK files copied in at build time
+sdk-src/
+app/src/main/cpp/sdk-include/
+app/src/main/jniLibs/

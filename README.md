@@ -1,70 +1,87 @@
-# AX12 Announcer (starter)
+# AX12 Video Monitor and Announcer
 
-A small Android app for the RadioMaster AX12:
+An Android app for the RadioMaster AX12:
 
-* opens straight into **full-screen video** (the HDMI-in camera);
-* when no frames arrive it shows a **grey "NO VIDEO" panel** with big readable text and a hint;
-* speaks **announcements from simple rules** you type, for example `ch5 >= 1500 -> drone armed`;
-* only **reads** the radio. It never writes a setting.
+* opens straight into **full-screen video** from the HDMI input;
+* shows a **grey "NO VIDEO" panel** with big readable text when no frames arrive, and reconnects by itself;
+* **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
+* announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
+* only **reads** from the radio. It never writes a setting.
 
-> Status: the rule engine is plain Java and has 33 passing tests (run below). The Android parts
-> (camera, layout, speech) are written but **not compiled or run yet**: expect to fix small
-> compile errors the first time you build. Reuse your tested Camera2 code if it differs.
+## Status (v0.2)
+
+| Part | State |
+| --- | --- |
+| Rule engine, CRSF parser, channel scaler (plain Java) | 74 automated checks pass |
+| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 26 checks pass |
+| Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
+| Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
+
+## Rules
+
+One rule per line (MENU > Edit sound rules):
+
+```
+ch5 >= 1500 -> drone armed | drone disarmed          text after | is spoken when it turns false
+ch6 >= 1450 and ch6 <= 1550 -> horizon mode          and / or ("and" binds first)
+vbat / 6 < 3.55 -> !battery critical @10             divide first (volts per cell); ! urgent; @10 repeat every 10 s
+fm ~ "RTH" -> return to home active                  text rules:  ==  !=  ~ (contains), case-insensitive
+hysteresis = 25   var_hysteresis = 1   hold = 100   initial = off   scale = auto
+```
+
+* A rule speaks when its condition **becomes true**, not while it stays true (unless `@N`).
+* `hysteresis` (channel units) and `var_hysteresis` (percent, for volts and link quality) stop chatter.
+* `hold` ignores changes shorter than that many ms. The first reading is silent unless `initial = on`.
+* A rule whose variable has no value is skipped (for example battery rules before telemetry arrives).
+* `scale` is the unit of the radio's channel numbers. The SDK does not name it, so `auto` guesses from the
+  numbers seen (percent, then permille, then microseconds). Look at MENU > Show variables.
+
+### Variables (MENU > Show variables lists the live ones)
+
+| Name | Meaning |
+| --- | --- |
+| `ch1`..`ch16` | channel output in microseconds (1000..2000) |
+| `raw1`..`raw16`, `lv1`..`lv16` | the radio's own numbers: `chOut` and `logicVal` |
+| `lq`, `dbm`, `lost`, `txv`, `rxv`, `tlm` | radio status: link quality, dBm, lost counter, radio voltage, receiver voltage, telemetry present (1/0) |
+| `vbat`, `curr`, `capa`, `batpct` | battery from the flight controller (CRSF 0x08) |
+| `up_lq`, `up_rssi1`, `up_rssi2`, `up_snr`, `dn_lq`, `dn_rssi`, `dn_snr`, `rf_mode`, `tx_power` | link statistics (CRSF 0x14) |
+| `fm` (text) | flight mode name (CRSF 0x21) |
+| `gps_lat`, `gps_lon`, `gps_speed`, `gps_heading`, `gps_alt`, `sats` | GPS (CRSF 0x02) |
+| `pitch`, `roll`, `yaw`, `vspeed` | attitude and vertical speed |
+
+CRSF values older than 5 s are dropped, so a rule never acts on a stale reading.
 
 ## Build
 
-1. Push to GitHub: `.github/workflows/build.yml` runs the rule-engine tests and builds a debug APK
-   (download it from the run's "Artifacts"). Locally: JDK 17 and `gradle :app:assembleDebug`
-   (or copy a Gradle wrapper from your Camera2 test app).
-2. Install the APK on the AX12.
-3. First start: allow the camera permission. Tap **MENU > Choose camera** and pick the HDMI input.
-   **MENU > Rotate video** turns the picture in 90-degree steps and remembers it.
+The RadioMaster SDK files are **not stored in this repository** (the SDK repository states no licence of its own).
+The CI workflow clones <https://github.com/Radiomaster-RC/RadiomasterAX_SDK> and copies the five `.so` files into
+`app/src/main/jniLibs/arm64-v8a/` and the headers into `app/src/main/cpp/sdk-include/rmAxSdk1/` before building.
+Without those files the app still builds and runs on the test sliders.
 
-## Sound rules
+Locally: JDK 17, Android SDK + NDK, `gradle :app:assembleDebug` (copy the SDK files in first, same folders).
 
-One rule per line, in **MENU > Edit sound rules**:
+## Serial lock (open question)
 
-```
-ch5 >= 1500 -> drone armed | drone disarmed       text after | is spoken when it turns false
-ch6 >= 1450 and ch6 <= 1550 -> horizon mode       and / or (and binds first)
-ch9 < 1300 -> !battery critical @10               ! = urgent (interrupts), @10 = repeat every 10 s
-hysteresis = 25      hold = 100      initial = off
-```
+Qt's serial port refuses to open without a lock file, and an Android app has no writable lock directory, so the
+SDK may fail to open the radio's link (the app then says so on screen). RadioMaster's demo works around this by
+patching two instructions of the bundled Qt serial library at run time. That is included here as an **optional**
+step, off by default, checked instruction-by-instruction before it changes anything: build with
+`gradle :app:assembleDebug -PaxLockPatch=true`. The better fix is an official way from RadioMaster; ask them.
 
-* A rule speaks when its condition **becomes true**, not while it stays true.
-* `hysteresis` (microseconds) stops chatter near a threshold. `hold` (ms) ignores short blips.
-* The first reading after start-up is silent unless `initial = on`.
-* Operators: `>=  <=  >  <  ==  !=`. Channel numbers are RC channel numbers (AUX1 = ch5).
-* Starting rules for your INAV modes: see `DefaultRules.kt`.
+## Try it without the radio
 
-## Try it tonight without the radio
+MENU > Test channels shows 16 sliders (1000..2000 us). Move ch5 above 1500 and listen.
 
-**MENU > Test channels** shows 16 sliders (1000..2000 us). Move ch5 above 1500 and listen.
-The layout lives in `res/layout/activity_main.xml`.
-
-## Connecting the real channels (not done yet)
-
-`AxSdkChannelSource` in `ChannelSource.kt` is the placeholder. The SDK is C++, so add a small JNI
-bridge that, on `RC_MSGID_MIXOUT_UPDATE`, calls `rcGetChOutList()` and passes 16 values in
-microseconds to `AxSdkChannelSource.publish()`. Then set `available = true`.
-Getters only: never `rcSet*`, never the save or task functions. First dump the real value range
-(percent or microseconds) to the screen and fix the conversion. The SDK headers were not
-available to me, so check the field names in `rmAxSdkTypes.h`.
-
-## Tests for the rule engine
+## Tests
 
 ```
 mkdir -p out
 javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
-java -cp out dev.ax12.announcer.RuleEngineTest
+java -cp out dev.ax12.announcer.RuleEngineTest && java -cp out dev.ax12.announcer.ExtraTests
+# native core (needs the SDK headers in sdk-src/include/rmAxSdk1):
+g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/test/cpp/bridge_core_test.cpp app/src/main/cpp/bridge_core.cpp -o bridge_test && ./bridge_test
 ```
 
-## Licence note
+## Privacy
 
-Choose a licence for your own code (MIT or Apache-2.0 are common). Do **not** commit RadioMaster's SDK
-headers or libraries: the SDK repository shows no licence of its own. `.gitignore` already excludes `sdk/` and `*.so`.
-
-## Next ideas
-
-Telemetry variables in rules (`vbat < 3.5`, `lq < 60`) once you have dumped the SDK telemetry list;
-switch-versus-flight-mode mismatch warning from the CRSF flight-mode frame; a speech language setting.
+GPS coordinates are shown on screen only. Do not commit flight logs or screenshots that show where you fly.

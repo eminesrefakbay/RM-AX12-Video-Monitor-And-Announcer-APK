@@ -1,6 +1,7 @@
 package dev.ax12.announcer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -54,10 +55,15 @@ public final class RuleEngine {
     public int ruleCount() { return rules.size(); }
 
     public void update(Map<String, Double> values, long nowMs) {
+        update(values, Collections.<String, String>emptyMap(), nowMs);
+    }
+
+    /** @param values numeric variables (ch5, vbat, lq ...)   @param texts text variables (fm ...) */
+    public void update(Map<String, Double> values, Map<String, String> texts, long nowMs) {
         for (int i = 0; i < rules.size(); i++) {
             Rule r = rules.get(i);
             State s = states.get(i);
-            Boolean cond = evaluate(r, s, values);
+            Boolean cond = evaluate(r, s, values, texts);
             if (cond == null) continue;
 
             if (!s.initialized) {
@@ -93,16 +99,23 @@ public final class RuleEngine {
     }
 
     /** @return null if a needed value is missing. */
-    private Boolean evaluate(Rule r, State s, Map<String, Double> values) {
+    private Boolean evaluate(Rule r, State s, Map<String, Double> values, Map<String, String> texts) {
         boolean anyGroup = false;
         for (int g = 0; g < r.orGroups.size(); g++) {
             List<Rule.Atom> atoms = r.orGroups.get(g);
             boolean all = true;
             for (int k = 0; k < atoms.size(); k++) {
                 Rule.Atom a = atoms.get(k);
-                Double v = values.get(a.name);
-                if (v == null) return null;
-                boolean on = atomState(a, s.atomOn[g][k], v.doubleValue());
+                boolean on;
+                if (a.isText()) {
+                    String t = texts.get(a.name);
+                    if (t == null) return null;
+                    on = textState(a, t);
+                } else {
+                    Double v = values.get(a.name);
+                    if (v == null) return null;
+                    on = atomState(a, s.atomOn[g][k], v.doubleValue() / a.divisor);
+                }
                 s.atomOn[g][k] = on;
                 if (!on) all = false;
             }
@@ -111,8 +124,20 @@ public final class RuleEngine {
         return anyGroup;
     }
 
+    private static boolean isChannelLike(String name) {
+        return name.matches("(ch|raw|lv)\\d+");
+    }
+
+    private boolean textState(Rule.Atom a, String t) {
+        if (a.op.equals("==")) return t.equalsIgnoreCase(a.text);
+        if (a.op.equals("!=")) return !t.equalsIgnoreCase(a.text);
+        return t.toLowerCase(java.util.Locale.ROOT).contains(a.text.toLowerCase(java.util.Locale.ROOT));   // "~"
+    }
+
     private boolean atomState(Rule.Atom a, boolean prev, double x) {
-        double h = settings.hysteresis;
+        // Channel values use the microsecond hysteresis; other variables (volts, link quality) use a percentage of the threshold.
+        double h = isChannelLike(a.name) ? settings.hysteresis / a.divisor
+                : Math.abs(a.value) * settings.varHysteresisPct / 100.0;
         String op = a.op;
         if (op.equals(">=")) return prev ? !(x < a.value - h) : x >= a.value;
         if (op.equals(">"))  return prev ? !(x <= a.value - h) : x > a.value;

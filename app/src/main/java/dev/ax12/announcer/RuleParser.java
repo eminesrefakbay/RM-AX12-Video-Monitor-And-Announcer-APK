@@ -13,8 +13,11 @@ import java.util.regex.Pattern;
  *   ch5 >= 1500 -> drone armed | drone disarmed        (second text = when it becomes false)
  *   ch6 >= 1450 and ch6 <= 1550 -> horizon mode        (and / or are allowed, "and" binds first)
  *   ch9 < 1300 -> !battery critical @10                (! = urgent, @10 = repeat every 10 s)
+ *   vbat / 6 < 3.5 -> battery low                      (the variable is divided first: volts per cell)
+ *   fm ~ "RTH" -> return to home                       (text rules: ==  !=  ~ means contains)
  *
- * Settings lines:  hysteresis = 25   hold = 100   initial = on|off
+ * Settings lines:  hysteresis = 25 (channels, microseconds)   var_hysteresis = 1 (other variables, percent)
+ *                  hold = 100   initial = on|off   scale = auto|percent|permille|us
  * Lines starting with # or // are comments.
  */
 public final class RuleParser {
@@ -22,6 +25,8 @@ public final class RuleParser {
     public static final class Settings {
         public double hysteresis = 25;        // same units as the channel values (microseconds)
         public long holdMs = 100;             // a condition must stay changed this long before it fires
+        public double varHysteresisPct = 1.0; // for other variables (vbat, lq ...): percent of the threshold
+        public String scale = "auto";         // unit of the radio's channel numbers: auto | percent | permille | us
         public boolean announceInitial = false; // speak rules that are already true at start-up
     }
 
@@ -31,8 +36,11 @@ public final class RuleParser {
         public final Settings settings = new Settings();
     }
 
-    private static final Pattern SETTING = Pattern.compile("^(hysteresis|hold|initial)\\s*=\\s*(\\S+)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern ATOM = Pattern.compile("^([A-Za-z_][A-Za-z0-9_]*)\\s*(>=|<=|==|!=|>|<)\\s*(-?\\d+(?:\\.\\d+)?)$");
+    private static final Pattern SETTING = Pattern.compile("^(hysteresis|var_hysteresis|hold|initial|scale)\\s*=\\s*(\\S+)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ATOM = Pattern.compile(
+            "^([A-Za-z_][A-Za-z0-9_]*)\\s*(?:/\\s*(\\d+(?:\\.\\d+)?))?\\s*(>=|<=|==|!=|>|<)\\s*(-?\\d+(?:\\.\\d+)?)$");
+    private static final Pattern TEXT_ATOM = Pattern.compile(
+            "^([A-Za-z_][A-Za-z0-9_]*)\\s*(==|!=|~)\\s*\"([^\"]*)\"$");
     private static final Pattern REPEAT = Pattern.compile("\\s@(\\d+)\\s*$");
 
     private RuleParser() {}
@@ -85,14 +93,30 @@ public final class RuleParser {
             for (String orPart : cond.split("(?i)\\s+or\\s+")) {
                 List<Rule.Atom> atoms = new ArrayList<Rule.Atom>();
                 for (String andPart : orPart.split("(?i)\\s+and\\s+")) {
-                    Matcher am = ATOM.matcher(andPart.trim());
+                    String part = andPart.trim();
+                    Matcher tm = TEXT_ATOM.matcher(part);
+                    if (tm.matches()) {
+                        atoms.add(new Rule.Atom(tm.group(1).toLowerCase(Locale.ROOT), tm.group(2), 0, 1.0, tm.group(3)));
+                        continue;
+                    }
+                    Matcher am = ATOM.matcher(part);
                     if (!am.matches()) {
-                        res.errors.add("line " + lineNo + ": cannot read condition '" + andPart.trim()
-                                + "'  (use  ch5 >= 1500 )");
+                        res.errors.add("line " + lineNo + ": cannot read condition '" + part
+                                + "'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ \"RTH\" )");
                         ok = false;
                         break;
                     }
-                    atoms.add(new Rule.Atom(am.group(1).toLowerCase(Locale.ROOT), am.group(2), Double.parseDouble(am.group(3))));
+                    double divisor = 1.0;
+                    if (am.group(2) != null) {
+                        divisor = Double.parseDouble(am.group(2));
+                        if (divisor == 0.0) {
+                            res.errors.add("line " + lineNo + ": cannot divide by zero  (" + part + ")");
+                            ok = false;
+                            break;
+                        }
+                    }
+                    atoms.add(new Rule.Atom(am.group(1).toLowerCase(Locale.ROOT), am.group(3),
+                            Double.parseDouble(am.group(4)), divisor, null));
                 }
                 if (!ok) break;
                 groups.add(atoms);
@@ -109,6 +133,14 @@ public final class RuleParser {
                 double h = Double.parseDouble(value);
                 if (h < 0) throw new NumberFormatException();
                 res.settings.hysteresis = h;
+            } else if (name.equals("var_hysteresis")) {
+                double h = Double.parseDouble(value);
+                if (h < 0) throw new NumberFormatException();
+                res.settings.varHysteresisPct = h;
+            } else if (name.equals("scale")) {
+                String v = value.toLowerCase(Locale.ROOT);
+                if (!(v.equals("auto") || v.equals("percent") || v.equals("permille") || v.equals("us"))) throw new NumberFormatException();
+                res.settings.scale = v;
             } else if (name.equals("hold")) {
                 long ms = Long.parseLong(value);
                 if (ms < 0) throw new NumberFormatException();
