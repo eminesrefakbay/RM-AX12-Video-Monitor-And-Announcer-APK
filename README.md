@@ -1,6 +1,8 @@
-# AX12 Video Monitor and Announcer (v0.6.0)
+<p align="center"><img src="docs/logo.png" width="160" alt="AX-HUD logo"></p>
 
-An Android app for the RadioMaster AX12:
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.6.2)
+
+**AX-HUD** is an Android app for the RadioMaster AX12:
 
 * opens straight into **full-screen video** from the HDMI input;
 * shows a plain grey screen with one slim **status bar at the bottom** ("NO VIDEO · camera · size · reason") when no frames arrive, and reconnects by itself;
@@ -168,3 +170,11 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 ## Privacy
 
 GPS coordinates are shown on screen only. Do not commit flight logs or screenshots that show where you fly.
+
+## Logo
+
+`docs/logo.png` (512 px) and `docs/logo-768.png` are the AX-HUD logo: a flat navy rounded square with the radio, the
+drone, the gauge and the name. The launcher icons are built from it. Android 8 and newer (the AX12 runs Android 9) use
+an adaptive icon: navy background and the artwork as the foreground, kept inside the safe zone so every launcher shape
+shows it whole. Older Android versions get the full design. The logo has no third-party logos in it, and every edge is
+pure navy (no light fringe).
