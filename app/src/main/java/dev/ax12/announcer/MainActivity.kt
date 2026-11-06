@@ -13,6 +13,7 @@ import android.os.SystemClock
 import android.view.TextureView
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.SeekBar
@@ -35,6 +36,9 @@ class MainActivity : Activity() {
     private lateinit var varsText: TextView
     private lateinit var camera: CameraPreview
     private lateinit var speaker: Speaker
+    private lateinit var rulesPanel: RulesPanel
+    private var latestNumbers: Map<String, Double> = HashMap()
+    private var latestTexts: Map<String, String> = HashMap()
 
     private var engine: RuleEngine? = null
     private var sdkScaler = ChannelScaler(true, ChannelScaler.Mode.PERCENT)
@@ -67,6 +71,24 @@ class MainActivity : Activity() {
 
         buildTestPanel()
         findViewById<Button>(R.id.menuButton).setOnClickListener { showMenu(it) }
+
+        rulesPanel = RulesPanel(
+            this, speaker,
+            object : LiveValues {
+                override fun numbers(): Map<String, Double> = latestNumbers
+                override fun texts(): Map<String, String> = latestTexts
+            },
+            { reloadRules() },
+            { startActivity(Intent(this, RulesActivity::class.java)) }
+        )
+        findViewById<FrameLayout>(R.id.rootFrame).addView(
+            rulesPanel.root,
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        )
+    }
+
+    override fun onBackPressed() {
+        if (rulesPanel.isShowing) rulesPanel.hide() else super.onBackPressed()
     }
 
     override fun onResume() {
@@ -157,6 +179,8 @@ class MainActivity : Activity() {
             if (sample != null) {
                 if (scaler.observe(sample.raw)) engine?.reset()      // the radio's unit became clear: start silent again
                 val numbers = Variables.numbers(sample, scaler)
+                latestNumbers = numbers
+                latestTexts = sample.texts
                 engine?.update(numbers, sample.texts, now)
                 if (testVisible) {
                     val sb = StringBuilder()
@@ -208,22 +232,26 @@ class MainActivity : Activity() {
 
     private fun showMenu(anchor: View) {
         val popup = PopupMenu(this, anchor)
-        popup.menu.add(0, 1, 0, "Edit sound rules")
+        popup.menu.add(0, 1, 0, "Sound rules")
         popup.menu.add(0, 2, 1, "Choose camera")
         popup.menu.add(0, 3, 2, "Rotate video (now " + camera.rotation + " deg)")
         popup.menu.add(0, 4, 3, if (testVisible) "Hide test channels (use the radio)" else "Test channels (instead of the radio)")
         popup.menu.add(0, 5, 4, "Speak test")
         popup.menu.add(0, 6, 5, "Scale: " + (if (camera.fill) "fill (stretch)" else "fit") + "  - tap to change")
         popup.menu.add(0, 7, 6, if (varsVisible) "Hide variables" else "Show variables")
+        popup.menu.add(0, 8, 7, if (speaker.muted) "Speech is OFF - tap to turn on" else "Mute speech")
+        popup.menu.add(0, 9, 8, "Rules as text (advanced)")
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                1 -> startActivity(Intent(this, RulesActivity::class.java))
+                1 -> rulesPanel.show()
                 2 -> chooseCamera()
                 3 -> camera.rotateNext()
                 4 -> setTestVisible(!testVisible)
                 5 -> speaker.say("Sound test", true)
                 6 -> camera.toggleFill()
                 7 -> setVarsVisible(!varsVisible)
+                8 -> speaker.muted = !speaker.muted
+                9 -> startActivity(Intent(this, RulesActivity::class.java))
             }
             true
         }

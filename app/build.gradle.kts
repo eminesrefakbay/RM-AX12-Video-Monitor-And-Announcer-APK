@@ -19,8 +19,8 @@ android {
         applicationId = "dev.ax12.announcer"
         minSdk = 24
         targetSdk = 28          // the AX12 runs Android 9
-        versionCode = 2
-        versionName = "0.2"
+        versionCode = 3
+        versionName = "0.3"
 
         if (withSdk) {
             ndk { abiFilters += listOf("arm64-v8a") }       // the SDK ships arm64-v8a only

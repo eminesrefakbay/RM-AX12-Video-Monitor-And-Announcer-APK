@@ -1,4 +1,4 @@
-# AX12 Video Monitor and Announcer
+# AX12 Video Monitor and Announcer (v0.3)
 
 An Android app for the RadioMaster AX12:
 
@@ -12,14 +12,22 @@ An Android app for the RadioMaster AX12:
 
 | Part | State |
 | --- | --- |
-| Rule engine, CRSF parser, channel scaler (plain Java) | 74 automated checks pass |
+| Rule engine, CRSF parser, channel scaler (plain Java) | 141 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
 
 ## Rules
 
-One rule per line (MENU > Edit sound rules):
+**MENU > Sound rules** opens a list you can tap: switch a rule on or off, **Edit**, **Test** (speaks it), **X** (delete),
+**+ Add rule**. In the editor pick a variable from the list, an operator and a value, type what to say, and press
+**Detect switch** then move a switch on the radio: the channel and a sensible threshold are filled in for you. The
+editor shows the live value of each variable ("now: 1500") and the rule as text. **Settings** holds the hysteresis,
+hold time, start-up behaviour and unit. The GUI and the text editor edit the same text, so they always agree;
+comments and settings in the text are kept. A switched-off rule is stored as a comment starting with `#off`.
+Rules the GUI cannot show (mixed `and`/`or`) appear as "Advanced rule" and open the text editor.
+
+**MENU > Rules as text (advanced)** edits the same rules as plain text, one rule per line:
 
 ```
 ch5 >= 1500 -> drone armed | drone disarmed          text after | is spoken when it turns false

@@ -14,6 +14,7 @@ class Speaker(context: Context) : Announcer {
     private var ready = false
     private val pendingText = ArrayDeque<String>()
     private val pendingUrgent = ArrayDeque<Boolean>()
+    @Volatile var muted = false
     private var lastText = ""
     private var lastTime = 0L
 
@@ -37,6 +38,7 @@ class Speaker(context: Context) : Announcer {
     }
 
     override fun say(text: String, urgent: Boolean) {
+        if (muted) return
         val now = SystemClock.elapsedRealtime()
         if (text == lastText && now - lastTime < 700) return   // same words twice in a row
         lastText = text

@@ -120,6 +120,50 @@ public class ExtraTests {
         check(!RuleParser.parse("scale = banana").errors.isEmpty(), "bad scale rejected");
         check(RuleParser.parse("").settings.scale.equals("auto"), "scale defaults to auto");
 
+        // ---------- per-group expiry (CrsfState) ----------
+        CrsfState cs = new CrsfState();
+        byte[] batF = CrsfParser.makeFrame(0xC8, 0x08, cat(be16(252), be16(100), new byte[]{0, 0, 0, 90}));
+        byte[] linkF = CrsfParser.makeFrame(0xC8, 0x14, new byte[]{60, 70, 0, 0, 0, 0, 3, 65, 0, 0});
+        byte[] fmF = CrsfParser.makeFrame(0xC8, 0x21, new byte[]{'R', 'T', 'H', 0});
+        check(cs.feed(batF, 0) && cs.feed(fmF, 0) && cs.feed(linkF, 0), "frames fed at t=0");
+        check(cs.numbers().containsKey("vbat") && "RTH".equals(cs.texts().get("fm")) && cs.numbers().containsKey("up_lq"), "all groups present");
+        // the aircraft goes off: only the link statistics (from the radio's own module) keep arriving
+        for (long t2 = 1000; t2 <= 7000; t2 += 1000) { cs.feed(linkF, t2); cs.expire(t2, 5000); }
+        check(!cs.numbers().containsKey("vbat"), "battery expired after 5 s without frames");
+        check(cs.texts().get("fm") == null, "flight mode expired too (no more stale RTH)");
+        check(cs.numbers().containsKey("up_lq") && cs.numbers().get("up_lq") == 0.0, "link statistics stay while they keep arriving");
+        cs.feed(batF, 8000); cs.expire(8000, 5000);
+        check(cs.numbers().containsKey("vbat"), "a group comes back when its frames return");
+        check(cs.framesOk() >= 5 && cs.framesBadCrc() == 0, "frame counters");
+
+        // the default link rules stay silent with the arm switch off and speak when armed
+        RuleParser.Result dr = RuleParser.parse("hold = 0\nup_lq < 40 and ch5 >= 1950 -> !link critical @5\ntlm == 0 and ch5 >= 1950 -> !telemetry lost");
+        check(dr.errors.isEmpty(), "link rules parse: " + dr.errors);
+        Rec rl = new Rec();
+        RuleEngine el = new RuleEngine(dr, rl);
+        Map<String, Double> lv = new HashMap<String, Double>(); lv.put("up_lq", 0.0); lv.put("ch5", 1000.0); lv.put("tlm", 0.0);
+        long tn = 0;
+        for (int i = 0; i < 100; i++) el.update(lv, tn += 100);       // 10 s with the aircraft off and the arm switch low
+        check(rl.said.isEmpty(), "unpowered aircraft and arm switch off: silent");
+        lv.put("ch5", 2000.0);
+        el.update(lv, tn += 100);
+        check(rl.joined().equals("[!link critical, !telemetry lost]"), "armed with a dead link: speaks once: " + rl.joined());
+        lv.put("ch5", 1000.0);
+        for (int i = 0; i < 100; i++) el.update(lv, tn += 100);
+        check(rl.said.size() == 2, "disarming stops it");
+
+        // battery rules must stay quiet when the flight controller runs from USB (vbat = 0) and speak with a real pack
+        Rec rb = new Rec();
+        RuleEngine eb = new RuleEngine(RuleParser.parse("hold = 0\nvbat / 6 < 3.70 and vbat / 6 >= 3.55 -> battery low\nvbat / 6 < 3.55 and vbat > 12 -> !battery critical"), rb);
+        Map<String, Double> bv = new HashMap<String, Double>(); bv.put("vbat", 0.0);
+        long tb = 0;
+        for (int i = 0; i < 50; i++) eb.update(bv, tb += 100);
+        check(rb.said.isEmpty(), "USB power only (vbat 0): no battery warning");
+        bv.put("vbat", 25.0); eb.update(bv, tb += 100);
+        bv.put("vbat", 21.8); eb.update(bv, tb += 100);   // 3.63 V per cell
+        bv.put("vbat", 21.0); eb.update(bv, tb += 100);   // 3.50 V per cell
+        check(rb.joined().equals("[battery low, !battery critical]"), "real pack: low then critical: " + rb.joined());
+
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);
     }

@@ -17,12 +17,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Rule engine, CRSF parser and scaler tests (plain Java)
+      - name: Rule engine, CRSF parser, scaler and rules-text tests (plain Java)
         run: |
           mkdir -p out
           javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
           java -cp out dev.ax12.announcer.RuleEngineTest
           java -cp out dev.ax12.announcer.ExtraTests
+          java -cp out dev.ax12.announcer.RuleTextTests
       - name: Native bridge core with a fake SDK (needs only the SDK headers)
         run: |
           git clone --depth 1 "$SDK_REPO" sdk-src

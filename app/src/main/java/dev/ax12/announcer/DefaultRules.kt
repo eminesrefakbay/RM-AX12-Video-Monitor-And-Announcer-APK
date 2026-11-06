@@ -24,13 +24,14 @@ ch9 <= 1100 -> airmode on | airmode off
 
 # --- battery, volts per cell (6S): the flight controller's value, as shown on the OSD ---
 # Li-ion landing about 3.6 V: warning 3.70, critical 3.55.  For the LiPo use 3.85 / 3.70.
+# "vbat > 12" keeps the critical warning quiet when the flight controller is powered from USB only (vbat = 0).
 vbat / 6 < 3.70 and vbat / 6 >= 3.55 -> battery low @30
-vbat / 6 < 3.55 -> !battery critical @10
+vbat / 6 < 3.55 and vbat > 12 -> !battery critical @10
 
-# --- link ---
-up_lq < 70 -> link quality low | link quality ok
-up_lq < 40 -> !link critical @5
-tlm == 0 -> !telemetry lost | telemetry back
+# --- link: only while the arm switch is on (ch5), so an unpowered aircraft stays silent ---
+up_lq < 70 and ch5 >= 1950 -> link quality low
+up_lq < 40 and ch5 >= 1950 -> !link critical @5
+tlm == 0 and ch5 >= 1950 -> !telemetry lost
 
 # --- the flight controller's own flight mode (check the exact names under MENU > Show variables) ---
 fm ~ "RTH" -> return to home active

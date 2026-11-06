@@ -34,15 +34,13 @@ class FakeRadioLink : RadioLink {
  * The real radio, through the native bridge. Read-only: the bridge only calls getters.
  *  - channel outputs and radio status come from the SDK;
  *  - battery, link quality, flight mode and GPS come from the CRSF telemetry frames.
- * CRSF values older than 5 s are dropped, so a rule never acts on a stale battery voltage.
+ * Each CRSF telemetry group (battery, link, flight mode, GPS ...) is dropped 5 s after its own frames stop,
+ * so a rule never acts on a stale battery voltage or a stale flight mode.
  */
 class AxSdkRadioLink(private val context: Context) : RadioLink {
     override val name = "RadioMaster SDK"
 
-    private val crsf = CrsfParser()
-    private val crsfNums = HashMap<String, Double>()
-    private val crsfTexts = HashMap<String, String>()
-    private var lastCrsfMs = 0L
+    private val crsf = CrsfState()
     private var started = false
 
     override fun start(): String? {
@@ -73,13 +71,10 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
         var count = 0
         while (count < 60) {
             val frame = AxSdkJni.nativePopCrsf() ?: break
-            if (crsf.feed(frame, crsfNums, crsfTexts)) lastCrsfMs = now
+            crsf.feed(frame, now)
             count++
         }
-        if (lastCrsfMs != 0L && now - lastCrsfMs > 5000) {
-            crsfNums.clear()
-            crsfTexts.clear()
-        }
+        crsf.expire(now, 5000)          // each telemetry group expires on its own clock
 
         val numbers = HashMap<String, Double>()
         numbers["lq"] = s[32]
@@ -88,7 +83,7 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
         numbers["txv"] = s[35]
         numbers["rxv"] = s[36]
         numbers["tlm"] = s[37]
-        numbers.putAll(crsfNums)
+        numbers.putAll(crsf.numbers())
 
         val cfgReady = s[40] == 1.0
         val sb = StringBuilder()
@@ -98,10 +93,10 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
             .append("\nradio config: ").append(if (cfgReady) "loaded" else "NOT loaded yet")
         if (s[43] == 1.0) sb.append("\n!! radio firmware does not match this SDK")
         if (!cfgReady) sb.append("\nwaiting for the radio; if this stays, the SDK cannot reach it (serial lock, see README)")
-        sb.append("\nCRSF frames ok ").append(crsf.framesOk).append(" / bad crc ").append(crsf.framesBadCrc)
-            .append(" / other ").append(crsf.framesIgnored)
+        sb.append("\nCRSF frames ok ").append(crsf.framesOk()).append(" / bad crc ").append(crsf.framesBadCrc())
+            .append(" / other ").append(crsf.framesIgnored())
         val info = sb.toString()
-        return RadioSample(s.copyOfRange(0, 16), s.copyOfRange(16, 32), numbers, HashMap(crsfTexts), info)
+        return RadioSample(s.copyOfRange(0, 16), s.copyOfRange(16, 32), numbers, HashMap(crsf.texts()), info)
     }
 }
 
