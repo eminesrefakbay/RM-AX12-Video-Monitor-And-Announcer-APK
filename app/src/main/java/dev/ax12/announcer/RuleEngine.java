@@ -35,6 +35,9 @@ public final class RuleEngine {
     /** Told when a rule's condition becomes true or false (after hold), and when its inputs disappear. */
     public interface StateListener {
         void changed(int index, Rule rule, boolean active);
+
+        /** The rule cannot be judged now because a variable it needs has no value. */
+        default void unknown(int index, Rule rule) {}
     }
 
     private final List<Rule> rules;
@@ -89,12 +92,15 @@ public final class RuleEngine {
             State s = states.get(i);
             Boolean cond = evaluate(r, s, values, texts);
             if (cond == null) {
-                if (listener != null && s.initialized) {       // the input is gone: a warning must not stay on
-                    s.initialized = false;
-                    if (s.committed) {
-                        s.committed = false;
-                        listener.changed(i, r, false);
+                if (listener != null) {
+                    if (s.initialized) {                            // the input is gone: a warning must not stay on
+                        s.initialized = false;
+                        if (s.committed) {
+                            s.committed = false;
+                            listener.changed(i, r, false);
+                        }
                     }
+                    listener.unknown(i, r);
                 }
                 continue;
             }

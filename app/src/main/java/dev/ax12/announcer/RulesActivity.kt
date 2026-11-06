@@ -12,6 +12,7 @@ class RulesActivity : Activity() {
     private lateinit var edit: EditText
     private lateinit var info: TextView
     private var warnings = false
+    private var checks = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,17 +20,19 @@ class RulesActivity : Activity() {
         edit = findViewById(R.id.rulesEdit)
         info = findViewById(R.id.rulesInfo)
         warnings = intent.getBooleanExtra("warnings", false)
-        edit.setText(if (warnings) Prefs.warningRules(this) else Prefs.rules(this))
+        checks = intent.getBooleanExtra("checks", false)
+        edit.setText(if (checks) Prefs.checkRules(this) else if (warnings) Prefs.warningRules(this) else Prefs.rules(this))
 
         findViewById<Button>(R.id.btnCheck).setOnClickListener { check() }
         findViewById<Button>(R.id.btnSave).setOnClickListener {
             if (check()) {
-                if (warnings) Prefs.setWarningRules(this, edit.text.toString()) else Prefs.setRules(this, edit.text.toString())
+                val t = edit.text.toString()
+                if (checks) Prefs.setCheckRules(this, t) else if (warnings) Prefs.setWarningRules(this, t) else Prefs.setRules(this, t)
                 finish()
             }
         }
         findViewById<Button>(R.id.btnSample).setOnClickListener {
-            edit.setText(if (warnings) DefaultWarnings.TEXT else DefaultRules.TEXT)
+            edit.setText(if (checks) DefaultChecks.TEXT else if (warnings) DefaultWarnings.TEXT else DefaultRules.TEXT)
             check()
         }
         findViewById<Button>(R.id.btnClose).setOnClickListener { finish() }

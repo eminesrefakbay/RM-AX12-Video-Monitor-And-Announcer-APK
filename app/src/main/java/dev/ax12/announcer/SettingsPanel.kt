@@ -57,6 +57,19 @@ interface SettingsHost {
     fun cycleWarningBarPosition()
     fun editWarningRules()
     fun previewWarnings()
+
+    // flight overlays: statistics, radar, checklist
+    fun tileOn(tile: String): Boolean
+    fun setTileOn(tile: String, on: Boolean)
+    fun tileSizeLabel(tile: String): String
+    fun cycleTileSize(tile: String)
+    fun tilePositionLabel(tile: String): String
+    fun cycleTilePosition(tile: String)
+    fun tileOpacityLabel(tile: String): String
+    fun cycleTileOpacity(tile: String)
+    fun editArmDetection()
+    fun editStatsRows()
+    fun editCheckRules()
 }
 
 /**
@@ -142,6 +155,29 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         list.addView(sw, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 
+    /** A switch for one overlay tile and, when it is on, its size, position and opacity. */
+    private fun tileControls(tile: String, title: String, extra: () -> Unit) {
+        toggle(title, host.tileOn(tile)) {
+            host.setTileOn(tile, it)
+            refresh()
+        }
+        if (host.tileOn(tile)) {
+            action("   Size: " + host.tileSizeLabel(tile) + "  (tap to change)") {
+                host.cycleTileSize(tile)
+                refresh()
+            }
+            action("   Position: " + host.tilePositionLabel(tile) + "  (tap to change)") {
+                host.cycleTilePosition(tile)
+                refresh()
+            }
+            action("   Opacity: " + host.tileOpacityLabel(tile) + "  (tap to change)") {
+                host.cycleTileOpacity(tile)
+                refresh()
+            }
+            extra()
+        }
+    }
+
     private fun note(text: String) {
         val t = TextView(activity)
         t.text = text
@@ -201,6 +237,17 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         action("Edit the warning rules (thresholds and logic)...") { host.editWarningRules() }
         action("Preview the warning bar (4 seconds)") { host.previewWarnings() }
         note("Warnings show while their condition is true, so thresholds and logic are yours to set.")
+
+        section("Flight overlays (statistics, radar, checklist)")
+        note("The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing.")
+        action("Arm detection: channel, thresholds, cells in the pack...") { host.editArmDetection() }
+        tileControls("stats", "Flight statistics: max speed, max height, peak current") {
+            action("Rows and current limit...") { host.editStatsRows() }
+        }
+        tileControls("radar", "Radar map: home in the centre, your track and range rings") {}
+        tileControls("check", "Pre-flight checklist (shown while disarmed)") {
+            action("Edit the checks (thresholds and logic)...") { host.editCheckRules() }
+        }
 
         section("Video")
         action("Camera: " + host.cameraId() + "  (tap to choose the HDMI input)") { host.chooseCamera() }

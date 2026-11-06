@@ -1,4 +1,4 @@
-# AX12 Video Monitor and Announcer (v0.5.2)
+# AX12 Video Monitor and Announcer (v0.6.0)
 
 An Android app for the RadioMaster AX12:
 
@@ -12,10 +12,31 @@ An Android app for the RadioMaster AX12:
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 270 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, stick and bar settings, file and timing helpers (plain Java) | 325 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | written, **not yet built or run on a radio** |
 | Opening the radio's serial link from a third-party app | **open question**, see "Serial lock" |
+
+## Flight overlays: statistics, radar and pre-flight checklist
+
+**Settings > Flight overlays** switches each card on or off and sets its size, position (four corners or the
+centre) and opacity.
+
+* **Arm detection:** the arm switch (default channel 5, armed at 1750 us or more, disarmed below 1650, held 0.3 s)
+  starts and stops a flight. The statistics start over when you arm and stay readable after you land. The cell count
+  of the pack is set here too (for the lowest volts per cell).
+* **Flight statistics card:** speed, **height above the arming point**, **current with a limit line**
+  (the bar turns red above the limit; default 50 A) as *now / maximum*, plus optional rows: distance from home,
+  lowest link quality, lowest volts per cell. A timer in the title shows the flight time; after landing it says
+  LAST FLIGHT. Height comes from the GPS altitude relative to where you armed, so expect a few metres of error.
+* **Radar:** home in the centre, north up, three range rings, the track of the flight and the aircraft with its
+  heading. It shows only positions relative to home, no coordinates. The scale grows as you fly farther and does not
+  shrink during the flight.
+* **Pre-flight checklist:** a card shown while disarmed with one row per check: green tick, red cross, or a grey dash
+  when there is no value yet; READY or NOT READY at the bottom. The checks are **rules**, edited like the warnings
+  (Settings > Flight overlays > *Edit the checks*): condition, thresholds, `and`/`or`, and a label that can hold live
+  values such as `{sats}`. Defaults: battery connected, battery full (4.15 V per cell or more), 10 or more satellites,
+  link quality 95 % or more, airmode switch on, arm switch off. The card is hidden when nothing is known yet.
 
 ## OSD overlays: sticks, channel bars and the warning status bar
 

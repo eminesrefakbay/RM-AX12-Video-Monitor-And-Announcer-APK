@@ -26,6 +26,9 @@ object Prefs {
     fun warningRules(c: Context): String = p(c).getString("warnRules", null) ?: DefaultWarnings.TEXT
     fun setWarningRules(c: Context, text: String) { p(c).edit().putString("warnRules", text).apply() }
 
+    fun checkRules(c: Context): String = p(c).getString("checkRules", null) ?: DefaultChecks.TEXT
+    fun setCheckRules(c: Context, text: String) { p(c).edit().putString("checkRules", text).apply() }
+
     fun barsConfig(c: Context): String = p(c).getString("barsConfig", null) ?: AuxBars.encode(AuxBars.defaults())
     fun setBarsConfig(c: Context, text: String) { p(c).edit().putString("barsConfig", text).apply() }
 

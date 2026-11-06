@@ -51,6 +51,17 @@ class MainActivity : Activity() {
     private lateinit var settingsPanel: SettingsPanel
     private lateinit var mainMenu: MainMenu
     private lateinit var warnPanel: RulesPanel
+    private lateinit var checkPanel: RulesPanel
+    private lateinit var statsView: FlightStatsView
+    private lateinit var radarView: RadarView
+    private lateinit var checkView: ChecklistView
+    private val flightStats = FlightStats()
+    private var checkEngine: RuleEngine? = null
+    private var checkModel: CheckModel? = null
+    private var statsOn = true
+    private var radarOn = true
+    private var checkOn = true
+    private var lastTileUpdate = 0L
     private lateinit var sticksView: SticksView
     private lateinit var warningText: TextView
     private lateinit var warningBar: WarningBar
@@ -120,6 +131,17 @@ class MainActivity : Activity() {
         frame.addView(warningText, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         warningBar = WarningBar(warningText)
 
+        statsView = FlightStatsView(this)
+        statsView.visibility = View.GONE
+        frame.addView(statsView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        radarView = RadarView(this)
+        radarView.bind(flightStats)
+        radarView.visibility = View.GONE
+        frame.addView(radarView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        checkView = ChecklistView(this)
+        checkView.visibility = View.GONE
+        frame.addView(checkView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+
         rulesPanel = RulesPanel(
             this, speaker, liveValues,
             { reloadRules() },
@@ -137,9 +159,19 @@ class MainActivity : Activity() {
             titleText = "Warning rules",
             testWarning = { text, level -> warningBar.showTest(text, level, SystemClock.elapsedRealtime()) }
         )
+        checkPanel = RulesPanel(
+            this, speaker, liveValues,
+            { reloadChecks() },
+            { startActivity(Intent(this, RulesActivity::class.java).putExtra("checks", true)) },
+            { Prefs.checkRules(this) },
+            { Prefs.setCheckRules(this, it) },
+            titleText = "Pre-flight checks",
+            check = true
+        )
         settingsPanel = SettingsPanel(this, settingsHost)
         frame.addView(rulesPanel.root, full)
         frame.addView(warnPanel.root, FrameLayout.LayoutParams(full))
+        frame.addView(checkPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(settingsPanel.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
@@ -153,6 +185,8 @@ class MainActivity : Activity() {
 
         applyMenuMode()
         applyOverlayPrefs()
+        applyTiles()
+        applyFlightConfig()
     }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density + 0.5f).toInt()
@@ -160,6 +194,7 @@ class MainActivity : Activity() {
     override fun onBackPressed() {
         if (mainMenu.isShowing) mainMenu.hide()
         else if (warnPanel.isShowing) warnPanel.hide()
+        else if (checkPanel.isShowing) checkPanel.hide()
         else if (settingsPanel.isShowing) settingsPanel.hide()
         else if (rulesPanel.isShowing) rulesPanel.hide()
         else super.onBackPressed()
@@ -173,7 +208,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || settingsPanel.isShowing
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -191,6 +226,7 @@ class MainActivity : Activity() {
         hideSystemUi()
         reloadRules()
         reloadWarnings()
+        reloadChecks()
         startSdk()
         if (hasCameraPermission()) camera.start() else requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
         ui.post(tick)
@@ -253,6 +289,17 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun reloadChecks() {
+        val text = Prefs.checkRules(this)
+        val parsed = RuleParser.parse(text)
+        val model = CheckModel(parsed.rules)
+        checkModel = model
+        checkEngine = RuleEngine(parsed, null, model)
+        if (parsed.errors.isNotEmpty()) {
+            Toast.makeText(this, "Pre-flight checks: " + parsed.errors.size + " error(s). Open Settings, then the checks.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun reloadWarnings() {
         val text = Prefs.warningRules(this)
         warningBar.load(text)
@@ -290,12 +337,19 @@ class MainActivity : Activity() {
                 if (scaler.observe(sample.raw)) {                    // the radio's unit became clear: start again
                     engine?.reset()
                     reloadWarnings()
+                    reloadChecks()
                 }
                 val numbers = Variables.numbers(sample, scaler)
                 latestNumbers = numbers
                 latestTexts = sample.texts
                 engine?.update(numbers, sample.texts, now)
                 warningBar.update(numbers, sample.texts, now)
+                flightStats.update(numbers, now)
+                checkEngine?.update(numbers, sample.texts, now)
+                if (now - lastTileUpdate >= 200) {
+                    lastTileUpdate = now
+                    updateTiles(numbers, sample.texts, now)
+                }
                 if (sticksEnabled) sticksView.update(numbers)
                 if (testVisible) {
                     val sb = StringBuilder()
@@ -407,6 +461,24 @@ class MainActivity : Activity() {
         override fun setTestChannelsOn(on: Boolean) = setTestVisible(on)
         override fun about(): String = this@MainActivity.aboutText()
 
+        override fun tileOn(tile: String): Boolean = Prefs.bool(this@MainActivity, tile + "On", true)
+        override fun setTileOn(tile: String, on: Boolean) {
+            Prefs.setBool(this@MainActivity, tile + "On", on)
+            applyTiles()
+        }
+        override fun tileSizeLabel(tile: String): String = sizeNames[Prefs.int(this@MainActivity, tile + "Size", 1).coerceIn(0, 2)]
+        override fun cycleTileSize(tile: String) = cycleTile(tile + "Size", 1, 3)
+        override fun tilePositionLabel(tile: String): String = tilePositionNames[Prefs.int(this@MainActivity, tile + "Pos", defaultTilePosition(tile)).coerceIn(0, 4)]
+        override fun cycleTilePosition(tile: String) = cycleTile(tile + "Pos", defaultTilePosition(tile), 5)
+        override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
+        override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
+        override fun editArmDetection() = this@MainActivity.editArmDetection()
+        override fun editStatsRows() = this@MainActivity.editStatsRows()
+        override fun editCheckRules() {
+            settingsPanel.hide()
+            checkPanel.show()
+        }
+
         override fun sticksOn(): Boolean = sticksEnabled
         override fun setSticksOn(on: Boolean) {
             Prefs.setBool(this@MainActivity, "sticksOn", on)
@@ -450,6 +522,230 @@ class MainActivity : Activity() {
     private fun cyclePref(key: String, def: Int, count: Int) {
         Prefs.setInt(this, key, (Prefs.int(this, key, def) + 1) % count)
         applyOverlayPrefs()
+    }
+
+    // ------------------------------------------------------------------ flight overlays
+
+    private val tilePositionNames = arrayOf("top left", "top right", "bottom left", "bottom right", "center")
+    private val tileOpacityNames = arrayOf("50%", "75%", "100%")
+
+    private fun defaultTilePosition(tile: String): Int = when (tile) {
+        "stats" -> 0
+        "radar" -> 3
+        else -> 4
+    }
+
+    private fun cycleTile(key: String, def: Int, count: Int) {
+        Prefs.setInt(this, key, (Prefs.int(this, key, def) + 1) % count)
+        applyTiles()
+    }
+
+    private fun placeTile(v: View, pos: Int) {
+        val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        lp.gravity = when (pos) {
+            0 -> Gravity.TOP or Gravity.START
+            1 -> Gravity.TOP or Gravity.END
+            2 -> Gravity.BOTTOM or Gravity.START
+            3 -> Gravity.BOTTOM or Gravity.END
+            else -> Gravity.CENTER
+        }
+        lp.setMargins(dp(10), dp(52), dp(10), dp(48))
+        v.layoutParams = lp
+    }
+
+    /** Size, place, opacity and on/off of the statistics card, the radar and the checklist. */
+    private fun applyTiles() {
+        statsOn = Prefs.bool(this, "statsOn", true)
+        radarOn = Prefs.bool(this, "radarOn", true)
+        checkOn = Prefs.bool(this, "checkOn", true)
+        val alpha = floatArrayOf(0.5f, 0.75f, 1f)
+        statsView.setTextSp(floatArrayOf(12f, 15f, 19f)[Prefs.int(this, "statsSize", 1).coerceIn(0, 2)])
+        statsView.alpha = alpha[Prefs.int(this, "statsOpacity", 1).coerceIn(0, 2)]
+        placeTile(statsView, Prefs.int(this, "statsPos", defaultTilePosition("stats")).coerceIn(0, 4))
+        radarView.setSizeDp(intArrayOf(110, 150, 210)[Prefs.int(this, "radarSize", 1).coerceIn(0, 2)])
+        radarView.alpha = alpha[Prefs.int(this, "radarOpacity", 1).coerceIn(0, 2)]
+        placeTile(radarView, Prefs.int(this, "radarPos", defaultTilePosition("radar")).coerceIn(0, 4))
+        checkView.setTextSp(floatArrayOf(13f, 16f, 20f)[Prefs.int(this, "checkSize", 1).coerceIn(0, 2)])
+        checkView.alpha = alpha[Prefs.int(this, "checkOpacity", 1).coerceIn(0, 2)]
+        placeTile(checkView, Prefs.int(this, "checkPos", defaultTilePosition("check")).coerceIn(0, 4))
+    }
+
+    private fun applyFlightConfig() {
+        flightStats.configure(
+            Prefs.int(this, "armCh", 5).coerceIn(1, 16),
+            Prefs.int(this, "armHigh", 1750).toDouble(),
+            Prefs.int(this, "armLow", 1650).toDouble(),
+            Prefs.int(this, "cells", 6).coerceIn(1, 12)
+        )
+    }
+
+    private fun num0(v: Double): String = if (v.isNaN()) "-" else Math.round(v).toString()
+    private fun num1(v: Double): String = if (v.isNaN()) "-" else String.format(Locale.US, "%.1f", v)
+    private fun clock(ms: Long): String = String.format(Locale.US, "%d:%02d", ms / 60000, (ms / 1000) % 60)
+
+    /** Refresh the three cards (about five times a second). */
+    private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long) {
+        val fs = flightStats
+        val flight = fs.armed() || fs.hasFlight()
+
+        val showStats = statsOn && flight
+        statsView.visibility = if (showStats) View.VISIBLE else View.GONE
+        if (showStats) {
+            val rows = Prefs.int(this, "statsRows", 7)
+            val lines = ArrayList<FlightStatsView.Line>()
+            if (rows and 1 != 0) lines.add(FlightStatsView.Line("SPEED", num0(fs.speedNow()) + " / " + num0(fs.maxSpeed()) + " km/h"))
+            if (rows and 2 != 0) lines.add(FlightStatsView.Line("HEIGHT", num0(fs.heightNow()) + " / " + num0(fs.maxHeight()) + " m"))
+            if (rows and 4 != 0) {
+                val limit = Prefs.int(this, "currentLimit", 50).toDouble()
+                val scale = maxOf(limit * 1.2, if (fs.peakCurrent().isNaN()) 0.0 else fs.peakCurrent() * 1.05, 20.0)
+                lines.add(FlightStatsView.Line("CURRENT", num1(fs.currentNow()) + " / " + num1(fs.peakCurrent()) + " A",
+                    if (fs.currentNow().isNaN()) Double.NaN else fs.currentNow() / scale,
+                    if (fs.peakCurrent().isNaN()) Double.NaN else fs.peakCurrent() / scale,
+                    limit / scale))
+            }
+            if (rows and 8 != 0) lines.add(FlightStatsView.Line("DISTANCE", num0(fs.distanceNow()) + " / " + num0(fs.maxDistance()) + " m"))
+            if (rows and 16 != 0) lines.add(FlightStatsView.Line("MIN LINK", num0(fs.minLinkQuality()) + " %"))
+            if (rows and 32 != 0) lines.add(FlightStatsView.Line("MIN CELL", if (fs.minCellVolts().isNaN()) "-" else String.format(Locale.US, "%.2f V", fs.minCellVolts())))
+            statsView.setContent((if (fs.armed()) "FLIGHT  " else "LAST FLIGHT  ") + clock(fs.armedMs(now)), lines)
+        }
+
+        val showRadar = radarOn && fs.hasHome()
+        radarView.visibility = if (showRadar) View.VISIBLE else View.GONE
+        if (showRadar) radarView.invalidate()
+
+        val cm = checkModel
+        val showCheck = checkOn && cm != null && !fs.armed() && !cm.allUnknown()
+        checkView.visibility = if (showCheck) View.VISIBLE else View.GONE
+        if (showCheck && cm != null) {
+            val rows = ArrayList<ChecklistView.Row>()
+            for (it in cm.items(numbers, texts)) {
+                rows.add(ChecklistView.Row(it.label, when (it.state) {
+                    CheckModel.State.PASS -> 1
+                    CheckModel.State.FAIL -> 2
+                    else -> 0
+                }))
+            }
+            val footer: String
+            val color: Int
+            if (cm.ready()) {
+                footer = "READY"
+                color = 0xFF66BB6A.toInt()
+            } else if (cm.fail() > 0) {
+                footer = "NOT READY: " + cm.fail() + (if (cm.fail() == 1) " check failed" else " checks failed")
+                color = 0xFFEF5350.toInt()
+            } else {
+                footer = "WAITING FOR DATA"
+                color = 0xFFB0BEC5.toInt()
+            }
+            checkView.setContent(rows, footer, color)
+        }
+    }
+
+    /** Which channel is the arm switch, and when it counts as armed (it also needs the cell count for volts per cell). */
+    private fun editArmDetection() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        fun field(label: String, value: Int): EditText {
+            val t = TextView(this)
+            t.text = label
+            t.setPadding(0, dp(8), 0, 0)
+            body.addView(t)
+            val e = EditText(this)
+            e.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            e.setText(value.toString())
+            body.addView(e)
+            return e
+        }
+        val ch = field("Arm switch channel (1 to 16, AUX1 is channel 5)", Prefs.int(this, "armCh", 5))
+        val high = field("Counts as armed at or above (microseconds)", Prefs.int(this, "armHigh", 1750))
+        val low = field("Counts as disarmed below (microseconds)", Prefs.int(this, "armLow", 1650))
+        val cells = field("Cells in the pack (for the lowest volts per cell)", Prefs.int(this, "cells", 6))
+        val hint = TextView(this)
+        hint.text = "The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. " +
+                "The switch must stay put for 0.3 seconds."
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("Arm detection")
+            .setView(scroll)
+            .setPositiveButton("Save", null)
+            .setNegativeButton("Cancel", null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val c = ch.text.toString().trim().toIntOrNull()
+            val h = high.text.toString().trim().toIntOrNull()
+            val l = low.text.toString().trim().toIntOrNull()
+            val n = cells.text.toString().trim().toIntOrNull()
+            if (c == null || c < 1 || c > 16) Toast.makeText(this, "The channel is 1 to 16", Toast.LENGTH_SHORT).show()
+            else if (h == null || l == null || h < 1000 || h > 2100 || l < 900 || l > h) Toast.makeText(this, "Use microseconds, with the disarmed value not above the armed one", Toast.LENGTH_LONG).show()
+            else if (n == null || n < 1 || n > 12) Toast.makeText(this, "Cells: 1 to 12", Toast.LENGTH_SHORT).show()
+            else {
+                Prefs.setInt(this, "armCh", c)
+                Prefs.setInt(this, "armHigh", h)
+                Prefs.setInt(this, "armLow", l)
+                Prefs.setInt(this, "cells", n)
+                applyFlightConfig()
+                dlg.dismiss()
+            }
+        }
+    }
+
+    /** Which rows the statistics card shows, and the current line to stay under. */
+    private fun editStatsRows() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val names = arrayOf("Speed (now / maximum)", "Height above the arming point (now / maximum)", "Current (now / peak, with a limit line)",
+            "Distance from home (now / maximum)", "Lowest link quality", "Lowest volts per cell")
+        val mask = Prefs.int(this, "statsRows", 7)
+        val boxes = ArrayList<CheckBox>()
+        for (i in names.indices) {
+            val c = CheckBox(this)
+            c.text = names[i]
+            c.isChecked = (mask and (1 shl i)) != 0
+            body.addView(c)
+            boxes.add(c)
+        }
+        val t = TextView(this)
+        t.text = "Current limit line (amps)"
+        t.setPadding(0, dp(10), 0, 0)
+        body.addView(t)
+        val limit = EditText(this)
+        limit.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        limit.setText(Prefs.int(this, "currentLimit", 50).toString())
+        body.addView(limit)
+        val hint = TextView(this)
+        hint.text = "Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. " +
+                "The bar turns red when the current is above the limit line."
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("Flight statistics rows")
+            .setView(scroll)
+            .setPositiveButton("Save", null)
+            .setNegativeButton("Cancel", null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val a = limit.text.toString().trim().toIntOrNull()
+            if (a == null || a < 5 || a > 300) {
+                Toast.makeText(this, "The current limit is 5 to 300 amps", Toast.LENGTH_SHORT).show()
+            } else {
+                var m = 0
+                for (i in names.indices) if (boxes[i].isChecked) m = m or (1 shl i)
+                Prefs.setInt(this, "statsRows", m)
+                Prefs.setInt(this, "currentLimit", a)
+                dlg.dismiss()
+            }
+        }
     }
 
     /** Apply the stick view and warning bar settings: on or off, size, place, which channels. */

@@ -221,6 +221,16 @@ public final class RuleText {
         return null;
     }
 
+    /** One readable sentence for the list of pre-flight checks. */
+    public static String describeCheck(Spec s) {
+        Spec shown = s.copy();
+        shown.urgentTrue = false;
+        shown.onFalse = "";
+        shown.repeatSec = 0;
+        String d = describe(shown);
+        return d.replaceFirst("^when ", "passes when ").replaceFirst(": say ", ": \u2713 ");
+    }
+
     /** One readable sentence for the list of warnings. */
     public static String describeWarning(Spec s) {
         String level = s.urgentTrue ? "CRITICAL" : s.onTrue.startsWith("*") ? "INFO" : "WARNING";
