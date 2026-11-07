@@ -26,7 +26,7 @@ public class AboutTests {
         List<String> errors = new ArrayList<String>();
         Map<String, List<IconSet.Op>> icons = IconSet.parse(read(assets + "icons.txt"), errors);
         check(errors.isEmpty(), "the icon file has no mistakes: " + errors);
-        String[] needed = {"rules", "speaker", "speaker_off", "battery", "aircraft", "gear", "language", "overlays", "video", "update", "diagnostics", "about", "chevron_right", "chevron_down", "exit"};
+        String[] needed = {"rules", "speaker", "speaker_off", "battery", "aircraft", "gear", "language", "overlays", "video", "update", "diagnostics", "about", "chevron_right", "chevron_down", "exit", "warn_critical", "warn_warning", "video_off"};
         for (String n : needed) check(icons.containsKey(n), "icon exists: " + n);
         int off = 0, empty = 0;
         for (Map.Entry<String, List<IconSet.Op>> e : icons.entrySet()) {

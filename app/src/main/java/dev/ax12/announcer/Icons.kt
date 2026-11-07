@@ -106,9 +106,9 @@ class CardFader {
                 view.alpha = 0f
                 view.visibility = android.view.View.VISIBLE
             }
-            view.animate().alpha(target[view] ?: 1f).setDuration(260).start()
+            view.animate().alpha(target[view] ?: 1f).setDuration(Motion.IN_MS.toLong()).start()
         } else {
-            view.animate().alpha(0f).setDuration(180).withEndAction {
+            view.animate().alpha(0f).setDuration(Motion.OUT_MS.toLong()).withEndAction {
                 if (wanted[view] == false) view.visibility = android.view.View.GONE
             }.start()
         }

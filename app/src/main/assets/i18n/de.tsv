@@ -50,6 +50,8 @@ Preview failed: {0}	Vorschau fehlgeschlagen: {0}
 Camera session failed	Kamerasitzung fehlgeschlagen
 Session error: {0}	Sitzungsfehler: {0}
 Last {0} s	Letzte {0} s
+Connecting to the radio... {0} s	Verbindung zur Fernsteuerung wird hergestellt... {0} s
+Still waiting. Close the RadioMaster app and check that the radio is on.	Es dauert noch. Schließe die RadioMaster-App und prüfe, ob die Fernsteuerung eingeschaltet ist.
 This app: the HUD, the voice announcer, the rules and the settings.	Diese App: das HUD, die Sprachansage, die Regeln und die Einstellungen.
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Liest die Kanäle und die Telemetrie der Fernsteuerung. Ihre Bibliotheken sind in der App enthalten. Danke, RadioMaster, dass ihr sie veröffentlicht habt.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	Die Qt-Bibliotheken, die mit dem RadioMaster-SDK kommen, so wie sie mitgeliefert werden. Quellcode: download.qt.io.
@@ -65,7 +67,6 @@ SDK start failed ({0})	SDK-Start fehlgeschlagen ({0})
 Sound rules: {0} error(s). Open the rules editor.	Sprachregeln: {0} Fehler. Regeleditor öffnen.
 Pre-flight checks: {0} error(s). Open Settings, then the checks.	Checks vor dem Flug: {0} Fehler. Einstellungen öffnen, dann die Checks.
 Warning rules: {0} error(s). Open Settings, then the warning rules.	Warnregeln: {0} Fehler. Einstellungen öffnen, dann die Warnregeln.
-NO VIDEO  ·  {0}	KEIN VIDEO  ·  {0}
 The SDK is starting in the background...	Das SDK startet im Hintergrund...
 No data from the radio yet...	Noch keine Daten von der Fernsteuerung...
 Test channels are on - the radio is not being read\n	Testkanäle sind an - die Fernsteuerung wird nicht gelesen\n
@@ -213,11 +214,12 @@ Import sound rules	Sprachregeln importieren
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nDas ersetzt deine aktuellen Regeln. Sie werden als Sicherung behalten, und die Einstellungen können sie wiederherstellen.
 Imported {0} rules	{0} Regeln importiert
 Sound rules	Sprachregeln
+Speech	Sprachausgabe
+Battery	Akku
 Settings	Einstellungen
-Mute speech	Sprache stummschalten
-Speech is off - tap to turn on	Sprache ist aus - zum Einschalten tippen
-Battery: {0}  (tap to switch)	Akku: {0}  (zum Wechseln tippen)
-Aircraft: {0}  (tap to choose)	Fluggerät: {0}  (zum Wählen tippen)
+On	An
+Off	Aus
+No video	Kein Video
 At most {0} packs.	Höchstens {0} Akkus.
 Pack {0}: the name cannot be empty.	Akku {0}: Der Name darf nicht leer sein.
 Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Akku {0}: Die Kapazität ist 0 bis {1} mAh (0 = unbekannt).
@@ -286,7 +288,7 @@ Text editor	Texteditor
 Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	Jeder Check zeigt vor dem Scharfschalten einen Haken, wenn seine Bedingung wahr ist, sonst ein Kreuz. Der Schalter links schaltet einen Check aus, ohne ihn zu löschen.
 A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	Eine Warnung erscheint in der Statusleiste, solange ihre Bedingung wahr ist. Kritisch = rot und blinkend, Warnung = gelb, Info = blau. Der Schalter links schaltet eine Regel aus, ohne sie zu löschen.
 A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	Eine Regel spricht, wenn ihre Bedingung wahr wird. Der Schalter links schaltet eine Regel aus, ohne sie zu löschen.
-Speech is muted (MENU, Mute speech)	Sprache ist stummgeschaltet (MENÜ, Sprache stummschalten)
+Speech is muted (MENU, Speech)	Sprachausgabe ist stummgeschaltet (MENÜ, Sprachausgabe)
 $low  - warning limit of the active battery profile	$low  - Warngrenze des aktiven Akkuprofils
 $crit  - critical limit	$crit  - kritische Grenze
 $full  - limit for a full pack	$full  - Grenze für einen vollen Akku
@@ -355,37 +357,36 @@ No settings found in this file.	In dieser Datei wurden keine Einstellungen gefun
 {0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} Einstellungen, darunter {1} Sprachregeln, {2} Warnregeln und {3} Checks
 . {0} lines were ignored (unknown or invalid)	. {0} Zeilen wurden ignoriert (unbekannt oder ungültig)
 . {0} rule lines have problems and will not work	. {0} Regelzeilen haben Probleme und funktionieren nicht
-   Size: {0}  (tap to change)	   Größe: {0}  (zum Ändern tippen)
-   Position: {0}  (tap to change)	   Position: {0}  (zum Ändern tippen)
-   Opacity: {0}  (tap to change)	   Deckkraft: {0}  (zum Ändern tippen)
-Language: {0}  (tap to change)	Sprache: {0}  (zum Ändern tippen)
-Speech language: {0}  (tap to change)	Sprache der Ansagen: {0}  (zum Ändern tippen)
+Size	Größe
+Position	Position
+Opacity	Deckkraft
+Language	Sprache
+Speech language	Sprache der Ansagen
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Anzeige und Stimme können verschiedene Sprachen nutzen. Deine Regeln behalten ihren Wortlaut: „Regeln auf Standard zurücksetzen“ lädt die Startregeln in der Sprache der Stimme.
 Display	Anzeige
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
 Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)
 Aircraft and battery	Fluggerät und Akku
-Active aircraft: {0}  (tap to choose)	Aktives Fluggerät: {0}  (zum Wählen tippen)
+Active aircraft	Aktives Fluggerät
 Manage the aircraft (add, rename, delete)...	Fluggeräte verwalten (hinzufügen, umbenennen, löschen)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Jedes Fluggerät behält seine eigenen Regeln, Warnregeln, Checks, Akkuprofile und Akkus, Kanalbalken, Stick-Zuordnung und seinen Arm-Schalter. Aussehen der Einblendungen, Sprache und Updates sind gemeinsam.
-Battery	Akku
-Active battery profile: {0}  (tap to switch)	Aktives Akkuprofil: {0}  (zum Wechseln tippen)
+Active battery profile	Aktives Akkuprofil
 Edit the packs of this aircraft...	Akkus dieses Fluggeräts bearbeiten...
 Edit the battery profiles (cells and voltage limits)...	Akkuprofile bearbeiten (Zellen und Spannungsgrenzen)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Regeln und Checks können den Wert cell (Volt pro Zelle) und die Grenzen $low, $crit, $full des aktiven Profils nutzen, zum Beispiel: cell < $low -> Akku niedrig. Beim Wechsel des Profils ändern sich die Zahlen, nicht die Regeln.
 Overlays on the video	Einblendungen im Video
 OSD overlays (drawn over the video)	OSD-Einblendungen (über das Video gezeichnet)
 Stick view: roll, pitch, yaw and throttle	Stick-Ansicht: Roll, Nick, Gier und Gas
-Stick size: {0}  (tap to change)	Stick-Größe: {0}  (zum Ändern tippen)
-Stick position: {0}  (tap to change)	Stick-Position: {0}  (zum Ändern tippen)
-Stick opacity: {0}  (tap to change)	Stick-Deckkraft: {0}  (zum Ändern tippen)
+Stick size	Stick-Größe
+Stick position	Stick-Position
+Stick opacity	Stick-Deckkraft
 Stick mode, channels and direction...	Stick-Modus, Kanäle und Richtung...
 Channel bars beside the sticks (aux switches)	Kanalbalken neben den Sticks (Aux-Schalter)
 Channel bars: names, channels, on and off...	Kanalbalken: Namen, Kanäle, an und aus...
 Tip: press and hold the stick view on the video to open the channel bars.	Tipp: Halte die Stick-Ansicht auf dem Video gedrückt, um die Kanalbalken zu öffnen.
 Warning status bar	Warn-Statusleiste
-Warning bar position: {0}  (tap to change)	Position der Warnleiste: {0}  (zum Ändern tippen)
+Warning bar position	Position der Warnleiste
 Edit the warning rules (thresholds and logic)...	Warnregeln bearbeiten (Schwellen und Logik)...
 Reset the warning rules to the defaults	Warnregeln auf Standard zurücksetzen
 Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	Deine Warnregeln durch die Standardregeln ersetzen? Exportiere vorher alle Einstellungen, wenn du die aktuellen behalten willst.
@@ -409,13 +410,12 @@ Move and resize the cards with your finger...	Karten mit dem Finger verschieben 
 Put every card back in its corner at normal size	Jede Karte in ihre Ecke zurück, in normaler Größe
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Jede Karte in ihre Ecke zurück, in normaler Größe? Die gewählten Positionen und Größen werden vergessen.
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Ziehe eine Karte, um sie zu verschieben, und ihren quadratischen Griff, um die Größe zu ändern. Ausgeschaltete Karten werden nicht gezeigt. Die Größe-Einstellung einer Karte ist ihre Startgröße; das Ändern multipliziert sie.
-Video and speech	Video und Sprache
+Video and speech	Video und Sprachausgabe
 Video	Video
-Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (zum Wählen des HDMI-Eingangs tippen)
-Rotate video: now {0} degrees  (tap to turn 90)	Video drehen: jetzt {0} Grad  (zum Drehen um 90 tippen)
-Scale: {0}  (tap to change)	Skalierung: {0}  (zum Ändern tippen)
+Camera (HDMI input)	Kamera (HDMI-Eingang)
+Rotate video	Video drehen
+Scale	Skalierung
 Fill (stretch)	Füllen (strecken)
-Speech	Sprache
 Speech on	Sprache an
 Speak a test sentence	Testsatz sprechen
 Rules and backup	Regeln und Sicherung
@@ -435,7 +435,7 @@ Swap back to the settings from before the last import? The current settings are 
 One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	Eine Datei mit allem: Sprachregeln, Warnregeln, Checks, Einblendungen, Kanalbalken, Akkuprofile und Sprache. Die Sprachregeln haben oben außerdem ihren eigenen Export.
 Updates	Updates
 Check for updates now	Jetzt nach Updates suchen
-Channel: {0}  (tap to change)	Kanal: {0}  (zum Ändern tippen)
+Update channel	Update-Kanal
 Check at start-up (needs internet)	Beim Start prüfen (Internet nötig)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android lässt dich jedes Update bestätigen. Beim ersten Mal fragt es auch, ob AX-HUD Installationen erlaubt sein sollen. Aktualisiere nie während eines Fluges.
 Diagnostics	Diagnose

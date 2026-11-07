@@ -120,14 +120,15 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
     private var target: LinearLayout = list          // where building blocks add their rows: the list, or the open group
     private var openGroup = ""                      // which group is open (one at a time); kept while the app runs
 
-    val isShowing: Boolean get() = root.visibility == View.VISIBLE
+    private var shown = false
+    val isShowing: Boolean get() = shown
 
     private fun dp(v: Int): Int = (v * activity.resources.displayMetrics.density + 0.5f).toInt()
 
     init {
         root.orientation = LinearLayout.VERTICAL
         root.setBackgroundColor(CardStyle.SEE_THROUGH)     // the video stays visible behind the settings, so you can see it is there
-        root.setPadding(dp(16), dp(10), dp(16), dp(10))
+        root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(24).toFloat()          // above the MENU button and every other view
@@ -136,7 +137,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
         bar.setBackgroundColor(CardStyle.BLOCK)
-        bar.setPadding(dp(10), dp(4), dp(10), dp(4))
+        bar.setPadding(dp(8), dp(0), dp(8), dp(0))
         val title = TextView(activity)
         title.text = tr("Settings")
         title.textSize = 22f
@@ -157,11 +158,13 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
 
     fun show() {
         refresh()
-        root.visibility = View.VISIBLE
+        shown = true
+        Anim.panelIn(root)
     }
 
     fun hide() {
-        root.visibility = View.GONE
+        shown = false
+        Anim.panelOut(root)
     }
 
     // ------------------------------------------------------------------ building blocks
@@ -172,7 +175,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         t.textSize = 14f
         t.setTypeface(null, Typeface.BOLD)
         t.setTextColor(0xFF9CDCFE.toInt())
-        t.setPadding(0, dp(18), 0, dp(4))
+        t.setPadding(0, dp(16), 0, dp(8))
         target.addView(t)
     }
 
@@ -186,13 +189,43 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         target.addView(b, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 
+    /**
+     * A setting that cycles through its values when tapped: the label on the left, the value on the right in blue. The row looks
+     * like the buttons (the themed button's own background), is at least 48 dp tall, and both texts wrap when they are long.
+     */
+    private fun valueRow(label: String, value: String, indent: Boolean = false, onClick: () -> Unit) {
+        val row = LinearLayout(activity)
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
+        row.setPadding(dp(if (indent) 24 else 16), dp(8), dp(16), dp(8))
+        row.background = Button(activity).background?.constantState?.newDrawable()?.mutate()
+        row.isClickable = true
+        val l = TextView(activity)
+        l.text = label
+        l.textSize = 15f
+        l.setTextColor(Color.WHITE)
+        val v = TextView(activity)
+        v.text = value
+        v.textSize = 15f
+        v.setTextColor(CardStyle.ACCENT)
+        v.setTypeface(null, Typeface.BOLD)
+        v.gravity = Gravity.END
+        v.maxLines = 2
+        row.addView(l, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.1f))
+        row.addView(v, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.9f))
+        row.setOnClickListener { onClick() }
+        target.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(4); it.bottomMargin = dp(4) })
+    }
+
     private fun toggle(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
         val sw = Switch(activity)
         sw.text = label
         sw.setTextColor(Color.WHITE)
         sw.textSize = 15f
         sw.isChecked = checked
-        sw.setPadding(dp(4), dp(8), dp(4), dp(8))
+        sw.setPadding(dp(8), dp(8), dp(8), dp(8))
+        sw.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
         squareSwitch(sw)
         sw.setOnCheckedChangeListener { _, isOn -> onChange(isOn) }
         target.addView(sw, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -225,15 +258,15 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             refresh()
         }
         if (host.tileOn(tile)) {
-            action(tr("   Size: {0}  (tap to change)", host.tileSizeLabel(tile))) {
+            valueRow(tr("Size"), host.tileSizeLabel(tile), indent = true) {
                 host.cycleTileSize(tile)
                 refresh()
             }
-            action(tr("   Position: {0}  (tap to change)", host.tilePositionLabel(tile))) {
+            valueRow(tr("Position"), host.tilePositionLabel(tile), indent = true) {
                 host.cycleTilePosition(tile)
                 refresh()
             }
-            action(tr("   Opacity: {0}  (tap to change)", host.tileOpacityLabel(tile))) {
+            valueRow(tr("Opacity"), host.tileOpacityLabel(tile), indent = true) {
                 host.cycleTileOpacity(tile)
                 refresh()
             }
@@ -246,7 +279,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         t.text = text
         t.textSize = 12f
         t.setTextColor(0xFFBDBDBD.toInt())
-        t.setPadding(dp(4), dp(2), dp(4), dp(2))
+        t.setPadding(dp(8), dp(4), dp(8), dp(4))
         target.addView(t)
     }
 
@@ -270,14 +303,15 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         header.setTypeface(null, Typeface.BOLD)
         header.setTextColor(Color.WHITE)
         header.gravity = Gravity.CENTER_VERTICAL
-        header.minHeight = dp(52)
-        header.setPadding(dp(14), dp(6), dp(14), dp(6))
-        header.compoundDrawablePadding = dp(14)
+        header.minHeight = dp(56)
+        header.setPadding(dp(16), dp(8), dp(16), dp(8))
+        header.compoundDrawablePadding = dp(16)
         header.setCompoundDrawablesRelativeWithIntrinsicBounds(
             Icons.drawable(activity, icon, if (open) CardStyle.ACCENT else CardStyle.ICON, 26), null,
             Icons.drawable(activity, if (open) "chevron_down" else "chevron_right", CardStyle.LABEL, 22), null
         )
         header.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, if (open) 0xF22C3844.toInt() else 0xE6232C36.toInt())
+        CardStyle.fitText(header, 13, 17)
         header.isClickable = true
         header.setOnClickListener {
             openGroup = if (open) "" else id
@@ -290,7 +324,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             val box = LinearLayout(activity)
             box.orientation = LinearLayout.VERTICAL
             box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, CardStyle.BLOCK)     // rows and notes stay readable over moving video
-            box.setPadding(dp(8), dp(2), dp(8), dp(8))
+            box.setPadding(dp(8), dp(8), dp(8), dp(8))
             list.addView(box, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             target = box
             content()
@@ -305,8 +339,8 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         target = list
 
         group("language", "Language / Dil / Sprache / \u8BED\u8A00", "language") {
-            action(tr("Language: {0}  (tap to change)", host.languageLabel())) { host.cycleLanguage() }
-            action(tr("Speech language: {0}  (tap to change)", host.speechLanguageLabel())) {
+            valueRow(tr("Language"), host.languageLabel()) { host.cycleLanguage() }
+            valueRow(tr("Speech language"), host.speechLanguageLabel()) {
                 host.cycleSpeechLanguage()
                 refresh()
             }
@@ -320,12 +354,12 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         }
         group("aircraft", tr("Aircraft and battery"), "aircraft") {
             section(tr("Aircraft"))
-            action(tr("Active aircraft: {0}  (tap to choose)", host.aircraftName())) { host.chooseAircraft() }
+            valueRow(tr("Active aircraft"), host.aircraftName()) { host.chooseAircraft() }
             action(tr("Manage the aircraft (add, rename, delete)...")) { host.manageAircraft() }
             note(tr("Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared."))
 
             section(tr("Battery"))
-            action(tr("Active battery profile: {0}  (tap to switch)", host.batteryLabel())) {
+            valueRow(tr("Active battery profile"), host.batteryLabel()) {
                 host.cycleBattery()
                 refresh()
             }
@@ -341,15 +375,15 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
                 refresh()
             }
             if (host.sticksOn()) {
-                action(tr("Stick size: {0}  (tap to change)", host.sticksSizeLabel())) {
+                valueRow(tr("Stick size"), host.sticksSizeLabel()) {
                     host.cycleSticksSize()
                     refresh()
                 }
-                action(tr("Stick position: {0}  (tap to change)", host.sticksPositionLabel())) {
+                valueRow(tr("Stick position"), host.sticksPositionLabel()) {
                     host.cycleSticksPosition()
                     refresh()
                 }
-                action(tr("Stick opacity: {0}  (tap to change)", host.sticksOpacityLabel())) {
+                valueRow(tr("Stick opacity"), host.sticksOpacityLabel()) {
                     host.cycleSticksOpacity()
                     refresh()
                 }
@@ -359,7 +393,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             action(tr("Channel bars: names, channels, on and off...")) { host.editChannelBars() }
             note(tr("Tip: press and hold the stick view on the video to open the channel bars."))
             toggle(tr("Warning status bar"), host.warningBarOn()) { host.setWarningBarOn(it) }
-            action(tr("Warning bar position: {0}  (tap to change)", host.warningBarPositionLabel())) {
+            valueRow(tr("Warning bar position"), host.warningBarPositionLabel()) {
                 host.cycleWarningBarPosition()
                 refresh()
             }
@@ -397,12 +431,12 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         }
         group("video", tr("Video and speech"), "video") {
             section(tr("Video"))
-            action(tr("Camera: {0}  (tap to choose the HDMI input)", host.cameraId())) { host.chooseCamera() }
-            action(tr("Rotate video: now {0} degrees  (tap to turn 90)", host.rotation())) {
+            valueRow(tr("Camera (HDMI input)"), host.cameraId()) { host.chooseCamera() }
+            valueRow(tr("Rotate video"), host.rotation().toString() + "\u00B0") {
                 host.rotateVideo()
                 refresh()
             }
-            action(tr("Scale: {0}  (tap to change)", (if (host.fill()) tr("Fill (stretch)") else tr("Fit")))) {
+            valueRow(tr("Scale"), if (host.fill()) tr("Fill (stretch)") else tr("Fit")) {
                 host.toggleFill()
                 refresh()
             }
@@ -442,7 +476,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         group("updates", tr("Updates"), "update") {
             note(host.updateLine())
             action(tr("Check for updates now")) { host.checkUpdatesNow() }
-            action(tr("Channel: {0}  (tap to change)", host.updateChannelLabel())) {
+            valueRow(tr("Update channel"), host.updateChannelLabel()) {
                 host.cycleUpdateChannel()
                 refresh()
             }

@@ -62,9 +62,10 @@ class ChartView(context: Context) : View(context) {
         edge.strokeWidth = 1.2f * density
         label.color = 0xFFB0BEC5.toInt()
         valuePaint.color = 0xFFFFFFFF.toInt()
-        valuePaint.isFakeBoldText = true
+        CardStyle.styleNumbers(valuePaint)          // condensed bold, digits of equal width
         valuePaint.textAlign = Paint.Align.RIGHT
         axis.color = 0xAA90A4AE.toInt()
+        CardStyle.styleSmallNumbers(axis)
         grid.color = 0x44FFFFFF
         grid.style = Paint.Style.STROKE
         grid.strokeWidth = 1f * density

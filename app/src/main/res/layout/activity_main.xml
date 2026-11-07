@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Full-screen video. A grey "NO VIDEO" panel sits on top when no frames arrive. -->
+<!-- Full-screen video. A grey "No video" screen sits on top when no frames arrive. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rootFrame"
     android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- No video: a plain grey screen with one slim status bar at the bottom. -->
+    <!-- No video: a plain grey screen; the icon and the message are added by NoVideoView, a quiet detail line sits along the bottom. -->
     <FrameLayout
         android:id="@+id/noFeed"
         android:layout_width="match_parent"
@@ -31,8 +31,8 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:paddingTop="6dp"
-            android:textColor="#E0E0E0"
-            android:textSize="14sp" />
+            android:textColor="#B0BEC5"
+            android:textSize="12sp" />
     </FrameLayout>
 
     <!-- Channel read-out, only used while the test panel is open. -->

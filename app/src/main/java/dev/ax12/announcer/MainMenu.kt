@@ -1,17 +1,21 @@
 package dev.ax12.announcer
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 
 /**
  * The main menu as a panel inside the screen, not a popup window. A popup window takes the
  * keyboard focus, and Android answers that by showing its navigation buttons; a view does not.
- * Tapping outside the panel closes it.
+ * Six large square tiles in two rows of three: an icon, a name, and, where there is something to show, the state (speech on or off,
+ * the pack in use, the aircraft in use) in words and in a coloured bar. Tapping outside the panel closes it.
  */
 class MainMenu(
     private val activity: Activity,
@@ -26,103 +30,110 @@ class MainMenu(
     private val onExit: () -> Unit
 ) {
     val root = FrameLayout(activity)
-    private val speechButton = Button(activity)
-    private val batteryButton = Button(activity)
-    private val aircraftButton = Button(activity)
+    private var shown = false
+    private val density = activity.resources.displayMetrics.density
 
-    val isShowing: Boolean get() = root.visibility == View.VISIBLE
+    val isShowing: Boolean get() = shown
 
-    private fun dp(v: Int): Int = (v * activity.resources.displayMetrics.density + 0.5f).toInt()
+    private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
+
+    /** One tile: icon, name, state, and a bar along the bottom edge that is coloured when the tile has a state. */
+    private inner class Tile(private val label: String, private val closeMenu: Boolean, private val onTap: () -> Unit) {
+        val view = FrameLayout(activity)
+        private val icon = ImageView(activity)
+        private val name = TextView(activity)
+        private val state = TextView(activity)
+        private val bar = View(activity)
+
+        init {
+            view.isClickable = true
+            view.background = CardStyle.stateBackground(density, 0xE6232C36.toInt(), 0xF24F6272.toInt(), 0xFF546E7A.toInt())
+            val column = LinearLayout(activity)
+            column.orientation = LinearLayout.VERTICAL
+            column.gravity = Gravity.CENTER_HORIZONTAL
+            column.setPadding(dp(8), dp(12), dp(8), dp(12))
+            column.addView(icon, LinearLayout.LayoutParams(dp(32), dp(32)))
+            name.text = label
+            name.textSize = 13f
+            name.setTypeface(null, Typeface.BOLD)
+            name.setTextColor(Color.WHITE)
+            name.gravity = Gravity.CENTER
+            CardStyle.fitText(name, 10, 13)
+            column.addView(name, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(8) })
+            state.textSize = 11f
+            state.setTextColor(CardStyle.ACCENT)
+            state.gravity = Gravity.CENTER
+            CardStyle.fitText(state, 9, 11)
+            column.addView(state, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(4) })
+            view.addView(column, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            view.addView(bar, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(4), Gravity.BOTTOM))
+            view.setOnClickListener {
+                if (closeMenu) hide()
+                onTap()
+                refresh()
+            }
+            set("rules", "", 0)
+        }
+
+        /** @param barColor the colour of the bar along the bottom (0 = none) */
+        fun set(iconName: String, stateText: String, barColor: Int, iconColor: Int = CardStyle.ICON, nameColor: Int = Color.WHITE) {
+            icon.setImageDrawable(Icons.drawable(activity, iconName, iconColor, 32))
+            name.setTextColor(nameColor)
+            state.text = stateText
+            state.visibility = if (stateText.isEmpty()) View.GONE else View.VISIBLE
+            bar.setBackgroundColor(if (barColor == 0) Color.TRANSPARENT else barColor)
+        }
+    }
+
+    private val rulesTile = Tile(tr("Sound rules"), true) { onRules() }
+    private val speechTile = Tile(tr("Speech"), false) { onToggleSpeech() }          // stays open, so the new state can be seen
+    private val batteryTile = Tile(tr("Battery"), false) { onBattery() }              // the same: the new pack shows on the tile
+    private val aircraftTile = Tile(tr("Aircraft"), true) { onAircraft() }
+    private val settingsTile = Tile(tr("Settings"), true) { onSettings() }
+    private val exitTile = Tile(tr("Exit"), true) { onExit() }
 
     init {
         root.visibility = View.GONE
         root.isClickable = true
-        root.elevation = dp(30).toFloat()
+        root.elevation = dp(32).toFloat()
         root.setOnClickListener { hide() }
 
         val box = LinearLayout(activity)
         box.orientation = LinearLayout.VERTICAL
-        box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, CardStyle.MENU)     // the video shows through
+        box.background = CardStyle.panelBackground(density, CardStyle.MENU)     // the video shows through
         box.setPadding(dp(8), dp(8), dp(8), dp(8))
         box.isClickable = true
-
-        box.addView(item(tr("Sound rules"), "rules") { onRules() })
-        box.addView(speechButton.also { b ->
-            b.isAllCaps = false
-            b.textSize = 16f
-            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            b.setOnClickListener {
-                hide()
-                onToggleSpeech()
-            }
-        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        box.addView(batteryButton.also { b ->
-            style(b, "battery")
-            b.isAllCaps = false
-            b.textSize = 16f
-            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            b.setOnClickListener {
-                hide()
-                onBattery()
-            }
-        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        box.addView(aircraftButton.also { b ->
-            style(b, "aircraft")
-            b.isAllCaps = false
-            b.textSize = 16f
-            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            b.setOnClickListener {
-                hide()
-                onAircraft()
-            }
-        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        box.addView(item(tr("Settings"), "gear") { onSettings() })
-        val divider = View(activity)
-        divider.setBackgroundColor(0x66FFFFFF)
-        box.addView(divider, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(1)).also { it.topMargin = dp(6); it.bottomMargin = dp(6) })
-        box.addView(item(tr("Exit"), "exit") { onExit() }.also { it.setTextColor(0xFFFF8A80.toInt()) })        // apart from the others, and in a warning colour
-
-        val lp = FrameLayout.LayoutParams(dp(300), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
+        for (row in listOf(listOf(rulesTile, speechTile, batteryTile), listOf(aircraftTile, settingsTile, exitTile))) {
+            val line = LinearLayout(activity)
+            line.orientation = LinearLayout.HORIZONTAL
+            for (t in row) line.addView(t.view, LinearLayout.LayoutParams(dp(104), dp(112)).also { it.setMargins(dp(4), dp(4), dp(4), dp(4)) })
+            box.addView(line)
+        }
+        val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
         lp.topMargin = dp(56)
         lp.rightMargin = dp(8)
         root.addView(box, lp)
+        refresh()
     }
 
-    /** The look every menu line shares: an icon, then the words. */
-    private fun style(b: Button, icon: String) {
-        b.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(activity, icon), null, null, null)
-        b.compoundDrawablePadding = dp(12)
-    }
-
-    private fun item(label: String, icon: String, action: () -> Unit): Button {
-        val b = Button(activity)
-        style(b, icon)
-        b.text = label
-        b.isAllCaps = false
-        b.textSize = 16f
-        b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-        b.setOnClickListener {
-            hide()
-            action()
-        }
-        b.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        return b
+    /** Brings every tile's state up to date. */
+    private fun refresh() {
+        rulesTile.set("rules", "", 0)
+        speechTile.set(if (speechOn()) "speaker" else "speaker_off", if (speechOn()) tr("On") else tr("Off"), if (speechOn()) CardStyle.OK else CardStyle.BAD)
+        batteryTile.set("battery", batteryName(), CardStyle.ACCENT)
+        aircraftTile.set("aircraft", aircraftName(), CardStyle.ACCENT)
+        settingsTile.set("gear", "", 0)
+        exitTile.set("exit", "", 0, iconColor = 0xFFFF8A80.toInt(), nameColor = 0xFFFF8A80.toInt())          // apart from the others: a warning colour
     }
 
     fun show() {
-        speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is off - tap to turn on")
-        style(speechButton, if (speechOn()) "speaker" else "speaker_off")
-        batteryButton.text = tr("Battery: {0}  (tap to switch)", batteryName())
-        aircraftButton.text = tr("Aircraft: {0}  (tap to choose)", aircraftName())
-        root.animate().cancel()
-        root.alpha = 0f
-        root.visibility = View.VISIBLE
-        root.animate().alpha(1f).setDuration(140).start()
+        refresh()
+        shown = true
+        Anim.menuIn(root)
     }
 
     fun hide() {
-        root.animate().cancel()
-        root.alpha = 1f
-        root.visibility = View.GONE
+        shown = false
+        Anim.menuOut(root)
     }
 }

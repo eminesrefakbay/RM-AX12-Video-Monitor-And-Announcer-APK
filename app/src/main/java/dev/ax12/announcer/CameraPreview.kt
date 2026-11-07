@@ -99,6 +99,9 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     }
 
     /** One short line for the status bar shown when there is no video. */
+    /** What the camera is doing or what is wrong, in words (shown on the no-video screen). */
+    fun status(): String = message
+
     fun barText(): String = tr("Camera {0}  {1}x{2}  \u00B7  {3}", (cameraId ?: tr("Auto")), bufW, bufH, message)
 
     /** One line for the "NO VIDEO" panel. */

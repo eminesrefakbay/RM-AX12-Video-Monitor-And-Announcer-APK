@@ -73,7 +73,7 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
         bar.setBackgroundColor(0x991E1E1E.toInt())          // see-through: a card flush with the top edge stays visible
-        bar.setPadding(dp(10), dp(2), dp(10), dp(2))
+        bar.setPadding(dp(8), dp(0), dp(8), dp(0))
         val hint = TextView(activity)
         hint.text = tr("Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.")
         hint.textSize = 12f
@@ -83,18 +83,16 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         reset.text = tr("Reset the layout")
         reset.isAllCaps = false
         reset.textSize = 13f
-        reset.minHeight = 0
-        reset.minimumHeight = 0
-        reset.setPadding(dp(10), dp(2), dp(10), dp(2))
+        reset.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
+        reset.setPadding(dp(16), dp(0), dp(16), dp(0))
         reset.setOnClickListener { host.reset() }
         bar.addView(reset)
         val done = Button(activity)
         done.text = tr("Done")
         done.isAllCaps = false
         done.textSize = 13f
-        done.minHeight = 0
-        done.minimumHeight = 0
-        done.setPadding(dp(10), dp(2), dp(10), dp(2))
+        done.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
+        done.setPadding(dp(16), dp(0), dp(16), dp(0))
         done.setOnClickListener { host.done() }
         bar.addView(done)
         addView(bar, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP))
@@ -103,14 +101,14 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
     fun show() {
-        visibility = View.VISIBLE
+        Anim.show(this)
         invalidate()
     }
 
     fun hide() {
-        visibility = View.GONE
         dragging = false
         active = null
+        Anim.hide(this)
     }
 
     private fun rectOf(t: Tile): TileLayout.Rect {

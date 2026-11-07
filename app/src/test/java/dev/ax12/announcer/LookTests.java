@@ -84,7 +84,7 @@ public class LookTests {
 
         // ---------- the Exit button ----------
         String menu = read(kt + "MainMenu.kt"), act = read(kt + "MainActivity.kt");
-        check(menu.contains("private val onExit: () -> Unit") && menu.contains("item(tr(\"Exit\"), \"exit\")"), "the menu has an Exit item with its icon");
+        check(menu.contains("private val onExit: () -> Unit") && menu.contains("Tile(tr(\"Exit\"), true)") && menu.contains("\"exit\""), "the menu has an Exit item with its icon");
         check(act.contains("{ exitApp() }") && act.contains("finishAndRemoveTask()") && act.contains("Exit AX-HUD?"), "Exit asks first and then closes the app");
         check(Arrays.asList(read("app/src/main/assets/icons.txt").split("\\n")).contains("icon exit"), "the exit icon exists");
 

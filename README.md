@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.14.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.15.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 830 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 875 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -181,6 +181,26 @@ screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| 
 * **Plain rectangles.** Nothing in the app has rounded corners: the cards, the MENU, the panels, the buttons, the dialogs, the switches
   (a square thumb in a square track), the layout editor's frames and handles, the icons' rectangles. The radar is a square card; only
   its range rings stay round.
+* **Settings rows: label and value.** A setting that cycles through values is one row: the label on the left, the value on the right
+  in blue ("Size ... Medium"), instead of "Size: Medium (tap to change)". Rows are at least 48 dp tall, and long labels wrap, so German
+  and Turkish fit.
+* **The MENU is a grid of six large square tiles** (two rows of three: Sound rules, Speech, Battery, Aircraft, Settings, Exit), each
+  with an icon, a name and, where there is something to show, its state: Speech shows On or Off, Battery the pack in use, Aircraft the
+  aircraft in use, in words and in a coloured bar along the bottom (green On, red Off, blue for the pack and aircraft). Speech and
+  Battery keep the menu open when tapped, so the new state can be seen at once.
+* **Connecting banner.** While the radio link comes up (the SDK needs about 12 s) a card at the top says "Connecting to the radio...
+  7 s" and shows a strip that fills towards 12 s; after 20 s it says what to check (close the RadioMaster app, check that the radio is
+  on). It goes when the radio answers.
+* **HUD numbers** use a condensed bold font with digits of equal width, so values do not jitter and take less room.
+* **Warning bar.** A thicker bar (48 dp) with a shape in front of the text, so it does not depend on colour alone: a triangle for
+  critical, a diamond for warning, a circle for info. A critical warning breathes slowly (70 % to full) instead of blinking.
+* **No-video screen.** A big camera-off icon, "No video", and one line saying what is wrong or what to check; the technical line stays
+  small along the bottom.
+* **Touch targets and spacing.** Everything you tap is at least 48 dp; spaces and sizes follow a 4/8 dp grid (a test checks the new
+  screens). **Long text:** buttons wrap to two lines and then shrink (down to 11 sp) instead of being cut off; tiles, group headers
+  and the warning bar do the same (Android 8 and newer, which is what the AX12 runs).
+* **One motion rule.** Every fade and slide takes 150 to 250 ms (220 in, 160 out). Panels slide in from the right edge, the menu from
+  the top, cards fade; a test checks that no animation uses its own time.
 * **See-through menu and panels.** The MENU box and the backdrop of Settings, About and the rules let the video show through, so you
   can see that it is there while you change a setting. Rows, notes and text sit on darker blocks, so they stay readable over moving video.
   Dialogs stay nearly solid, because you type in them.

@@ -19,7 +19,7 @@ class SplashOverlay(private val activity: Activity) {
     companion object {
         /** 2 seconds: the usual range for a splash is 1 to 3 s, long enough to read and short enough not to annoy. */
         const val SHOW_MS = 2000L
-        private const val FADE_MS = 250L
+        private const val FADE_MS = Motion.OUT_MS.toLong()
     }
 
     val root = FrameLayout(activity)

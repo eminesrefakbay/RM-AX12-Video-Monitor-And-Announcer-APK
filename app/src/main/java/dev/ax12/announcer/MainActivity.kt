@@ -42,6 +42,7 @@ class MainActivity : Activity() {
     private lateinit var texture: TextureView
     private lateinit var noFeed: View
     private lateinit var noFeedDetail: TextView
+    private lateinit var noVideo: NoVideoView
     private lateinit var status: TextView
     private lateinit var testPanel: View
     private lateinit var varsPanel: View
@@ -64,6 +65,7 @@ class MainActivity : Activity() {
     private lateinit var radarView: RadarView
     private lateinit var checkView: ChecklistView
     private lateinit var chartView: ChartView
+    private lateinit var connectBanner: ConnectingBanner
     private lateinit var aboutPanel: AboutPanel
     private val fader = CardFader()             // cards fade in and out
     private val chartModel = ChartModel()
@@ -122,6 +124,8 @@ class MainActivity : Activity() {
         texture = findViewById(R.id.texture)
         noFeed = findViewById(R.id.noFeed)
         noFeedDetail = findViewById(R.id.noFeedDetail)
+        noVideo = NoVideoView(this)
+        (noFeed as FrameLayout).addView(noVideo, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
         status = findViewById(R.id.status)
         testPanel = findViewById(R.id.testPanel)
         varsPanel = findViewById(R.id.varsPanel)
@@ -151,9 +155,10 @@ class MainActivity : Activity() {
         warningText = TextView(this)
         warningText.textSize = 18f
         warningText.setTypeface(null, Typeface.BOLD)
-        warningText.gravity = Gravity.CENTER
-        warningText.maxLines = 2
-        warningText.setPadding(dp(12), dp(6), dp(12), dp(6))
+        warningText.gravity = Gravity.CENTER_VERTICAL
+        warningText.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)       // a thick bar: 48 dp
+        warningText.setPadding(dp(16), dp(8), dp(16), dp(8))
+        CardStyle.fitText(warningText, 14, 18)
         warningText.visibility = View.GONE
         frame.addView(warningText, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         warningBar = WarningBar(warningText)
@@ -170,6 +175,8 @@ class MainActivity : Activity() {
         chartView.visibility = View.GONE
         frame.addView(chartView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         rootFrame = frame
+        connectBanner = ConnectingBanner(this)
+        frame.addView(connectBanner.view, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).also { it.topMargin = dp(64) })
         layoutEditor = LayoutEditor(this, layoutHost)
         checkView = ChecklistView(this)
         checkView.visibility = View.GONE
@@ -331,6 +338,7 @@ class MainActivity : Activity() {
      */
     private fun startSdk() {
         SdkThread.cancelScheduledStop()                 // back within the hold time: keep the link that is running
+        if (!StartupState.connected) StartupState.nativeBaseMs = 0L       // a new start: count the seconds from its beginning
         val generation = ++sdkGeneration
         sdkStarting = true
         SdkThread.run {
@@ -427,8 +435,11 @@ class MainActivity : Activity() {
             lastTickAt = now
 
             val stale = now - camera.lastFrameMs > 1000
-            noFeed.visibility = if (stale) View.VISIBLE else View.GONE
-            if (stale) noFeedDetail.text = tr("NO VIDEO  \u00B7  {0}", camera.barText())
+            fader.set(noFeed, stale)                          // the grey no-video screen fades in and out
+            if (stale) {
+                noVideo.update(camera.status())
+                noFeedDetail.text = camera.barText()          // the technical line stays small along the bottom
+            }
 
             // the MENU button must not sit on top of a panel's own buttons
             if (anyOverlayOpen()) {
@@ -451,6 +462,7 @@ class MainActivity : Activity() {
                     reloadChecks()
                 }
                 if (sample.cfgReady && link is AxSdkRadioLink) {      // the first value that can move the sticks has reached the screen
+                    StartupState.connected = true
                     StartupState.mark(StartupTimeline.FIRST_UI)
                     StartupState.logLaunch(this@MainActivity, sdkLink)
                 }
@@ -484,6 +496,10 @@ class MainActivity : Activity() {
                 lastVarsUpdate = now
                 varsText.text = (if (waitingForSdk) tr("The SDK is starting in the background...") else tr("No data from the radio yet...")) + "\n\n" + StartupState.text(sdkLinkIfReady)
             }
+            // while the radio link comes up (about 12 s): say so, count the seconds, and say what to check if it takes long
+            val connecting = (sdkStarting || sdkRunning) && !StartupState.connected && !testVisible && sdkError == null
+            fader.set(connectBanner.view, connecting)
+            if (connecting) connectBanner.update(StartupState.secondsSinceLinkStart(now))
             if (sample == null && editingLayout && now - lastTileUpdate >= 200) {
                 lastTileUpdate = now
                 updateTiles(latestNumbers, latestTexts, now)

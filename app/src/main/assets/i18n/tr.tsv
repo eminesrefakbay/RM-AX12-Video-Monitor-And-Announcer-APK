@@ -50,6 +50,8 @@ Preview failed: {0}	Önizleme başarısız: {0}
 Camera session failed	Kamera oturumu başarısız
 Session error: {0}	Oturum hatası: {0}
 Last {0} s	Son {0} sn
+Connecting to the radio... {0} s	Kumandaya bağlanılıyor... {0} sn
+Still waiting. Close the RadioMaster app and check that the radio is on.	Hâlâ bekleniyor. RadioMaster uygulamasını kapatın ve kumandanın açık olduğundan emin olun.
 This app: the HUD, the voice announcer, the rules and the settings.	Bu uygulama: HUD, sesli anons, kurallar ve ayarlar.
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri uygulamanın içindedir. Yayımladığı için teşekkürler, RadioMaster.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
@@ -65,7 +67,6 @@ SDK start failed ({0})	SDK başlatılamadı ({0})
 Sound rules: {0} error(s). Open the rules editor.	Ses kuralları: {0} hata. Kural düzenleyiciyi açın.
 Pre-flight checks: {0} error(s). Open Settings, then the checks.	Uçuş öncesi kontroller: {0} hata. Ayarlar'ı, sonra kontrolleri açın.
 Warning rules: {0} error(s). Open Settings, then the warning rules.	Uyarı kuralları: {0} hata. Ayarlar'ı, sonra uyarı kurallarını açın.
-NO VIDEO  ·  {0}	VİDEO YOK  ·  {0}
 The SDK is starting in the background...	SDK arka planda başlıyor...
 No data from the radio yet...	Kumandadan henüz veri yok...
 Test channels are on - the radio is not being read\n	Test kanalları açık - kumanda okunmuyor\n
@@ -213,11 +214,12 @@ Import sound rules	Ses kurallarını içe aktar
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	Dosyada {0} var\n\nBu, mevcut kurallarınızın yerine geçer. Yedek olarak saklanır ve Ayarlar'dan geri yüklenebilir.
 Imported {0} rules	{0} kural içe aktarıldı
 Sound rules	Ses kuralları
+Speech	Konuşma
+Battery	Batarya
 Settings	Ayarlar
-Mute speech	Konuşmayı sustur
-Speech is off - tap to turn on	Konuşma kapalı - açmak için dokunun
-Battery: {0}  (tap to switch)	Batarya: {0}  (değiştirmek için dokunun)
-Aircraft: {0}  (tap to choose)	Hava aracı: {0}  (seçmek için dokunun)
+On	Açık
+Off	Kapalı
+No video	Video yok
 At most {0} packs.	En fazla {0} paket olabilir.
 Pack {0}: the name cannot be empty.	Paket {0}: ad boş olamaz.
 Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Paket {0}: kapasite 0 ile {1} mAh arasındadır (0 = bilinmiyor).
@@ -286,7 +288,7 @@ Text editor	Metin düzenleyici
 Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	Her kontrol, siz arm etmeden önce koşulu doğruysa onay işareti, değilse çarpı gösterir. Soldaki anahtar, bir kontrolü silmeden kapatır.
 A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	Bir uyarı, koşulu doğru olduğu sürece durum çubuğunda görünür. Kritik = kırmızı ve yanıp söner, uyarı = sarı, bilgi = mavi. Soldaki anahtar, bir kuralı silmeden kapatır.
 A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	Bir kural, koşulu doğru olunca konuşur. Soldaki anahtar, bir kuralı silmeden kapatır.
-Speech is muted (MENU, Mute speech)	Konuşma sessize alındı (MENÜ, Konuşmayı sustur)
+Speech is muted (MENU, Speech)	Konuşma sessize alındı (MENÜ, Konuşma)
 $low  - warning limit of the active battery profile	$low  - etkin batarya profilinin uyarı sınırı
 $crit  - critical limit	$crit  - kritik sınır
 $full  - limit for a full pack	$full  - dolu paket sınırı
@@ -355,37 +357,36 @@ No settings found in this file.	Bu dosyada ayar bulunamadı.
 {0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} ayar; bunların içinde {1} ses kuralı, {2} uyarı kuralı ve {3} kontrol var
 . {0} lines were ignored (unknown or invalid)	. {0} satır yok sayıldı (bilinmeyen veya geçersiz)
 . {0} rule lines have problems and will not work	. {0} kural satırında sorun var ve çalışmayacak
-   Size: {0}  (tap to change)	   Boyut: {0}  (değiştirmek için dokunun)
-   Position: {0}  (tap to change)	   Konum: {0}  (değiştirmek için dokunun)
-   Opacity: {0}  (tap to change)	   Opaklık: {0}  (değiştirmek için dokunun)
-Language: {0}  (tap to change)	Dil: {0}  (değiştirmek için dokunun)
-Speech language: {0}  (tap to change)	Konuşma dili: {0}  (değiştirmek için dokunun)
+Size	Boyut
+Position	Konum
+Opacity	Opaklık
+Language	Dil
+Speech language	Konuşma dili
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Ekran ve ses farklı dilleri kullanabilir. Kurallarınız kendi sözcüklerini korur: "Kuralları varsayılanlara sıfırla" başlangıç kurallarını sesin diliyle yükler.
 Display	Ekran
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
 Start-up splash screen (logo and version, 2 seconds)	Açılış ekranı (logo ve sürüm, 2 saniye)
 Aircraft and battery	Hava aracı ve batarya
-Active aircraft: {0}  (tap to choose)	Etkin hava aracı: {0}  (seçmek için dokunun)
+Active aircraft	Etkin hava aracı
 Manage the aircraft (add, rename, delete)...	Hava araçlarını yönet (ekle, yeniden adlandır, sil)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Her hava aracı kendi kurallarını, uyarı kurallarını, kontrollerini, batarya profillerini ve paketlerini, kanal çubuklarını, stick eşlemesini ve arm anahtarını saklar. Ekran katmanlarının görünümü, dil ve güncellemeler ortaktır.
-Battery	Batarya
-Active battery profile: {0}  (tap to switch)	Etkin batarya profili: {0}  (değiştirmek için dokunun)
+Active battery profile	Etkin batarya profili
 Edit the packs of this aircraft...	Bu hava aracının paketlerini düzenle...
 Edit the battery profiles (cells and voltage limits)...	Batarya profillerini düzenle (hücre sayısı ve voltaj sınırları)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Kurallar ve kontroller, cell değerini (hücre başına volt) ve etkin profilin $low, $crit, $full sınırlarını kullanabilir; örneğin: cell < $low -> batarya düşük. Profili değiştirmek sayıları değiştirir, kuralları değil.
 Overlays on the video	Videonun üzerindeki katmanlar
 OSD overlays (drawn over the video)	OSD katmanları (videonun üzerine çizilir)
 Stick view: roll, pitch, yaw and throttle	Stick görünümü: roll, pitch, yaw ve gaz
-Stick size: {0}  (tap to change)	Stick boyutu: {0}  (değiştirmek için dokunun)
-Stick position: {0}  (tap to change)	Stick konumu: {0}  (değiştirmek için dokunun)
-Stick opacity: {0}  (tap to change)	Stick opaklığı: {0}  (değiştirmek için dokunun)
+Stick size	Stick boyutu
+Stick position	Stick konumu
+Stick opacity	Stick opaklığı
 Stick mode, channels and direction...	Stick modu, kanallar ve yön...
 Channel bars beside the sticks (aux switches)	Stick'lerin yanında kanal çubukları (aux anahtarları)
 Channel bars: names, channels, on and off...	Kanal çubukları: adlar, kanallar, açık ve kapalı...
 Tip: press and hold the stick view on the video to open the channel bars.	İpucu: kanal çubuklarını açmak için videodaki stick görünümüne basılı tutun.
 Warning status bar	Uyarı durum çubuğu
-Warning bar position: {0}  (tap to change)	Uyarı çubuğu konumu: {0}  (değiştirmek için dokunun)
+Warning bar position	Uyarı çubuğu konumu
 Edit the warning rules (thresholds and logic)...	Uyarı kurallarını düzenle (eşikler ve mantık)...
 Reset the warning rules to the defaults	Uyarı kurallarını varsayılanlara sıfırla
 Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	Uyarı kurallarınız varsayılanlarla değiştirilsin mi? Mevcut olanları saklamak istiyorsanız önce tüm ayarları dışa aktarın.
@@ -411,11 +412,10 @@ Put every card back in its corner at normal size? The places and sizes you chose
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Bir kartı taşımak için sürükleyin, boyutunu değiştirmek için kare tutamacını sürükleyin. Kapalı kartlar gösterilmez. Bir kartın Boyut ayarı başlangıç boyutudur; yeniden boyutlandırma onu çarpar.
 Video and speech	Video ve konuşma
 Video	Video
-Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (HDMI girişini seçmek için dokunun)
-Rotate video: now {0} degrees  (tap to turn 90)	Videoyu döndür: şimdi {0} derece  (90 çevirmek için dokunun)
-Scale: {0}  (tap to change)	Ölçek: {0}  (değiştirmek için dokunun)
+Camera (HDMI input)	Kamera (HDMI girişi)
+Rotate video	Videoyu döndür
+Scale	Ölçek
 Fill (stretch)	Doldur (esnet)
-Speech	Konuşma
 Speech on	Konuşma açık
 Speak a test sentence	Bir deneme cümlesi söyle
 Rules and backup	Kurallar ve yedekleme
@@ -435,7 +435,7 @@ Swap back to the settings from before the last import? The current settings are 
 One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	Her şey tek dosyada: ses kuralları, uyarı kuralları, kontroller, ekran katmanları, kanal çubukları, batarya profilleri ve dil. Ses kurallarının ayrıca yukarıda kendi dışa aktarması da vardır.
 Updates	Güncellemeler
 Check for updates now	Güncellemeleri şimdi denetle
-Channel: {0}  (tap to change)	Kanal: {0}  (değiştirmek için dokunun)
+Update channel	Güncelleme kanalı
 Check at start-up (needs internet)	Açılışta denetle (internet gerekir)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android her güncellemeyi onaylamanızı ister. İlk seferde ayrıca AX-HUD'dan kuruluma izin vermenizi ister. Uçuş sırasında asla güncellemeyin.
 Diagnostics	Tanılama

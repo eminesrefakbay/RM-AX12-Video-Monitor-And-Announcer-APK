@@ -4,8 +4,10 @@ import android.view.View
 import android.widget.TextView
 
 /**
- * The warning status bar: shows every active warning (see WarningModel) in one line, coloured by the
- * worst one. Critical warnings blink. The warning rules are edited in the same way as the sound rules.
+ * The warning status bar: shows every active warning (see WarningModel) in one line, coloured by the worst one. It does not
+ * rely on colour alone: each level has its own shape in front of the text (a triangle for critical, a diamond for warning, a circle
+ * for info). Critical warnings breathe slowly (the bar fades between 70 % and full) instead of blinking. The warning rules are
+ * edited in the same way as the sound rules.
  */
 class WarningBar(private val bar: TextView) {
 
@@ -72,14 +74,21 @@ class WarningBar(private val bar: TextView) {
         }
         if (worst != lastLevel) {
             lastLevel = worst
+            val background: Int
+            val foreground: Int
+            val shape: String
             when (worst) {
-                2 -> { bar.setBackgroundColor(0xFFC62828.toInt()); bar.setTextColor(0xFFFFFFFF.toInt()) }
-                1 -> { bar.setBackgroundColor(0xFFFFA000.toInt()); bar.setTextColor(0xFF000000.toInt()) }
-                else -> { bar.setBackgroundColor(0xFF1565C0.toInt()); bar.setTextColor(0xFFFFFFFF.toInt()) }
+                2 -> { background = 0xFFC62828.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "warn_critical" }
+                1 -> { background = 0xFFFFA000.toInt(); foreground = 0xFF000000.toInt(); shape = "warn_warning" }
+                else -> { background = 0xFF1565C0.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "about" }
             }
+            bar.setBackgroundColor(background)
+            bar.setTextColor(foreground)
+            bar.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(bar.context, shape, foreground, 28), null, null, null)
+            bar.compoundDrawablePadding = (12 * bar.resources.displayMetrics.density).toInt()
         }
-        // critical warnings blink slowly
-        bar.alpha = if (worst == 2 && (nowMs / 500) % 2L == 1L) 0.45f else 1f
+        // a critical warning breathes slowly: 70 % to full and back every 1.8 seconds
+        bar.alpha = if (worst == 2) (0.85 + 0.15 * Math.cos(2 * Math.PI * (nowMs % 1800L) / 1800.0)).toFloat() else 1f
         bar.visibility = View.VISIBLE
     }
 }

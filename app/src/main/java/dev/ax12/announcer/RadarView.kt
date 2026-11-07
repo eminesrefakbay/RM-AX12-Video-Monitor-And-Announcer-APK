@@ -43,6 +43,7 @@ class RadarView(context: Context) : View(context) {
         homePaint.color = 0xFFFFFFFF.toInt()
         text.color = 0xFFCFD8DC.toInt()
         text.textAlign = Paint.Align.CENTER
+        CardStyle.styleSmallNumbers(text)
         text.textSize = 10f * density
     }
 

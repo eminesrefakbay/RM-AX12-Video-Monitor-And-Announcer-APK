@@ -2,14 +2,14 @@
 <!-- The look of every button: flat, square, three states, a little see-through. The inset keeps stacked buttons apart. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false">
-        <inset android:insetTop="3dp" android:insetBottom="3dp">
+        <inset android:insetTop="4dp" android:insetBottom="4dp">
             <shape android:shape="rectangle">
                 <solid android:color="#B3242D36" />
             </shape>
         </inset>
     </item>
     <item android:state_pressed="true">
-        <inset android:insetTop="3dp" android:insetBottom="3dp">
+        <inset android:insetTop="4dp" android:insetBottom="4dp">
             <shape android:shape="rectangle">
                 <solid android:color="#F24F6272" />
                 <stroke android:width="1dp" android:color="#4FC3F7" />
@@ -17,7 +17,7 @@
         </inset>
     </item>
     <item>
-        <inset android:insetTop="3dp" android:insetBottom="3dp">
+        <inset android:insetTop="4dp" android:insetBottom="4dp">
             <shape android:shape="rectangle">
                 <solid android:color="#E637474F" />
                 <stroke android:width="1dp" android:color="#546E7A" />

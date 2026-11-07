@@ -89,3 +89,18 @@ icon exit
 polyline 10 4 4 4 4 20 10 20
 line 9 12 20 12
 polyline 15 7 20 12 15 17
+
+icon warn_critical
+poly 12 3 22 21 2 21 stroke
+line 12 9.5 12 14.5
+circle 12 17.6 1.1 fill
+
+icon warn_warning
+poly 12 2.5 21.5 12 12 21.5 2.5 12 stroke
+line 12 7.5 12 13
+circle 12 16 1.1 fill
+
+icon video_off
+rect 3 6 16 18 0 stroke
+poly 16 10.5 21 7.5 21 16.5 16 13.5 fill
+line 3 3 21 21

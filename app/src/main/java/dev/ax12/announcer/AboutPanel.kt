@@ -30,14 +30,15 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
     private val viewerText = TextView(activity)
     private val density = activity.resources.displayMetrics.density
 
-    val isShowing: Boolean get() = root.visibility == View.VISIBLE
+    private var shown = false
+    val isShowing: Boolean get() = shown
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
     init {
         root.orientation = LinearLayout.VERTICAL
         root.setBackgroundColor(CardStyle.SEE_THROUGH)         // the video stays visible behind the page
-        root.setPadding(dp(16), dp(10), dp(16), dp(10))
+        root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(28).toFloat()          // above the Settings screen
@@ -46,7 +47,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
         bar.setBackgroundColor(CardStyle.BLOCK)
-        bar.setPadding(dp(10), dp(4), dp(10), dp(4))
+        bar.setPadding(dp(8), dp(0), dp(8), dp(0))
         titleView.textSize = 22f
         titleView.setTextColor(Color.WHITE)
         titleView.setTypeface(null, Typeface.BOLD)
@@ -57,7 +58,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
 
         content.orientation = LinearLayout.VERTICAL
         content.setBackgroundColor(CardStyle.BLOCK)
-        content.setPadding(dp(12), dp(6), dp(12), dp(24))
+        content.setPadding(dp(16), dp(8), dp(16), dp(24))
         page.addView(content)
         root.addView(page, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
@@ -65,7 +66,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         viewerText.textSize = 12f
         viewerText.setTextColor(0xFFDDE3E8.toInt())
         viewerText.setBackgroundColor(CardStyle.BLOCK)
-        viewerText.setPadding(dp(12), dp(8), dp(12), dp(24))
+        viewerText.setPadding(dp(16), dp(8), dp(16), dp(24))
         viewer.addView(viewerText)
         viewer.visibility = View.GONE
         root.addView(viewer, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
@@ -74,11 +75,13 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
     fun show() {
         build()
         showPage()
-        root.visibility = View.VISIBLE
+        shown = true
+        Anim.panelIn(root)
     }
 
     fun hide() {
-        root.visibility = View.GONE
+        shown = false
+        Anim.panelOut(root)
     }
 
     /** From a license text back to the page; from the page back to Settings. */
@@ -128,7 +131,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
     }
 
     private fun heading(s: String) {
-        content.addView(text(s, 14f, CardStyle.TITLE, bold = true, topDp = 22))
+        content.addView(text(s, 14f, CardStyle.TITLE, bold = true, topDp = 24))
     }
 
     private fun button(label: String, onClick: () -> Unit): Button {
@@ -146,7 +149,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         val logo = ImageView(activity)
         logo.setImageResource(R.drawable.splash_logo)
         logo.adjustViewBounds = true
-        content.addView(logo, LinearLayout.LayoutParams(dp(150), dp(150)).also { it.gravity = Gravity.CENTER_HORIZONTAL })
+        content.addView(logo, LinearLayout.LayoutParams(dp(160), dp(160)).also { it.gravity = Gravity.CENTER_HORIZONTAL })
         val name = text(Credits.PROJECT_NAME, 26f, Color.WHITE, bold = true, topDp = 6)
         name.gravity = Gravity.CENTER_HORIZONTAL
         content.addView(name, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -169,7 +172,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         for (e in Credits.entries().drop(1)) {
             val card = LinearLayout(activity)
             card.orientation = LinearLayout.VERTICAL
-            card.setPadding(dp(12), dp(10), dp(12), dp(10))
+            card.setPadding(dp(16), dp(8), dp(16), dp(8))
             card.background = CardStyle.panelBackground(density, 0xE6232C36.toInt())
             card.addView(text(e.name, 16f, Color.WHITE, bold = true))
             card.addView(text(e.holder + "  \u00B7  " + e.license, 12f, CardStyle.ACCENT, topDp = 2))
@@ -178,7 +181,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
             for (t in e.texts) card.addView(button(tr("Read: {0}", t.label)) { showText(t.label, t.asset) })
             card.addView(button(tr("Open the page")) { openUrl(e.url) })
             val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            lp.topMargin = dp(10)
+            lp.topMargin = dp(8)
             content.addView(card, lp)
         }
 

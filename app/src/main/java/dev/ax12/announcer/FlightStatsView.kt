@@ -43,7 +43,7 @@ class FlightStatsView(context: Context) : View(context) {
         edge.strokeWidth = 1.2f * density
         labelPaint.color = 0xFFB0BEC5.toInt()
         valuePaint.color = 0xFFFFFFFF.toInt()
-        valuePaint.isFakeBoldText = true
+        CardStyle.styleNumbers(valuePaint)          // condensed bold, digits of equal width
         titlePaint.color = CardStyle.TITLE
         titlePaint.isFakeBoldText = true
         barBg.color = 0xFF37474F.toInt()

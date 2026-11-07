@@ -17,6 +17,7 @@ object StartupState {
     val timeline = StartupTimeline()
     @Volatile var processStartMs = SystemClock.elapsedRealtime()
     @Volatile var nativeBaseMs = 0L           // when the native SDK start began (0 = not yet)
+    @Volatile var connected = false           // the radio's configuration is loaded and values have reached the screen; false again when the link is shut down
     @Volatile private var logged = false
     private const val LOG_FILE = "startup_timings.txt"
     private const val KEEP = 10
@@ -29,6 +30,9 @@ object StartupState {
     }
 
     fun rel(now: Long = SystemClock.elapsedRealtime()): Double = (now - processStartMs).toDouble()
+
+    /** Seconds since the radio link was started (0 before it was). */
+    fun secondsSinceLinkStart(now: Long = SystemClock.elapsedRealtime()): Double = if (nativeBaseMs > 0L) (now - nativeBaseMs) / 1000.0 else 0.0
 
     fun mark(label: String) = timeline.mark(label, rel())
 

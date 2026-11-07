@@ -10,14 +10,19 @@
         <item name="android:alertDialogTheme">@style/AxDialog</item>
     </style>
 
-    <!-- Flat dark square buttons: the same everywhere (panels, menus, dialogs). -->
+    <!-- Flat dark square buttons: the same everywhere (panels, menus, dialogs). At least 48 dp to tap; a long text wraps to two lines and then shrinks (down to 11 sp) instead of being cut off. -->
     <style name="AxButton" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/ax_button_bg</item>
         <item name="android:textColor">@color/ax_button_text</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:minHeight">44dp</item>
-        <item name="android:minWidth">64dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:autoSizeMinTextSize">11sp</item>
+        <item name="android:autoSizeMaxTextSize">16sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
     </style>
 
     <!-- Every dialog: dark square window, white text; the buttons get the light blue accent colour from the theme. -->

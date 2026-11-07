@@ -57,14 +57,15 @@ class RulesPanel(
     private var items: MutableList<RuleText.Item> = ArrayList()
     private val ui = Handler(Looper.getMainLooper())
 
-    val isShowing: Boolean get() = root.visibility == View.VISIBLE
+    private var shown = false
+    val isShowing: Boolean get() = shown
 
     private fun dp(v: Int): Int = (v * activity.resources.displayMetrics.density + 0.5f).toInt()
 
     init {
         root.orientation = LinearLayout.VERTICAL
         root.setBackgroundColor(CardStyle.SEE_THROUGH)         // the video stays visible behind the rules
-        root.setPadding(dp(16), dp(10), dp(16), dp(10))
+        root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true                       // swallow touches so the video behind is not used
         root.elevation = dp(24).toFloat()             // above the MENU button and every other view
@@ -75,7 +76,7 @@ class RulesPanel(
         title.setTextColor(Color.WHITE)
         title.setTypeface(null, Typeface.BOLD)
         title.setBackgroundColor(CardStyle.BLOCK)
-        title.setPadding(dp(10), dp(6), dp(10), dp(6))
+        title.setPadding(dp(8), dp(8), dp(8), dp(8))
         root.addView(title)
 
         val bar = LinearLayout(activity)
@@ -102,18 +103,20 @@ class RulesPanel(
         tip.textSize = 12f
         tip.setTextColor(0xFFBDBDBD.toInt())
         tip.setBackgroundColor(CardStyle.BLOCK)
-        tip.setPadding(dp(10), dp(4), dp(10), dp(4))
+        tip.setPadding(dp(8), dp(8), dp(8), dp(8))
         root.addView(tip)
     }
 
     fun show() {
         items = RuleText.parse(loadText()).toMutableList()
         refresh()
-        root.visibility = View.VISIBLE
+        shown = true
+        Anim.panelIn(root)
     }
 
     fun hide() {
-        root.visibility = View.GONE
+        shown = false
+        Anim.panelOut(root)
     }
 
     private fun weight() = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
@@ -131,7 +134,7 @@ class RulesPanel(
     }
 
     private fun testSpeak(text: String, urgent: Boolean) {
-        if (speaker.muted) Toast.makeText(activity, tr("Speech is muted (MENU, Mute speech)"), Toast.LENGTH_SHORT).show()
+        if (speaker.muted) Toast.makeText(activity, tr("Speech is muted (MENU, Speech)"), Toast.LENGTH_SHORT).show()
         else speaker.say(text, urgent)
     }
 

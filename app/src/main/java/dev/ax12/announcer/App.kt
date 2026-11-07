@@ -16,6 +16,7 @@ class App : Application() {
         val visibility = AppVisibility()
 
         fun stopRadioLink() {
+            StartupState.connected = false                  // the next start has to connect again
             if (AxSdkJni.loaded) AxSdkJni.nativeStop()
         }
     }

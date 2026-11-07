@@ -50,6 +50,8 @@ Preview failed: {0}	预览失败: {0}
 Camera session failed	摄像头会话失败
 Session error: {0}	会话错误: {0}
 Last {0} s	最近 {0} 秒
+Connecting to the radio... {0} s	正在连接遥控器... {0} 秒
+Still waiting. Close the RadioMaster app and check that the radio is on.	仍在等待。请关闭 RadioMaster 应用, 并确认遥控器已开机。
 This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件包含在应用内。感谢 RadioMaster 发布它。
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
@@ -65,7 +67,6 @@ SDK start failed ({0})	SDK 启动失败 ({0})
 Sound rules: {0} error(s). Open the rules editor.	语音规则: {0} 个错误。请打开规则编辑器。
 Pre-flight checks: {0} error(s). Open Settings, then the checks.	飞行前检查项: {0} 个错误。请打开设置, 再打开检查项。
 Warning rules: {0} error(s). Open Settings, then the warning rules.	警告规则: {0} 个错误。请打开设置, 再打开警告规则。
-NO VIDEO  ·  {0}	无视频  ·  {0}
 The SDK is starting in the background...	SDK 正在后台启动...
 No data from the radio yet...	尚未收到遥控器数据...
 Test channels are on - the radio is not being read\n	测试通道已开启 - 未读取遥控器\n
@@ -213,11 +214,12 @@ Import sound rules	导入语音规则
 The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中恢复。
 Imported {0} rules	已导入 {0} 条规则
 Sound rules	语音规则
+Speech	语音
+Battery	电池
 Settings	设置
-Mute speech	静音语音
-Speech is off - tap to turn on	语音已关闭 - 点按开启
-Battery: {0}  (tap to switch)	电池: {0}  (点按切换)
-Aircraft: {0}  (tap to choose)	飞行器: {0}  (点按选择)
+On	开
+Off	关
+No video	无视频
 At most {0} packs.	最多 {0} 个电池包。
 Pack {0}: the name cannot be empty.	电池包 {0}: 名称不能为空。
 Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	电池包 {0}: 容量为 0 到 {1} mAh (0 = 未知)。
@@ -286,7 +288,7 @@ Text editor	文本编辑器
 Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	每项检查在你解锁之前, 条件为真时显示对勾, 否则显示叉。左侧的开关可以关闭某项检查而不删除它。
 A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	警告在条件为真时显示在状态栏中。严重 = 红色并闪烁, 警告 = 琥珀色, 信息 = 蓝色。左侧的开关可以关闭某条规则而不删除它。
 A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	规则在条件变为真时播报。左侧的开关可以关闭某条规则而不删除它。
-Speech is muted (MENU, Mute speech)	语音已静音 (菜单, 静音语音)
+Speech is muted (MENU, Speech)	语音已静音 (菜单, 语音)
 $low  - warning limit of the active battery profile	$low  - 当前电池配置的警告限值
 $crit  - critical limit	$crit  - 严重限值
 $full  - limit for a full pack	$full  - 满电限值
@@ -355,37 +357,36 @@ No settings found in this file.	此文件中没有找到设置。
 {0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} 项设置, 其中包括 {1} 条语音规则、{2} 条警告规则和 {3} 项检查
 . {0} lines were ignored (unknown or invalid)	。已忽略 {0} 行 (未知或无效)
 . {0} rule lines have problems and will not work	。有 {0} 行规则存在问题, 将不会生效
-   Size: {0}  (tap to change)	   大小: {0}  (点按更改)
-   Position: {0}  (tap to change)	   位置: {0}  (点按更改)
-   Opacity: {0}  (tap to change)	   不透明度: {0}  (点按更改)
-Language: {0}  (tap to change)	语言: {0}  (点按更改)
-Speech language: {0}  (tap to change)	语音语言: {0}  (点按更改)
+Size	大小
+Position	位置
+Opacity	不透明度
+Language	语言
+Speech language	语音语言
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	屏幕和语音可以使用不同的语言。你的规则保持原有文字: “将规则重置为默认值” 会以语音的语言载入初始规则。
 Display	显示
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
 Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)
 Aircraft and battery	飞行器和电池
-Active aircraft: {0}  (tap to choose)	当前飞行器: {0}  (点按选择)
+Active aircraft	当前飞行器
 Manage the aircraft (add, rename, delete)...	管理飞行器 (添加、重命名、删除)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	每个飞行器都保存自己的规则、警告规则、检查项、电池配置和电池包、通道条、摇杆映射以及解锁开关。叠加层外观、语言和更新是共用的。
-Battery	电池
-Active battery profile: {0}  (tap to switch)	当前电池配置: {0}  (点按切换)
+Active battery profile	当前电池配置
 Edit the packs of this aircraft...	编辑此飞行器的电池包...
 Edit the battery profiles (cells and voltage limits)...	编辑电池配置 (节数和电压限值)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	规则和检查项可以使用 cell (每节电压) 以及当前配置的限值 $low、$crit、$full, 例如: cell < $low -> 电池电量低。切换配置只会改变数值, 不会改变规则。
 Overlays on the video	视频上的叠加层
 OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)
 Stick view: roll, pitch, yaw and throttle	摇杆视图: 横滚、俯仰、偏航和油门
-Stick size: {0}  (tap to change)	摇杆大小: {0}  (点按更改)
-Stick position: {0}  (tap to change)	摇杆位置: {0}  (点按更改)
-Stick opacity: {0}  (tap to change)	摇杆不透明度: {0}  (点按更改)
+Stick size	摇杆大小
+Stick position	摇杆位置
+Stick opacity	摇杆不透明度
 Stick mode, channels and direction...	摇杆模式、通道和方向...
 Channel bars beside the sticks (aux switches)	摇杆旁的通道条 (辅助开关)
 Channel bars: names, channels, on and off...	通道条: 名称、通道、开关...
 Tip: press and hold the stick view on the video to open the channel bars.	提示: 在视频上长按摇杆视图可打开通道条。
 Warning status bar	警告状态栏
-Warning bar position: {0}  (tap to change)	警告栏位置: {0}  (点按更改)
+Warning bar position	警告栏位置
 Edit the warning rules (thresholds and logic)...	编辑警告规则 (阈值与逻辑)...
 Reset the warning rules to the defaults	将警告规则重置为默认值
 Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	用默认值替换你的警告规则? 如果想保留当前规则, 请先导出所有设置。
@@ -411,11 +412,10 @@ Put every card back in its corner at normal size? The places and sizes you chose
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其方形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
 Video and speech	视频和语音
 Video	视频
-Camera: {0}  (tap to choose the HDMI input)	摄像头: {0}  (点按选择 HDMI 输入)
-Rotate video: now {0} degrees  (tap to turn 90)	旋转视频: 当前 {0} 度  (点按旋转 90 度)
-Scale: {0}  (tap to change)	缩放: {0}  (点按更改)
+Camera (HDMI input)	摄像头 (HDMI 输入)
+Rotate video	旋转视频
+Scale	缩放
 Fill (stretch)	填充 (拉伸)
-Speech	语音
 Speech on	语音开启
 Speak a test sentence	播报一句测试语
 Rules and backup	规则和备份
@@ -435,7 +435,7 @@ Swap back to the settings from before the last import? The current settings are 
 One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	一个文件包含所有内容: 语音规则、警告规则、检查项、叠加层、通道条、电池配置和语言。语音规则在上方还有单独的导出功能。
 Updates	更新
 Check for updates now	立即检查更新
-Channel: {0}  (tap to change)	渠道: {0}  (点按更改)
+Update channel	更新通道
 Check at start-up (needs internet)	启动时检查 (需要联网)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android 会要求你确认每次更新。第一次还会要求你允许 AX-HUD 安装应用。切勿在飞行中更新。
 Diagnostics	诊断

@@ -1,6 +1,12 @@
 package dev.ax12.announcer
 
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
+import android.os.Build
+import android.util.TypedValue
+import android.widget.TextView
 
 /** One look for every card and panel on the video: the same background, edge, corners and colours. */
 object CardStyle {
@@ -31,5 +37,43 @@ object CardStyle {
         g.cornerRadius = radius(density)
         g.setStroke((1f * density).toInt().coerceAtLeast(1), 0xFF455A64.toInt())
         return g
+    }
+
+    const val GRID_DP = 8               // every space is a multiple of this (or half of it)
+    const val MIN_TOUCH_DP = 48         // nothing you tap is smaller than this
+
+    private val numberFont: Typeface = Typeface.create("sans-serif-condensed", Typeface.BOLD)
+    private val smallNumberFont: Typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL)
+
+    /** The numbers of the HUD: a condensed bold font and digits of equal width, so values do not jitter and take less room. */
+    fun styleNumbers(p: Paint) {
+        p.typeface = numberFont
+        p.fontFeatureSettings = "tnum"
+    }
+
+    /** The same for small figures (the ends of an axis, a range in metres): condensed, not bold, digits of equal width. */
+    fun styleSmallNumbers(p: Paint) {
+        p.typeface = smallNumberFont
+        p.fontFeatureSettings = "tnum"
+    }
+
+    /** Lets a text shrink to fit its box (down to minSp) instead of being cut off, and wrap to two lines first. Android 8 and newer. */
+    fun fitText(tv: TextView, minSp: Int, maxSp: Int) {
+        tv.maxLines = 2
+        if (Build.VERSION.SDK_INT >= 26) tv.setAutoSizeTextTypeUniformWithConfiguration(minSp, maxSp, 1, TypedValue.COMPLEX_UNIT_SP)
+    }
+
+    /** A flat square block with an edge, in two states (normal, pressed). */
+    fun stateBackground(density: Float, normal: Int, pressed: Int, edge: Int, edgePressed: Int = ACCENT): StateListDrawable {
+        fun box(fill: Int, line: Int): GradientDrawable {
+            val g = GradientDrawable()
+            g.setColor(fill)
+            g.setStroke((1f * density).toInt().coerceAtLeast(1), line)
+            return g
+        }
+        val s = StateListDrawable()
+        s.addState(intArrayOf(android.R.attr.state_pressed), box(pressed, edgePressed))
+        s.addState(intArrayOf(), box(normal, edge))
+        return s
     }
 }
