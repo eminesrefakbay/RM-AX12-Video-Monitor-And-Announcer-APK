@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+# Copyright (C) 2026 eminesrefakbay
+# SPDX-License-Identifier: GPL-3.0-or-later
+# With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 """Lists every text the app translates: the English strings inside tr("..."), tn("..."), I18n.t("..."), I18n.n("...").
 usage: python3 tools/i18n_extract.py            -> writes app/src/main/assets/i18n/source.txt  (one English text per line, escaped)
        python3 tools/i18n_extract.py --print    -> prints them

@@ -1,3 +1,8 @@
+// AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+// Copyright (C) 2026 eminesrefakbay
+// SPDX-License-Identifier: GPL-3.0-or-later
+// With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 // Host test for bridge_core.cpp with a FAKE SDK (no radio, no Android needed).
 //   g++ -std=c++20 -pthread -I../../main/cpp -I<sdk>/include/rmAxSdk1 bridge_core_test.cpp ../../main/cpp/bridge_core.cpp -o bridge_test
 #include <atomic>

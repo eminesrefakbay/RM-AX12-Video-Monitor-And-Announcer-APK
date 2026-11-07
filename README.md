@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.15.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.15.1)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -43,7 +43,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 875 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 888 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -385,7 +385,15 @@ affiliated with RadioMaster. The app also includes the Qt libraries that come wi
 
 ## License
 
-AX-HUD's own code is released under the **MIT License**: use it, change it, share it, also in your own projects, as long as the
-license notice stays with it. See [LICENSE](LICENSE). The MIT License covers the files in this repository only. The RadioMaster SDK,
-the Qt libraries and the other components that are inside the APK keep their own licenses; they are listed, with links and the full
-texts, in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and in the app under *Settings > About > About AX-HUD, licenses and thanks*.
+AX-HUD is free software under the **GNU General Public License, version 3 or later** (GPL-3.0-or-later), with an **additional permission**
+that allows it to be combined with RadioMaster's AX SDK (see [LICENSE](LICENSE)). In short: you may use, study, change and share it;
+if you share a changed version, or a program built on it, you must share the source code under the same license.
+
+* **Other terms.** The copyright holder can grant a separate written license on other terms to a particular party. Nobody else can: without
+  such an agreement, the GPL applies to everyone.
+* **Components.** The RadioMaster SDK, the Qt libraries and the other components that are inside the APK keep their own licenses; they are
+  listed, with links and the full texts, in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and in the app under *Settings > About > About
+  AX-HUD, licenses and thanks*.
+* **Contributions.** See [CONTRIBUTING.md](CONTRIBUTING.md): a contribution needs a short contributor agreement, so that the project can
+  keep licensing consistent.
+* **Name.** "AX-HUD" and the logo are the maintainer's; a changed version should use another name.

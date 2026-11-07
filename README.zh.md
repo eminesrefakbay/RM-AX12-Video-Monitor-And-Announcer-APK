@@ -37,4 +37,4 @@
 
 ## 许可证
 
-AX-HUD 自身的代码采用 **MIT 许可证**: 见 [LICENSE](LICENSE)。RadioMaster SDK、Qt 库以及 APK 内的其他组件保留各自的许可证, 它们连同全文列在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 中, 也可在应用的 *设置 > 关于* 中查看。
+AX-HUD 是自由软件, 采用 **GNU 通用公共许可证第 3 版或更高版本** (GPL-3.0-or-later), 并附加一项允许与 RadioMaster AX SDK 结合的**额外许可**: 见 [LICENSE](LICENSE)。简而言之: 你可以使用、研究、修改和分享它; 如果你分享修改后的版本或基于它的程序, 必须以相同许可证提供源代码。版权持有人可以向特定一方另行授予条件不同的书面许可, 其他人不能。RadioMaster SDK、Qt 库以及 APK 内的其他组件保留各自的许可证, 它们连同全文列在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 中, 也可在应用的 *设置 > 关于* 中查看。贡献请见 [CONTRIBUTING.md](CONTRIBUTING.md)。

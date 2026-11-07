@@ -1,3 +1,8 @@
+// AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+// Copyright (C) 2026 eminesrefakbay
+// SPDX-License-Identifier: GPL-3.0-or-later
+// With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -19,7 +24,7 @@ val keystorePassword: String? = System.getenv("SIGNING_PASSWORD")
 val ciRun: Int? = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
 // The version people read. Nightly builds get a suffix from CI ("-nightly.45"), stable builds do not.
 // Change baseVersion before you make a stable release.
-val baseVersion = "0.15.0"
+val baseVersion = "0.15.1"
 val versionSuffix: String = System.getenv("VERSION_SUFFIX") ?: ""
 
 android {

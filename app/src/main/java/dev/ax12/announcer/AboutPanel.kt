@@ -1,3 +1,8 @@
+// AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+// Copyright (C) 2026 eminesrefakbay
+// SPDX-License-Identifier: GPL-3.0-or-later
+// With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 package dev.ax12.announcer
 
 import android.app.Activity
@@ -161,7 +166,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         // the license of the app
         val app = Credits.entries()[0]
         heading(tr("License"))
-        content.addView(text(tr("AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty."), 14f, Color.WHITE, topDp = 2))
+        content.addView(text(tr("AX-HUD is free software under the GNU General Public License, version 3 or later, with an additional permission that allows it to be combined with the RadioMaster AX SDK. You may use, change and share it; if you share a changed version, you must share its source code under the same license. It comes without any warranty."), 14f, Color.WHITE, topDp = 2))
         for (t in app.texts) content.addView(button(tr("Read the {0}", t.label)) { showText(t.label, t.asset) })
         content.addView(text(tr("Project page and source code: {0}", app.url), 12f, CardStyle.LABEL, topDp = 6))
         content.addView(button(tr("Open the project page")) { openUrl(app.url) })

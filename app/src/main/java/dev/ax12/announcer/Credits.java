@@ -1,3 +1,8 @@
+// AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+// Copyright (C) 2026 eminesrefakbay
+// SPDX-License-Identifier: GPL-3.0-or-later
+// With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 package dev.ax12.announcer;
 
 import java.util.ArrayList;
@@ -46,10 +51,10 @@ public final class Credits {
 
     static {
         List<Entry> e = new ArrayList<Entry>();
-        e.add(new Entry("AX-HUD", "eminesrefakbay and AX-HUD contributors", "MIT License",
+        e.add(new Entry("AX-HUD", "eminesrefakbay", "GNU GPL v3 or later, with an exception for the RadioMaster AX SDK",
             "https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK",
             I18n.n("This app: the HUD, the voice announcer, the rules and the settings."),
-            new Text("MIT License", "licenses/MIT.txt")));
+            new Text("AX-HUD license (GNU GPL v3 or later, with the SDK exception)", "licenses/AX-HUD-license.txt")));
         e.add(new Entry("RadioMaster AX SDK", "RadioMaster", "Published by RadioMaster for app developers",
             "https://github.com/Radiomaster-RC/RadiomasterAX_SDK",
             I18n.n("Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.")));

@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+# Copyright (C) 2026 eminesrefakbay
+# SPDX-License-Identifier: GPL-3.0-or-later
+# With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 # Makes the AX-HUD signing key (once, on your own computer) and prints the two values for GitHub secrets.
 # Needs a JDK (keytool). KEEP ax-hud.jks SAFE and NEVER commit it: whoever has it can sign updates for your app.
 set -euo pipefail

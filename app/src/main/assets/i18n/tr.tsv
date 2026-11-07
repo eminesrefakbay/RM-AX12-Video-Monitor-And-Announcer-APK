@@ -6,7 +6,7 @@ Back	Geri
 No web browser found. The address is: {0}	Web tarayıcısı bulunamadı. Adres: {0}
 Video monitor, HUD and voice announcer for the RadioMaster AX12.	RadioMaster AX12 için video monitörü, HUD ve sesli anons uygulaması.
 License	Lisans
-AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD, MIT Lisansı altında özgür bir yazılımdır: lisans bildirimi onunla birlikte kaldığı sürece, kendi projelerinizde de dahil olmak üzere kullanabilir, kopyalayabilir, değiştirebilir ve paylaşabilirsiniz. Hiçbir garanti verilmez.
+AX-HUD is free software under the GNU General Public License, version 3 or later, with an additional permission that allows it to be combined with the RadioMaster AX SDK. You may use, change and share it; if you share a changed version, you must share its source code under the same license. It comes without any warranty.	AX-HUD, GNU Genel Kamu Lisansı sürüm 3 veya sonrası altında özgür yazılımdır ve RadioMaster AX SDK ile birleştirilmesine izin veren ek bir izin içerir. Kullanabilir, değiştirebilir ve paylaşabilirsiniz; değiştirilmiş bir sürümü paylaşırsanız kaynak kodunu aynı lisansla paylaşmanız gerekir. Hiçbir garanti verilmez.
 Read the {0}	{0} metnini oku
 Project page and source code: {0}	Proje sayfası ve kaynak kodu: {0}
 Open the project page	Proje sayfasını aç

@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+# Copyright (C) 2026 eminesrefakbay
+# SPDX-License-Identifier: GPL-3.0-or-later
+# With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 # Writes update.json and SHA256SUMS next to the APK, for the app's updater.
 #   usage:  CHANNEL=nightly RUN_NUMBER=42 VERSION_NAME=0.7.1-nightly.42 NOTES="what changed" tools/package-update.sh dist/ax-hud.apk
 # The version code is 1000 + the CI run number (the same rule as app/build.gradle.kts).

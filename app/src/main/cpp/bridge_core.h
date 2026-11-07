@@ -1,3 +1,8 @@
+// AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+// Copyright (C) 2026 eminesrefakbay
+// SPDX-License-Identifier: GPL-3.0-or-later
+// With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 // Core of the native bridge: talks to the RadioMaster AX SDK, keeps the newest values,
 // and hands them to Kotlin. No JNI and no Android classes here, so it can be tested on a PC.
 #pragma once

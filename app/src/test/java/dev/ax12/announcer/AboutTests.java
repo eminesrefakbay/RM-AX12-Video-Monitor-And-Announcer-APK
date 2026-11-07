@@ -1,3 +1,8 @@
+// AX-HUD: video monitor, HUD and voice announcer for the RadioMaster AX12.
+// Copyright (C) 2026 eminesrefakbay
+// SPDX-License-Identifier: GPL-3.0-or-later
+// With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
+
 package dev.ax12.announcer;
 
 import java.io.File;
@@ -46,9 +51,12 @@ public class AboutTests {
         check(IconSet.onGrid(new IconSet.Op("circle", new double[]{12, 12, 9}, false)) && !IconSet.onGrid(new IconSet.Op("circle", new double[]{22, 12, 9}, false)) && !IconSet.onGrid(new IconSet.Op("line", new double[]{0, 0, 25, 3}, false)), "the grid check");
 
         // ---------- the license files ----------
-        String mit = read(assets + "licenses/MIT.txt");
-        check(read("LICENSE").equals(mit), "the LICENSE file in the repository is the license shown in the app");
-        check(mit.startsWith("MIT License") && mit.contains("Copyright (c) 2026") && mit.contains("Permission is hereby granted, free of charge") && mit.contains("THE SOFTWARE IS PROVIDED \"AS IS\"") && !mit.contains("<year>") && !mit.contains("<copyright holders>"), "the MIT text is complete and filled in");
+        String own = read(assets + "licenses/AX-HUD-license.txt");
+        check(read("LICENSE").equals(own), "the LICENSE file in the repository is the license shown in the app");
+        check(own.contains("Copyright (C) 2026 eminesrefakbay") && own.contains("either version 3 of the License, or (at your option) any later") && own.contains("GNU GENERAL PUBLIC LICENSE") && own.contains("Version 3, 29 June 2007") && own.contains("END OF TERMS AND CONDITIONS") && own.length() > 34000, "the LICENSE has the GPL v3 text with the notice");
+        String flat = own.replaceAll("\\s+", " ");
+        check(flat.contains("ADDITIONAL PERMISSION UNDER GNU GPL VERSION 3 SECTION 7") && flat.contains("RadioMaster AX SDK") && flat.contains("github.com/Radiomaster-RC/RadiomasterAX_SDK") && flat.contains("does not have to include the source code of the SDK") && flat.contains("you may extend this additional permission"), "and the additional permission for the RadioMaster SDK");
+        check(!new File(assets + "licenses/MIT.txt").exists(), "the MIT text is gone from the app");
         String apache = read(assets + "licenses/Apache-2.0.txt");
         check(apache.contains("Apache License") && apache.contains("Version 2.0, January 2004") && apache.contains("TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION") && apache.length() > 9000, "Apache 2.0 text is there and complete");
         String lgpl = read(assets + "licenses/LGPL-3.0.txt");
@@ -58,7 +66,7 @@ public class AboutTests {
 
         // ---------- the credits ----------
         List<Credits.Entry> list = Credits.entries();
-        check(list.size() == 5 && list.get(0).name.equals("AX-HUD") && list.get(0).license.equals("MIT License"), "five entries, the app first, under the MIT License");
+        check(list.size() == 5 && list.get(0).name.equals("AX-HUD") && list.get(0).license.startsWith("GNU GPL v3 or later"), "five entries, the app first, under the GPL v3 or later");
         Set<String> names = new HashSet<String>();
         int bad = 0, texts = 0;
         for (Credits.Entry e : list) {
@@ -80,8 +88,8 @@ public class AboutTests {
         int missing = 0;
         for (Credits.Entry e : list) if (!e.name.equals("AX-HUD") && !notices.contains(e.name)) { missing++; System.out.println("  not in THIRD_PARTY_NOTICES.md: " + e.name); }
         check(missing == 0, "every library of the About page is named in THIRD_PARTY_NOTICES.md");
-        check(notices.contains("not affiliated") && notices.contains("MIT License") && notices.contains("Thank you, RadioMaster"), "the notices carry the thanks, the MIT statement and the no-affiliation statement");
-        check(read("README.md").contains("MIT License"), "the README names the license");
+        check(notices.contains("not affiliated") && notices.contains("GNU General Public License, version 3 or later") && notices.contains("Thank you, RadioMaster"), "the notices carry the thanks, the MIT statement and the no-affiliation statement");
+        check(read("README.md").contains("GNU General Public License, version 3 or later") && !read("README.md").contains("MIT License"), "the README names the license");
 
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);

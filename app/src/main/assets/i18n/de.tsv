@@ -6,7 +6,7 @@ Back	Zurück
 No web browser found. The address is: {0}	Kein Webbrowser gefunden. Die Adresse lautet: {0}
 Video monitor, HUD and voice announcer for the RadioMaster AX12.	Videomonitor, HUD und Sprachansage für die RadioMaster AX12.
 License	Lizenz
-AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD ist freie Software unter der MIT-Lizenz: Du darfst sie benutzen, kopieren, ändern und weitergeben, auch in eigenen Projekten, solange der Lizenzhinweis erhalten bleibt. Sie wird ohne jede Gewährleistung geliefert.
+AX-HUD is free software under the GNU General Public License, version 3 or later, with an additional permission that allows it to be combined with the RadioMaster AX SDK. You may use, change and share it; if you share a changed version, you must share its source code under the same license. It comes without any warranty.	AX-HUD ist freie Software unter der GNU General Public License, Version 3 oder später, mit einer zusätzlichen Erlaubnis, die die Verbindung mit dem RadioMaster-AX-SDK gestattet. Du darfst es benutzen, ändern und weitergeben; gibst du eine geänderte Version weiter, musst du ihren Quellcode unter derselben Lizenz weitergeben. Es wird ohne jede Gewährleistung geliefert.
 Read the {0}	{0} lesen
 Project page and source code: {0}	Projektseite und Quellcode: {0}
 Open the project page	Projektseite öffnen

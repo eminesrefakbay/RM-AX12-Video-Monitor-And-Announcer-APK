@@ -1,8 +1,14 @@
 # Third-party notices
 
-AX-HUD's own code is released under the **MIT License** (see [LICENSE](LICENSE)). The MIT License covers only the files in this
+AX-HUD's own code is released under the **GNU General Public License, version 3 or later**, with an **additional permission** for the
+RadioMaster AX SDK and the Qt libraries delivered with it (see [LICENSE](LICENSE)). That license covers only the files in this
 repository. The APK that is built from it also contains the third-party components below, which keep their own licenses. The same list
 is in the app: *Settings > About > About AX-HUD, licenses and thanks*, where every license text can be read.
+
+How the licenses fit together: the Qt libraries (LGPL v3), the Kotlin standard library and the LLVM C++ runtime (Apache License 2.0) may
+all be used in a GPL v3 program. The RadioMaster SDK is the exception: it is not a GPL component, so AX-HUD's license contains an additional
+permission under section 7 of the GPL that lets anyone combine and convey AX-HUD together with the SDK, on condition that the SDK's own
+terms are respected and that all of AX-HUD's own code stays under the GPL.
 
 AX-HUD is an independent project. It is **not affiliated with, endorsed by or supported by RadioMaster**. RadioMaster, AX12 and other
 names and trademarks belong to their owners.
@@ -41,4 +47,4 @@ names and trademarks belong to their owners.
 ## Artwork
 
 - The logo and the launcher icon are the author's own artwork. The in-app icons are simple shapes drawn by the app itself
-  (`app/src/main/assets/icons.txt`) and are covered by the MIT License.
+  (`app/src/main/assets/icons.txt`) and are covered by the GPL like the rest of the code.
