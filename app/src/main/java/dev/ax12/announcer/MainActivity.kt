@@ -92,7 +92,12 @@ class MainActivity : Activity() {
     private val fakeScaler = ChannelScaler(false, ChannelScaler.Mode.MICROS)
 
     private val fakeLink = FakeRadioLink()
-    private val sdkLinkHolder = lazy { if (AxSdkJni.loaded) AxSdkRadioLink(this) else null }
+    private companion object {
+        const val HOLD_REBUILD_MS = 10_000L     // a rebuild or a permission dialog: the screen is back within seconds
+        const val HOLD_OPENED_MS = 40_000L      // a file picker, the rules editor, the browser: a little longer, but never for ever
+    }
+
+    private val sdkLinkHolder = lazy { if (AxSdkJni.loaded) AxSdkRadioLink(applicationContext) else null }
     private val sdkLink: AxSdkRadioLink? get() = sdkLinkHolder.value
     /** The link if it exists already; never waits for the native libraries to load (the panels use this while the SDK starts). */
     private val sdkLinkIfReady: AxSdkRadioLink? get() = if (sdkLinkHolder.isInitialized()) sdkLinkHolder.value else null
@@ -100,7 +105,8 @@ class MainActivity : Activity() {
     private var sdkRunning = false
     @Volatile private var sdkStarting = false       // the SDK is being started on its own thread (start-up method "like RadioMaster's demo")
     private var sdkGeneration = 0                    // tells a late answer of an old start from the current one
-    private var sdkActiveMethod = 0                  // the method the SDK was started with
+    private var holdLinkUntil = 0L                   // our own action is about to pause the screen: until when that is so
+    private var holdLinkMs = 0L                      // and for how long the radio link is then kept running
 
     private var testVisible = false
     private var varsVisible = false
@@ -278,7 +284,10 @@ class MainActivity : Activity() {
         reloadWarnings()
         reloadChecks()
         startSdk()
-        if (hasCameraPermission()) camera.start() else requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
+        if (hasCameraPermission()) camera.start() else {
+            holdLink(HOLD_REBUILD_MS)                    // the permission dialog pauses the screen for a moment
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
+        }
         ui.post(tick)
     }
 
@@ -317,26 +326,12 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ radio link
 
     /**
-     * Starts the radio link. Two methods (Settings > Diagnostics), chosen at the start:
-     *  0 standard: on this thread, exactly as the app has always done it;
-     *  1 like RadioMaster's demo: on a background thread, with the device information requested first and a longer wait
-     *    before the config is asked for again. While it starts, no data is shown (and no pretend data either).
+     * Starts the radio link on a background thread, as RadioMaster's demo does (the screen and the camera are not held up).
+     * While it starts, no data is shown, and no pretend data either. If the link is running already (the screen paused
+     * itself for a moment and came back) the SDK answers "already running" and nothing is started again.
      */
     private fun startSdk() {
-        val method = Prefs.int(this, "sdkStartup", 0).coerceIn(0, 1)
-        StartupState.method = method
-        sdkActiveMethod = method
-        if (method == 0) {
-            SdkThread.awaitIdle()                       // a stop that was asked for in the background finishes first
-            val link = sdkLink ?: return
-            link.configure(false)
-            StartupState.mark(StartupTimeline.SDK_CALLED)
-            sdkError = link.start()
-            StartupState.mark(StartupTimeline.SDK_RETURNED)
-            sdkRunning = sdkError == null
-            sdkError?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
-            return
-        }
+        SdkThread.cancelScheduledStop()                 // back within the hold time: keep the link that is running
         val generation = ++sdkGeneration
         sdkStarting = true
         SdkThread.run {
@@ -345,7 +340,6 @@ class MainActivity : Activity() {
             try {
                 link = sdkLink                          // may load the native libraries: not on the screen's thread
                 if (link != null) {
-                    link.configure(true)
                     StartupState.mark(StartupTimeline.SDK_CALLED)
                     error = link.start()
                     StartupState.mark(StartupTimeline.SDK_RETURNED)
@@ -364,17 +358,35 @@ class MainActivity : Activity() {
         }
     }
 
+    /**
+     * Our own actions that pause this screen and bring it back (a rebuild, a file picker, the rules editor) call this first:
+     * the radio link then stays up for [ms] instead of being shut down and started again, which costs about 12 seconds
+     * without stick data. Leaving the app any other way (Home, another app) still releases the radio's serial port at once.
+     */
+    private fun holdLink(ms: Long) {
+        holdLinkMs = ms
+        holdLinkUntil = SystemClock.elapsedRealtime() + 3000       // only for the pause that follows right now
+    }
+
+    override fun recreate() {
+        holdLink(HOLD_REBUILD_MS)
+        super.recreate()
+    }
+
+    override fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle?) {
+        holdLink(HOLD_OPENED_MS)                         // every screen this app opens itself: pickers, the rules editor, the browser
+        super.startActivityForResult(intent, requestCode, options)
+    }
+
     private fun stopSdk() {
-        if (sdkActiveMethod == 1) {
-            sdkGeneration++                             // a start that is still running must not report back
-            sdkStarting = false
-            sdkRunning = false
-            val link = sdkLink
-            SdkThread.run { link?.stop() }              // after the start, in the order they were asked for
-            return
-        }
-        if (sdkRunning) sdkLink?.stop()
+        sdkGeneration++                                 // a start that is still running must not report back
+        sdkStarting = false
         sdkRunning = false
+        val link = sdkLinkIfReady
+        val hold = if (SystemClock.elapsedRealtime() <= holdLinkUntil) holdLinkMs else 0L
+        holdLinkUntil = 0L
+        if (hold > 0) SdkThread.scheduleStop(hold) { link?.stop() }      // unless the screen comes back first
+        else SdkThread.run { link?.stop() }                              // after the start, in the order they were asked for
     }
 
     private fun reloadRules() {
@@ -649,12 +661,6 @@ class MainActivity : Activity() {
         override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
         override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
         override fun editCharts() = this@MainActivity.editCharts()
-        override fun sdkStartupLabel(): String =
-            if (Prefs.int(this@MainActivity, "sdkStartup", 0) == 1) tr("like RadioMaster's demo") else tr("standard (as before)")
-        override fun cycleSdkStartup() {
-            Prefs.setInt(this@MainActivity, "sdkStartup", 1 - Prefs.int(this@MainActivity, "sdkStartup", 0).coerceIn(0, 1))
-            Toast.makeText(this@MainActivity, tr("The start-up method applies the next time the app starts."), Toast.LENGTH_LONG).show()
-        }
         override fun showStartupTimings() = this@MainActivity.showStartupTimings()
         override fun editLayout() {
             settingsPanel.hide()

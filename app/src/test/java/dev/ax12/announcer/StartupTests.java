@@ -92,10 +92,12 @@ public class StartupTests {
         check(kept.length == 10 && kept[0].equals("run 3") && kept[9].equals("run 12") && log.endsWith("\n"), "the log keeps the last 10 launches, newest last");
         check(StartupTimeline.appendLine("", "a", 5).equals("a\n") && StartupTimeline.appendLine("old\n\n  \n", "new", 5).equals("old\nnew\n") && StartupTimeline.appendLine("x", "y", 0).equals("y\n"), "empty lines are dropped, a tiny limit still keeps one line");
 
-        // ---------- the setting ----------
-        SettingsFile.Summary st = SettingsFile.inspect("I\tsdkStartup\t1\n");
-        check(st.usable && st.ignored == 0 && Integer.valueOf(0).equals(SettingsFile.defaultOf("sdkStartup")), "the start-up method is a setting, the default is the standard start");
-        check(SettingsFile.inspect("B\tfill\ttrue\nI\tsdkStartup\t2\n").ignored == 1, "an unknown method is ignored");
+        // ---------- the start-up method is no longer a setting ----------
+        check(!SettingsFile.isKnown("sdkStartup") && SettingsFile.inspect("B\tfill\ttrue\nI\tsdkStartup\t1\n").ignored == 1, "a settings file from the test build, with the old switch, is read: the switch is ignored");
+        String act = new String(Files.readAllBytes(new File("app/src/main/java/dev/ax12/announcer/MainActivity.kt").toPath()), StandardCharsets.UTF_8);
+        check(act.contains("override fun recreate()") && act.contains("override fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle?)") && act.contains("SdkThread.cancelScheduledStop()") && act.contains("SdkThread.scheduleStop(hold)"),
+              "the screen holds the radio link through its own rebuilds and the screens it opens, and cancels the stop when it comes back");
+        check(!act.contains("sdkStartup") && !act.contains("SdkThread.awaitIdle"), "no trace of the old switch");
 
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);

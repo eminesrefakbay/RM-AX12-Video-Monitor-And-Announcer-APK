@@ -83,9 +83,6 @@ Stable	Kararlı
 Nightly	Nightly
 Stable (tested releases only)	Kararlı (yalnızca test edilmiş sürümler)
 Nightly (newest build of every push)	Nightly (her push'un en yeni yapısı)
-like RadioMaster's demo	RadioMaster'ın demosu gibi
-standard (as before)	standart (eskisi gibi)
-The start-up method applies the next time the app starts.	Başlatma yöntemi uygulamanın bir sonraki başlayışında geçerli olur.
 top	üst
 bottom	alt
 BATTERY CRITICAL 3.48 V per cell	BATARYA KRİTİK 3.48 V hücre başına
@@ -440,9 +437,8 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics	Tanılama
 Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
 Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
-SDK start-up: {0}  (tap to change; applies at the next start)	SDK başlatma: {0}  (değiştirmek için dokunun; bir sonraki başlatmada geçerli)
 Show the start-up timings of the last launches...	Son başlatmaların süre kayıtlarını göster...
-Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.	Standart, uygulamanın kumanda bağlantısını hep başlattığı yöntemdir. "RadioMaster'ın demosu gibi" yöntemi bağlantıyı arka planda başlatır, önce cihaz bilgisini ister ve yapılandırmayı tekrar istemeden önce daha uzun bekler. İkisinin sürelerini karşılaştırın.
+The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	Kumanda bağlantısı arka plan iş parçacığında başlar; uygulamanın kendi ekranları, dosya seçicileri ve yeniden kurulumları sırasında çalışmaya devam eder, uygulamadan çıkınca durur. SDK'nın kumandanın seri portunu açması kendi içinde yaklaşık 12 saniye sürer; süre kayıtları zamanın nereye gittiğini gösterir.
 Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
 About	Hakkında
 About AX-HUD, licenses and thanks...	AX-HUD hakkında, lisanslar ve teşekkürler...

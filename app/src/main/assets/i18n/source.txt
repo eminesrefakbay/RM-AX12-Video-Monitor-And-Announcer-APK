@@ -83,9 +83,6 @@ Stable
 Nightly
 Stable (tested releases only)
 Nightly (newest build of every push)
-like RadioMaster's demo
-standard (as before)
-The start-up method applies the next time the app starts.
 top
 bottom
 BATTERY CRITICAL 3.48 V per cell
@@ -440,9 +437,8 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics
 Show the variables panel (every value the radio sends)
 Test channels: sliders instead of the radio
-SDK start-up: {0}  (tap to change; applies at the next start)
 Show the start-up timings of the last launches...
-Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.
+The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.
 Close Settings to see the panels over the video.
 About
 About AX-HUD, licenses and thanks...

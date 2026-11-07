@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.1)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.2)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 768 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 779 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -145,29 +145,34 @@ Settings) and fill as soon as the app runs.
 Two new values come with them, usable in charts **and in rules**: **`height`** (metres above where you armed) and **`dist`** (metres from
 home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
 
-## Start-up timing and the start-up method (diagnostics)
+## Start-up time of the radio link
 
-If the sticks take a long time to move after the app starts, this shows where the time goes. It only records; nothing changes unless
-you switch the method.
+**Why the sticks take about 12 seconds to move after the app starts.** Measured on an AX12 with the logcat of both apps: the SDK's own
+serial-port start-up takes a fixed ~12 s (11 of 12 recorded launches took 11.9 to 12.2 s from the SDK's first port scan to the port
+opening), and the first channel data arrives 24 ms after the port opens. AX-HUD's own part is about 1 s (the SDK call takes 22 ms).
+RadioMaster's stock app is told its serial ports up front (`ttyS0` and `ttyS4` at 921600 baud) and opens the port 4.4 s after it starts.
+The public SDK has no way to pass a port: `initialize()` only takes a data folder, it exports no other function for it, and
+`postMessage()` is not meant for it. So this time cannot be shortened from the app; it needs an SDK change by RadioMaster. (The
+"denied" lines in logcat are harmless: this radio runs SELinux in permissive mode.)
 
-* **Timeline.** *Settings > Diagnostics > Show the variables panel* now starts with a timeline, in milliseconds since the app's process
-  started (about when you tapped the icon): the screen created, the SDK start called, `initialize()` returned, the message callback
-  set, each time the radio's configuration was requested, the first channel message (mixout), the device information answered, the
-  configuration loaded, the channel list available, and **the first sample in the app that can move the sticks**. The same lines go to
-  logcat under the tag `ax12timing` (`adb logcat -s ax12timing`).
-* **Log of launches.** *Settings > Diagnostics > Show the start-up timings of the last launches* keeps one line for each of the last 10
-  launches: `method | start | call took | init done | mixout | config | requests | graph`. `graph` is the time until the first stick value
-  reached the screen; compare it with your stopwatch.
-* **Method.** *Settings > Diagnostics > SDK start-up* (applies at the next start):
-  * **standard (as before)**: the radio link is started on the screen's thread, the configuration is requested once and again every
-    3 seconds until it arrives. This is how the app has always started it and it is the default.
-  * **like RadioMaster's demo**: the radio link is started on a background thread (the screen and the camera are not held up), the
-    device information is requested first and once more when the configuration is loaded, and the wait before asking for the
-    configuration again is 6 seconds. While it starts, no data and no pretend data is shown.
-* **How to compare.** Fully close the RadioMaster app, force-stop AX-HUD, start it, and time until the sticks move; do it 5 times for each
-  method, and note `graph` and `config` from the log. If the times of one method cluster about 3 seconds apart (for example 7.4, 10.5,
-  13.4), the retry timer is deciding the time. If `mixout` is early but `config` is late, the link is up and the wait is the
-  configuration handshake; if both are late, the link itself is slow to come up.
+**What the app does about it**
+
+* The radio link is started on a **background thread**, as RadioMaster's demo does (the device information is requested first and again
+  when the configuration is loaded; the configuration is asked for again only after 6 s), so the screen and the camera are not held up.
+  While it starts no data and no pretend data is shown.
+* **It is not started again when the app only pauses itself.** A rebuild (changing language or aircraft, importing settings), a file
+  picker, the rules editor, the browser link and the camera permission dialog all pause the screen; each used to shut the link down
+  and start it again, which cost another 12 s without stick data. Now the link stays up through these (10 s for a rebuild or a
+  permission dialog, 40 s for the screens the app opens) and is released only if the app does not come back. Leaving the app any
+  other way (Home, another app) still releases the serial port at once.
+
+**Timings.** *Settings > Diagnostics > Show the variables panel* starts with a timeline, in milliseconds since the app's process started:
+the screen created, the SDK start called, `initialize()` returned, the message callback set, each time the configuration was requested,
+the first channel message (mixout), the device information answered, the configuration loaded, the channel list available, and the first
+sample in the app that can move the sticks. The same lines go to logcat under the tag `ax12timing` (`adb logcat -s ax12timing`).
+*Show the start-up timings of the last launches* keeps one line for each of the last 10 launches
+(`start | call took | init done | mixout | config | requests | graph`); `graph` is the time until the first stick value reached the
+screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| Out-File -Encoding utf8` to get UTF-8.
 
 ## Looks: one style, icons, settings in groups
 

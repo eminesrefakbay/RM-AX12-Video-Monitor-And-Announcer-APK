@@ -83,9 +83,6 @@ Stable	稳定版
 Nightly	Nightly
 Stable (tested releases only)	稳定版 (仅经过测试的正式版本)
 Nightly (newest build of every push)	Nightly (每次提交的最新构建)
-like RadioMaster's demo	与 RadioMaster 示例相同
-standard (as before)	标准 (与以前相同)
-The start-up method applies the next time the app starts.	启动方式将在应用下次启动时生效。
 top	顶部
 bottom	底部
 BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
@@ -440,9 +437,8 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics	诊断
 Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
 Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
-SDK start-up: {0}  (tap to change; applies at the next start)	SDK 启动方式: {0}  (点按更改; 下次启动生效)
 Show the start-up timings of the last launches...	显示最近几次启动的计时...
-Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.	标准方式是应用一直以来启动遥控器连接的方法。“与 RadioMaster 示例相同”会在后台线程启动, 先请求设备信息, 并在再次请求配置前等待更久。请比较两者的计时。
+The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	遥控器连接在后台线程中启动, 并在应用自己的界面、文件选择器和重建过程中保持运行; 离开应用时才会停止。SDK 自身打开遥控器串口大约需要 12 秒; 计时记录会显示时间花在哪里。
 Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
 About	关于
 About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...

@@ -83,9 +83,6 @@ Stable	Stabil
 Nightly	Nightly
 Stable (tested releases only)	Stabil (nur getestete Releases)
 Nightly (newest build of every push)	Nightly (neuester Build jedes Pushs)
-like RadioMaster's demo	wie RadioMasters Demo
-standard (as before)	Standard (wie bisher)
-The start-up method applies the next time the app starts.	Die Startmethode gilt beim nächsten Start der App.
 top	oben
 bottom	unten
 BATTERY CRITICAL 3.48 V per cell	AKKU KRITISCH 3.48 V pro Zelle
@@ -440,9 +437,8 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics	Diagnose
 Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
 Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
-SDK start-up: {0}  (tap to change; applies at the next start)	SDK-Start: {0}  (zum Ändern tippen; gilt beim nächsten Start)
 Show the start-up timings of the last launches...	Startzeiten der letzten Starts anzeigen...
-Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.	Standard ist die Art, wie die App die Verbindung zur Fernsteuerung immer gestartet hat. "Wie RadioMasters Demo" startet sie im Hintergrund, fragt zuerst die Geräteinformationen ab und wartet länger, bevor die Konfiguration erneut angefordert wird. Vergleiche die Zeiten der beiden.
+The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	Die Verbindung zur Fernsteuerung startet in einem Hintergrund-Thread und läuft weiter, während die eigenen Bildschirme der App, Dateiauswahlen und Neuaufbauten kommen und gehen; sie endet, wenn du die App verlässt. Das SDK selbst braucht etwa 12 Sekunden, um den seriellen Port der Fernsteuerung zu öffnen; die Zeiten zeigen, wohin die Zeit geht.
 Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
 About	Info
 About AX-HUD, licenses and thanks...	Über AX-HUD, Lizenzen und Dank...

@@ -43,22 +43,22 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
 
     private val crsf = CrsfState()
     @Volatile private var started = false          // the SDK may be started on a background thread
-    private var requestDeviceInfo = false
-    private var configRetryMs = 3000
 
-    /** How the SDK is started: the standard way, or like RadioMaster's demo (device information first, a longer wait before asking again). */
-    fun configure(demoLike: Boolean) {
-        requestDeviceInfo = demoLike
-        configRetryMs = if (demoLike) 6000 else 3000
-    }
+    // How the SDK is started, as in RadioMaster's demo: the device information is requested first (and once more when the
+    // configuration is loaded), and the configuration is asked for again only after 6 seconds. The start itself runs on a
+    // background thread (MainActivity). Measured on the radio against the old way: no slower, and the screen is not held up.
+    private val requestDeviceInfo = true
+    private val configRetryMs = 6000
 
     /** When each step of the start happened (see bridge_core.h), or null without the SDK. */
     fun timeline(): DoubleArray? = if (AxSdkJni.loaded) AxSdkJni.nativeTimeline() else null
 
     override fun start(): String? {
         if (!AxSdkJni.loaded) return tr("This build has no RadioMaster SDK files (see the README)")
+        val previousBase = StartupState.nativeBaseMs
         StartupState.nativeBaseMs = SystemClock.elapsedRealtime()      // the bridge's own clock starts now
         val code = AxSdkJni.nativeStart(context.filesDir.absolutePath, requestDeviceInfo, configRetryMs)
+        if (code == 1 && previousBase > 0) StartupState.nativeBaseMs = previousBase     // it was running already: that clock is still the right one
         started = (code == 0 || code == 1)
         return when (code) {
             0, 1 -> null
