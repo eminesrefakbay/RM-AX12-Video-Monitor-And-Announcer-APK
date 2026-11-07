@@ -20,6 +20,16 @@
 **1** live charts of link quality, cell volts and current, **2** radar map with home, your track and range rings, **3** flight statistics,
 **4** stick view with the aux channel bars, **5** the MENU button.
 
+![The AX-HUD menu: six large tiles over the live video, and the amber warning bar](docs/screenshots/hud-menu.jpg)
+
+*The MENU (a photo of the radio's screen): six large tiles with their state: speech on, the pack in use and the aircraft in use. The video
+stays visible behind it. The amber bar along the top is the warning bar; each level has its own shape, here the diamond of a warning.*
+
+![The pre-flight check card, all items ticked and READY](docs/screenshots/hud-preflight.jpg)
+
+*The pre-flight check (a photo of the radio's screen): the aircraft and the pack are named under the title, and every item must be ticked
+before it says READY.*
+
 ![AX-HUD on the ground, waiting for a GPS fix](docs/screenshots/hud-ground.jpg)
 
 *On the ground: the same screen before take-off, waiting for a GPS fix.*
