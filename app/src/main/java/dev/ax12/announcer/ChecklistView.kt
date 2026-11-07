@@ -32,12 +32,12 @@ class ChecklistView(context: Context) : View(context) {
     private var textPx = 16f * density
 
     init {
-        bg.color = 0xDD1E1E1E.toInt()
-        edge.color = 0xFFE0E0E0.toInt()
+        bg.color = CardStyle.BG
+        edge.color = CardStyle.EDGE
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
         labelPaint.color = 0xFFFFFFFF.toInt()
-        titlePaint.color = 0xFF9CDCFE.toInt()
+        titlePaint.color = CardStyle.TITLE
         titlePaint.isFakeBoldText = true
         footPaint.isFakeBoldText = true
         markLine.style = Paint.Style.STROKE
@@ -90,8 +90,8 @@ class ChecklistView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRoundRect(rect, 10f * density, 10f * density, bg)
-        canvas.drawRoundRect(rect, 10f * density, 10f * density, edge)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), bg)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), edge)
         var y = pad() + textPx
         canvas.drawText(title, pad(), y, titlePaint)
         if (subtitle.isNotEmpty()) {

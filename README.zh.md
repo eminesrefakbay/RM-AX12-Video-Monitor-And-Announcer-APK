@@ -34,3 +34,7 @@
 感谢 **RadioMaster** 公开发布 AX SDK, 使本应用成为可能。AX-HUD 是独立项目, 与 RadioMaster 无关联。
 
 完整说明 (构建、串口锁、规则、测试) 请见[英文 README](README.md)。翻译修正请见 [TRANSLATING.md](TRANSLATING.md)。
+
+## 许可证
+
+AX-HUD 自身的代码采用 **MIT 许可证**: 见 [LICENSE](LICENSE)。RadioMaster SDK、Qt 库以及 APK 内的其他组件保留各自的许可证, 它们连同全文列在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 中, 也可在应用的 *设置 > 关于* 中查看。

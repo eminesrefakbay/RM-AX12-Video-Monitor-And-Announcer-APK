@@ -63,7 +63,7 @@ class RulesPanel(
 
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(0xF01E1E1E.toInt())
+        root.setBackgroundColor(CardStyle.PANEL)
         root.setPadding(dp(16), dp(10), dp(16), dp(10))
         root.visibility = View.GONE
         root.isClickable = true                       // swallow touches so the video behind is not used

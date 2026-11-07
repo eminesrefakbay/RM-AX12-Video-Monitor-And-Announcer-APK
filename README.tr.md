@@ -34,3 +34,7 @@ Uygulamanın internet izni yalnızca github.com'dan güncelleme bilgisini ve APK
 AX-HUD'ı mümkün kılan AX SDK'yı yayımladığı için **RadioMaster**'a teşekkürler. AX-HUD bağımsız bir projedir ve RadioMaster ile bağlantılı değildir.
 
 Tüm ayrıntılar (derleme, seri kilit, kurallar, testler) için [İngilizce README](README.md) dosyasına bakın. Çeviri düzeltmeleri için: [TRANSLATING.md](TRANSLATING.md).
+
+## Lisans
+
+AX-HUD'un kendi kodu **MIT Lisansı** ile yayımlanır: [LICENSE](LICENSE). RadioMaster SDK'sı, Qt kütüphaneleri ve APK'nın içindeki diğer parçalar kendi lisanslarını korur; bunlar [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) dosyasında ve uygulamada *Ayarlar > Hakkında* altında tam metinleriyle listelenir.

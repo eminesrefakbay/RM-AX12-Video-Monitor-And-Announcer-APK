@@ -34,3 +34,7 @@ Die Internet-Berechtigung dient nur dazu, die Update-Information und die APK von
 Danke an **RadioMaster** für die Veröffentlichung des AX SDK, das diese App möglich macht. AX-HUD ist ein unabhängiges Projekt und nicht mit RadioMaster verbunden.
 
 Alle Einzelheiten (Bauen, serielle Sperre, Regeln, Tests) stehen im [englischen README](README.md). Korrekturen an den Übersetzungen: [TRANSLATING.md](TRANSLATING.md).
+
+## Lizenz
+
+Der eigene Code von AX-HUD steht unter der **MIT-Lizenz**: [LICENSE](LICENSE). Das RadioMaster-SDK, die Qt-Bibliotheken und die übrigen Teile im APK behalten ihre eigenen Lizenzen; sie sind mit den vollen Texten in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) und in der App unter *Einstellungen > Über* aufgeführt.

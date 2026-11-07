@@ -37,14 +37,14 @@ class FlightStatsView(context: Context) : View(context) {
     private var textPx = 15f * density
 
     init {
-        bg.color = 0xCC1E1E1E.toInt()
-        edge.color = 0xFFE0E0E0.toInt()
+        bg.color = CardStyle.BG
+        edge.color = CardStyle.EDGE
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
         labelPaint.color = 0xFFB0BEC5.toInt()
         valuePaint.color = 0xFFFFFFFF.toInt()
         valuePaint.isFakeBoldText = true
-        titlePaint.color = 0xFF9CDCFE.toInt()
+        titlePaint.color = CardStyle.TITLE
         titlePaint.isFakeBoldText = true
         barBg.color = 0xFF37474F.toInt()
         barFill.color = 0xFF66BB6A.toInt()
@@ -92,8 +92,8 @@ class FlightStatsView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRoundRect(rect, 8f * density, 8f * density, bg)
-        canvas.drawRoundRect(rect, 8f * density, 8f * density, edge)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), bg)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), edge)
         var y = pad() + textPx * 0.9f
         canvas.drawText(title, pad(), y, titlePaint)
         for (l in lines) {

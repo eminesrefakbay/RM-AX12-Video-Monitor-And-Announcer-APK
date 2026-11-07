@@ -64,6 +64,8 @@ class MainActivity : Activity() {
     private lateinit var radarView: RadarView
     private lateinit var checkView: ChecklistView
     private lateinit var chartView: ChartView
+    private lateinit var aboutPanel: AboutPanel
+    private val fader = CardFader()             // cards fade in and out
     private val chartModel = ChartModel()
     private var chartOn = false
     private val flightStats = FlightStats()
@@ -103,6 +105,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Icons.load(this)
         setContentView(R.layout.activity_main)
 
         texture = findViewById(R.id.texture)
@@ -190,10 +193,12 @@ class MainActivity : Activity() {
             check = true
         )
         settingsPanel = SettingsPanel(this, settingsHost)
+        aboutPanel = AboutPanel(this) { aboutText() }
         frame.addView(rulesPanel.root, full)
         frame.addView(warnPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(checkPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(settingsPanel.root, FrameLayout.LayoutParams(full))
+        frame.addView(aboutPanel.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
             this,
@@ -228,6 +233,7 @@ class MainActivity : Activity() {
     override fun onBackPressed() {
         if (splash?.isShowing == true) splash?.dismiss()
         else if (editingLayout) endLayoutEdit()
+        else if (aboutPanel.isShowing) aboutPanel.back()
         else if (mainMenu.isShowing) mainMenu.hide()
         else if (warnPanel.isShowing) warnPanel.hide()
         else if (checkPanel.isShowing) checkPanel.hide()
@@ -244,7 +250,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || editingLayout
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -563,6 +569,7 @@ class MainActivity : Activity() {
         override fun testChannelsOn(): Boolean = testVisible
         override fun setTestChannelsOn(on: Boolean) = setTestVisible(on)
         override fun about(): String = this@MainActivity.aboutText()
+        override fun openAbout() = aboutPanel.show()
 
         override fun tileOn(tile: String): Boolean = Prefs.bool(this@MainActivity, tile + "On", tile != "chart")
         override fun setTileOn(tile: String, on: Boolean) {
@@ -671,17 +678,17 @@ class MainActivity : Activity() {
         chartOn = Prefs.bool(this, "chartOn", false)
         applyCharts()
         chartView.setLevel(Prefs.int(this, "chartSize", 1).coerceIn(0, 2))
-        chartView.alpha = floatArrayOf(0.5f, 0.75f, 1f)[Prefs.int(this, "chartOpacity", 1).coerceIn(0, 2)]
+        fader.setOpacity(chartView, floatArrayOf(0.5f, 0.75f, 1f)[Prefs.int(this, "chartOpacity", 1).coerceIn(0, 2)])
         layoutTile(chartView, "chart") { placeTile(chartView, Prefs.int(this, "chartPos", defaultTilePosition("chart")).coerceIn(0, 4)) }
         val alpha = floatArrayOf(0.5f, 0.75f, 1f)
         statsView.setTextSp(floatArrayOf(12f, 15f, 19f)[Prefs.int(this, "statsSize", 1).coerceIn(0, 2)])
-        statsView.alpha = alpha[Prefs.int(this, "statsOpacity", 1).coerceIn(0, 2)]
+        fader.setOpacity(statsView, alpha[Prefs.int(this, "statsOpacity", 1).coerceIn(0, 2)])
         layoutTile(statsView, "stats") { placeTile(statsView, Prefs.int(this, "statsPos", defaultTilePosition("stats")).coerceIn(0, 4)) }
         radarView.setSizeDp(intArrayOf(110, 150, 210)[Prefs.int(this, "radarSize", 1).coerceIn(0, 2)])
-        radarView.alpha = alpha[Prefs.int(this, "radarOpacity", 1).coerceIn(0, 2)]
+        fader.setOpacity(radarView, alpha[Prefs.int(this, "radarOpacity", 1).coerceIn(0, 2)])
         layoutTile(radarView, "radar") { placeTile(radarView, Prefs.int(this, "radarPos", defaultTilePosition("radar")).coerceIn(0, 4)) }
         checkView.setTextSp(floatArrayOf(13f, 16f, 20f)[Prefs.int(this, "checkSize", 1).coerceIn(0, 2)])
-        checkView.alpha = alpha[Prefs.int(this, "checkOpacity", 1).coerceIn(0, 2)]
+        fader.setOpacity(checkView, alpha[Prefs.int(this, "checkOpacity", 1).coerceIn(0, 2)])
         layoutTile(checkView, "check") { placeTile(checkView, Prefs.int(this, "checkPos", defaultTilePosition("check")).coerceIn(0, 4)) }
     }
 
@@ -706,13 +713,13 @@ class MainActivity : Activity() {
     private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long) {
         chartModel.sample(numbers, now)
         val showChart = chartOn && chartModel.names.isNotEmpty()
-        chartView.visibility = if (showChart) View.VISIBLE else View.GONE
+        fader.set(chartView, showChart)
         if (showChart) chartView.refresh(now)
         val fs = flightStats
         val flight = fs.armed() || fs.hasFlight() || editingLayout
 
         val showStats = statsOn && flight
-        statsView.visibility = if (showStats) View.VISIBLE else View.GONE
+        fader.set(statsView, showStats)
         if (showStats) {
             val rows = Prefs.int(this, "statsRows", 7)
             val lines = ArrayList<FlightStatsView.Line>()
@@ -733,12 +740,12 @@ class MainActivity : Activity() {
         }
 
         val showRadar = radarOn && (fs.hasHome() || editingLayout)
-        radarView.visibility = if (showRadar) View.VISIBLE else View.GONE
+        fader.set(radarView, showRadar)
         if (showRadar) radarView.invalidate()
 
         val cm = checkModel
         val showCheck = checkOn && cm != null && (!fs.armed() || editingLayout) && (!cm.allUnknown() || editingLayout)
-        checkView.visibility = if (showCheck) View.VISIBLE else View.GONE
+        fader.set(checkView, showCheck)
         if (showCheck && cm != null) {
             val rows = ArrayList<ChecklistView.Row>()
             for (it in cm.items(numbers, texts)) {
@@ -883,8 +890,8 @@ class MainActivity : Activity() {
         val boxDp = intArrayOf(64, 96, 132)[Prefs.int(this, "sticksSize", 1).coerceIn(0, 2)]
         sticksView.configure(layout, Prefs.int(this, "stickInvert", 0), names, boxDp)
         sticksView.setBars(AuxBars.decode(Prefs.barsConfig(this)), Prefs.bool(this, "barsOn", true))
-        sticksView.alpha = floatArrayOf(0.35f, 0.65f, 0.95f)[Prefs.int(this, "sticksOpacity", 1).coerceIn(0, 2)]
-        sticksView.visibility = if (sticksEnabled) View.VISIBLE else View.GONE
+        fader.setOpacity(sticksView, floatArrayOf(0.35f, 0.65f, 0.95f)[Prefs.int(this, "sticksOpacity", 1).coerceIn(0, 2)])
+        fader.set(sticksView, sticksEnabled)
 
         val pos = Prefs.int(this, "sticksPos", 0).coerceIn(0, 4)
         val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)

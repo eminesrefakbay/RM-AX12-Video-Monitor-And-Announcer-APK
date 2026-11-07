@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.12.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 711 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 744 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -33,7 +33,7 @@ different language than the screen. German and Chinese have not been checked by 
 
 ## Flight overlays: statistics, radar and pre-flight checklist
 
-**Settings > Flight overlays** switches each card on or off and sets its size, position (four corners or the
+**Settings > Overlays on the video > Flight overlays** switches each card on or off and sets its size, position (four corners or the
 centre) and opacity.
 
 * **Arm detection:** the arm switch (default channel 5, armed at 1750 us or more, disarmed below 1650, held 0.3 s)
@@ -48,13 +48,13 @@ centre) and opacity.
   shrink during the flight.
 * **Pre-flight checklist:** a card shown while disarmed with one row per check: green tick, red cross, or a grey dash
   when there is no value yet; READY or NOT READY at the bottom. The checks are **rules**, edited like the warnings
-  (Settings > Flight overlays > *Edit the checks*): condition, thresholds, `and`/`or`, and a label that can hold live
+  (Settings > Overlays on the video > Flight overlays > *Edit the checks*): condition, thresholds, `and`/`or`, and a label that can hold live
   values such as `{sats}`. Defaults: battery connected, battery full (4.15 V per cell or more), 10 or more satellites,
   link quality 95 % or more, airmode switch on, arm switch off. The card is hidden when nothing is known yet.
 
 ## OSD overlays: sticks, channel bars and the warning status bar
 
-**Settings > OSD overlays** controls what is drawn over the video.
+**Settings > Overlays on the video > OSD overlays** controls what is drawn over the video.
 
 * **Stick view:** two boxes with a dot show roll, pitch, yaw and throttle from the channel values the radio sends.
   Size, position (five places) and opacity are settings. *Stick mode, channels and direction* sets the stick mode
@@ -69,7 +69,7 @@ centre) and opacity.
   stick view** on the video. One switch shows or hides the whole group.
 * **Warning status bar:** one line at the top (or bottom) that lists every active warning, coloured by the worst:
   **critical = red and blinking, warning = amber, info = blue**. Warnings are **rules**, edited like the sound
-  rules (Settings > OSD overlays > *Edit the warning rules*): pick variables from the list, thresholds, `and` / `or`,
+  rules (Settings > Overlays on the video > OSD overlays > *Edit the warning rules*): pick variables from the list, thresholds, `and` / `or`,
   *Detect switch*, text. A warning is shown **while its condition is true** (a sound rule speaks once when it becomes
   true). Severity is part of the rule text: `!text` critical, `*text` info, `text` warning. A **timeout** (`@5` after the text, or
   the *Hide after* box in the editor) hides a warning N seconds after it turned on even if its condition stays true, for
@@ -96,7 +96,7 @@ always visible), and it hides while a panel is open so it never covers a panel's
 **Settings** holds the rest: the MENU button option, video (camera, rotate, fit or fill), speech (on/off, test),
 the sound rules files, and the diagnostics (variables panel, test channels).
 
-**Export / import of the sound rules:** Settings > Sound rules > *Export sound rules to a file...* opens Android's
+**Export / import of the sound rules:** Settings > Rules and backup > Sound rules > *Export sound rules to a file...* opens Android's
 file picker and saves a plain text file (`ax12-sound-rules.txt`, rules with one comment line on top). *Import* reads
 such a file, shows how many rules it has and any problems, and replaces your rules only after you confirm. The old
 rules are kept: *Restore the rules from before the last import* swaps them back (press again to swap forward).
@@ -106,7 +106,7 @@ On a device without a file picker the file is written to the app's own folder an
 
 A **battery profile** is a kind of pack: its cell count and its volts-per-cell limits (low warning, critical, full). Two are
 there from the start (Li-ion 6S: 3.70 / 3.55 / 4.15, LiPo 6S: 3.85 / 3.70 / 4.15); you can edit them and add more
-(*Settings > Battery*). **One tap on the MENU's Battery item switches the profile**; the app says its name aloud, shows the
+(*Settings > Aircraft and battery > Battery*). **One tap on the MENU's Battery item switches the profile**; the app says its name aloud, shows the
 limits, and the pre-flight checklist carries the profile's name in its title, so you can check it before every flight.
 
 Rules, warnings and checks can use:
@@ -122,7 +122,7 @@ as before. The starting rules, warnings and checks use the new names; an existin
 
 ## Moving and resizing the cards
 
-*Settings > Layout of the cards > Move and resize the cards with your finger* opens an edit mode over the video. **Drag a card to
+*Settings > Overlays on the video > Layout of the cards > Move and resize the cards with your finger* opens an edit mode over the video. **Drag a card to
 move it; drag the round handle at its bottom right corner to resize it.** The cards you can edit are the stick view, the flight
 statistics, the radar, the pre-flight checklist and the live charts (switched-on ones; cards that are only shown at certain moments,
 like the radar before a flight or the checklist while armed, are shown while you edit). A card snaps lightly to the screen edges and
@@ -134,7 +134,7 @@ Settings. The layout is shared by all aircraft and is part of the full settings 
 
 ## Live charts
 
-*Settings > Flight overlays > Live charts* shows **up to four small graphs**, one per value, of the **last 30, 60 or 120 seconds**.
+*Settings > Overlays on the video > Flight overlays > Live charts* shows **up to four small graphs**, one per value, of the **last 30, 60 or 120 seconds**.
 Each graph has its own scale, its name and unit, the value now, and the ends of its axis. Pick the values from the same list the rule
 editor uses (*Charts: choose the values and the time window*); the default is link quality, volts per cell and current. Values with a
 natural range keep a fixed scale (link quality is always 0 to 100, a channel 1000 to 2000), so a small wobble stays small; current, speed
@@ -145,9 +145,22 @@ Settings) and fill as soon as the app runs.
 Two new values come with them, usable in charts **and in rules**: **`height`** (metres above where you armed) and **`dist`** (metres from
 home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
 
+## Looks: one style, icons, settings in groups
+
+* **Settings are grouped.** *Settings* shows eight collapsible groups with icons (Language and display, Aircraft and battery,
+  Overlays on the video, Video and speech, Rules and backup, Updates, Diagnostics, About); tap a group to open it, one at a time. The
+  first group is titled in four languages on purpose, so it can always be found.
+* **One look everywhere.** Every card (sticks, statistics, radar, checklist, charts) shares the same background, edge, corners and
+  colours, and so do the menu and the panels. Buttons are flat, rounded and dark, and every dialog is dark with light blue buttons.
+* **Icons** in the MENU and in the Settings groups. They are described in a small text file (`app/src/main/assets/icons.txt`), so they
+  can be changed or extended without touching the code.
+* **Soft fades.** Cards fade in and out instead of popping; the MENU fades in.
+* **About page** (*Settings > About > About AX-HUD, licenses and thanks*): the license of the app, a link to the project, and every
+  library and SDK inside the app with its license text, readable offline.
+
 ## Aircraft profiles and packs
 
-Each aircraft can have its own setup. *Settings > Aircraft* (and the MENU's **Aircraft** item) switch between them; *Manage the
+Each aircraft can have its own setup. *Settings > Aircraft and battery > Aircraft* (and the MENU's **Aircraft** item) switch between them; *Manage the
 aircraft* adds one (a copy of the current setup, or the starting settings), renames and deletes.
 
 * **Per aircraft:** sound rules, warning rules, pre-flight checks, battery profiles and packs, aux channel bars (names),
@@ -158,13 +171,13 @@ aircraft* adds one (a copy of the current setup, or the starting settings), rena
 * The pre-flight checklist shows the aircraft and the pack under its title, so you see before arming that the right setup is loaded.
 * The **full settings backup includes every aircraft**.
 
-**Packs** are the named packs of an aircraft (*Settings > Battery > Edit the packs*): a name, the battery profile it uses and its
+**Packs** are the named packs of an aircraft (*Settings > Aircraft and battery > Battery > Edit the packs*): a name, the battery profile it uses and its
 capacity (for your records). With packs, the MENU's Battery item chooses the **pack** and the pack chooses the profile (Li-ion or
 LiPo limits); the voice says the pack's name. With no packs it switches the profile directly, as before.
 
 ## Backup of all settings
 
-*Settings > Backup of all settings* writes **one text file with everything**: sound rules, warning rules, pre-flight checks,
+*Settings > Rules and backup > Backup of all settings* writes **one text file with everything**: sound rules, warning rules, pre-flight checks,
 overlays and their places, stick and channel-bar settings, arm detection, battery profiles, camera, language and update
 channel. *Import* shows what the file contains, replaces the settings in it, and keeps the old ones: *Restore* swaps them
 back (press again to swap forward). Only known settings with valid values are read, so a damaged or hand-edited file cannot
@@ -181,7 +194,7 @@ hold time, start-up behaviour and unit. The GUI and the text editor edit the sam
 comments and settings in the text are kept. A switched-off rule is stored as a comment starting with `#off`.
 Rules the GUI cannot show (mixed `and`/`or`) appear as "Advanced rule" and open the text editor.
 
-**Settings > Edit the rules as text (advanced)** edits the same rules as plain text, one rule per line:
+**Settings > Rules and backup > Edit the rules as text (advanced)** edits the same rules as plain text, one rule per line:
 
 ```
 ch5 >= 1500 -> drone armed | drone disarmed          text after | is spoken when it turns false
@@ -270,7 +283,7 @@ On a fresh start the app shows the logo with the version (name, version number a
 itself) for **2 seconds**, then fades out. Two seconds is the usual range for a splash screen (1 to 3 s): long enough to
 read, short enough not to get in the way. A tap or the Back key skips it. The app starts up behind it (camera, radio
 link, settings), so it adds no waiting. Android's own start-up screen already shows the same navy and logo, so there is no
-white flash before it. A switch in Settings > Display turns the splash off.
+white flash before it. A switch in Settings > Language / Dil / Sprache > Display turns the splash off.
 
 ## Logo
 
@@ -284,3 +297,10 @@ pure navy (no light fringe).
 
 Thanks to **RadioMaster** for publishing the AX SDK that makes this app possible. AX-HUD is an independent project and is not
 affiliated with RadioMaster. The app also includes the Qt libraries that come with the SDK (LGPL).
+
+## License
+
+AX-HUD's own code is released under the **MIT License**: use it, change it, share it, also in your own projects, as long as the
+license notice stays with it. See [LICENSE](LICENSE). The MIT License covers the files in this repository only. The RadioMaster SDK,
+the Qt libraries and the other components that are inside the APK keep their own licenses; they are listed, with links and the full
+texts, in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and in the app under *Settings > About > About AX-HUD, licenses and thanks*.

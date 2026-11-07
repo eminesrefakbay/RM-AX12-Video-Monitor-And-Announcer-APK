@@ -1,4 +1,22 @@
 # German translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+About AX-HUD	Über AX-HUD
+Close	Schließen
+The license text could not be read.	Der Lizenztext konnte nicht gelesen werden.
+Back	Zurück
+No web browser found. The address is: {0}	Kein Webbrowser gefunden. Die Adresse lautet: {0}
+Video monitor, heads-up display and voice announcer for the RadioMaster AX12.	Videomonitor, Head-up-Anzeige und Sprachansage für die RadioMaster AX12.
+License	Lizenz
+AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD ist freie Software unter der MIT-Lizenz: Du darfst sie benutzen, kopieren, ändern und weitergeben, auch in eigenen Projekten, solange der Lizenzhinweis erhalten bleibt. Sie wird ohne jede Gewährleistung geliefert.
+Read the {0}	{0} lesen
+Project page and source code: {0}	Projektseite und Quellcode: {0}
+Open the project page	Projektseite öffnen
+Open-source libraries and SDKs	Open-Source-Bibliotheken und SDKs
+These parts are inside the app. Each keeps its own license; tap to read it.	Diese Teile stecken in der App. Jedes hat seine eigene Lizenz; zum Lesen antippen.
+Read: {0}	Lesen: {0}
+Open the page	Seite öffnen
+Thanks	Dank
+Thank you, RadioMaster, for publishing the AX SDK that makes this app possible.	Danke, RadioMaster, dass ihr das AX-SDK veröffentlicht habt, das diese App möglich macht.
+AX-HUD is an independent project. It is not affiliated with, endorsed by or supported by RadioMaster. RadioMaster and AX12 are names of their owners.	AX-HUD ist ein unabhängiges Projekt. Es ist nicht mit RadioMaster verbunden und wird von RadioMaster weder empfohlen noch unterstützt. RadioMaster und AX12 sind Namen ihrer Inhaber.
 Give the aircraft a name.	Gib dem Fluggerät einen Namen.
 There is already an aircraft with this name: {0}.	Es gibt bereits ein Fluggerät mit diesem Namen: {0}.
 That aircraft does not exist.	Dieses Fluggerät gibt es nicht.
@@ -32,6 +50,11 @@ Preview failed: {0}	Vorschau fehlgeschlagen: {0}
 Camera session failed	Kamerasitzung fehlgeschlagen
 Session error: {0}	Sitzungsfehler: {0}
 last {0} s	letzte {0} s
+This app: the HUD, the voice announcer, the rules and the settings.	Diese App: das HUD, die Sprachansage, die Regeln und die Einstellungen.
+Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Liest die Kanäle und die Telemetrie der Fernsteuerung. Ihre Bibliotheken sind in der App enthalten. Danke, RadioMaster, dass ihr sie veröffentlicht habt.
+The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	Die Qt-Bibliotheken, die mit dem RadioMaster-SDK kommen, so wie sie mitgeliefert werden. Quellcode: download.qt.io.
+The C++ runtime of the Android NDK, needed by the SDK.	Die C++-Laufzeit des Android-NDK, die das SDK braucht.
+The standard library of the Kotlin language, which the app is written in.	Die Standardbibliothek der Sprache Kotlin, in der die App geschrieben ist.
 Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den runden Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
 Reset the layout	Layout zurücksetzen
 Done	Fertig
@@ -236,7 +259,6 @@ Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	Rege
 and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	and / or erlaubt.  ! = dringend.  @10 = alle 10 s wiederholen.  Einstellungen: hysteresis = 25, hold = 100, initial = on/off.  # = Kommentar.
 Check	Prüfen
 Sample	Beispiel
-Close	Schließen
 OK: {0} rules	OK: {0} Regeln
 The file is empty.	Die Datei ist leer.
 The file is too large to be a rules file.	Die Datei ist zu groß für eine Regeldatei.
@@ -332,6 +354,7 @@ Display	Anzeige
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
 Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)
+Aircraft and battery	Fluggerät und Akku
 Active aircraft: {0}  (tap to choose)	Aktives Fluggerät: {0}  (zum Wählen tippen)
 Manage the aircraft (add, rename, delete)...	Fluggeräte verwalten (hinzufügen, umbenennen, löschen)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Jedes Fluggerät behält seine eigenen Regeln, Warnregeln, Checks, Akkuprofile und Akkus, Kanalbalken, Stick-Zuordnung und seinen Arm-Schalter. Aussehen der Einblendungen, Sprache und Updates sind gemeinsam.
@@ -340,6 +363,7 @@ Active battery profile: {0}  (tap to switch)	Aktives Akkuprofil: {0}  (zum Wechs
 Edit the packs of this aircraft...	Akkus dieses Fluggeräts bearbeiten...
 Edit the battery profiles (cells and voltage limits)...	Akkuprofile bearbeiten (Zellen und Spannungsgrenzen)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Regeln und Checks können den Wert cell (Volt pro Zelle) und die Grenzen $low, $crit, $full des aktiven Profils nutzen, zum Beispiel: cell < $low -> Akku niedrig. Beim Wechsel des Profils ändern sich die Zahlen, nicht die Regeln.
+Overlays on the video	Einblendungen im Video
 OSD overlays (drawn over the video)	OSD-Einblendungen (über das Video gezeichnet)
 Stick view: roll, pitch, yaw and throttle	Stick-Ansicht: Roll, Nick, Gier und Gas
 Stick size: {0}  (tap to change)	Stick-Größe: {0}  (zum Ändern tippen)
@@ -374,6 +398,7 @@ Move and resize the cards with your finger...	Karten mit dem Finger verschieben 
 Put every card back in its corner at normal size	Jede Karte in ihre Ecke zurück, in normaler Größe
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Jede Karte in ihre Ecke zurück, in normaler Größe? Die gewählten Positionen und Größen werden vergessen.
 Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Ziehe eine Karte, um sie zu verschieben, und ihren runden Griff, um die Größe zu ändern. Ausgeschaltete Karten werden nicht gezeigt. Die Größe-Einstellung einer Karte ist ihre Startgröße; das Ändern multipliziert sie.
+Video and speech	Video und Sprache
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (zum Wählen des HDMI-Eingangs tippen)
 Rotate video: now {0} degrees  (tap to turn 90)	Video drehen: jetzt {0} Grad  (zum Drehen um 90 tippen)
@@ -382,6 +407,7 @@ fill (stretch)	füllen (strecken)
 Speech	Sprache
 Speech on	Sprache an
 Speak a test sentence	Testsatz sprechen
+Rules and backup	Regeln und Sicherung
 Export sound rules to a file...	Sprachregeln in eine Datei exportieren...
 Import sound rules from a file...	Sprachregeln aus einer Datei importieren...
 Restore the rules from before the last import, reset or restore	Regeln von vor dem letzten Import, Zurücksetzen oder Wiederherstellen zurückholen
@@ -396,16 +422,17 @@ Import all settings from a file...	Alle Einstellungen aus einer Datei importiere
 Restore the settings from before the last import	Einstellungen von vor dem letzten Import wiederherstellen
 Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	Zu den Einstellungen von vor dem letzten Import zurückwechseln? Die aktuellen Einstellungen bleiben erhalten, du kannst erneut wechseln.
 One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	Eine Datei mit allem: Sprachregeln, Warnregeln, Checks, Einblendungen, Kanalbalken, Akkuprofile und Sprache. Die Sprachregeln haben oben außerdem ihren eigenen Export.
-Diagnostics	Diagnose
-Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
-Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
-Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
-Updates (from GitHub)	Updates (von GitHub)
+Updates	Updates
 Check for updates now	Jetzt nach Updates suchen
 Channel: {0}  (tap to change)	Kanal: {0}  (zum Ändern tippen)
 Check at start-up (needs internet)	Beim Start prüfen (Internet nötig)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android lässt dich jedes Update bestätigen. Beim ersten Mal fragt es auch, ob AX-HUD Installationen erlaubt sein sollen. Aktualisiere nie während eines Fluges.
+Diagnostics	Diagnose
+Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
+Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
+Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
 About	Info
+About AX-HUD, licenses and thanks...	Über AX-HUD, Lizenzen und Dank...
 AX12 video monitor, HUD and announcer	AX12 Videomonitor, HUD und Ansager
 AX-HUD  version {0}  (build {1})	AX-HUD  Version {0}  (Build {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Verwende {variable} für einen Live-Wert, zum Beispiel {vbat/6:2}.
@@ -429,7 +456,6 @@ No connection	Keine Verbindung
 No build has been published on this channel yet.	Auf diesem Kanal wurde noch kein Build veröffentlicht.
 Could not check: {0}\n\nIs the phone hotspot on?	Prüfung nicht möglich: {0}\n\nIst der Handy-Hotspot an?
 no connection	keine Verbindung
-Updates	Updates
 You have the latest build: version {0} (build {1})	Du hast den neuesten Build: Version {0} (Build {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD-Update verfügbar: {0} (Build {1}). Öffne Einstellungen, dann Updates.
 Update available	Update verfügbar
@@ -441,7 +467,6 @@ Downloading {0}	{0} wird heruntergeladen
 Download failed	Download fehlgeschlagen
 Allow installing	Installation erlauben
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android braucht deine Erlaubnis, bevor AX-HUD ein Update installieren kann. Öffne die Seite, schalte es für AX-HUD ein, komm zurück und starte das Update erneut. Der Download bleibt erhalten und wird nicht zweimal geladen.
-Open the page	Seite öffnen
 Could not start the installation	Die Installation konnte nicht gestartet werden
 unknown error	unbekannter Fehler
 Updated. The app will reopen.	Aktualisiert. Die App öffnet sich erneut.

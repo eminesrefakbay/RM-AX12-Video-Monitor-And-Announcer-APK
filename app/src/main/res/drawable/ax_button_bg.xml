@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The look of every button: flat, rounded, three states. The inset keeps buttons that are stacked from touching. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <inset android:insetTop="3dp" android:insetBottom="3dp">
+            <shape android:shape="rectangle">
+                <solid android:color="#242D36" />
+                <corners android:radius="8dp" />
+            </shape>
+        </inset>
+    </item>
+    <item android:state_pressed="true">
+        <inset android:insetTop="3dp" android:insetBottom="3dp">
+            <shape android:shape="rectangle">
+                <solid android:color="#4F6272" />
+                <corners android:radius="8dp" />
+                <stroke android:width="1dp" android:color="#4FC3F7" />
+            </shape>
+        </inset>
+    </item>
+    <item>
+        <inset android:insetTop="3dp" android:insetBottom="3dp">
+            <shape android:shape="rectangle">
+                <solid android:color="#37474F" />
+                <corners android:radius="8dp" />
+                <stroke android:width="1dp" android:color="#546E7A" />
+            </shape>
+        </inset>
+    </item>
+</selector>

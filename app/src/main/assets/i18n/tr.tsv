@@ -1,4 +1,22 @@
 # Turkish translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+About AX-HUD	AX-HUD hakkında
+Close	Kapat
+The license text could not be read.	Lisans metni okunamadı.
+Back	Geri
+No web browser found. The address is: {0}	Web tarayıcısı bulunamadı. Adres: {0}
+Video monitor, heads-up display and voice announcer for the RadioMaster AX12.	RadioMaster AX12 için video monitörü, ekran üstü gösterge ve sesli anons uygulaması.
+License	Lisans
+AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD, MIT Lisansı altında özgür bir yazılımdır: lisans bildirimi onunla birlikte kaldığı sürece, kendi projelerinizde de dahil olmak üzere kullanabilir, kopyalayabilir, değiştirebilir ve paylaşabilirsiniz. Hiçbir garanti verilmez.
+Read the {0}	{0} metnini oku
+Project page and source code: {0}	Proje sayfası ve kaynak kodu: {0}
+Open the project page	Proje sayfasını aç
+Open-source libraries and SDKs	Açık kaynak kütüphaneler ve SDK'lar
+These parts are inside the app. Each keeps its own license; tap to read it.	Bu parçalar uygulamanın içindedir. Her biri kendi lisansını taşır; okumak için dokunun.
+Read: {0}	Oku: {0}
+Open the page	Sayfayı aç
+Thanks	Teşekkürler
+Thank you, RadioMaster, for publishing the AX SDK that makes this app possible.	Bu uygulamayı mümkün kılan AX SDK'yı yayımladığı için RadioMaster'a teşekkürler.
+AX-HUD is an independent project. It is not affiliated with, endorsed by or supported by RadioMaster. RadioMaster and AX12 are names of their owners.	AX-HUD bağımsız bir projedir. RadioMaster ile bağlantılı değildir, onun tarafından onaylanmamış veya desteklenmemiştir. RadioMaster ve AX12, sahiplerinin adlarıdır.
 Give the aircraft a name.	Hava aracına bir ad verin.
 There is already an aircraft with this name: {0}.	Bu adda bir hava aracı zaten var: {0}.
 That aircraft does not exist.	Böyle bir hava aracı yok.
@@ -32,6 +50,11 @@ Preview failed: {0}	Önizleme başarısız: {0}
 Camera session failed	Kamera oturumu başarısız
 Session error: {0}	Oturum hatası: {0}
 last {0} s	son {0} sn
+This app: the HUD, the voice announcer, the rules and the settings.	Bu uygulama: HUD, sesli anons, kurallar ve ayarlar.
+Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri uygulamanın içindedir. Yayımladığı için teşekkürler, RadioMaster.
+The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
+The C++ runtime of the Android NDK, needed by the SDK.	Android NDK'nın C++ çalışma zamanı; SDK'nın ihtiyaç duyduğu.
+The standard library of the Kotlin language, which the app is written in.	Uygulamanın yazıldığı Kotlin dilinin standart kütüphanesi.
 Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için yuvarlak tutamacı sürükleyin. Bitince Tamam'a dokunun.
 Reset the layout	Yerleşimi sıfırla
 Done	Tamam
@@ -236,7 +259,6 @@ Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	Meti
 and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	and / or kullanılabilir.  ! = acil.  @10 = her 10 sn'de tekrar.  Ayarlar: hysteresis = 25, hold = 100, initial = on/off.  # = yorum.
 Check	Kontrol et
 Sample	Örnek
-Close	Kapat
 OK: {0} rules	Tamam: {0} kural
 The file is empty.	Dosya boş.
 The file is too large to be a rules file.	Dosya bir kural dosyası olamayacak kadar büyük.
@@ -332,6 +354,7 @@ Display	Ekran
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
 Start-up splash screen (logo and version, 2 seconds)	Açılış ekranı (logo ve sürüm, 2 saniye)
+Aircraft and battery	Hava aracı ve batarya
 Active aircraft: {0}  (tap to choose)	Etkin hava aracı: {0}  (seçmek için dokunun)
 Manage the aircraft (add, rename, delete)...	Hava araçlarını yönet (ekle, yeniden adlandır, sil)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Her hava aracı kendi kurallarını, uyarı kurallarını, kontrollerini, batarya profillerini ve paketlerini, kanal çubuklarını, stick eşlemesini ve arm anahtarını saklar. Ekran katmanlarının görünümü, dil ve güncellemeler ortaktır.
@@ -340,6 +363,7 @@ Active battery profile: {0}  (tap to switch)	Etkin batarya profili: {0}  (deği�
 Edit the packs of this aircraft...	Bu hava aracının paketlerini düzenle...
 Edit the battery profiles (cells and voltage limits)...	Batarya profillerini düzenle (hücre sayısı ve voltaj sınırları)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Kurallar ve kontroller, cell değerini (hücre başına volt) ve etkin profilin $low, $crit, $full sınırlarını kullanabilir; örneğin: cell < $low -> batarya düşük. Profili değiştirmek sayıları değiştirir, kuralları değil.
+Overlays on the video	Videonun üzerindeki katmanlar
 OSD overlays (drawn over the video)	OSD katmanları (videonun üzerine çizilir)
 Stick view: roll, pitch, yaw and throttle	Stick görünümü: roll, pitch, yaw ve gaz
 Stick size: {0}  (tap to change)	Stick boyutu: {0}  (değiştirmek için dokunun)
@@ -374,6 +398,7 @@ Move and resize the cards with your finger...	Kartları parmağınızla taşıy�
 Put every card back in its corner at normal size	Her kartı köşesine, normal boyutta geri koy
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Her kart köşesine, normal boyutta geri konsun mu? Seçtiğiniz yerler ve boyutlar unutulacak.
 Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Bir kartı taşımak için sürükleyin, boyutunu değiştirmek için yuvarlak tutamacını sürükleyin. Kapalı kartlar gösterilmez. Bir kartın Boyut ayarı başlangıç boyutudur; yeniden boyutlandırma onu çarpar.
+Video and speech	Video ve konuşma
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (HDMI girişini seçmek için dokunun)
 Rotate video: now {0} degrees  (tap to turn 90)	Videoyu döndür: şimdi {0} derece  (90 çevirmek için dokunun)
@@ -382,6 +407,7 @@ fill (stretch)	doldur (esnet)
 Speech	Konuşma
 Speech on	Konuşma açık
 Speak a test sentence	Bir deneme cümlesi söyle
+Rules and backup	Kurallar ve yedekleme
 Export sound rules to a file...	Ses kurallarını dosyaya aktar...
 Import sound rules from a file...	Ses kurallarını dosyadan içe aktar...
 Restore the rules from before the last import, reset or restore	Son içe aktarma, sıfırlama veya geri yüklemeden önceki kuralları geri yükle
@@ -396,16 +422,17 @@ Import all settings from a file...	Tüm ayarları dosyadan içe aktar...
 Restore the settings from before the last import	Son içe aktarmadan önceki ayarları geri yükle
 Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	Son içe aktarmadan önceki ayarlara dönülsün mü? Mevcut ayarlar saklanır, tekrar değiştirebilirsiniz.
 One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	Her şey tek dosyada: ses kuralları, uyarı kuralları, kontroller, ekran katmanları, kanal çubukları, batarya profilleri ve dil. Ses kurallarının ayrıca yukarıda kendi dışa aktarması da vardır.
-Diagnostics	Tanılama
-Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
-Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
-Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
-Updates (from GitHub)	Güncellemeler (GitHub'dan)
+Updates	Güncellemeler
 Check for updates now	Güncellemeleri şimdi denetle
 Channel: {0}  (tap to change)	Kanal: {0}  (değiştirmek için dokunun)
 Check at start-up (needs internet)	Açılışta denetle (internet gerekir)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android her güncellemeyi onaylamanızı ister. İlk seferde ayrıca AX-HUD'dan kuruluma izin vermenizi ister. Uçuş sırasında asla güncellemeyin.
+Diagnostics	Tanılama
+Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
+Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
+Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
 About	Hakkında
+About AX-HUD, licenses and thanks...	AX-HUD hakkında, lisanslar ve teşekkürler...
 AX12 video monitor, HUD and announcer	AX12 video monitör, HUD ve sesli uyarı
 AX-HUD  version {0}  (build {1})	AX-HUD  sürüm {0}  (yapı {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Canlı değer için {variable} kullanın, örneğin {vbat/6:2}.
@@ -429,7 +456,6 @@ No connection	Bağlantı yok
 No build has been published on this channel yet.	Bu kanalda henüz yayımlanmış bir yapı yok.
 Could not check: {0}\n\nIs the phone hotspot on?	Denetlenemedi: {0}\n\nTelefon hotspot'u açık mı?
 no connection	bağlantı yok
-Updates	Güncellemeler
 You have the latest build: version {0} (build {1})	En son yapıya sahipsiniz: sürüm {0} (yapı {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD güncellemesi var: {0} (yapı {1}). Ayarlar'ı, sonra Güncellemeler'i açın.
 Update available	Güncelleme var
@@ -441,7 +467,6 @@ Downloading {0}	{0} indiriliyor
 Download failed	İndirme başarısız
 Allow installing	Kurulumlara izin ver
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android, AX-HUD bir güncellemeyi kurmadan önce izninizi ister. Sayfayı açın, AX-HUD için açın, geri dönüp güncellemeyi yeniden çalıştırın. İndirilen dosya saklanır, bu yüzden iki kez indirilmez.
-Open the page	Sayfayı aç
 Could not start the installation	Kurulum başlatılamadı
 unknown error	bilinmeyen hata
 Updated. The app will reopen.	Güncellendi. Uygulama yeniden açılacak.

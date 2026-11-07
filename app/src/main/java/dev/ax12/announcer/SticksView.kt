@@ -53,8 +53,8 @@ class SticksView(context: Context) : View(context) {
     var onLongPress: (() -> Unit)? = null
 
     init {
-        fill.color = 0xCC1E1E1E.toInt()
-        line.color = 0xFFE0E0E0.toInt()
+        fill.color = CardStyle.BG
+        line.color = CardStyle.EDGE
         line.style = Paint.Style.STROKE
         line.strokeWidth = 1.5f * density
         dot.color = 0xFF66BB6A.toInt()
@@ -195,8 +195,8 @@ class SticksView(context: Context) : View(context) {
 
     private fun drawStick(canvas: Canvas, left: Float, h: Double, v: Double, hName: String, vName: String) {
         rect.set(left, 0f, left + boxPx, boxPx.toFloat())
-        canvas.drawRoundRect(rect, 8f * density, 8f * density, fill)
-        canvas.drawRoundRect(rect, 8f * density, 8f * density, line)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), fill)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), line)
         val cx = rect.centerX()
         val cy = rect.centerY()
         canvas.drawLine(rect.left + 4 * density, cy, rect.right - 4 * density, cy, line)

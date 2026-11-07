@@ -1,4 +1,22 @@
 # Simplified Chinese translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+About AX-HUD	关于 AX-HUD
+Close	关闭
+The license text could not be read.	无法读取许可证文本。
+Back	返回
+No web browser found. The address is: {0}	未找到网络浏览器。地址为: {0}
+Video monitor, heads-up display and voice announcer for the RadioMaster AX12.	适用于 RadioMaster AX12 的视频监视器、平视显示和语音播报应用。
+License	许可证
+AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD 是采用 MIT 许可证的自由软件: 只要保留许可证声明, 你可以使用、复制、修改和分享它, 也可用于你自己的项目。本软件不提供任何担保。
+Read the {0}	阅读 {0}
+Project page and source code: {0}	项目主页和源代码: {0}
+Open the project page	打开项目主页
+Open-source libraries and SDKs	开源库和 SDK
+These parts are inside the app. Each keeps its own license; tap to read it.	这些组件包含在应用内。每个都有自己的许可证; 点按即可阅读。
+Read: {0}	阅读: {0}
+Open the page	打开设置页
+Thanks	致谢
+Thank you, RadioMaster, for publishing the AX SDK that makes this app possible.	感谢 RadioMaster 发布 AX SDK, 让这款应用成为可能。
+AX-HUD is an independent project. It is not affiliated with, endorsed by or supported by RadioMaster. RadioMaster and AX12 are names of their owners.	AX-HUD 是独立项目, 与 RadioMaster 无关联, 也未获其认可或支持。RadioMaster 和 AX12 是其所有者的名称。
 Give the aircraft a name.	请给飞行器起一个名称。
 There is already an aircraft with this name: {0}.	已经有同名的飞行器: {0}。
 That aircraft does not exist.	该飞行器不存在。
@@ -32,6 +50,11 @@ Preview failed: {0}	预览失败: {0}
 Camera session failed	摄像头会话失败
 Session error: {0}	会话错误: {0}
 last {0} s	最近 {0} 秒
+This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
+Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件包含在应用内。感谢 RadioMaster 发布它。
+The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
+The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
+The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
 Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动圆形手柄可调整大小。完成后点按“完成”。
 Reset the layout	重置布局
 Done	完成
@@ -236,7 +259,6 @@ Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	文�
 and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	可使用 and / or。  ! = 紧急。  @10 = 每 10 秒重复。  设置: hysteresis = 25, hold = 100, initial = on/off。  # = 注释。
 Check	检查
 Sample	示例
-Close	关闭
 OK: {0} rules	正常: {0} 条规则
 The file is empty.	文件为空。
 The file is too large to be a rules file.	文件太大, 不是规则文件。
@@ -332,6 +354,7 @@ Display	显示
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
 Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)
+Aircraft and battery	飞行器和电池
 Active aircraft: {0}  (tap to choose)	当前飞行器: {0}  (点按选择)
 Manage the aircraft (add, rename, delete)...	管理飞行器 (添加、重命名、删除)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	每个飞行器都保存自己的规则、警告规则、检查项、电池配置和电池包、通道条、摇杆映射以及解锁开关。叠加层外观、语言和更新是共用的。
@@ -340,6 +363,7 @@ Active battery profile: {0}  (tap to switch)	当前电池配置: {0}  (点按切
 Edit the packs of this aircraft...	编辑此飞行器的电池包...
 Edit the battery profiles (cells and voltage limits)...	编辑电池配置 (节数和电压限值)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	规则和检查项可以使用 cell (每节电压) 以及当前配置的限值 $low、$crit、$full, 例如: cell < $low -> 电池电量低。切换配置只会改变数值, 不会改变规则。
+Overlays on the video	视频上的叠加层
 OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)
 Stick view: roll, pitch, yaw and throttle	摇杆视图: 横滚、俯仰、偏航和油门
 Stick size: {0}  (tap to change)	摇杆大小: {0}  (点按更改)
@@ -374,6 +398,7 @@ Move and resize the cards with your finger...	用手指移动卡片并调整大�
 Put every card back in its corner at normal size	将所有卡片放回各自角落并恢复正常大小
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	将所有卡片放回各自角落并恢复正常大小? 你选择的位置和大小将被清除。
 Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其圆形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
+Video and speech	视频和语音
 Video	视频
 Camera: {0}  (tap to choose the HDMI input)	摄像头: {0}  (点按选择 HDMI 输入)
 Rotate video: now {0} degrees  (tap to turn 90)	旋转视频: 当前 {0} 度  (点按旋转 90 度)
@@ -382,6 +407,7 @@ fill (stretch)	填充 (拉伸)
 Speech	语音
 Speech on	语音开启
 Speak a test sentence	播报一句测试语
+Rules and backup	规则和备份
 Export sound rules to a file...	将语音规则导出到文件...
 Import sound rules from a file...	从文件导入语音规则...
 Restore the rules from before the last import, reset or restore	恢复上次导入、重置或恢复之前的规则
@@ -396,16 +422,17 @@ Import all settings from a file...	从文件导入所有设置...
 Restore the settings from before the last import	恢复上次导入之前的设置
 Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	切换回上次导入之前的设置? 当前设置会保留, 可以再次切换。
 One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	一个文件包含所有内容: 语音规则、警告规则、检查项、叠加层、通道条、电池配置和语言。语音规则在上方还有单独的导出功能。
-Diagnostics	诊断
-Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
-Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
-Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
-Updates (from GitHub)	更新 (来自 GitHub)
+Updates	更新
 Check for updates now	立即检查更新
 Channel: {0}  (tap to change)	渠道: {0}  (点按更改)
 Check at start-up (needs internet)	启动时检查 (需要联网)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android 会要求你确认每次更新。第一次还会要求你允许 AX-HUD 安装应用。切勿在飞行中更新。
+Diagnostics	诊断
+Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
+Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
+Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
 About	关于
+About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...
 AX12 video monitor, HUD and announcer	AX12 视频监视器、HUD 与语音播报
 AX-HUD  version {0}  (build {1})	AX-HUD  版本 {0}  (构建 {1})
 Use {variable} for a live value, for example {vbat/6:2}.	使用 {variable} 显示实时数值, 例如 {vbat/6:2}。
@@ -429,7 +456,6 @@ No connection	无网络连接
 No build has been published on this channel yet.	此渠道尚未发布任何构建。
 Could not check: {0}\n\nIs the phone hotspot on?	无法检查: {0}\n\n手机热点已开启吗?
 no connection	无网络连接
-Updates	更新
 You have the latest build: version {0} (build {1})	已是最新构建: 版本 {0} (构建 {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD 有可用更新: {0} (构建 {1})。请打开 设置, 再打开 更新。
 Update available	有可用更新
@@ -441,7 +467,6 @@ Downloading {0}	正在下载 {0}
 Download failed	下载失败
 Allow installing	允许安装
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android 需要你的许可, AX-HUD 才能安装更新。请打开该页面, 为 AX-HUD 打开此选项, 然后返回并重新运行更新。已下载的文件会保留, 不会重复下载。
-Open the page	打开设置页
 Could not start the installation	无法开始安装
 unknown error	未知错误
 Updated. The app will reopen.	已更新。应用将重新打开。

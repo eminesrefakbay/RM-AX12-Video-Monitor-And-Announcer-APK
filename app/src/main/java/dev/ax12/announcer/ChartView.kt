@@ -56,8 +56,8 @@ class ChartView(context: Context) : View(context) {
     private val colors = intArrayOf(0xFF4FC3F7.toInt(), 0xFF66BB6A.toInt(), 0xFFFFB300.toInt(), 0xFFEF5350.toInt())
 
     init {
-        bg.color = 0xCC1E1E1E.toInt()
-        edge.color = 0xFFE0E0E0.toInt()
+        bg.color = CardStyle.BG
+        edge.color = CardStyle.EDGE
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
         label.color = 0xFFB0BEC5.toInt()
@@ -113,8 +113,8 @@ class ChartView(context: Context) : View(context) {
         val m = model ?: return
         if (m.names.isEmpty()) return
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRoundRect(rect, 8f * density, 8f * density, bg)
-        canvas.drawRoundRect(rect, 8f * density, 8f * density, edge)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), bg)
+        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), edge)
         val rowH = rowDp * density
         val pad = 6 * density
         for ((i, name) in m.names.withIndex()) {

@@ -22,12 +22,16 @@ class RadarView(context: Context) : View(context) {
     private val text = Paint(Paint.ANTI_ALIAS_FLAG)
     private val path = Path()
     private val tri = Path()
+    private val edge = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private var stats: FlightStats? = null
     private var sizePx = (150 * density).toInt()
 
     init {
-        bg.color = 0xCC1E1E1E.toInt()
+        bg.color = CardStyle.BG
+        edge.color = CardStyle.EDGE
+        edge.style = Paint.Style.STROKE
+        edge.strokeWidth = CardStyle.EDGE_DP * density
         ring.color = 0xFF78909C.toInt()
         ring.style = Paint.Style.STROKE
         ring.strokeWidth = 1f * density
@@ -60,6 +64,7 @@ class RadarView(context: Context) : View(context) {
         val cy = sizePx / 2f
         val rpx = sizePx / 2f - 2 * density
         canvas.drawCircle(cx, cy, rpx, bg)
+        canvas.drawCircle(cx, cy, rpx, edge)
         val s = stats
         val radiusM = s?.radarRadiusM() ?: 150.0
         for (k in 1..3) canvas.drawCircle(cx, cy, rpx * k / 3f, ring)

@@ -41,11 +41,11 @@ class MainMenu(
 
         val box = LinearLayout(activity)
         box.orientation = LinearLayout.VERTICAL
-        box.setBackgroundColor(0xF02B2B2B.toInt())
+        box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density)
         box.setPadding(dp(8), dp(8), dp(8), dp(8))
         box.isClickable = true
 
-        box.addView(item(tr("Sound rules")) { onRules() })
+        box.addView(item(tr("Sound rules"), "rules") { onRules() })
         box.addView(speechButton.also { b ->
             b.isAllCaps = false
             b.textSize = 16f
@@ -56,6 +56,7 @@ class MainMenu(
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         box.addView(batteryButton.also { b ->
+            style(b, "battery")
             b.isAllCaps = false
             b.textSize = 16f
             b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
@@ -65,6 +66,7 @@ class MainMenu(
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         box.addView(aircraftButton.also { b ->
+            style(b, "aircraft")
             b.isAllCaps = false
             b.textSize = 16f
             b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
@@ -73,7 +75,7 @@ class MainMenu(
                 onAircraft()
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        box.addView(item(tr("Settings")) { onSettings() })
+        box.addView(item(tr("Settings"), "gear") { onSettings() })
 
         val lp = FrameLayout.LayoutParams(dp(300), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
         lp.topMargin = dp(56)
@@ -81,8 +83,15 @@ class MainMenu(
         root.addView(box, lp)
     }
 
-    private fun item(label: String, action: () -> Unit): Button {
+    /** The look every menu line shares: an icon, then the words. */
+    private fun style(b: Button, icon: String) {
+        b.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(activity, icon), null, null, null)
+        b.compoundDrawablePadding = dp(12)
+    }
+
+    private fun item(label: String, icon: String, action: () -> Unit): Button {
         val b = Button(activity)
+        style(b, icon)
         b.text = label
         b.isAllCaps = false
         b.textSize = 16f
@@ -97,12 +106,18 @@ class MainMenu(
 
     fun show() {
         speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is OFF - tap to turn on")
+        style(speechButton, if (speechOn()) "speaker" else "speaker_off")
         batteryButton.text = tr("Battery: {0}  (tap to switch)", batteryName())
         aircraftButton.text = tr("Aircraft: {0}  (tap to choose)", aircraftName())
+        root.animate().cancel()
+        root.alpha = 0f
         root.visibility = View.VISIBLE
+        root.animate().alpha(1f).setDuration(140).start()
     }
 
     fun hide() {
+        root.animate().cancel()
+        root.alpha = 1f
         root.visibility = View.GONE
     }
 }
