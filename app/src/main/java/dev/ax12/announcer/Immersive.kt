@@ -37,6 +37,11 @@ object Immersive {
         w.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         dialog.show()
         w.decorView.systemUiVisibility = FLAGS
-        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        // An AlertDialog decides when it opens whether it can take text: it looks for a text field in its view, and if there is
+        // none it sets FLAG_ALT_FOCUSABLE_IM, which keeps the keyboard away for good. A dialog that starts without text fields and
+        // adds them later (the packs editor, which starts with no packs) would never show the keyboard. Clear the flag after
+        // the dialog is up, and let the window shrink to make room for the keyboard.
+        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+        w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 }

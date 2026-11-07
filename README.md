@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.2)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.3)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 779 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 799 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -160,11 +160,13 @@ The public SDK has no way to pass a port: `initialize()` only takes a data folde
 * The radio link is started on a **background thread**, as RadioMaster's demo does (the device information is requested first and again
   when the configuration is loaded; the configuration is asked for again only after 6 s), so the screen and the camera are not held up.
   While it starts no data and no pretend data is shown.
-* **It is not started again when the app only pauses itself.** A rebuild (changing language or aircraft, importing settings), a file
-  picker, the rules editor, the browser link and the camera permission dialog all pause the screen; each used to shut the link down
-  and start it again, which cost another 12 s without stick data. Now the link stays up through these (10 s for a rebuild or a
-  permission dialog, 40 s for the screens the app opens) and is released only if the app does not come back. Leaving the app any
-  other way (Home, another app) still releases the serial port at once.
+* **The link stays up as long as any screen of the app is on show.** That includes the text editor for the sound, warning and check
+  rules, which is a separate screen: it no longer stops the link, however long you edit, and nothing has to be started again
+  (about 12 s without stick data) when you come back. The link is released only when the app has left the display (Home, another
+  app, screen off, or the app closed), and then at once, so the radio's serial port is free for the stock app.
+* **Rebuilds and file pickers.** A rebuild (changing language or aircraft, importing settings) and the screens other apps provide
+  (the file pickers, the browser link) take the whole app off the display for a moment. The link is then kept for 10 s after a
+  rebuild and 40 s after a picker or the browser, and released only if the app does not come back in that time.
 
 **Timings.** *Settings > Diagnostics > Show the variables panel* starts with a timeline, in milliseconds since the app's process started:
 the screen created, the SDK start called, `initialize()` returned, the message callback set, each time the configuration was requested,

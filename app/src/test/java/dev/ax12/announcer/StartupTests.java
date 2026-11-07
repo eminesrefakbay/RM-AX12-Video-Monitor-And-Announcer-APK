@@ -95,8 +95,8 @@ public class StartupTests {
         // ---------- the start-up method is no longer a setting ----------
         check(!SettingsFile.isKnown("sdkStartup") && SettingsFile.inspect("B\tfill\ttrue\nI\tsdkStartup\t1\n").ignored == 1, "a settings file from the test build, with the old switch, is read: the switch is ignored");
         String act = new String(Files.readAllBytes(new File("app/src/main/java/dev/ax12/announcer/MainActivity.kt").toPath()), StandardCharsets.UTF_8);
-        check(act.contains("override fun recreate()") && act.contains("override fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle?)") && act.contains("SdkThread.cancelScheduledStop()") && act.contains("SdkThread.scheduleStop(hold)"),
-              "the screen holds the radio link through its own rebuilds and the screens it opens, and cancels the stop when it comes back");
+        check(act.contains("override fun recreate()") && act.contains("override fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle?)") && act.contains("SdkThread.cancelScheduledStop()") && act.contains("App.visibility.hold("),
+              "the screen asks for the radio link to be kept through its own rebuilds and the screens it opens, and cancels a waiting stop when it comes back");
         check(!act.contains("sdkStartup") && !act.contains("SdkThread.awaitIdle"), "no trace of the old switch");
 
         System.out.println(checks + " checks, " + failures + " failures");

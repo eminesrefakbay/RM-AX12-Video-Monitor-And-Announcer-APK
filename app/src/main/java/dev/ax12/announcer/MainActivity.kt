@@ -105,8 +105,6 @@ class MainActivity : Activity() {
     private var sdkRunning = false
     @Volatile private var sdkStarting = false       // the SDK is being started on its own thread (start-up method "like RadioMaster's demo")
     private var sdkGeneration = 0                    // tells a late answer of an old start from the current one
-    private var holdLinkUntil = 0L                   // our own action is about to pause the screen: until when that is so
-    private var holdLinkMs = 0L                      // and for how long the radio link is then kept running
 
     private var testVisible = false
     private var varsVisible = false
@@ -294,7 +292,7 @@ class MainActivity : Activity() {
     override fun onPause() {
         ui.removeCallbacks(tick)
         camera.stop()
-        stopSdk()
+        forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
         super.onPause()
     }
 
@@ -359,13 +357,13 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Our own actions that pause this screen and bring it back (a rebuild, a file picker, the rules editor) call this first:
-     * the radio link then stays up for [ms] instead of being shut down and started again, which costs about 12 seconds
-     * without stick data. Leaving the app any other way (Home, another app) still releases the radio's serial port at once.
+     * Our own actions that take the whole app off the display and bring it back (a rebuild, a file picker, the browser) call this
+     * first: the radio link then stays up for [ms] instead of being shut down and started again, which costs about 12 seconds
+     * without stick data. The rules editor and any other screen of this app keep the link up for as long as they are open
+     * (see App). Leaving the app any other way (Home, another app) still releases the radio's serial port at once.
      */
     private fun holdLink(ms: Long) {
-        holdLinkMs = ms
-        holdLinkUntil = SystemClock.elapsedRealtime() + 3000       // only for the pause that follows right now
+        App.visibility.hold(SystemClock.elapsedRealtime(), ms)
     }
 
     override fun recreate() {
@@ -378,15 +376,11 @@ class MainActivity : Activity() {
         super.startActivityForResult(intent, requestCode, options)
     }
 
-    private fun stopSdk() {
+    /** This screen no longer reads the radio link (it may well still be running: see App). */
+    private fun forgetSdk() {
         sdkGeneration++                                 // a start that is still running must not report back
         sdkStarting = false
         sdkRunning = false
-        val link = sdkLinkIfReady
-        val hold = if (SystemClock.elapsedRealtime() <= holdLinkUntil) holdLinkMs else 0L
-        holdLinkUntil = 0L
-        if (hold > 0) SdkThread.scheduleStop(hold) { link?.stop() }      // unless the screen comes back first
-        else SdkThread.run { link?.stop() }                              // after the start, in the order they were asked for
     }
 
     private fun reloadRules() {
