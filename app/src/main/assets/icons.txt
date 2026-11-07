@@ -74,6 +74,11 @@ line 5 19.5 19 19.5
 icon diagnostics
 polyline 2.5 12.5 7 12.5 9.5 5.5 13 19 15.5 12.5 21.5 12.5
 
+icon logs
+rect 4 3 20 21 0 stroke
+polyline 7 16.5 10 11.5 13 14.5 17 8.5
+circle 17 8.5 1.3 fill
+
 icon about
 circle 12 12 9.5 stroke
 circle 12 7.6 1.3 fill

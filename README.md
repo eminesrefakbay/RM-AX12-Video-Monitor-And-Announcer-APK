@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.0.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.1.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -10,6 +10,7 @@
 * shows a gray **No video** screen (a camera icon, "No video" and one line of advice, with a small detail line along the bottom) when no frames arrive, and reconnects by itself;
 * **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
+* can **record every flight** to a CSV file (off by default) and **replay** it on the radio: radar, sticks, channel bars and charts;
 * only **reads** from the radio. It never writes a setting.
 
 ## Screenshots
@@ -56,7 +57,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,078 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,339 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -183,6 +184,30 @@ Settings) and fill as soon as the app runs.
 
 Two new values come with them, usable in charts **and in rules**: **`height`** (meters above where you armed) and **`dist`** (meters from
 home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
+
+## Flight logs and replay
+
+**Settings > Flight logs** (off by default) writes a log of every flight, from arming to disarming (the arm switch you set under
+*Arm detection*). One CSV file per flight, named like `AX-HUD_2026-11-07_14-55-33_Akb7custom001.csv`, in the app's own folder
+`Android/data/dev.ax12.announcer/files/flights/` on the radio (no storage permission needed; copy it out over USB, or open it in a
+spreadsheet). The top of the file lists the app, the aircraft, the pack, the cells and the arm switch; the last line is a summary.
+
+* **Values.** *Values in the log* lists every channel and telemetry value the radio publishes (the same list as the rule editor), each with a
+  tick box. Presets: *Replay set* (every standard value, the starting choice), *Everything* (adds the advanced ones) and *None*. The list
+  warns when a replay would miss something (the arm channel, the sticks, position, speed, current, link, volts or a heading).
+* **Rate.** 1, 2, 5, 10 (default) or 25 rows per second. About 10 MB an hour at 10 rows a second with the replay set.
+* **Safe by design.** The log is written on its own thread. If the storage is slow the rows are dropped and counted (the last line says
+  how many); if it fails, or less than 20 MB is free, logging stops and Settings says why. Nothing a log meets can reach the radio link or
+  the screen. The file is flushed every second and closed when you disarm or leave the screen, and a file that was cut off is still
+  readable. Only the newest 20, 50, 100 or 200 flights are kept (*Flights to keep*).
+* **Flight list.** *Flight logs: list, replay and delete* shows each flight: date, aircraft, length, pack, highest point, farthest
+  distance, top speed, peak current, lowest cell, mAh used. Each can be replayed or deleted; the flight being recorded is marked.
+* **Replay.** The statistics, radar (with the track), stick view, channel bars and charts are drawn from the log by the same code that
+  draws the live flight, over a dark backdrop with a red REPLAY tag (the video is not recorded). A bar at the bottom has Close, Play or
+  Pause, the speed (1x, 2x, 4x, 8x), a scrub bar and the time. Seeking rebuilds the statistics and the chart from the start of the log, so
+  they are right at any position. There is no voice and no warning bar in a replay, and arming the aircraft ends it at once.
+  A card shows only what the log holds: with fewer values chosen, some cards stay empty (a toast names what is missing).
+* **Privacy.** A log contains GPS positions. It stays on the radio unless you copy it. Do not publish a log that shows where you fly.
 
 ## Start-up time of the radio link
 
@@ -367,7 +392,7 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 
 ## Privacy
 
-GPS coordinates are shown on screen only. Do not commit flight logs or screenshots that show where you fly.
+GPS coordinates are shown on screen. They are also written to a file **only if you switch on flight logs** (Settings > Flight logs, off by default), and that file stays on the radio. Do not commit flight logs or screenshots that show where you fly.
 
 ## Updates from GitHub
 

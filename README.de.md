@@ -27,7 +27,7 @@ Die App ist experimentell und nur als **zweite Informationsquelle** gedacht; sie
 
 ## Datenschutz
 
-Die Internet-Berechtigung dient nur dazu, die Update-Information und die APK von github.com zu holen. Es werden keine Daten gesendet.
+Die Internet-Berechtigung dient nur dazu, die Update-Information und die APK von github.com zu holen. Es werden keine Daten gesendet. Nur wenn du Einstellungen > Flugprotokolle einschaltest (standardmäßig aus), werden auch GPS-Positionen in eine Datei auf der Fernsteuerung geschrieben; sie bleibt dort. Veröffentliche kein Protokoll, das zeigt, wo du fliegst.
 
 ## Dank
 

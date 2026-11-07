@@ -64,12 +64,42 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.
 Where everything is
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
+Logging stopped: {0}
+The log folder cannot be made
+Storage is almost full
+The log file cannot be written
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.
 Reset the layout
 Done
+Tick the values to write into each flight log.
+A replay needs these values and cannot show everything without them: {0}
+Replay set
+Everything
+None
+Values in the log
+Cancel
+Tick at least one value.
+Max height {0} m
+Max distance {0} m
+Top speed {0} km/h
+Peak current {0} A
+Lowest cell {0} V
+{0} mAh used
+The log was cut off: the app was stopped while it was writing.
+{0} logs, {1}
+Flight logs
+Loading the log...
+No flight logs yet. Switch on logging in Settings, then arm to start one.
+Delete all the logs...
+Delete all {0} logs? They cannot be brought back.
+Delete
+The logs hold GPS positions and stay on this radio, in the folder {0}
+Recording now
+Replay
+Delete this log? It cannot be brought back.
 MENU
 Warning rules
 Pre-flight checks
@@ -95,6 +125,10 @@ Stable
 Nightly
 Stable (tested releases only)
 Nightly (newest build of every push)
+{0} per second
+{0} values
+{0} flights
+Logging now: {0} rows
 Top
 Bottom
 BATTERY CRITICAL 3.48 V per cell
@@ -107,6 +141,9 @@ Bottom right
 Top left
 Top right
 Center
+The log cannot be read: {0}
+REPLAY
+This log lacks values that some cards need: {0}
 SPEED
 HEIGHT
 CURRENT
@@ -126,7 +163,6 @@ Counts as disarmed below (microseconds)
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.
 Arm detection
 Save
-Cancel
 The channel is 1 to 16
 Use microseconds, with the disarmed value not above the armed one
 Speed (now / maximum)
@@ -244,6 +280,9 @@ This build has no RadioMaster SDK files (see the README)
 SDK worker thread failed to start
 The SDK could not open the radio's serial link (see README: serial lock)
 SDK start failed (code {0})
+Pause
+Play
+{0}x
 Line {0}: missing '->'  ({1})
 Line {0}: nothing before '->'
 Line {0}: nothing to say after '->'
@@ -309,7 +348,6 @@ Advanced rule (open the text editor): {0}
 Edit
 Test
 Delete this rule?
-Delete
 Channel hysteresis, microseconds (stops chatter near a switch threshold)
 Voltage and link hysteresis, percent of the threshold
 Hold time, milliseconds (ignore changes shorter than this)
@@ -429,6 +467,11 @@ Scale
 Fill (stretch)
 Speech on
 Speak a test sentence
+Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.
+Log every flight
+Rows per second
+Flights to keep
+Flight logs: list, replay and delete...
 Rules and backup
 Export sound rules to a file...
 Import sound rules from a file...

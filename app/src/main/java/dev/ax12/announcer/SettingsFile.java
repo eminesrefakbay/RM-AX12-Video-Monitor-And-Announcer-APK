@@ -54,6 +54,8 @@ public final class SettingsFile {
         i("batActive", 0, BatteryProfiles.MAX - 1);
         s("packs"); i("packActive", 0, Packs.MAX - 1);
         s("aircraftStore"); s("aircraftActive");
+        // flight logs
+        b("logOn"); i("logRate", 0, FlightLogger.RATES_HZ.length - 1); i("logKeep", 0, FlightLogger.KEEP.length - 1); s("logFields");
     }
 
     private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
@@ -73,6 +75,7 @@ public final class SettingsFile {
         d("armCh", 5); d("armHigh", 1750); d("armLow", 1650);
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) { d(tile + "X", -1); d(tile + "Y", -1); d(tile + "Scale", 100); }
         d("batActive", 0); d("packActive", 0);
+        d("logOn", false); d("logRate", 3); d("logKeep", 1); d("logFields", "");
         d("chartOn", false); d("chartSize", 1); d("chartPos", 1); d("chartOpacity", 1); d("chartWindow", 1); d("chartSeries", ChartConfig.DEFAULT);
     }
 
@@ -197,6 +200,7 @@ public final class SettingsFile {
         if (key.equals("barsConfig")) return value.length() <= 4000 ? value : null;
         if (key.equals("batProfiles")) return BatteryProfiles.parseStrict(value) != null ? value : null;
         if (key.equals("chartSeries")) return ChartConfig.valid(value) ? value : null;
+        if (key.equals("logFields")) return value.isEmpty() ? value : (LogFields.parse(value).isEmpty() ? null : LogFields.join(LogFields.parse(value)));
         if (key.equals("packs")) return Packs.parseStrict(value) != null ? value : null;
         if (key.equals("aircraftStore")) return value.length() <= 500000 && AircraftStore.decodeStrict(value, null) != null ? value : null;
         if (key.equals("aircraftActive")) return value.matches("[a-z0-9]{1,8}") ? value : null;

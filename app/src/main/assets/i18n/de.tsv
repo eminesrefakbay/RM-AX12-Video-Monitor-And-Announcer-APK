@@ -64,12 +64,42 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	Die ersten Daten brauchen etwa 12 Sekunden
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Nach dem Öffnen der App erscheinen die Daten der Fernsteuerung (Knüppel, Verbindungsqualität, Telemetrie) nach etwa 12 Sekunden. Diese Wartezeit liegt im RadioMaster-SDK und ist kein Fehler. Ein Banner zählt die Sekunden. Das Video startet sofort.
 Where everything is	Wo was zu finden ist
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.	Tippe oben rechts auf MENÜ für sechs Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Sprachen und die Updates.
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Tippe oben rechts auf MENÜ für sechs Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Flugprotokolle, die Sprachen und die Updates.
 An aid, not a safety system	Eine Hilfe, kein Sicherheitssystem
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD hilft dir zu sehen und zu hören, was dein Fluggerät gerade tut. Verlasse dich nicht allein darauf. Fliege immer nach den örtlichen Regeln.
+Logging stopped: {0}	Aufzeichnung gestoppt: {0}
+The log folder cannot be made	Der Protokollordner kann nicht angelegt werden
+Storage is almost full	Der Speicher ist fast voll
+The log file cannot be written	Die Protokolldatei kann nicht geschrieben werden
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den quadratischen Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
 Reset the layout	Layout zurücksetzen
 Done	Fertig
+Tick the values to write into each flight log.	Hake die Werte an, die in jedes Flugprotokoll geschrieben werden.
+A replay needs these values and cannot show everything without them: {0}	Eine Wiedergabe braucht diese Werte und kann ohne sie nicht alles zeigen: {0}
+Replay set	Wiedergabe
+Everything	Alles
+None	Keine
+Values in the log	Werte im Protokoll
+Cancel	Abbrechen
+Tick at least one value.	Hake mindestens einen Wert an.
+Max height {0} m	Max. Höhe {0} m
+Max distance {0} m	Max. Entfernung {0} m
+Top speed {0} km/h	Höchstgeschwindigkeit {0} km/h
+Peak current {0} A	Spitzenstrom {0} A
+Lowest cell {0} V	Niedrigste Zelle {0} V
+{0} mAh used	{0} mAh verbraucht
+The log was cut off: the app was stopped while it was writing.	Das Protokoll ist abgebrochen: Die App wurde beim Schreiben beendet.
+{0} logs, {1}	{0} Protokolle, {1}
+Flight logs	Flugprotokolle
+Loading the log...	Protokoll wird geladen...
+No flight logs yet. Switch on logging in Settings, then arm to start one.	Noch keine Flugprotokolle. Schalte die Aufzeichnung in den Einstellungen ein und schalte dann scharf, um eines zu starten.
+Delete all the logs...	Alle Protokolle löschen...
+Delete all {0} logs? They cannot be brought back.	Alle {0} Protokolle löschen? Sie lassen sich nicht wiederherstellen.
+Delete	Löschen
+The logs hold GPS positions and stay on this radio, in the folder {0}	Die Protokolle enthalten GPS-Positionen und bleiben auf dieser Fernsteuerung im Ordner {0}
+Recording now	Wird gerade aufgezeichnet
+Replay	Wiedergabe
+Delete this log? It cannot be brought back.	Dieses Protokoll löschen? Es lässt sich nicht wiederherstellen.
 MENU	MENÜ
 Warning rules	Warnregeln
 Pre-flight checks	Checks vor dem Flug
@@ -95,6 +125,10 @@ Stable	Stabil
 Nightly	Nightly
 Stable (tested releases only)	Stabil (nur getestete Releases)
 Nightly (newest build of every push)	Nightly (neuester Build jedes Pushs)
+{0} per second	{0} pro Sekunde
+{0} values	{0} Werte
+{0} flights	{0} Flüge
+Logging now: {0} rows	Aufzeichnung läuft: {0} Zeilen
 Top	Oben
 Bottom	Unten
 BATTERY CRITICAL 3.48 V per cell	AKKU KRITISCH 3.48 V pro Zelle
@@ -107,6 +141,9 @@ Bottom right	Unten rechts
 Top left	Oben links
 Top right	Oben rechts
 Center	Mitte
+The log cannot be read: {0}	Das Protokoll kann nicht gelesen werden: {0}
+REPLAY	WIEDERGABE
+This log lacks values that some cards need: {0}	Diesem Protokoll fehlen Werte, die manche Karten brauchen: {0}
 SPEED	TEMPO
 HEIGHT	HÖHE
 CURRENT	STROM
@@ -126,7 +163,6 @@ Counts as disarmed below (microseconds)	Gilt als gesichert darunter (Mikrosekund
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	Der Abstand zwischen den beiden Schwellen verhindert, dass ein Anstoßen des Schalters die Statistik startet oder stoppt. Der Schalter muss 0,3 Sekunden stehen bleiben.
 Arm detection	Arm-Erkennung
 Save	Speichern
-Cancel	Abbrechen
 The channel is 1 to 16	Der Kanal ist 1 bis 16
 Use microseconds, with the disarmed value not above the armed one	Mikrosekunden verwenden; der Wert für gesichert nicht über dem für scharf
 Speed (now / maximum)	Geschwindigkeit (jetzt / Maximum)
@@ -244,6 +280,9 @@ This build has no RadioMaster SDK files (see the README)	Diese Version enthält 
 SDK worker thread failed to start	SDK-Arbeitsthread konnte nicht gestartet werden
 The SDK could not open the radio's serial link (see README: serial lock)	Das SDK konnte die serielle Verbindung der Fernsteuerung nicht öffnen (siehe README: serielle Sperre)
 SDK start failed (code {0})	SDK-Start fehlgeschlagen (Code {0})
+Pause	Pause
+Play	Abspielen
+{0}x	{0}x
 Line {0}: missing '->'  ({1})	Zeile {0}: '->' fehlt  ({1})
 Line {0}: nothing before '->'	Zeile {0}: nichts vor '->'
 Line {0}: nothing to say after '->'	Zeile {0}: nach '->' steht nichts zum Sprechen
@@ -309,7 +348,6 @@ Advanced rule (open the text editor): {0}	Erweiterte Regel (Texteditor öffnen):
 Edit	Bearbeiten
 Test	Test
 Delete this rule?	Diese Regel löschen?
-Delete	Löschen
 Channel hysteresis, microseconds (stops chatter near a switch threshold)	Kanal-Hysterese, Mikrosekunden (verhindert Flattern nahe einer Schalterschwelle)
 Voltage and link hysteresis, percent of the threshold	Spannungs- und Verbindungs-Hysterese, Prozent der Schwelle
 Hold time, milliseconds (ignore changes shorter than this)	Haltezeit, Millisekunden (kürzere Änderungen ignorieren)
@@ -429,6 +467,11 @@ Scale	Skalierung
 Fill (stretch)	Füllen (strecken)
 Speech on	Sprache an
 Speak a test sentence	Testsatz sprechen
+Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	Schreibt von jedem Flug ein Protokoll, vom Scharfschalten bis zum Entschärfen: die gewählten Werte, mehrere Zeilen pro Sekunde. Die Dateien sind einfaches CSV, das eine Tabellenkalkulation öffnet, und der Protokollbetrachter kann sie auf der Fernsteuerung wiedergeben.
+Log every flight	Jeden Flug aufzeichnen
+Rows per second	Zeilen pro Sekunde
+Flights to keep	Aufzubewahrende Flüge
+Flight logs: list, replay and delete...	Flugprotokolle: Liste, Wiedergabe und Löschen...
 Rules and backup	Regeln und Sicherung
 Export sound rules to a file...	Sprachregeln in eine Datei exportieren...
 Import sound rules from a file...	Sprachregeln aus einer Datei importieren...

@@ -64,12 +64,42 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	İlk veri yaklaşık 12 saniye sürer
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Uygulamayı açtıktan yaklaşık 12 saniye sonra kumanda verileri (çubuklar, bağlantı kalitesi, telemetri) görünür. Bu bekleme RadioMaster SDK'sının içindedir ve bir hata değildir. Bir bant saniyeleri sayar. Video hemen başlar.
 Where everything is	Her şey nerede
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; altı kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, diller ve güncellemeler bulunur.
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; altı kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, uçuş kayıtları, diller ve güncellemeler bulunur.
 An aid, not a safety system	Bir yardımcı araç, güvenlik sistemi değil
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD, hava aracınızın ne yaptığını görmenize ve duymanıza yardımcı olur. Tek uyarı kaynağınız yapmayın. Her zaman yerel kurallara uygun uçun.
+Logging stopped: {0}	Kayıt durdu: {0}
+The log folder cannot be made	Kayıt klasörü oluşturulamıyor
+Storage is almost full	Depolama alanı neredeyse dolu
+The log file cannot be written	Kayıt dosyası yazılamıyor
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için kare tutamacı sürükleyin. Bitince Tamam'a dokunun.
 Reset the layout	Yerleşimi sıfırla
 Done	Tamam
+Tick the values to write into each flight log.	Her uçuş kaydına yazılacak değerleri işaretleyin.
+A replay needs these values and cannot show everything without them: {0}	Bir tekrar oynatma bu değerlere ihtiyaç duyar; onlar olmadan her şeyi gösteremez: {0}
+Replay set	Oynatma seti
+Everything	Hepsi
+None	Hiçbiri
+Values in the log	Kayıttaki değerler
+Cancel	İptal
+Tick at least one value.	En az bir değer işaretleyin.
+Max height {0} m	En yüksek irtifa {0} m
+Max distance {0} m	En uzak mesafe {0} m
+Top speed {0} km/h	En yüksek hız {0} km/sa
+Peak current {0} A	Tepe akım {0} A
+Lowest cell {0} V	En düşük hücre {0} V
+{0} mAh used	{0} mAh kullanıldı
+The log was cut off: the app was stopped while it was writing.	Kayıt yarım kaldı: uygulama yazarken durduruldu.
+{0} logs, {1}	{0} kayıt, {1}
+Flight logs	Uçuş kayıtları
+Loading the log...	Kayıt yükleniyor...
+No flight logs yet. Switch on logging in Settings, then arm to start one.	Henüz uçuş kaydı yok. Ayarlar'dan kaydı açın, sonra bir tane başlatmak için arm edin.
+Delete all the logs...	Tüm kayıtları sil...
+Delete all {0} logs? They cannot be brought back.	Tüm {0} kayıt silinsin mi? Geri getirilemezler.
+Delete	Sil
+The logs hold GPS positions and stay on this radio, in the folder {0}	Kayıtlar GPS konumlarını içerir ve bu kumandada {0} klasöründe kalır
+Recording now	Şu an kaydediliyor
+Replay	Yeniden oynat
+Delete this log? It cannot be brought back.	Bu kayıt silinsin mi? Geri getirilemez.
 MENU	MENÜ
 Warning rules	Uyarı kuralları
 Pre-flight checks	Uçuş öncesi kontroller
@@ -95,6 +125,10 @@ Stable	Kararlı
 Nightly	Nightly
 Stable (tested releases only)	Kararlı (yalnızca test edilmiş sürümler)
 Nightly (newest build of every push)	Nightly (her push'un en yeni yapısı)
+{0} per second	saniyede {0}
+{0} values	{0} değer
+{0} flights	{0} uçuş
+Logging now: {0} rows	Kayıt sürüyor: {0} satır
 Top	Üst
 Bottom	Alt
 BATTERY CRITICAL 3.48 V per cell	BATARYA KRİTİK 3.48 V hücre başına
@@ -107,6 +141,9 @@ Bottom right	Sağ alt
 Top left	Sol üst
 Top right	Sağ üst
 Center	Orta
+The log cannot be read: {0}	Kayıt okunamıyor: {0}
+REPLAY	TEKRAR OYNATMA
+This log lacks values that some cards need: {0}	Bu kayıtta bazı kartların ihtiyaç duyduğu değerler yok: {0}
 SPEED	HIZ
 HEIGHT	YÜKSEKLİK
 CURRENT	AKIM
@@ -126,7 +163,6 @@ Counts as disarmed below (microseconds)	Bu değerin altında disarm sayılır (m
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	İki eşik arasındaki boşluk, anahtara çarpılınca istatistiklerin arm/disarm olmasını önler. Anahtar 0.3 saniye yerinde kalmalıdır.
 Arm detection	Arm algılama
 Save	Kaydet
-Cancel	İptal
 The channel is 1 to 16	Kanal 1 ile 16 arasındadır
 Use microseconds, with the disarmed value not above the armed one	Mikrosaniye kullanın; disarm değeri arm değerinden büyük olmasın
 Speed (now / maximum)	Hız (şimdi / en yüksek)
@@ -244,6 +280,9 @@ This build has no RadioMaster SDK files (see the README)	Bu sürümde RadioMaste
 SDK worker thread failed to start	SDK çalışan iş parçacığı başlatılamadı
 The SDK could not open the radio's serial link (see README: serial lock)	SDK, kumandanın seri bağlantısını açamadı (README'ye bakın: seri kilit)
 SDK start failed (code {0})	SDK başlatılamadı (kod {0})
+Pause	Duraklat
+Play	Oynat
+{0}x	{0}x
 Line {0}: missing '->'  ({1})	Satır {0}: '->' eksik  ({1})
 Line {0}: nothing before '->'	Satır {0}: '->' öncesinde bir şey yok
 Line {0}: nothing to say after '->'	Satır {0}: '->' sonrasında söylenecek bir şey yok
@@ -309,7 +348,6 @@ Advanced rule (open the text editor): {0}	Gelişmiş kural (metin düzenleyiciyi
 Edit	Düzenle
 Test	Test
 Delete this rule?	Bu kural silinsin mi?
-Delete	Sil
 Channel hysteresis, microseconds (stops chatter near a switch threshold)	Kanal histerezisi, mikrosaniye (anahtar eşiği yakınında titremeyi önler)
 Voltage and link hysteresis, percent of the threshold	Voltaj ve bağlantı histerezisi, eşiğin yüzdesi
 Hold time, milliseconds (ignore changes shorter than this)	Bekleme süresi, milisaniye (bundan kısa değişiklikleri yok sayar)
@@ -429,6 +467,11 @@ Scale	Ölçek
 Fill (stretch)	Doldur (esnet)
 Speech on	Konuşma açık
 Speak a test sentence	Bir deneme cümlesi söyle
+Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	Her uçuşun kaydını arm edilmesinden disarm edilmesine kadar yazar: seçtiğiniz değerler, saniyede birkaç satır. Dosyalar bir hesap tablosunun açabildiği düz CSV'dir ve kayıt görüntüleyici bunları kumanda üzerinde yeniden oynatabilir.
+Log every flight	Her uçuşu kaydet
+Rows per second	Saniyedeki satır sayısı
+Flights to keep	Saklanacak uçuşlar
+Flight logs: list, replay and delete...	Uçuş kayıtları: listele, oynat ve sil...
 Rules and backup	Kurallar ve yedekleme
 Export sound rules to a file...	Ses kurallarını dosyaya aktar...
 Import sound rules from a file...	Ses kurallarını dosyadan içe aktar...

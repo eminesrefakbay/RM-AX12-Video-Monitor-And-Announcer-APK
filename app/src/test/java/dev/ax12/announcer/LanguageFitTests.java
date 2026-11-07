@@ -90,6 +90,17 @@ public class LanguageFitTests {
             // the banner that counts the seconds, along the top of the screen (at least 480 dp, 14 sp)
             check(lines(I18n.t("Connecting to the radio... {0} s", 12), 14, 480, true) <= 1, lang + ": the connecting banner fits one line");
 
+            // the replay bar (buttons 96 dp wide, speed 72 dp) and the buttons of the flight list and of the field picker
+            for (String b : new String[]{"Close", "Play", "Pause"}) {
+                String v = I18n.t(b);
+                check(lines(v, 14, 76, true) <= 2, lang + ": the replay button fits: " + v);
+            }
+            check(lines(I18n.t("{0}x", 8), 14, 52, true) <= 1, lang + ": the speed button fits");
+            for (String b : new String[]{"Replay", "Delete", "Cancel"}) check(lines(I18n.t(b), 14, 160, true) <= 2, lang + ": the list button fits: " + I18n.t(b));
+            for (String b : new String[]{"Replay set", "Everything", "None"}) check(lines(I18n.t(b), 14, 100, true) <= 2, lang + ": the picker button fits in a third of the dialog: " + I18n.t(b));
+            check(lines(I18n.t("REPLAY") + "  2026-11-07  14:55  \u00B7  Akb7custom001", 13, 520, true) <= 1, lang + ": the REPLAY tag fits one line");
+            check(lines(I18n.t("Rows per second"), 16, 330, false) <= 2 && lines(I18n.t("Values in the log"), 16, 330, false) <= 2 && lines(I18n.t("Flights to keep"), 16, 330, false) <= 2, lang + ": the logging rows keep their label readable");
+
             // no word of a button-sized text is longer than a button (a word cannot be broken): the short labels of the app
             int wide = 0;
             for (String key : new String[]{"Settings", "Sound rules", "Aircraft", "Battery", "Speech", "Close", "Back", "Done", "Edit", "Save", "Reset", "Restore"}) {

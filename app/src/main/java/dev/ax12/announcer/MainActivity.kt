@@ -78,6 +78,22 @@ class MainActivity : Activity() {
     private lateinit var connectBanner: ConnectingBanner
     private lateinit var aboutPanel: AboutPanel
     private lateinit var welcomeGuide: WelcomeGuide
+
+    // ---- flight logs and replay
+    private lateinit var logDir: File
+    private lateinit var flightLogger: FlightLogger
+    private lateinit var logViewer: LogViewerPanel
+    private lateinit var replayUi: ReplayOverlay
+    private var replay: ReplayEngine? = null
+    private var replayStats = FlightStats()               // the replay's own statistics: the live ones are never touched
+    private var replayChart = ChartModel()
+    private var replayLastReal = 0L
+    private var replayRow = -1
+    private var replayChartLast = 0L
+    private var replayTilesLast = 0L
+    private var replayCells = 6
+    private val replayNumbers = HashMap<String, Double>()
+    private val replayTexts = HashMap<String, String>()
     private val fader = CardFader()             // cards fade in and out
     private val chartModel = ChartModel()
     private var chartOn = false
@@ -225,12 +241,19 @@ class MainActivity : Activity() {
         settingsPanel = SettingsPanel(this, settingsHost)
         aboutPanel = AboutPanel(this) { aboutText() }
         welcomeGuide = WelcomeGuide(this) { }
+        logDir = File(getExternalFilesDir(null) ?: filesDir, "flights")
+        flightLogger = FlightLogger(logDir, FlightLogger.Wall { System.currentTimeMillis() }, FlightLogger.MetaSource { logMeta() })
+        logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) })
+        replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() })
+        replayUi.attach(frame, 2)                       // the backdrop sits above the video and its no-video screen, below every card
+        reloadLogConfig()
         frame.addView(rulesPanel.root, full)
         frame.addView(warnPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(checkPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(settingsPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(aboutPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(welcomeGuide.root, FrameLayout.LayoutParams(full))
+        frame.addView(logViewer.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
             this,
@@ -266,6 +289,8 @@ class MainActivity : Activity() {
     override fun onBackPressed() {
         if (splash?.isShowing == true) splash?.dismiss()
         else if (welcomeGuide.isShowing) welcomeGuide.back()
+        else if (replay != null) stopReplay()
+        else if (logViewer.isShowing) logViewer.hide()
         else if (editingLayout) endLayoutEdit()
         else if (aboutPanel.isShowing) aboutPanel.back()
         else if (mainMenu.isShowing) mainMenu.hide()
@@ -284,7 +309,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || editingLayout
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || replay != null || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -304,6 +329,7 @@ class MainActivity : Activity() {
         reloadRules()
         reloadWarnings()
         reloadChecks()
+        reloadLogConfig()
         startSdk()
         if (hasCameraPermission()) camera.start() else {
             holdLink(HOLD_REBUILD_MS)                    // the permission dialog pauses the screen for a moment
@@ -317,6 +343,7 @@ class MainActivity : Activity() {
     override fun onPause() {
         ui.removeCallbacks(tick)
         ui.removeCallbacks(guideCheck)
+        flightLogger.close()                            // the file is complete whenever the screen is left
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
         super.onPause()
@@ -325,6 +352,7 @@ class MainActivity : Activity() {
     override fun onDestroy() {
         ui.removeCallbacks(splashHide)
         ui.removeCallbacks(autoCheck)
+        flightLogger.close()
         updater.release()
         speaker.shutdown()
         super.onDestroy()
@@ -453,7 +481,7 @@ class MainActivity : Activity() {
             if (lastTickAt != 0L) uiTiming.add(now, now - lastTickAt)
             lastTickAt = now
 
-            val stale = now - camera.lastFrameMs > 1000
+            val stale = now - camera.lastFrameMs > 1000 && replay == null       // a replay has its own backdrop
             fader.set(noFeed, stale)                          // the grey no-video screen fades in and out
             if (stale) {
                 noVideo.update(camera.status())
@@ -493,14 +521,18 @@ class MainActivity : Activity() {
                 }
                 latestNumbers = numbers
                 latestTexts = sample.texts
-                engine?.update(numbers, sample.texts, now)
-                warningBar.update(numbers, sample.texts, now)
-                checkEngine?.update(numbers, sample.texts, now)
-                if (now - lastTileUpdate >= 200) {
-                    lastTileUpdate = now
-                    updateTiles(numbers, sample.texts, now)
+                flightLogger.update(now, flightStats.armed(), numbers, sample.texts)       // a log from arming to disarming, when it is switched on
+                if (replay != null && flightStats.armed()) stopReplay()                  // an armed aircraft: the live screen comes first
+                if (replay == null) {
+                    engine?.update(numbers, sample.texts, now)
+                    warningBar.update(numbers, sample.texts, now)
+                    checkEngine?.update(numbers, sample.texts, now)
+                    if (now - lastTileUpdate >= 200) {
+                        lastTileUpdate = now
+                        updateTiles(numbers, sample.texts, now)
+                    }
+                    if (sticksEnabled) sticksView.update(numbers)
                 }
-                if (sticksEnabled) sticksView.update(numbers)
                 if (testVisible) {
                     val sb = StringBuilder()
                     for (i in 0 until 16) sb.append("ch").append(i + 1).append("=").append(numbers["ch" + (i + 1)]!!.toInt())
@@ -516,7 +548,8 @@ class MainActivity : Activity() {
                 varsText.text = (if (waitingForSdk) tr("The SDK is starting in the background...") else tr("No data from the radio yet...")) + "\n\n" + StartupState.text(sdkLinkIfReady)
             }
             // while the radio link comes up (about 12 s): say so, count the seconds, and say what to check if it takes long
-            val connecting = (sdkStarting || sdkRunning) && !StartupState.connected && !testVisible && sdkError == null
+            if (replay != null) replayStep(now)
+            val connecting = (sdkStarting || sdkRunning) && !StartupState.connected && !testVisible && sdkError == null && replay == null
             fader.set(connectBanner.view, connecting)
             if (connecting) connectBanner.update(StartupState.secondsSinceLinkStart(now))
             if (sample == null && editingLayout && now - lastTileUpdate >= 200) {
@@ -697,6 +730,33 @@ class MainActivity : Activity() {
         override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
         override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
         override fun editCharts() = this@MainActivity.editCharts()
+        override fun logOn(): Boolean = Prefs.logOn(this@MainActivity)
+        override fun setLogOn(on: Boolean) { Prefs.setLogOn(this@MainActivity, on); reloadLogConfig() }
+        override fun logRateLabel(): String = tr("{0} per second", FlightLogger.RATES_HZ[Prefs.logRate(this@MainActivity)])
+        override fun cycleLogRate() {
+            Prefs.setInt(this@MainActivity, "logRate", (Prefs.logRate(this@MainActivity) + 1) % FlightLogger.RATES_HZ.size)
+            reloadLogConfig()
+        }
+        override fun logFieldsLabel(): String = tr("{0} values", LogFields.selection(Prefs.logFields(this@MainActivity)).size)
+        override fun editLogFields() {
+            val live = object : LiveValues {
+                override fun numbers(): Map<String, Double> = latestNumbers
+                override fun texts(): Map<String, String> = latestTexts
+            }
+            LogFieldPicker.show(this@MainActivity, live, LogFields.selection(Prefs.logFields(this@MainActivity)), Prefs.int(this@MainActivity, "armCh", 5).coerceIn(1, 16)) { chosen ->
+                Prefs.setLogFields(this@MainActivity, LogFields.join(chosen))
+                reloadLogConfig()
+                settingsPanel.refresh()
+            }
+        }
+        override fun logKeepLabel(): String = tr("{0} flights", FlightLogger.KEEP[Prefs.logKeep(this@MainActivity)])
+        override fun cycleLogKeep() {
+            Prefs.setInt(this@MainActivity, "logKeep", (Prefs.logKeep(this@MainActivity) + 1) % FlightLogger.KEEP.size)
+            reloadLogConfig()
+        }
+        override fun logStatus(): String = if (flightLogger.isLogging()) tr("Logging now: {0} rows", flightLogger.rows()) else flightLogger.problem()
+        override fun logFolder(): String = logDir.absolutePath
+        override fun openLogViewer() = logViewer.show()
         override fun showStartupTimings() = this@MainActivity.showStartupTimings()
         override fun editLayout() {
             settingsPanel.hide()
@@ -820,17 +880,154 @@ class MainActivity : Activity() {
         )
     }
 
+    // ------------------------------------------------------------------ flight logs and replay
+
+    /** Hands the logging settings to the logger (at start, when the screen comes back, and after a change in Settings). */
+    private fun reloadLogConfig() {
+        flightLogger.configure(Prefs.logOn(this), Prefs.logRate(this), LogFields.selection(Prefs.logFields(this)), Prefs.logKeep(this))
+    }
+
+    /** What the top of every log says: the app, the aircraft, the pack and the arm switch (a replay needs the last ones). */
+    private fun logMeta(): Map<String, String> {
+        val m = LinkedHashMap<String, String>()
+        val version = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (e: Exception) { "?" }
+        m["app"] = "AX-HUD " + version
+        m["aircraft"] = aircraftName
+        m["pack"] = batteryName
+        m["cells"] = batteryCells.toString()
+        m["arm_ch"] = Prefs.int(this, "armCh", 5).coerceIn(1, 16).toString()
+        m["arm_high"] = Prefs.int(this, "armHigh", 1750).toString()
+        m["arm_low"] = Prefs.int(this, "armLow", 1650).toString()
+        return m
+    }
+
+    /** Reads a log on a background thread, then starts its replay. */
+    private fun startReplayFrom(file: File) {
+        Toast.makeText(this, tr("Loading the log..."), Toast.LENGTH_SHORT).show()
+        Thread {
+            try {
+                val log = LogFormat.readFile(file, 4_000_000)
+                runOnUiThread { if (!isFinishing) startReplay(log, file.name) }
+            } catch (e: Exception) {
+                runOnUiThread { Toast.makeText(this, tr("The log cannot be read: {0}", e.message ?: ""), Toast.LENGTH_LONG).show() }
+            }
+        }.start()
+    }
+
+    private fun startReplay(log: FlightLog, name: String) {
+        if (flightStats.armed()) return                                   // flying: the live screen comes first
+        if (log.rows < 2) { Toast.makeText(this, tr("The log cannot be read: {0}", name), Toast.LENGTH_LONG).show(); return }
+        stopReplay()
+        logViewer.hide()
+        settingsPanel.hide()
+        mainMenu.hide()
+        replay = ReplayEngine(log)
+        replayCells = log.metaNumber("cells", batteryCells.toDouble()).toInt().coerceAtLeast(1)
+        replayLastReal = SystemClock.elapsedRealtime()
+        val shown = LogStore.Entry()
+        shown.name = name
+        shown.started = log.meta("started", "")
+        val title = tr("REPLAY") + "  " + LogText.dateTime(shown) + (if (log.meta("aircraft", "").isEmpty()) "" else "  \u00B7  " + log.meta("aircraft", ""))
+        replayUi.show(title)
+        rebuildReplay(0)
+        val missing = LogFields.missingForReplay(log.columns.toList(), log.metaNumber("arm_ch", 5.0).toInt())
+        if (missing.isNotEmpty()) Toast.makeText(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
+        replay?.play()
+    }
+
+    private fun stopReplay() {
+        if (replay == null) return
+        replay = null
+        replayUi.hide()
+        radarView.bind(flightStats)                                       // the live cards come back on the next tick
+        chartView.bind(chartModel)
+    }
+
+    /** Builds the statistics and the chart up to a position, from the start of the log (after a start or a seek). */
+    private fun rebuildReplay(position: Long) {
+        val r = replay ?: return
+        val log = r.log()
+        replayStats = FlightStats()
+        replayStats.configure(
+            log.metaNumber("arm_ch", Prefs.int(this, "armCh", 5).toDouble()).toInt().coerceIn(1, 16),
+            log.metaNumber("arm_high", Prefs.int(this, "armHigh", 1750).toDouble()),
+            log.metaNumber("arm_low", Prefs.int(this, "armLow", 1650).toDouble()),
+            replayCells
+        )
+        radarView.bind(replayStats)
+        replayChart = ChartModel()
+        val windowSeconds = ChartConfig.windowSeconds(Prefs.int(this, "chartWindow", 1))
+        replayChart.configure(ChartConfig.parse(Prefs.chartSeries(this)), windowSeconds)
+        chartView.bind(replayChart)
+        replayChartLast = 0L
+        val row = r.rowAt(position)
+        if (row >= 0) {
+            val chartFrom = r.rowForWindow(position, windowSeconds * 1000L)
+            var i = 0
+            r.feed(0, row, ReplayEngine.Sink { now, numbers, _ -> replayFeed(now, numbers, i++ >= chartFrom) })
+        }
+        replayRow = row
+    }
+
+    /** One logged row goes through the same steps as a live one: statistics, height and distance, volts per cell, the chart. */
+    private fun replayFeed(now: Long, numbers: Map<String, Double>, chart: Boolean) {
+        val m = HashMap<String, Double>(numbers)
+        replayStats.update(m, now)
+        if (replayStats.armed()) {
+            if (!replayStats.heightNow().isNaN()) m["height"] = replayStats.heightNow()
+            if (!replayStats.distanceNow().isNaN()) m["dist"] = replayStats.distanceNow()
+        }
+        BatteryProfiles.addDerived(m, replayCells)
+        if (chart && now - replayChartLast >= 200) {                      // five samples a second, as in the live chart
+            replayChart.sample(m, now)
+            replayChartLast = now
+        }
+    }
+
+    /** Moves the replay on by the time that has passed and shows its present row on the cards. */
+    private fun replayStep(now: Long) {
+        val r = replay ?: return
+        warningText.visibility = View.GONE                                // no warnings in a replay
+        val dt = now - replayLastReal
+        replayLastReal = now
+        r.advance(dt.coerceIn(0L, 250L))
+        val cur = r.currentRow()
+        if (cur > replayRow) {
+            r.feed(replayRow + 1, cur, ReplayEngine.Sink { t, numbers, _ -> replayFeed(t, numbers, true) })
+            replayRow = cur
+        }
+        r.fill(cur, replayNumbers, replayTexts)
+        val m = HashMap<String, Double>(replayNumbers)
+        if (replayStats.armed()) {
+            if (!replayStats.heightNow().isNaN()) m["height"] = replayStats.heightNow()
+            if (!replayStats.distanceNow().isNaN()) m["dist"] = replayStats.distanceNow()
+        }
+        BatteryProfiles.addDerived(m, replayCells)
+        if (sticksEnabled) sticksView.update(m)
+        if (now - replayTilesLast >= 100) {
+            replayTilesLast = now
+            updateTiles(m, replayTexts, ReplayEngine.clock(r.positionMs()), replayStats, replayChart, false)
+        }
+        replayUi.update(r.positionMs(), r.durationMs(), r.playing(), r.speed())
+    }
+
+    private fun replaySeek(fraction: Double) {
+        val r = replay ?: return
+        r.seek((fraction * r.durationMs()).toLong())
+        rebuildReplay(r.positionMs())
+    }
+
     private fun num0(v: Double): String = if (v.isNaN()) "-" else Math.round(v).toString()
     private fun num1(v: Double): String = if (v.isNaN()) "-" else String.format(Locale.US, "%.1f", v)
     private fun clock(ms: Long): String = String.format(Locale.US, "%d:%02d", ms / 60000, (ms / 1000) % 60)
 
     /** Refresh the three cards (about five times a second). */
-    private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long) {
-        chartModel.sample(numbers, now)
-        val showChart = chartOn && chartModel.names.isNotEmpty()
+    private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long,
+                            fs: FlightStats = flightStats, chart: ChartModel = chartModel, sampleChart: Boolean = true) {
+        if (sampleChart) chart.sample(numbers, now)
+        val showChart = chartOn && chart.names.isNotEmpty()
         fader.set(chartView, showChart)
         if (showChart) chartView.refresh(now)
-        val fs = flightStats
         val flight = fs.armed() || fs.hasFlight() || editingLayout
 
         val showStats = statsOn && flight
@@ -859,8 +1056,8 @@ class MainActivity : Activity() {
         if (showRadar) radarView.invalidate()
 
         val cm = checkModel
-        checkCard.update(fs.armed())                        // an armed aircraft ends the pre-flight period: the card is back for the next one
-        val showCheck = checkOn && cm != null && (!fs.armed() || editingLayout) && (!cm.allUnknown() || editingLayout) && checkCard.allowed(editingLayout)
+        checkCard.update(flightStats.armed())               // an armed aircraft ends the pre-flight period: the card is back for the next one
+        val showCheck = checkOn && cm != null && (!fs.armed() || editingLayout) && (!cm.allUnknown() || editingLayout) && checkCard.allowed(editingLayout) && replay == null
         fader.set(checkView, showCheck)
         if (showCheck && cm != null) {
             val rows = ArrayList<ChecklistView.Row>()

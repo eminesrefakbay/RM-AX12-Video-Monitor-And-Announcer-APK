@@ -85,6 +85,19 @@ interface SettingsHost {
     fun tileOpacityLabel(tile: String): String
     fun cycleTileOpacity(tile: String)
     fun editCharts()
+
+    // flight logs
+    fun logOn(): Boolean
+    fun setLogOn(on: Boolean)
+    fun logRateLabel(): String
+    fun cycleLogRate()
+    fun logFieldsLabel(): String
+    fun editLogFields()
+    fun logKeepLabel(): String
+    fun cycleLogKeep()
+    fun logStatus(): String
+    fun logFolder(): String
+    fun openLogViewer()
     fun editLayout()
     fun showStartupTimings()
     fun resetLayout()
@@ -451,6 +464,28 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             toggle(tr("Speech on"), host.speechOn()) { host.setSpeechOn(it) }
             action(tr("Speak a test sentence")) { host.speakTest() }
 
+        }
+        group("logs", tr("Flight logs"), "logs") {
+            note(tr("Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio."))
+            toggle(tr("Log every flight"), host.logOn()) {
+                host.setLogOn(it)
+                refresh()
+            }
+            if (host.logOn()) {
+                valueRow(tr("Rows per second"), host.logRateLabel()) {
+                    host.cycleLogRate()
+                    refresh()
+                }
+                valueRow(tr("Values in the log"), host.logFieldsLabel()) { host.editLogFields() }
+                valueRow(tr("Flights to keep"), host.logKeepLabel()) {
+                    host.cycleLogKeep()
+                    refresh()
+                }
+            }
+            action(tr("Flight logs: list, replay and delete...")) { host.openLogViewer() }
+            val status = host.logStatus()
+            if (status.isNotEmpty()) note(status)
+            note(tr("The logs hold GPS positions and stay on this radio, in the folder {0}", host.logFolder()))
         }
         group("rules", tr("Rules and backup"), "rules") {
             section(tr("Sound rules"))

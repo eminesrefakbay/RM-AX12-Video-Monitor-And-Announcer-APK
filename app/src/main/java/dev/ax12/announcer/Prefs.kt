@@ -42,6 +42,15 @@ object Prefs {
     fun int(c: Context, key: String, def: Int): Int = p(c).getInt(key, def)
     fun setInt(c: Context, key: String, v: Int) { p(c).edit().putInt(key, v).apply() }
 
+    // ---- flight logs
+    fun logOn(c: Context): Boolean = p(c).getBoolean("logOn", false)
+    fun setLogOn(c: Context, on: Boolean) = setBool(c, "logOn", on)
+    fun logRate(c: Context): Int = int(c, "logRate", 3).coerceIn(0, 4)
+    fun logKeep(c: Context): Int = int(c, "logKeep", 1).coerceIn(0, 3)
+    /** The names of the values written to a log, as one text; empty means the replay set. */
+    fun logFields(c: Context): String = p(c).getString("logFields", null) ?: ""
+    fun setLogFields(c: Context, text: String) { p(c).edit().putString("logFields", text).apply() }
+
     /** The newest version of the welcome guide that this person has seen (0 = never). */
     fun guideSeen(c: Context): Int = p(c).getInt("guideSeen", 0)
     fun setGuideSeen(c: Context, v: Int) { p(c).edit().putInt("guideSeen", v).apply() }

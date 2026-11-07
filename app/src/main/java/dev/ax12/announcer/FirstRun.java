@@ -33,7 +33,7 @@ public final class FirstRun {
         p.add(new Page(I18n.t("The first data takes about 12 seconds"),
             I18n.t("After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.")));
         p.add(new Page(I18n.t("Where everything is"),
-            I18n.t("Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.")));
+            I18n.t("Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.")));
         p.add(new Page(I18n.t("An aid, not a safety system"),
             I18n.t("AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.")));
         return p;

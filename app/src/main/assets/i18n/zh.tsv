@@ -64,12 +64,42 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	首批数据约需 12 秒
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	打开应用后, 遥控器数据(摇杆、链路质量、遥测)大约 12 秒后才会出现。这段等待发生在 RadioMaster SDK 内部, 不是错误。横幅会显示已等待的秒数。视频会立即开始。
 Where everything is	各项功能在哪里
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.	点按右上角的“菜单”会看到六个图块: 语音规则、语音、电池、飞行器、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、语言和更新。
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到六个图块: 语音规则、语音、电池、飞行器、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
 An aid, not a safety system	辅助工具, 而非安全系统
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD 帮助你看到并听到飞行器的状态。请不要把它当作唯一的警告来源。始终遵守当地规定飞行。
+Logging stopped: {0}	记录已停止: {0}
+The log folder cannot be made	无法创建日志文件夹
+Storage is almost full	存储空间几乎已满
+The log file cannot be written	无法写入日志文件
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动方形手柄可调整大小。完成后点按“完成”。
 Reset the layout	重置布局
 Done	完成
+Tick the values to write into each flight log.	勾选要写入每个飞行日志的数值。
+A replay needs these values and cannot show everything without them: {0}	回放需要这些数值, 缺少它们就无法显示全部内容: {0}
+Replay set	回放集
+Everything	全部
+None	无
+Values in the log	日志中的数值
+Cancel	取消
+Tick at least one value.	请至少勾选一个数值。
+Max height {0} m	最大高度 {0} m
+Max distance {0} m	最远距离 {0} m
+Top speed {0} km/h	最高速度 {0} km/h
+Peak current {0} A	峰值电流 {0} A
+Lowest cell {0} V	最低单芯电压 {0} V
+{0} mAh used	已用 {0} mAh
+The log was cut off: the app was stopped while it was writing.	日志不完整: 应用在写入时被停止。
+{0} logs, {1}	{0} 个日志, {1}
+Flight logs	飞行日志
+Loading the log...	正在加载日志...
+No flight logs yet. Switch on logging in Settings, then arm to start one.	还没有飞行日志。请在设置中开启记录, 然后解锁以开始一个。
+Delete all the logs...	删除所有日志...
+Delete all {0} logs? They cannot be brought back.	删除全部 {0} 个日志吗? 无法恢复。
+Delete	删除
+The logs hold GPS positions and stay on this radio, in the folder {0}	日志包含 GPS 位置, 保存在此遥控器的文件夹 {0} 中
+Recording now	正在记录
+Replay	回放
+Delete this log? It cannot be brought back.	删除此日志吗? 无法恢复。
 MENU	菜单
 Warning rules	警告规则
 Pre-flight checks	飞行前检查项
@@ -95,6 +125,10 @@ Stable	稳定版
 Nightly	Nightly
 Stable (tested releases only)	稳定版 (仅经过测试的正式版本)
 Nightly (newest build of every push)	Nightly (每次提交的最新构建)
+{0} per second	每秒 {0} 行
+{0} values	{0} 个数值
+{0} flights	{0} 次飞行
+Logging now: {0} rows	正在记录: {0} 行
 Top	顶部
 Bottom	底部
 BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
@@ -107,6 +141,9 @@ Bottom right	右下
 Top left	左上
 Top right	右上
 Center	居中
+The log cannot be read: {0}	无法读取日志: {0}
+REPLAY	回放
+This log lacks values that some cards need: {0}	此日志缺少某些卡片需要的数值: {0}
 SPEED	速度
 HEIGHT	高度
 CURRENT	电流
@@ -126,7 +163,6 @@ Counts as disarmed below (microseconds)	低于此值视为已上锁 (微秒)
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	两个阈值之间的间隔可防止碰到开关时误触发统计的开始或结束。开关必须保持 0.3 秒。
 Arm detection	解锁检测
 Save	保存
-Cancel	取消
 The channel is 1 to 16	通道为 1 到 16
 Use microseconds, with the disarmed value not above the armed one	请使用微秒, 且上锁值不能高于解锁值
 Speed (now / maximum)	速度 (当前 / 最大)
@@ -244,6 +280,9 @@ This build has no RadioMaster SDK files (see the README)	此版本不含 RadioMa
 SDK worker thread failed to start	SDK 工作线程启动失败
 The SDK could not open the radio's serial link (see README: serial lock)	SDK 无法打开遥控器的串口连接 (见 README: 串口锁)
 SDK start failed (code {0})	SDK 启动失败 (代码 {0})
+Pause	暂停
+Play	播放
+{0}x	{0}x
 Line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
 Line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
 Line {0}: nothing to say after '->'	第 {0} 行: '->' 之后没有要播报的内容
@@ -309,7 +348,6 @@ Advanced rule (open the text editor): {0}	高级规则 (请打开文本编辑器
 Edit	编辑
 Test	测试
 Delete this rule?	删除此规则?
-Delete	删除
 Channel hysteresis, microseconds (stops chatter near a switch threshold)	通道回差, 微秒 (防止在开关阈值附近抖动)
 Voltage and link hysteresis, percent of the threshold	电压与链路回差, 阈值的百分比
 Hold time, milliseconds (ignore changes shorter than this)	保持时间, 毫秒 (忽略比此更短的变化)
@@ -429,6 +467,11 @@ Scale	缩放
 Fill (stretch)	填充 (拉伸)
 Speech on	语音开启
 Speak a test sentence	播报一句测试语
+Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	为每次飞行写入日志, 从解锁到上锁: 记录你选择的数值, 每秒数行。文件是电子表格可直接打开的纯 CSV, 日志查看器可以在遥控器上回放它们。
+Log every flight	记录每次飞行
+Rows per second	每秒行数
+Flights to keep	保留的飞行数
+Flight logs: list, replay and delete...	飞行日志: 列表、回放和删除...
 Rules and backup	规则和备份
 Export sound rules to a file...	将语音规则导出到文件...
 Import sound rules from a file...	从文件导入语音规则...

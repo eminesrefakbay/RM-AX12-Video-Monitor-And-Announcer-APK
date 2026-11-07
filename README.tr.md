@@ -27,7 +27,7 @@ Bu uygulama deneyseldir ve **yedek bir bilgi kaynağı** olarak kullanılmalıd�
 
 ## Gizlilik
 
-Uygulamanın internet izni yalnızca github.com'dan güncelleme bilgisini ve APK'yı almak içindir. Hiçbir veri gönderilmez.
+Uygulamanın internet izni yalnızca github.com'dan güncelleme bilgisini ve APK'yı almak içindir. Hiçbir veri gönderilmez. Ayarlar > Uçuş kayıtları (varsayılan olarak kapalı) açılırsa GPS konumları da kumandadaki bir dosyaya yazılır; dosya kumandada kalır. Böyle bir kaydı, uçtuğunuz yeri gösteriyorsa yayımlamayın.
 
 ## Teşekkür
 

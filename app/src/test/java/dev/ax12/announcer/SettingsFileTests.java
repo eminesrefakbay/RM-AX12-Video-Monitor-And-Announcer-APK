@@ -123,6 +123,13 @@ public class SettingsFileTests {
         for (String k : SettingsFile.keys()) if (!used.contains(k)) stale.append(k).append(' ');
         check(stale.length() == 0, "every setting in the schema is used in the code (stale: " + stale + ")");
 
+        // ---------- the flight log settings are part of the backup ----------
+        check(SettingsFile.isKnown("logOn") && SettingsFile.isKnown("logRate") && SettingsFile.isKnown("logKeep") && SettingsFile.isKnown("logFields"), "the four flight log settings are in the backup");
+        check(Boolean.FALSE.equals(SettingsFile.defaultOf("logOn")) && Integer.valueOf(3).equals(SettingsFile.defaultOf("logRate")) && Integer.valueOf(1).equals(SettingsFile.defaultOf("logKeep")), "logging is off by default, at 10 rows a second, keeping 50 flights");
+        check(SettingsFile.parseValue("I", "logRate", "4") != null && SettingsFile.parseValue("I", "logRate", "9") == null && SettingsFile.parseValue("I", "logKeep", "-1") == null, "the rate and the number to keep stay in range");
+        check("ch1,vbat,fm".equals(SettingsFile.parseValue("S", "logFields", "ch1, vbat ,fm,bad name")), "a field list is cleaned: " + SettingsFile.parseValue("S", "logFields", "ch1, vbat ,fm,bad name"));
+        check("".equals(SettingsFile.parseValue("S", "logFields", "")) && SettingsFile.parseValue("S", "logFields", "!!!,??") == null, "an empty list is allowed (the replay set), a list of nothing valid is refused");
+
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);
     }
