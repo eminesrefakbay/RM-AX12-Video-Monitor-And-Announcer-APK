@@ -92,9 +92,15 @@ class MainActivity : Activity() {
     private val fakeScaler = ChannelScaler(false, ChannelScaler.Mode.MICROS)
 
     private val fakeLink = FakeRadioLink()
-    private val sdkLink: RadioLink? by lazy { if (AxSdkJni.loaded) AxSdkRadioLink(this) else null }
+    private val sdkLinkHolder = lazy { if (AxSdkJni.loaded) AxSdkRadioLink(this) else null }
+    private val sdkLink: AxSdkRadioLink? get() = sdkLinkHolder.value
+    /** The link if it exists already; never waits for the native libraries to load (the panels use this while the SDK starts). */
+    private val sdkLinkIfReady: AxSdkRadioLink? get() = if (sdkLinkHolder.isInitialized()) sdkLinkHolder.value else null
     private var sdkError: String? = null
     private var sdkRunning = false
+    @Volatile private var sdkStarting = false       // the SDK is being started on its own thread (start-up method "like RadioMaster's demo")
+    private var sdkGeneration = 0                    // tells a late answer of an old start from the current one
+    private var sdkActiveMethod = 0                  // the method the SDK was started with
 
     private var testVisible = false
     private var varsVisible = false
@@ -105,6 +111,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        StartupState.mark(StartupTimeline.SCREEN_CREATED)
         Icons.load(this)
         setContentView(R.layout.activity_main)
 
@@ -265,6 +272,7 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        StartupState.mark(StartupTimeline.SCREEN_RESUMED)
         hideSystemUi()
         reloadRules()
         reloadWarnings()
@@ -308,14 +316,63 @@ class MainActivity : Activity() {
 
     // ------------------------------------------------------------------ radio link
 
+    /**
+     * Starts the radio link. Two methods (Settings > Diagnostics), chosen at the start:
+     *  0 standard: on this thread, exactly as the app has always done it;
+     *  1 like RadioMaster's demo: on a background thread, with the device information requested first and a longer wait
+     *    before the config is asked for again. While it starts, no data is shown (and no pretend data either).
+     */
     private fun startSdk() {
-        val link = sdkLink ?: return
-        sdkError = link.start()
-        sdkRunning = sdkError == null
-        sdkError?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+        val method = Prefs.int(this, "sdkStartup", 0).coerceIn(0, 1)
+        StartupState.method = method
+        sdkActiveMethod = method
+        if (method == 0) {
+            SdkThread.awaitIdle()                       // a stop that was asked for in the background finishes first
+            val link = sdkLink ?: return
+            link.configure(false)
+            StartupState.mark(StartupTimeline.SDK_CALLED)
+            sdkError = link.start()
+            StartupState.mark(StartupTimeline.SDK_RETURNED)
+            sdkRunning = sdkError == null
+            sdkError?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+            return
+        }
+        val generation = ++sdkGeneration
+        sdkStarting = true
+        SdkThread.run {
+            var link: AxSdkRadioLink? = null
+            var error: String? = null
+            try {
+                link = sdkLink                          // may load the native libraries: not on the screen's thread
+                if (link != null) {
+                    link.configure(true)
+                    StartupState.mark(StartupTimeline.SDK_CALLED)
+                    error = link.start()
+                    StartupState.mark(StartupTimeline.SDK_RETURNED)
+                }
+            } catch (t: Throwable) {
+                error = tr("SDK start failed ({0})", t.javaClass.simpleName)       // always report back, or the screen would wait for ever
+            }
+            runOnUiThread {
+                if (generation == sdkGeneration) {
+                    sdkError = error
+                    sdkRunning = link != null && error == null
+                    sdkStarting = false
+                    error?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+                }
+            }
+        }
     }
 
     private fun stopSdk() {
+        if (sdkActiveMethod == 1) {
+            sdkGeneration++                             // a start that is still running must not report back
+            sdkStarting = false
+            sdkRunning = false
+            val link = sdkLink
+            SdkThread.run { link?.stop() }              // after the start, in the order they were asked for
+            return
+        }
         if (sdkRunning) sdkLink?.stop()
         sdkRunning = false
     }
@@ -375,15 +432,20 @@ class MainActivity : Activity() {
                 if (Prefs.menuAlways(this@MainActivity)) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
             }
 
-            val useFake = testVisible || sdkLink == null || !sdkRunning
-            val link: RadioLink = if (useFake) fakeLink else sdkLink!!
-            val scaler = if (useFake) fakeScaler else sdkScaler
-            val sample = link.poll()
+            val waitingForSdk = sdkStarting && !testVisible           // the SDK is starting in the background: no data yet, and no pretend data either
+            val useFake = testVisible || (!waitingForSdk && (sdkLink == null || !sdkRunning))
+            val link: RadioLink = if (useFake || waitingForSdk) fakeLink else sdkLink!!
+            val scaler = if (useFake || waitingForSdk) fakeScaler else sdkScaler
+            val sample = if (waitingForSdk) null else link.poll()
             if (sample != null) {
                 if (scaler.observe(sample.raw)) {                    // the radio's unit became clear: start again
                     engine?.reset()
                     reloadWarnings()
                     reloadChecks()
+                }
+                if (sample.cfgReady && link is AxSdkRadioLink) {      // the first value that can move the sticks has reached the screen
+                    StartupState.mark(StartupTimeline.FIRST_UI)
+                    StartupState.logLaunch(this@MainActivity, sdkLink)
                 }
                 val numbers = Variables.numbers(sample, scaler, batteryCells)
                 flightStats.update(numbers, now)
@@ -411,6 +473,9 @@ class MainActivity : Activity() {
                     lastVarsUpdate = now
                     varsText.text = describe(link, sample, numbers, scaler)
                 }
+            } else if (varsVisible && now - lastVarsUpdate > 250) {
+                lastVarsUpdate = now
+                varsText.text = (if (waitingForSdk) tr("The SDK is starting in the background...") else tr("No data from the radio yet...")) + "\n\n" + StartupState.text(sdkLinkIfReady)
             }
             if (sample == null && editingLayout && now - lastTileUpdate >= 200) {
                 lastTileUpdate = now
@@ -435,6 +500,7 @@ class MainActivity : Activity() {
         if (sdkError != null) sb.append("SDK: ").append(sdkError).append('\n')
         sb.append(sample.info).append('\n')
         sb.append(camera.videoStats()).append('\n')
+        sb.append('\n').append(StartupState.text(sdkLinkIfReady))
         val ui5 = uiTiming.summary(SystemClock.elapsedRealtime())
         sb.append("app loop (should be about 50 ms): 95% under ").append(ui5.p95Ms).append(" ms, worst ").append(ui5.maxMs).append(" ms\n\n")
         val sorted = TreeMap<String, Double>(numbers)
@@ -583,6 +649,13 @@ class MainActivity : Activity() {
         override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
         override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
         override fun editCharts() = this@MainActivity.editCharts()
+        override fun sdkStartupLabel(): String =
+            if (Prefs.int(this@MainActivity, "sdkStartup", 0) == 1) tr("like RadioMaster's demo") else tr("standard (as before)")
+        override fun cycleSdkStartup() {
+            Prefs.setInt(this@MainActivity, "sdkStartup", 1 - Prefs.int(this@MainActivity, "sdkStartup", 0).coerceIn(0, 1))
+            Toast.makeText(this@MainActivity, tr("The start-up method applies the next time the app starts."), Toast.LENGTH_LONG).show()
+        }
+        override fun showStartupTimings() = this@MainActivity.showStartupTimings()
         override fun editLayout() {
             settingsPanel.hide()
             startLayoutEdit()
@@ -1378,6 +1451,29 @@ class MainActivity : Activity() {
         }
         applyTiles()
         applyOverlayPrefs()
+    }
+
+    // ------------------------------------------------------------------ start-up timings
+
+    /** The last launches: how long until the first stick value reached the screen, and where the time went. */
+    private fun showStartupTimings() {
+        val log = StartupState.readLog(this)
+        val text = TextView(this)
+        text.typeface = android.graphics.Typeface.MONOSPACE
+        text.textSize = 11f
+        text.setPadding(dp(16), dp(8), dp(16), dp(8))
+        text.text = tr("Milliseconds since the app started. \"graph\" is when the first stick value reached the screen. The newest launch is last.") + "\n\n" +
+            (if (log.isBlank()) tr("No timings yet. Start the app, wait until the sticks move, and look again.") else log)
+        val scroll = ScrollView(this)
+        scroll.addView(text)
+        Immersive.show(
+            AlertDialog.Builder(this)
+                .setTitle(tr("Start-up timings"))
+                .setView(scroll)
+                .setPositiveButton(tr("Close"), null)
+                .setNegativeButton(tr("Clear")) { _, _ -> StartupState.clearLog(this) }
+                .create()
+        )
     }
 
     // ------------------------------------------------------------------ live charts

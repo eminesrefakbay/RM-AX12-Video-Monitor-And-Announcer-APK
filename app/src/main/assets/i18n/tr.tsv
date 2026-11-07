@@ -61,10 +61,13 @@ Done	Tamam
 MENU	MENÜ
 Warning rules	Uyarı kuralları
 Pre-flight checks	Uçuş öncesi kontroller
+SDK start failed ({0})	SDK başlatılamadı ({0})
 Sound rules: {0} error(s). Open the rules editor.	Ses kuralları: {0} hata. Kural düzenleyiciyi açın.
 Pre-flight checks: {0} error(s). Open Settings, then the checks.	Uçuş öncesi kontroller: {0} hata. Ayarlar'ı, sonra kontrolleri açın.
 Warning rules: {0} error(s). Open Settings, then the warning rules.	Uyarı kuralları: {0} hata. Ayarlar'ı, sonra uyarı kurallarını açın.
 NO VIDEO  ·  {0}	VİDEO YOK  ·  {0}
+The SDK is starting in the background...	SDK arka planda başlıyor...
+No data from the radio yet...	Kumandadan henüz veri yok...
 TEST CHANNELS ARE ON - the radio is not being read\n	TEST KANALLARI AÇIK - kumanda okunmuyor\n
 NO SDK IN THIS BUILD - the radio is not being read\n	BU SÜRÜMDE SDK YOK - kumanda okunmuyor\n
 SDK IS NOT RUNNING - the radio is not being read\n	SDK ÇALIŞMIYOR - kumanda okunmuyor\n
@@ -80,6 +83,9 @@ Stable	Kararlı
 Nightly	Nightly
 Stable (tested releases only)	Kararlı (yalnızca test edilmiş sürümler)
 Nightly (newest build of every push)	Nightly (her push'un en yeni yapısı)
+like RadioMaster's demo	RadioMaster'ın demosu gibi
+standard (as before)	standart (eskisi gibi)
+The start-up method applies the next time the app starts.	Başlatma yöntemi uygulamanın bir sonraki başlayışında geçerli olur.
 top	üst
 bottom	alt
 BATTERY CRITICAL 3.48 V per cell	BATARYA KRİTİK 3.48 V hücre başına
@@ -172,6 +178,10 @@ Statistics	İstatistik
 Radar	Radar
 Checklist	Kontrol listesi
 Charts	Grafikler
+Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	Uygulama başladığından beri geçen milisaniye. "graph", ilk stick değerinin ekrana ulaştığı andır. En yeni başlatma en sondadır.
+No timings yet. Start the app, wait until the sticks move, and look again.	Henüz süre yok. Uygulamayı başlatın, stick'ler hareket edene kadar bekleyin ve tekrar bakın.
+Start-up timings	Başlatma süreleri
+Clear	Temizle
 List	Liste
 Add a chart	Grafik ekle
 Time window: {0} s  (tap to change)	Zaman aralığı: {0} sn  (değiştirmek için dokunun)
@@ -430,6 +440,9 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics	Tanılama
 Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
 Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
+SDK start-up: {0}  (tap to change; applies at the next start)	SDK başlatma: {0}  (değiştirmek için dokunun; bir sonraki başlatmada geçerli)
+Show the start-up timings of the last launches...	Son başlatmaların süre kayıtlarını göster...
+Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.	Standart, uygulamanın kumanda bağlantısını hep başlattığı yöntemdir. "RadioMaster'ın demosu gibi" yöntemi bağlantıyı arka planda başlatır, önce cihaz bilgisini ister ve yapılandırmayı tekrar istemeden önce daha uzun bekler. İkisinin sürelerini karşılaştırın.
 Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
 About	Hakkında
 About AX-HUD, licenses and thanks...	AX-HUD hakkında, lisanslar ve teşekkürler...

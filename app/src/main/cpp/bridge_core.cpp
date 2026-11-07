@@ -9,6 +9,7 @@
 #include <thread>
 
 #include <cerrno>
+#include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
 
@@ -31,6 +32,15 @@ struct State {
     std::deque<std::vector<std::uint8_t>> crsf;
     Snapshot snap{};
     std::thread worker;
+    // the start-up timeline
+    std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
+    Timeline tl{};
+    bool deviceInfoAfterCfg = false;     // ask for the device information once more when the config is loaded
+
+    State() {
+        for (double& x : tl.t) x = -1;     // nothing has happened yet
+        tl.t[kTlRequestCount] = 0;
+    }
 };
 
 State& st() {
@@ -50,13 +60,52 @@ void redirectTempDir(const std::string& appDataPath) {
 
 constexpr std::size_t kMaxQueuedFrames = 128;
 std::atomic<int> g_cfgRetryMs{3000};
+std::atomic<LogHook> g_logHook{nullptr};
+
+double msSince(std::chrono::steady_clock::time_point t0) {
+    return std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0).count();
+}
+
+void logLine(double ms, const char* what) {
+    const LogHook hook = g_logHook.load();
+    if (hook == nullptr) return;
+    char buf[160];
+    std::snprintf(buf, sizeof(buf), "%.0f ms: %s", ms, what);
+    hook(buf);
+}
+
+void resetTimeline(State& s) {
+    for (double& x : s.tl.t) x = -1;
+    s.tl.t[kTlRequestCount] = 0;
+}
+
+// Records a step the first time it happens (the caller holds the lock).
+void markFirst(State& s, int index, const char* what) {
+    if (s.tl.t[index] >= 0) return;
+    s.tl.t[index] = msSince(s.t0);
+    logLine(s.tl.t[index], what);
+}
+
+// Records one more config request (the caller holds the lock).
+void markRequest(State& s) {
+    const int n = static_cast<int>(s.tl.t[kTlRequestCount]);
+    const double ms = msSince(s.t0);
+    if (n < kMaxRequests) s.tl.t[kTlRequest0 + n] = ms;
+    s.tl.t[kTlRequestCount] = n + 1;
+    logLine(ms, n == 0 ? "config requested" : "config requested again");
+}
 
 // Runs on the SDK's output thread: keep it short, copy data, never call getters here.
 void onMessage(const rmaxSdk::SdkMessage& message, void* /*user*/) {
     State& s = st();
+    {
+        std::lock_guard<std::mutex> lock(s.m);
+        markFirst(s, kTlFirstMessage, "first SDK message");
+    }
     switch (message.msgId) {
     case rmaxSdk::RC_MSGID_MIXOUT_UPDATE: {
         std::lock_guard<std::mutex> lock(s.m);
+        markFirst(s, kTlFirstMixout, "first channel message (mixout)");
         s.dirty = true;
         ++s.mixoutMsgs;
         s.cv.notify_one();
@@ -65,9 +114,15 @@ void onMessage(const rmaxSdk::SdkMessage& message, void* /*user*/) {
     case rmaxSdk::RC_MSGID_GETDEVCFG_END: {
         // The SDK guide: the getters are only meaningful after this message.
         std::lock_guard<std::mutex> lock(s.m);
+        markFirst(s, kTlCfgEnd, "config loaded (GETDEVCFG_END)");
         s.cfgReady = true;
         s.dirty = true;
         s.cv.notify_one();
+        break;
+    }
+    case rmaxSdk::RC_MSGID_FWINF_UPDATED: {
+        std::lock_guard<std::mutex> lock(s.m);
+        markFirst(s, kTlFwInfo, "device info answered");
         break;
     }
     case rmaxSdk::RC_MSGID_FWVERSION_NOT_MATCH: {
@@ -114,18 +169,25 @@ void workerLoop() {
         if (!s.running) break;
         s.dirty = false;
         const bool needCfg = !s.cfgReady;
+        const bool needDeviceInfo = s.cfgReady && s.deviceInfoAfterCfg;
+        if (needDeviceInfo) s.deviceInfoAfterCfg = false;           // once
         lock.unlock();
 
         // The radio may not have been reachable at start-up: keep asking until it answers.
         if (needCfg && std::chrono::steady_clock::now() - lastCfgRequest >= std::chrono::milliseconds(g_cfgRetryMs.load())) {
             lastCfgRequest = std::chrono::steady_clock::now();
             rmaxSdk::taskReadConfigFromDevice();
+            std::lock_guard<std::mutex> l(s.m);
+            markRequest(s);
         }
+        // RadioMaster's demo asks for the device information once the configuration is loaded.
+        if (needDeviceInfo) rmaxSdk::rcTaskRequestDeviceInf();
 
         const auto channels = rmaxSdk::rcGetChOutList();
         const auto radio = rmaxSdk::rcGetRadioStatus();
 
         lock.lock();
+        if (!channels.empty()) markFirst(s, kTlFirstChannels, "channel list available");
         for (int i = 0; i < kChannels; ++i) {
             if (i < static_cast<int>(channels.size())) {
                 s.snap.v[kSnapChOut + i] = static_cast<double>(channels[i].chOut);
@@ -153,20 +215,35 @@ void workerLoop() {
 }  // namespace
 
 void setConfigRetryMs(int ms) { g_cfgRetryMs = ms; }
+void setLogHook(LogHook hook) { g_logHook = hook; }
 
-int start(const std::string& appDataPath) {
+Timeline timeline() {
+    State& s = st();
+    std::lock_guard<std::mutex> lock(s.m);
+    return s.tl;
+}
+
+namespace {
+int startWith(const std::string& appDataPath, bool requestDeviceInfo) {
     State& s = st();
     {
         std::lock_guard<std::mutex> lock(s.m);
         if (s.running) return static_cast<int>(rmaxSdk::InitResult::AlreadyInitialized);
     }
+    const auto t0 = std::chrono::steady_clock::now();
     redirectTempDir(appDataPath);
     const auto result = rmaxSdk::initialize(appDataPath);
+    const double initMs = msSince(t0);
     if (result != rmaxSdk::InitResult::Success && result != rmaxSdk::InitResult::AlreadyInitialized) {
         return static_cast<int>(result);
     }
     {
         std::lock_guard<std::mutex> lock(s.m);
+        s.t0 = t0;
+        resetTimeline(s);
+        s.tl.t[kTlInitReturned] = initMs;
+        logLine(initMs, "SDK initialize() returned");
+        s.deviceInfoAfterCfg = requestDeviceInfo;
         s.running = true;
         s.dirty = true;
         s.tlmOk = true;
@@ -178,11 +255,33 @@ int start(const std::string& appDataPath) {
         s.crsf.clear();
     }
     rmaxSdk::setMessageCallback(&onMessage, nullptr);
+    {
+        std::lock_guard<std::mutex> lock(s.m);
+        markFirst(s, kTlCallbackSet, "message callback set");
+    }
+    // RadioMaster's demo asks for the device information first (the standard start does not).
+    if (requestDeviceInfo) {
+        rmaxSdk::rcTaskRequestDeviceInf();
+        std::lock_guard<std::mutex> lock(s.m);
+        markFirst(s, kTlDeviceInfoRequested, "device info requested");
+    }
     // Required first step after initialize: load the radio's configuration. Until
     // RC_MSGID_GETDEVCFG_END arrives the getters return empty or default values.
     rmaxSdk::taskReadConfigFromDevice();
+    {
+        std::lock_guard<std::mutex> lock(s.m);
+        markRequest(s);
+    }
     s.worker = std::thread(workerLoop);
     return static_cast<int>(result);
+}
+}  // namespace
+
+int start(const std::string& appDataPath) { return startWith(appDataPath, false); }
+
+int start(const std::string& appDataPath, const StartOptions& options) {
+    g_cfgRetryMs = options.configRetryMs;
+    return startWith(appDataPath, options.requestDeviceInfo);
 }
 
 void stop() {

@@ -61,10 +61,13 @@ Done	Fertig
 MENU	MENÜ
 Warning rules	Warnregeln
 Pre-flight checks	Checks vor dem Flug
+SDK start failed ({0})	SDK-Start fehlgeschlagen ({0})
 Sound rules: {0} error(s). Open the rules editor.	Sprachregeln: {0} Fehler. Regeleditor öffnen.
 Pre-flight checks: {0} error(s). Open Settings, then the checks.	Checks vor dem Flug: {0} Fehler. Einstellungen öffnen, dann die Checks.
 Warning rules: {0} error(s). Open Settings, then the warning rules.	Warnregeln: {0} Fehler. Einstellungen öffnen, dann die Warnregeln.
 NO VIDEO  ·  {0}	KEIN VIDEO  ·  {0}
+The SDK is starting in the background...	Das SDK startet im Hintergrund...
+No data from the radio yet...	Noch keine Daten von der Fernsteuerung...
 TEST CHANNELS ARE ON - the radio is not being read\n	TESTKANÄLE SIND AN - die Fernsteuerung wird nicht gelesen\n
 NO SDK IN THIS BUILD - the radio is not being read\n	KEIN SDK IN DIESER VERSION - die Fernsteuerung wird nicht gelesen\n
 SDK IS NOT RUNNING - the radio is not being read\n	SDK LÄUFT NICHT - die Fernsteuerung wird nicht gelesen\n
@@ -80,6 +83,9 @@ Stable	Stabil
 Nightly	Nightly
 Stable (tested releases only)	Stabil (nur getestete Releases)
 Nightly (newest build of every push)	Nightly (neuester Build jedes Pushs)
+like RadioMaster's demo	wie RadioMasters Demo
+standard (as before)	Standard (wie bisher)
+The start-up method applies the next time the app starts.	Die Startmethode gilt beim nächsten Start der App.
 top	oben
 bottom	unten
 BATTERY CRITICAL 3.48 V per cell	AKKU KRITISCH 3.48 V pro Zelle
@@ -172,6 +178,10 @@ Statistics	Statistik
 Radar	Radar
 Checklist	Checkliste
 Charts	Diagramme
+Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	Millisekunden seit dem Start der App. "graph" ist der Moment, in dem der erste Stick-Wert den Bildschirm erreichte. Der neueste Start steht zuletzt.
+No timings yet. Start the app, wait until the sticks move, and look again.	Noch keine Zeiten. Starte die App, warte bis sich die Sticks bewegen, und schau noch einmal nach.
+Start-up timings	Startzeiten
+Clear	Löschen
 List	Liste
 Add a chart	Diagramm hinzufügen
 Time window: {0} s  (tap to change)	Zeitfenster: {0} s  (zum Ändern tippen)
@@ -430,6 +440,9 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics	Diagnose
 Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
 Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
+SDK start-up: {0}  (tap to change; applies at the next start)	SDK-Start: {0}  (zum Ändern tippen; gilt beim nächsten Start)
+Show the start-up timings of the last launches...	Startzeiten der letzten Starts anzeigen...
+Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.	Standard ist die Art, wie die App die Verbindung zur Fernsteuerung immer gestartet hat. "Wie RadioMasters Demo" startet sie im Hintergrund, fragt zuerst die Geräteinformationen ab und wartet länger, bevor die Konfiguration erneut angefordert wird. Vergleiche die Zeiten der beiden.
 Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
 About	Info
 About AX-HUD, licenses and thanks...	Über AX-HUD, Lizenzen und Dank...

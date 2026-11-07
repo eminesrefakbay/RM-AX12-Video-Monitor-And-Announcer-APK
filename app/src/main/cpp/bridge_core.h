@@ -31,11 +31,43 @@ struct Snapshot {
     double v[kSnapSize];
 };
 
+// The start-up timeline: when each step of the start happened, in milliseconds since start() began (-1 = not yet).
+// Observe-only: nothing here changes what the bridge does. Kotlin shows it next to the app's own steps.
+constexpr int kMaxRequests = 8;
+constexpr int kTlInitReturned = 0;       // rmaxSdk::initialize() returned
+constexpr int kTlCallbackSet = 1;        // the message callback was registered
+constexpr int kTlFirstMessage = 2;       // the first message of any kind arrived
+constexpr int kTlFirstMixout = 3;        // the first RC_MSGID_MIXOUT_UPDATE (channel data is flowing)
+constexpr int kTlFwInfo = 4;             // RC_MSGID_FWINF_UPDATED (the radio answered a device info request)
+constexpr int kTlCfgEnd = 5;             // RC_MSGID_GETDEVCFG_END (the radio's configuration is loaded)
+constexpr int kTlFirstChannels = 6;      // rcGetChOutList() returned a non-empty list for the first time
+constexpr int kTlDeviceInfoRequested = 7;  // rcTaskRequestDeviceInf() was called for the first time
+constexpr int kTlRequestCount = 8;       // how many times the config was requested (the value, not a time)
+constexpr int kTlRequest0 = 9;           // times of the first kMaxRequests config requests
+constexpr int kTlSize = kTlRequest0 + kMaxRequests;
+
+struct Timeline {
+    double t[kTlSize];
+};
+
+/** How the SDK is started. The default is how the app has always done it. */
+struct StartOptions {
+    bool requestDeviceInfo = false;   // ask the radio for its device information before the config, and once more when the config is loaded (RadioMaster's demo does)
+    int configRetryMs = 3000;         // how long to wait before asking for the config again
+};
+
 /** How long to wait before asking the radio for its configuration again (default 3000 ms). Mainly for tests. */
 void setConfigRetryMs(int ms);
 
-/** Starts the SDK. @return the SDK's InitResult as an int (0 Success, 1 AlreadyInitialized, 2 ThreadStartFailed, 3 CommunicationInitFailed). */
+/** Starts the SDK the standard way (the retry time set by setConfigRetryMs applies). @return the SDK's InitResult as an int (0 Success, 1 AlreadyInitialized, 2 ThreadStartFailed, 3 CommunicationInitFailed). */
 int start(const std::string& appDataPath);
+/** Starts the SDK with the given options (they also set the retry time). */
+int start(const std::string& appDataPath, const StartOptions& options);
+
+/** Where timeline lines go (logcat in the app, nothing in the PC tests). */
+using LogHook = void (*)(const char* line);
+void setLogHook(LogHook hook);
+Timeline timeline();
 void stop();
 
 Snapshot snapshot();

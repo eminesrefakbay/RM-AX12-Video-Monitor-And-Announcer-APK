@@ -61,10 +61,13 @@ Done	完成
 MENU	菜单
 Warning rules	警告规则
 Pre-flight checks	飞行前检查项
+SDK start failed ({0})	SDK 启动失败 ({0})
 Sound rules: {0} error(s). Open the rules editor.	语音规则: {0} 个错误。请打开规则编辑器。
 Pre-flight checks: {0} error(s). Open Settings, then the checks.	飞行前检查项: {0} 个错误。请打开设置, 再打开检查项。
 Warning rules: {0} error(s). Open Settings, then the warning rules.	警告规则: {0} 个错误。请打开设置, 再打开警告规则。
 NO VIDEO  ·  {0}	无视频  ·  {0}
+The SDK is starting in the background...	SDK 正在后台启动...
+No data from the radio yet...	尚未收到遥控器数据...
 TEST CHANNELS ARE ON - the radio is not being read\n	测试通道已开启 - 未读取遥控器\n
 NO SDK IN THIS BUILD - the radio is not being read\n	此版本不含 SDK - 未读取遥控器\n
 SDK IS NOT RUNNING - the radio is not being read\n	SDK 未运行 - 未读取遥控器\n
@@ -80,6 +83,9 @@ Stable	稳定版
 Nightly	Nightly
 Stable (tested releases only)	稳定版 (仅经过测试的正式版本)
 Nightly (newest build of every push)	Nightly (每次提交的最新构建)
+like RadioMaster's demo	与 RadioMaster 示例相同
+standard (as before)	标准 (与以前相同)
+The start-up method applies the next time the app starts.	启动方式将在应用下次启动时生效。
 top	顶部
 bottom	底部
 BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
@@ -172,6 +178,10 @@ Statistics	统计
 Radar	雷达
 Checklist	检查清单
 Charts	图表
+Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	自应用启动以来的毫秒数。"graph" 表示第一个摇杆数值到达屏幕的时刻。最新一次启动排在最后。
+No timings yet. Start the app, wait until the sticks move, and look again.	还没有计时记录。启动应用, 等到摇杆有反应后再查看。
+Start-up timings	启动计时
+Clear	清除
 List	列表
 Add a chart	添加图表
 Time window: {0} s  (tap to change)	时间窗口: {0} 秒  (点按更改)
@@ -430,6 +440,9 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics	诊断
 Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
 Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
+SDK start-up: {0}  (tap to change; applies at the next start)	SDK 启动方式: {0}  (点按更改; 下次启动生效)
+Show the start-up timings of the last launches...	显示最近几次启动的计时...
+Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.	标准方式是应用一直以来启动遥控器连接的方法。“与 RadioMaster 示例相同”会在后台线程启动, 先请求设备信息, 并在再次请求配置前等待更久。请比较两者的计时。
 Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
 About	关于
 About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...

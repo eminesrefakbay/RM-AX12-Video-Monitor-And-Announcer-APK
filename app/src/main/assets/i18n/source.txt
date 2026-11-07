@@ -61,10 +61,13 @@ Done
 MENU
 Warning rules
 Pre-flight checks
+SDK start failed ({0})
 Sound rules: {0} error(s). Open the rules editor.
 Pre-flight checks: {0} error(s). Open Settings, then the checks.
 Warning rules: {0} error(s). Open Settings, then the warning rules.
 NO VIDEO  ·  {0}
+The SDK is starting in the background...
+No data from the radio yet...
 TEST CHANNELS ARE ON - the radio is not being read\n
 NO SDK IN THIS BUILD - the radio is not being read\n
 SDK IS NOT RUNNING - the radio is not being read\n
@@ -80,6 +83,9 @@ Stable
 Nightly
 Stable (tested releases only)
 Nightly (newest build of every push)
+like RadioMaster's demo
+standard (as before)
+The start-up method applies the next time the app starts.
 top
 bottom
 BATTERY CRITICAL 3.48 V per cell
@@ -172,6 +178,10 @@ Statistics
 Radar
 Checklist
 Charts
+Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.
+No timings yet. Start the app, wait until the sticks move, and look again.
+Start-up timings
+Clear
 List
 Add a chart
 Time window: {0} s  (tap to change)
@@ -430,6 +440,9 @@ Android asks you to confirm every update. The first time it also asks you to all
 Diagnostics
 Show the variables panel (every value the radio sends)
 Test channels: sliders instead of the radio
+SDK start-up: {0}  (tap to change; applies at the next start)
+Show the start-up timings of the last launches...
+Standard is how the app has always started the radio link. "Like RadioMaster's demo" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two.
 Close Settings to see the panels over the video.
 About
 About AX-HUD, licenses and thanks...

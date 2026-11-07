@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.1)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 744 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 768 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -144,6 +144,30 @@ Settings) and fill as soon as the app runs.
 
 Two new values come with them, usable in charts **and in rules**: **`height`** (metres above where you armed) and **`dist`** (metres from
 home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
+
+## Start-up timing and the start-up method (diagnostics)
+
+If the sticks take a long time to move after the app starts, this shows where the time goes. It only records; nothing changes unless
+you switch the method.
+
+* **Timeline.** *Settings > Diagnostics > Show the variables panel* now starts with a timeline, in milliseconds since the app's process
+  started (about when you tapped the icon): the screen created, the SDK start called, `initialize()` returned, the message callback
+  set, each time the radio's configuration was requested, the first channel message (mixout), the device information answered, the
+  configuration loaded, the channel list available, and **the first sample in the app that can move the sticks**. The same lines go to
+  logcat under the tag `ax12timing` (`adb logcat -s ax12timing`).
+* **Log of launches.** *Settings > Diagnostics > Show the start-up timings of the last launches* keeps one line for each of the last 10
+  launches: `method | start | call took | init done | mixout | config | requests | graph`. `graph` is the time until the first stick value
+  reached the screen; compare it with your stopwatch.
+* **Method.** *Settings > Diagnostics > SDK start-up* (applies at the next start):
+  * **standard (as before)**: the radio link is started on the screen's thread, the configuration is requested once and again every
+    3 seconds until it arrives. This is how the app has always started it and it is the default.
+  * **like RadioMaster's demo**: the radio link is started on a background thread (the screen and the camera are not held up), the
+    device information is requested first and once more when the configuration is loaded, and the wait before asking for the
+    configuration again is 6 seconds. While it starts, no data and no pretend data is shown.
+* **How to compare.** Fully close the RadioMaster app, force-stop AX-HUD, start it, and time until the sticks move; do it 5 times for each
+  method, and note `graph` and `config` from the log. If the times of one method cluster about 3 seconds apart (for example 7.4, 10.5,
+  13.4), the retry timer is deciding the time. If `mixout` is early but `config` is late, the link is up and the wait is the
+  configuration handshake; if both are late, the link itself is slow to come up.
 
 ## Looks: one style, icons, settings in groups
 

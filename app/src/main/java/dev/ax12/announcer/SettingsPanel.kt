@@ -78,6 +78,9 @@ interface SettingsHost {
     fun cycleTileOpacity(tile: String)
     fun editCharts()
     fun editLayout()
+    fun sdkStartupLabel(): String
+    fun cycleSdkStartup()
+    fun showStartupTimings()
     fun resetLayout()
     fun editArmDetection()
     fun editStatsRows()
@@ -426,6 +429,12 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         group("diagnostics", tr("Diagnostics"), "diagnostics") {
             toggle(tr("Show the variables panel (every value the radio sends)"), host.variablesOn()) { host.setVariablesOn(it) }
             toggle(tr("Test channels: sliders instead of the radio"), host.testChannelsOn()) { host.setTestChannelsOn(it) }
+            action(tr("SDK start-up: {0}  (tap to change; applies at the next start)", host.sdkStartupLabel())) {
+                host.cycleSdkStartup()
+                refresh()
+            }
+            action(tr("Show the start-up timings of the last launches...")) { host.showStartupTimings() }
+            note(tr("Standard is how the app has always started the radio link. \"Like RadioMaster's demo\" starts it on a background thread, asks the radio for its device information first, and waits longer before asking for the configuration again. Compare the timings of the two."))
             note(tr("Close Settings to see the panels over the video."))
 
         }

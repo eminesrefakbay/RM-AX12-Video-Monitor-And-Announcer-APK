@@ -9,7 +9,8 @@ class RadioSample(
     val logic: DoubleArray,               // 16 logic values
     val numbers: Map<String, Double>,     // lq, dbm, txv, rxv, tlm, vbat, up_lq ...
     val texts: Map<String, String>,       // fm
-    val info: String                      // one line for the status text
+    val info: String,                     // one line for the status text
+    val cfgReady: Boolean = true          // the radio's configuration is loaded (always true for the test sliders)
 )
 
 interface RadioLink {
@@ -41,11 +42,23 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
     override val name = tr("RadioMaster SDK")
 
     private val crsf = CrsfState()
-    private var started = false
+    @Volatile private var started = false          // the SDK may be started on a background thread
+    private var requestDeviceInfo = false
+    private var configRetryMs = 3000
+
+    /** How the SDK is started: the standard way, or like RadioMaster's demo (device information first, a longer wait before asking again). */
+    fun configure(demoLike: Boolean) {
+        requestDeviceInfo = demoLike
+        configRetryMs = if (demoLike) 6000 else 3000
+    }
+
+    /** When each step of the start happened (see bridge_core.h), or null without the SDK. */
+    fun timeline(): DoubleArray? = if (AxSdkJni.loaded) AxSdkJni.nativeTimeline() else null
 
     override fun start(): String? {
         if (!AxSdkJni.loaded) return tr("This build has no RadioMaster SDK files (see the README)")
-        val code = AxSdkJni.nativeStart(context.filesDir.absolutePath)
+        StartupState.nativeBaseMs = SystemClock.elapsedRealtime()      // the bridge's own clock starts now
+        val code = AxSdkJni.nativeStart(context.filesDir.absolutePath, requestDeviceInfo, configRetryMs)
         started = (code == 0 || code == 1)
         return when (code) {
             0, 1 -> null
@@ -96,7 +109,7 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
         sb.append("\nCRSF frames ok ").append(crsf.framesOk()).append(" / bad crc ").append(crsf.framesBadCrc())
             .append(" / other ").append(crsf.framesIgnored())
         val info = sb.toString()
-        return RadioSample(s.copyOfRange(0, 16), s.copyOfRange(16, 32), numbers, HashMap(crsf.texts()), info)
+        return RadioSample(s.copyOfRange(0, 16), s.copyOfRange(16, 32), numbers, HashMap(crsf.texts()), info, cfgReady)
     }
 }
 

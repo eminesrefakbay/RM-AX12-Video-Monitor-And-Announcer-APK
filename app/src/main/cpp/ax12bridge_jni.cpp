@@ -22,11 +22,17 @@ namespace QtAndroidPrivate {
 extern bool initJNI(JavaVM* vm, JNIEnv* env);
 }
 
+// Timeline lines go to logcat under their own tag: adb logcat -s ax12timing
+static void logTiming(const char* line) {
+    __android_log_print(ANDROID_LOG_INFO, "ax12timing", "%s", line);
+}
+
 extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/) {
     JNIEnv* env = nullptr;
     if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) return JNI_ERR;
     const bool ok = QtAndroidPrivate::initJNI(vm, env);
     LOGI("QtAndroidPrivate::initJNI -> %s", ok ? "ok" : "failed (ignored)");
+    ax12::setLogHook(&logTiming);
 #ifdef AX12_SERIAL_LOCK_PATCH
     ax12::patchSerialLock();
 #endif
@@ -40,13 +46,25 @@ Java_dev_ax12_announcer_AxSdkJni_nativeVersion(JNIEnv* env, jclass) {
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_dev_ax12_announcer_AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDataPath) {
+Java_dev_ax12_announcer_AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDataPath, jboolean requestDeviceInfo, jint configRetryMs) {
     const char* chars = env->GetStringUTFChars(appDataPath, nullptr);
     const std::string path(chars != nullptr ? chars : "");
     if (chars != nullptr) env->ReleaseStringUTFChars(appDataPath, chars);
-    const int result = ax12::start(path);
-    LOGI("nativeStart: path=%s result=%d (0 ok, 1 already running, 2 thread failed, 3 communication failed)", path.c_str(), result);
+    ax12::StartOptions options;
+    options.requestDeviceInfo = requestDeviceInfo == JNI_TRUE;
+    options.configRetryMs = configRetryMs;
+    const int result = ax12::start(path, options);
+    LOGI("nativeStart: path=%s deviceInfoFirst=%d retryMs=%d result=%d (0 ok, 1 already running, 2 thread failed, 3 communication failed)",
+         path.c_str(), options.requestDeviceInfo ? 1 : 0, options.configRetryMs, result);
     return result;
+}
+
+extern "C" JNIEXPORT jdoubleArray JNICALL
+Java_dev_ax12_announcer_AxSdkJni_nativeTimeline(JNIEnv* env, jclass) {
+    const ax12::Timeline t = ax12::timeline();
+    jdoubleArray out = env->NewDoubleArray(ax12::kTlSize);
+    if (out != nullptr) env->SetDoubleArrayRegion(out, 0, ax12::kTlSize, t.t);
+    return out;
 }
 
 extern "C" JNIEXPORT void JNICALL

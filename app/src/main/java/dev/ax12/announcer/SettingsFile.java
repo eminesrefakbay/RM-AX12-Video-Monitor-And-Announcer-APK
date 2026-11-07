@@ -43,6 +43,8 @@ public final class SettingsFile {
         i("armCh", 1, 16); i("armHigh", 1000, 2100); i("armLow", 900, 2100);
         // where the cards are (-1 = in its corner) and how big (percent)
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) { i(tile + "X", -1, 1000); i(tile + "Y", -1, 1000); i(tile + "Scale", 50, 250); }
+        // how the SDK is started (0 standard, 1 like RadioMaster's demo)
+        i("sdkStartup", 0, 1);
         // live charts
         b("chartOn"); i("chartSize", 0, 2); i("chartPos", 0, 4); i("chartOpacity", 0, 2); i("chartWindow", 0, 2); s("chartSeries");
         // battery, packs and aircraft
@@ -67,7 +69,7 @@ public final class SettingsFile {
         d("checkOn", true); d("checkSize", 1); d("checkPos", 4); d("checkOpacity", 1);
         d("armCh", 5); d("armHigh", 1750); d("armLow", 1650);
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) { d(tile + "X", -1); d(tile + "Y", -1); d(tile + "Scale", 100); }
-        d("batActive", 0); d("packActive", 0);
+        d("batActive", 0); d("packActive", 0); d("sdkStartup", 0);
         d("chartOn", false); d("chartSize", 1); d("chartPos", 1); d("chartOpacity", 1); d("chartWindow", 1); d("chartSeries", ChartConfig.DEFAULT);
     }
 
