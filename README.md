@@ -7,10 +7,22 @@
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
 * opens straight into **full-screen video** from the HDMI input;
-* shows a plain grey screen with one slim **status bar at the bottom** ("NO VIDEO · camera · size · reason") when no frames arrive, and reconnects by itself;
+* shows a grey **No video** screen (a camera icon, "No video" and one line of advice, with a small detail line along the bottom) when no frames arrive, and reconnects by itself;
 * **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
 * only **reads** from the radio. It never writes a setting.
+
+## Screenshots
+
+![AX-HUD in flight on the RadioMaster AX12: live charts, radar map, flight statistics and stick view over the video](docs/screenshots/hud-flight-annotated.jpg)
+
+*In flight on the AX12 (the video and the OSD are the flight controller's; the cards on top are AX-HUD):*
+**1** live charts of link quality, cell volts and current, **2** radar map with home, your track and range rings, **3** flight statistics,
+**4** stick view with the aux channel bars, **5** the MENU button.
+
+![AX-HUD on the ground, waiting for a GPS fix](docs/screenshots/hud-ground.jpg)
+
+*On the ground: the same screen before take-off, waiting for a GPS fix.*
 
 ## Status
 
