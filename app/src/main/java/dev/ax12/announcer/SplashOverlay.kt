@@ -52,7 +52,7 @@ class SplashOverlay(private val activity: Activity) {
         root.addView(version, vp)
 
         val sub = TextView(activity)
-        sub.text = tr("AX12 video monitor, HUD and announcer")
+        sub.text = tr("Video monitor, HUD and voice announcer for the RadioMaster AX12.")
         sub.textSize = 13f
         sub.setTextColor(0xFFB0BEC5.toInt())
         sub.gravity = Gravity.CENTER

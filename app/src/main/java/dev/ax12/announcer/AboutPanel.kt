@@ -36,7 +36,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
 
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.PANEL)
+        root.setBackgroundColor(CardStyle.SEE_THROUGH)         // the video stays visible behind the page
         root.setPadding(dp(16), dp(10), dp(16), dp(10))
         root.visibility = View.GONE
         root.isClickable = true
@@ -45,6 +45,8 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         val bar = LinearLayout(activity)
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
+        bar.setBackgroundColor(CardStyle.BLOCK)
+        bar.setPadding(dp(10), dp(4), dp(10), dp(4))
         titleView.textSize = 22f
         titleView.setTextColor(Color.WHITE)
         titleView.setTypeface(null, Typeface.BOLD)
@@ -54,14 +56,16 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         root.addView(bar)
 
         content.orientation = LinearLayout.VERTICAL
-        content.setPadding(0, dp(6), 0, dp(24))
+        content.setBackgroundColor(CardStyle.BLOCK)
+        content.setPadding(dp(12), dp(6), dp(12), dp(24))
         page.addView(content)
         root.addView(page, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
         viewerText.typeface = Typeface.MONOSPACE
         viewerText.textSize = 12f
         viewerText.setTextColor(0xFFDDE3E8.toInt())
-        viewerText.setPadding(dp(4), dp(8), dp(4), dp(24))
+        viewerText.setBackgroundColor(CardStyle.BLOCK)
+        viewerText.setPadding(dp(12), dp(8), dp(12), dp(24))
         viewer.addView(viewerText)
         viewer.visibility = View.GONE
         root.addView(viewer, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
@@ -146,7 +150,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         val name = text(Credits.PROJECT_NAME, 26f, Color.WHITE, bold = true, topDp = 6)
         name.gravity = Gravity.CENTER_HORIZONTAL
         content.addView(name, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        val tag = text(tr("Video monitor, heads-up display and voice announcer for the RadioMaster AX12."), 14f, CardStyle.LABEL, topDp = 4)
+        val tag = text(tr("Video monitor, HUD and voice announcer for the RadioMaster AX12."), 14f, CardStyle.LABEL, topDp = 4)
         tag.gravity = Gravity.CENTER_HORIZONTAL
         content.addView(tag, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         content.addView(text(versionText(), 12f, CardStyle.LABEL, topDp = 10))
@@ -166,7 +170,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
             val card = LinearLayout(activity)
             card.orientation = LinearLayout.VERTICAL
             card.setPadding(dp(12), dp(10), dp(12), dp(10))
-            card.background = CardStyle.panelBackground(density, 0xFF232C36.toInt())
+            card.background = CardStyle.panelBackground(density, 0xE6232C36.toInt())
             card.addView(text(e.name, 16f, Color.WHITE, bold = true))
             card.addView(text(e.holder + "  \u00B7  " + e.license, 12f, CardStyle.ACCENT, topDp = 2))
             card.addView(text(tr(e.description), 13f, 0xFFDDE3E8.toInt(), topDp = 4))

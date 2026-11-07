@@ -18,7 +18,7 @@ class RulesActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rules)
         findViewById<TextView>(R.id.rulesTitle).text = tr("Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed")
-        findViewById<TextView>(R.id.rulesHint).text = tr("and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.")
+        findViewById<TextView>(R.id.rulesHint).text = tr("And / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.")
         findViewById<Button>(R.id.btnCheck).text = tr("Check")
         findViewById<Button>(R.id.btnSave).text = tr("Save")
         findViewById<Button>(R.id.btnSample).text = tr("Sample")

@@ -97,7 +97,7 @@ public class UpdateTests {
                 public boolean cancelled() { return served.get() > 100000; }
             });
             check(false, "cancel must stop the download");
-        } catch (IOException e) { check(e.getMessage().equals("Cancelled"), "cancelling stops the download: " + e.getMessage()); }
+        } catch (IOException e) { check(e.getMessage().equals("Canceled"), "cancelling stops the download: " + e.getMessage()); }
         check(!out4.exists() && !new File(out4.getPath() + ".part").exists(), "a cancelled download leaves nothing");
         // a 404 on the file
         try { UpdateClient.download(base + "/missing", new File(dir, "x.apk"), apk.length, sha, 5000, null); check(false, "404 must fail"); } catch (IOException e) { check(e.getMessage().contains("404"), "a missing file is reported"); }

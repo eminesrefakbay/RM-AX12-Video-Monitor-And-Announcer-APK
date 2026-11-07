@@ -4,7 +4,7 @@ Close	Kapat
 The license text could not be read.	Lisans metni okunamadı.
 Back	Geri
 No web browser found. The address is: {0}	Web tarayıcısı bulunamadı. Adres: {0}
-Video monitor, heads-up display and voice announcer for the RadioMaster AX12.	RadioMaster AX12 için video monitörü, ekran üstü gösterge ve sesli anons uygulaması.
+Video monitor, HUD and voice announcer for the RadioMaster AX12.	RadioMaster AX12 için video monitörü, HUD ve sesli anons uygulaması.
 License	Lisans
 AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD, MIT Lisansı altında özgür bir yazılımdır: lisans bildirimi onunla birlikte kaldığı sürece, kendi projelerinizde de dahil olmak üzere kullanabilir, kopyalayabilir, değiştirebilir ve paylaşabilirsiniz. Hiçbir garanti verilmez.
 Read the {0}	{0} metnini oku
@@ -29,14 +29,14 @@ Profile {0}: the name cannot be empty.	Profil {0}: ad boş olamaz.
 Profile {0}: cells must be 1 to 12.	Profil {0}: hücre sayısı 1 ile 12 arasında olmalı.
 Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	Profil {0}: kritik < düşük < dolu olmalı ve hücre başına 2.5 ile 4.4 volt arasında olmalı.
 Two profiles have the same name: {0}.	İki profilin adı aynı: {0}.
-low {0}, critical {1}, full {2} V per cell	düşük {0}, kritik {1}, dolu {2} V hücre başına
+Low {0}, critical {1}, full {2} V per cell	Düşük {0}, kritik {1}, dolu {2} V hücre başına
 Starting...	Başlatılıyor...
-video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	video: %.1f kare/sn   kareler arası boşluk: %%95 altında %d ms, en kötü %d ms (son 5 sn)
+Video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	Video: %.1f kare/sn   kareler arası boşluk: %%95 altında %d ms, en kötü %d ms (son 5 sn)
 Camera {0}  {1}x{2}  ·  {3}	Kamera {0}  {1}x{2}  ·  {3}
-auto	otomatik
+Auto	Otomatik
 Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	Kamera {0}   arabellek {1}x{2}   döndürme {3} {4}   görünüm {5}x{6}\n{7}
-fill	doldur
-fit	sığdır
+Fill	Doldur
+Fit	Sığdır
 Camera {0}  ({1}, sensor {2} deg)	Kamera {0}  ({1}, sensör {2} derece)
 Camera permission needed	Kamera izni gerekli
 No camera found - check the HDMI cable and the video receiver	Kamera bulunamadı - HDMI kablosunu ve video alıcıyı kontrol edin
@@ -49,13 +49,13 @@ Waiting for video...	Video bekleniyor...
 Preview failed: {0}	Önizleme başarısız: {0}
 Camera session failed	Kamera oturumu başarısız
 Session error: {0}	Oturum hatası: {0}
-last {0} s	son {0} sn
+Last {0} s	Son {0} sn
 This app: the HUD, the voice announcer, the rules and the settings.	Bu uygulama: HUD, sesli anons, kurallar ve ayarlar.
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri uygulamanın içindedir. Yayımladığı için teşekkürler, RadioMaster.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK'nın C++ çalışma zamanı; SDK'nın ihtiyaç duyduğu.
 The standard library of the Kotlin language, which the app is written in.	Uygulamanın yazıldığı Kotlin dilinin standart kütüphanesi.
-Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için yuvarlak tutamacı sürükleyin. Bitince Tamam'a dokunun.
+Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için kare tutamacı sürükleyin. Bitince Tamam'a dokunun.
 Reset the layout	Yerleşimi sıfırla
 Done	Tamam
 MENU	MENÜ
@@ -68,9 +68,9 @@ Warning rules: {0} error(s). Open Settings, then the warning rules.	Uyarı kural
 NO VIDEO  ·  {0}	VİDEO YOK  ·  {0}
 The SDK is starting in the background...	SDK arka planda başlıyor...
 No data from the radio yet...	Kumandadan henüz veri yok...
-TEST CHANNELS ARE ON - the radio is not being read\n	TEST KANALLARI AÇIK - kumanda okunmuyor\n
-NO SDK IN THIS BUILD - the radio is not being read\n	BU SÜRÜMDE SDK YOK - kumanda okunmuyor\n
-SDK IS NOT RUNNING - the radio is not being read\n	SDK ÇALIŞMIYOR - kumanda okunmuyor\n
+Test channels are on - the radio is not being read\n	Test kanalları açık - kumanda okunmuyor\n
+No SDK in this build - the radio is not being read\n	Bu sürümde SDK yok - kumanda okunmuyor\n
+The SDK is not running - the radio is not being read\n	SDK çalışmıyor - kumanda okunmuyor\n
 Android lists no cameras	Android hiç kamera listelemiyor
 Choose the HDMI camera	HDMI kamerayı seçin
 Speech is off	Konuşma kapalı
@@ -83,18 +83,18 @@ Stable	Kararlı
 Nightly	Nightly
 Stable (tested releases only)	Kararlı (yalnızca test edilmiş sürümler)
 Nightly (newest build of every push)	Nightly (her push'un en yeni yapısı)
-top	üst
-bottom	alt
+Top	Üst
+Bottom	Alt
 BATTERY CRITICAL 3.48 V per cell	BATARYA KRİTİK 3.48 V hücre başına
-small	küçük
-medium	orta
-large	büyük
-bottom center	alt orta
-bottom left	sol alt
-bottom right	sağ alt
-top left	sol üst
-top right	sağ üst
-center	orta
+Small	Küçük
+Medium	Orta
+Large	Büyük
+Bottom center	Alt orta
+Bottom left	Sol alt
+Bottom right	Sağ alt
+Top left	Sol üst
+Top right	Sağ üst
+Center	Orta
 SPEED	HIZ
 HEIGHT	YÜKSEKLİK
 CURRENT	AKIM
@@ -124,13 +124,13 @@ Distance from home (now / maximum)	Eve uzaklık (şimdi / en yüksek)
 Lowest link quality	En düşük bağlantı kalitesi
 Lowest volts per cell	Hücre başına en düşük volt
 Current limit line (amps)	Akım sınır çizgisi (amper)
-Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.	Yükseklik, arm ettiğiniz yere göre GPS irtifasından gelir; birkaç metre hata olabilir. Akım sınır çizgisinin üzerine çıkınca çubuk kırmızıya döner.
+Height comes from the GPS altitude relative to where you armed, so expect a few meters of error. The bar turns red when the current is above the limit line.	Yükseklik, arm ettiğiniz yere göre GPS irtifasından gelir; birkaç metre hata olabilir. Akım sınır çizgisinin üzerine çıkınca çubuk kırmızıya döner.
 Flight statistics rows	Uçuş istatistik satırları
 The current limit is 5 to 300 amps	Akım sınırı 5 ile 300 amper arasındadır
 Left of the sticks	Stick'lerin solu
 Right of the sticks	Stick'lerin sağı
-on      channel      name on the overlay                 reverse	açık      kanal      ekrandaki ad                 ters
-A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	Bir çubuk, kanal değeriyle dolar. Gri-mavi = düşük, kehribar = orta, yeşil = yüksek. Adlar çubuk boyunca yazılır; kısa bir ad en iyi okunur.\n\nTers: kumandada ters çevrilmiş bir anahtar için işaretleyin; böylece çubuk anahtarı sizin çevirdiğiniz gibi gösterir (yukarı = dolu ve yeşil). Yalnızca görüntü değişir: ses ve uyarı kuralları yine gerçek kanal değerlerini kullanır.
+On      Channel      Name on the overlay                 Reverse	Açık      Kanal      Ekrandaki ad                 Ters
+A bar fills with the channel value. Gray-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	Bir çubuk, kanal değeriyle dolar. Gri-mavi = düşük, kehribar = orta, yeşil = yüksek. Adlar çubuk boyunca yazılır; kısa bir ad en iyi okunur.\n\nTers: kumandada ters çevrilmiş bir anahtar için işaretleyin; böylece çubuk anahtarı sizin çevirdiğiniz gibi gösterir (yukarı = dolu ve yeşil). Yalnızca görüntü değişir: ses ve uyarı kuralları yine gerçek kanal değerlerini kullanır.
 Channel bars	Kanal çubukları
 Defaults	Varsayılanlar
 Bar {0}: the channel must be 1 to 16	Çubuk {0}: kanal 1 ile 16 arasında olmalı
@@ -154,7 +154,7 @@ Android has no {0} voice installed. Install it in Android Settings, Text-to-spee
 Built without the RadioMaster SDK files (test channels only).	RadioMaster SDK dosyaları olmadan derlendi (yalnızca test kanalları).
 RadioMaster SDK: running.	RadioMaster SDK: çalışıyor.
 RadioMaster SDK: not running{0}.	RadioMaster SDK: çalışmıyor{0}.
-AX12 Video Monitor and Announcer, version {0}\n{1}	AX12 Video Monitörü ve Sesli Uyarı, sürüm {0}\n{1}
+AX-HUD, version {0}\n{1}	AX-HUD, sürüm {0}\n{1}
 Thanks to RadioMaster for publishing the AX SDK.	RadioMaster'a AX SDK'yı yayımladığı için teşekkürler.
 Sound rules saved	Ses kuralları kaydedildi
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	Bu cihazda dosya seçici yok, bu yüzden dosya buraya kaydedildi:\n{0}\n\nBir USB kablosu veya adb ile kopyalayın. İçe aktarmak için aynı adlı bir dosyayı o klasöre koyun.
@@ -188,21 +188,24 @@ Use names from the list, such as up_lq or cell.	Listedeki adları kullanın, ör
 {0}  (in use)	{0}  (kullanımda)
 Choose the aircraft	Hava aracını seçin
 Aircraft: {0}	Hava aracı: {0}
-in use	kullanımda
+In use	Kullanımda
 Aircraft {0}	Hava aracı {0}
 At most {0} aircraft.	En fazla {0} hava aracı olabilir.
 Add: copy of the current	Ekle: mevcut olanın kopyası
 Add: starting settings	Ekle: başlangıç ayarlarıyla
 Aircraft	Hava aracı
-name                    battery profile              mAh	ad                      batarya profili              mAh
+Name                    Battery profile              mAh	Ad                      Batarya profili              mAh
 Add pack	Paket ekle
 Pack {0}	Paket {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	Her paket bir batarya profili kullanır (sınırları). Menüden bir paket seçmek onun profiline geçer. Kapasite kayıtlarınız içindir (0 = bilinmiyor). Paket yoksa menü doğrudan profili değiştirir.
 Packs	Paketler
 Enter numbers in every field	Her alana sayı girin
+Exit AX-HUD?	AX-HUD'dan çıkılsın mı?
+The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	Kumanda bağlantısı durur ve kumandanın seri portu serbest bırakılır. Uygulamayı yeniden başlatana kadar HUD ve ses olmaz.
+Exit	Çıkış
 Battery profile: {0}\n{1}	Batarya profili: {0}\n{1}
 Battery {0}	Batarya {0}
-name                  cells    full    low    critical	ad                    hücre    dolu    düşük    kritik
+Name                  Cells    Full    Low    Critical	Ad                    Hücre    Dolu    Düşük    Kritik
 Add profile	Profil ekle
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	Hücre başına volt. Kritik, düşükten; düşük de doludan küçük olmalıdır. Kurallar cell değerini ve $low, $crit, $full adlarını kullanır.
 Battery profiles	Batarya profilleri
@@ -212,7 +215,7 @@ Imported {0} rules	{0} kural içe aktarıldı
 Sound rules	Ses kuralları
 Settings	Ayarlar
 Mute speech	Konuşmayı sustur
-Speech is OFF - tap to turn on	Konuşma KAPALI - açmak için dokunun
+Speech is off - tap to turn on	Konuşma kapalı - açmak için dokunun
 Battery: {0}  (tap to switch)	Batarya: {0}  (değiştirmek için dokunun)
 Aircraft: {0}  (tap to choose)	Hava aracı: {0}  (seçmek için dokunun)
 At most {0} packs.	En fazla {0} paket olabilir.
@@ -221,20 +224,20 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Paket {0}: kapasite 0 ile 
 Two packs have the same name: {0}.	İki paketin adı aynı: {0}.
 {0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
 {0} ({1})	{0} ({1})
-test sliders	test kaydırıcıları
-test sliders (no radio)	test kaydırıcıları (kumanda yok)
+Test sliders	Test kaydırıcıları
+Test sliders (no radio)	Test kaydırıcıları (kumanda yok)
 RadioMaster SDK	RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)	Bu sürümde RadioMaster SDK dosyaları yok (README'ye bakın)
 SDK worker thread failed to start	SDK çalışan iş parçacığı başlatılamadı
 The SDK could not open the radio's serial link (see README: serial lock)	SDK, kumandanın seri bağlantısını açamadı (README'ye bakın: seri kilit)
 SDK start failed (code {0})	SDK başlatılamadı (kod {0})
-line {0}: missing '->'  ({1})	satır {0}: '->' eksik  ({1})
-line {0}: nothing before '->'	satır {0}: '->' öncesinde bir şey yok
-line {0}: nothing to say after '->'	satır {0}: '->' sonrasında söylenecek bir şey yok
-line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	satır {0}: '{1}' koşulu okunamadı  (şunları kullanın:  ch5 >= 1500   veya   vbat / 6 < 3.5   veya   fm ~ "RTH" )
-line {0}: cannot divide by zero  ({1})	satır {0}: sıfıra bölünemez  ({1})
-line {0}: unknown name ${1}  (use $low, $crit or $full)	satır {0}: bilinmeyen ad ${1}  (şunları kullanın: $low, $crit veya $full)
-line {0}: bad value for {1} ({2})	satır {0}: {1} için geçersiz değer ({2})
+Line {0}: missing '->'  ({1})	Satır {0}: '->' eksik  ({1})
+Line {0}: nothing before '->'	Satır {0}: '->' öncesinde bir şey yok
+Line {0}: nothing to say after '->'	Satır {0}: '->' sonrasında söylenecek bir şey yok
+Line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	Satır {0}: '{1}' koşulu okunamadı  (şunları kullanın:  ch5 >= 1500   veya   vbat / 6 < 3.5   veya   fm ~ "RTH" )
+Line {0}: cannot divide by zero  ({1})	Satır {0}: sıfıra bölünemez  ({1})
+Line {0}: unknown name ${1}  (use $low, $crit or $full)	Satır {0}: bilinmeyen ad ${1}  (şunları kullanın: $low, $crit veya $full)
+Line {0}: bad value for {1} ({2})	Satır {0}: {1} için geçersiz değer ({2})
 Add at least one condition.	En az bir koşul ekleyin.
 Pick a variable (letters, digits and _ only).	Bir değişken seçin (yalnızca harf, rakam ve _).
 Text can use is, is not or contains.	Metin için eşittir, eşit değildir veya içerir kullanılabilir.
@@ -252,18 +255,18 @@ The rule could not be read.	Kural okunamadı.
 {0} is not “{1}”	{0} “{1}” değil
 {0} or {1}	{0} veya {1}
 {0} and {1}	{0} ve {1}
-passes when {0}: ✓ “{1}”	{0} iken geçer: ✓ “{1}”
+Passes when {0}: ✓ “{1}”	{0} iken geçer: ✓ “{1}”
 CRITICAL	KRİTİK
 INFO	BİLGİ
 WARNING	UYARI
 , hides after {0} s	, {0} sn sonra gizlenir
-when {0}: show “{1}”	{0} olduğunda: “{1}” göster
-when {0}: say “{1}”	{0} olduğunda: “{1}” de
+When {0}: show “{1}”	{0} olduğunda: “{1}” göster
+When {0}: say “{1}”	{0} olduğunda: “{1}” de
 , then “{0}” when it turns false	, sonra koşul yanlış olunca “{0}”
 , every {0} s while true	, doğru kaldıkça her {0} sn
  (urgent)	 (acil)
 Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	Metin olarak kurallar - her satırda bir tane:   ch5 >= 1500 -> motorlar aktif | motorlar kapalı
-and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	and / or kullanılabilir.  ! = acil.  @10 = her 10 sn'de tekrar.  Ayarlar: hysteresis = 25, hold = 100, initial = on/off.  # = yorum.
+And / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	And / or kullanılabilir.  ! = acil.  @10 = her 10 sn'de tekrar.  Ayarlar: hysteresis = 25, hold = 100, initial = on/off.  # = yorum.
 Check	Kontrol et
 Sample	Örnek
 OK: {0} rules	Tamam: {0} kural
@@ -307,13 +310,14 @@ Enter numbers (0 or more)	Sayı girin (0 veya daha fazla)
 < below	< altında
 = equals	= eşittir
 ≠ not equal	≠ eşit değil
-contains (text)	içerir (metin)
-variable (type, or tap List)	değişken (yazın veya Liste'ye dokunun)
-  divide by	  bölen
-now: {0}{1}	şimdi: {0}{1}
-Level: INFO (blue)  - tap to change	Seviye: BİLGİ (mavi)  - değiştirmek için dokunun
-Level: CRITICAL (red, blinking)  - tap to change	Seviye: KRİTİK (kırmızı, yanıp söner)  - değiştirmek için dokunun
-Level: WARNING (amber)  - tap to change	Seviye: UYARI (sarı)  - değiştirmek için dokunun
+Contains (text)	İçerir (metin)
+Variable (type, or tap List)	Değişken (yazın veya Liste'ye dokunun)
+Value	Değer
+  Divide by	  Bölen
+Now: {0}{1}	Şimdi: {0}{1}
+Level: Info (blue)  - tap to change	Seviye: Bilgi (mavi)  - değiştirmek için dokunun
+Level: Critical (red, blinking)  - tap to change	Seviye: Kritik (kırmızı, yanıp söner)  - değiştirmek için dokunun
+Level: Warning (amber)  - tap to change	Seviye: Uyarı (sarı)  - değiştirmek için dokunun
 The timeout needs a number of seconds, 2 or more.	Zaman aşımı için 2 veya daha fazla saniye girin.
 Repeat needs a number of seconds, 2 or more.	Tekrar için 2 veya daha fazla saniye girin.
 No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	Henüz kanal değeri yok (kumanda bağlı mı? Ayarlar, Tanılama, Değişkenleri göster'i deneyin)
@@ -321,20 +325,20 @@ Move the switch now...	Anahtarı şimdi hareket ettirin...
 No switch moved.	Hiçbir anahtar hareket etmedi.
 Detected {0} at {1}	{0} algılandı, değer {1}
 When	Ne zaman
-all of these are true	bunların hepsi doğru
-any of these is true	bunlardan biri doğru
+All of these are true	Bunların hepsi doğru
+Any of these is true	Bunlardan biri doğru
 + condition	+ koşul
 Detect switch	Anahtarı algıla
 Check label (shown with a tick or a cross)	Kontrol etiketi (onay işareti veya çarpıyla gösterilir)
 Show in the status bar	Durum çubuğunda göster
 Say	Söyle
-label, for example GPS {sats} satellites	etiket, örneğin GPS {sats} uydu
-text, for example BATTERY {vbat/6:2} V	metin, örneğin BATARYA {vbat/6:2} V
-words to speak	söylenecek sözcükler
+Label, for example GPS {sats} satellites	Etiket, örneğin GPS {sats} uydu
+Text, for example BATTERY {vbat/6:2} V	Metin, örneğin BATARYA {vbat/6:2} V
+Words to speak	Söylenecek sözcükler
 Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	Canlı değerler: {vbat/6:2} = 2 ondalıkla hücre başına volt, {up_lq}, {sats}, {fm}
 Urgent (interrupts what is being said)	Acil (söylenmekte olanı keser)
 Also say something when it turns false	Koşul yanlış olunca da bir şey söyle
-words when it turns false	koşul yanlış olunca söylenecek sözcükler
+Words when it turns false	Koşul yanlış olunca söylenecek sözcükler
 Hide after (seconds), even if the condition stays true	Şu kadar saniye sonra gizle, koşul doğru kalsa bile
 Repeat while it stays true, every (seconds)	Doğru kaldıkça tekrarla, her (saniye)
 The rule as text	Metin olarak kural
@@ -393,7 +397,7 @@ The arm switch starts and stops a flight: the statistics start over when you arm
 Arm detection: channel, thresholds, cells in the pack...	Arm algılama: kanal, eşikler, paketteki hücreler...
 Flight statistics: max speed, max height, peak current	Uçuş istatistikleri: en yüksek hız, en yüksek irtifa, tepe akım
 Rows and current limit...	Satırlar ve akım sınırı...
-Radar map: home in the centre, your track and range rings	Radar haritası: ortada ev, izin ve mesafe halkaları
+Radar map: home in the center, your track and range rings	Radar haritası: ortada ev, izin ve mesafe halkaları
 Live charts: rolling graphs of telemetry values	Canlı grafikler: telemetri değerlerinin kayan grafikleri
 Charts: choose the values and the time window...	Grafikler: değerleri ve zaman aralığını seçin...
 Pre-flight checklist (shown while disarmed)	Uçuş öncesi kontrol listesi (disarm iken gösterilir)
@@ -404,13 +408,13 @@ Layout of the cards	Kartların yerleşimi
 Move and resize the cards with your finger...	Kartları parmağınızla taşıyın ve boyutlandırın...
 Put every card back in its corner at normal size	Her kartı köşesine, normal boyutta geri koy
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Her kart köşesine, normal boyutta geri konsun mu? Seçtiğiniz yerler ve boyutlar unutulacak.
-Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Bir kartı taşımak için sürükleyin, boyutunu değiştirmek için yuvarlak tutamacını sürükleyin. Kapalı kartlar gösterilmez. Bir kartın Boyut ayarı başlangıç boyutudur; yeniden boyutlandırma onu çarpar.
+Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Bir kartı taşımak için sürükleyin, boyutunu değiştirmek için kare tutamacını sürükleyin. Kapalı kartlar gösterilmez. Bir kartın Boyut ayarı başlangıç boyutudur; yeniden boyutlandırma onu çarpar.
 Video and speech	Video ve konuşma
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (HDMI girişini seçmek için dokunun)
 Rotate video: now {0} degrees  (tap to turn 90)	Videoyu döndür: şimdi {0} derece  (90 çevirmek için dokunun)
 Scale: {0}  (tap to change)	Ölçek: {0}  (değiştirmek için dokunun)
-fill (stretch)	doldur (esnet)
+Fill (stretch)	Doldur (esnet)
 Speech	Konuşma
 Speech on	Konuşma açık
 Speak a test sentence	Bir deneme cümlesi söyle
@@ -442,11 +446,10 @@ The radio link starts on a background thread and keeps running while the app's o
 Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
 About	Hakkında
 About AX-HUD, licenses and thanks...	AX-HUD hakkında, lisanslar ve teşekkürler...
-AX12 video monitor, HUD and announcer	AX12 video monitör, HUD ve sesli uyarı
 AX-HUD  version {0}  (build {1})	AX-HUD  sürüm {0}  (yapı {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Canlı değer için {variable} kullanın, örneğin {vbat/6:2}.
 A divisor in { } cannot be 0.	{ } içindeki bölen 0 olamaz.
-Cancelled	İptal edildi
+Canceled	İptal edildi
 Only https:// addresses are allowed	Yalnızca https:// adreslerine izin verilir
 Not a valid address	Geçerli bir adres değil
 The server answered {0}	Sunucu şu yanıtı verdi: {0}
@@ -459,12 +462,11 @@ Cannot replace the old file	Eski dosyanın yerine yazılamıyor
 Cannot save the file	Dosya kaydedilemiyor
 SHA-256 is not available	SHA-256 kullanılamıyor
 Already checking	Zaten denetleniyor
-Looking for an update on github.com ...	github.com'da güncelleme aranıyor ...
+Looking for an update on github.com ...	Güncelleme aranıyor: github.com ...
 The update information could not be read	Güncelleme bilgisi okunamadı
 No connection	Bağlantı yok
 No build has been published on this channel yet.	Bu kanalda henüz yayımlanmış bir yapı yok.
 Could not check: {0}\n\nIs the phone hotspot on?	Denetlenemedi: {0}\n\nTelefon hotspot'u açık mı?
-no connection	bağlantı yok
 You have the latest build: version {0} (build {1})	En son yapıya sahipsiniz: sürüm {0} (yapı {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD güncellemesi var: {0} (yapı {1}). Ayarlar'ı, sonra Güncellemeler'i açın.
 Update available	Güncelleme var
@@ -477,46 +479,46 @@ Download failed	İndirme başarısız
 Allow installing	Kurulumlara izin ver
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android, AX-HUD bir güncellemeyi kurmadan önce izninizi ister. Sayfayı açın, AX-HUD için açın, geri dönüp güncellemeyi yeniden çalıştırın. İndirilen dosya saklanır, bu yüzden iki kez indirilmez.
 Could not start the installation	Kurulum başlatılamadı
-unknown error	bilinmeyen hata
+Unknown error	Bilinmeyen hata
 Updated. The app will reopen.	Güncellendi. Uygulama yeniden açılacak.
-Installation cancelled	Kurulum iptal edildi
+Installation canceled	Kurulum iptal edildi
 \n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\nKurulu kopya farklı bir anahtarla imzalanmış. Kurallarınızı dışa aktarın (Ayarlar), AX-HUD'ı bir kez kaldırın ve bu yapıyı kurun; bundan sonra güncellemeler çalışır. UPDATES.md dosyasına bakın.
 \n\nThis build is older than the installed one.	\n\nBu yapı, kurulu olandan daha eski.
 Installation stopped	Kurulum durdu
 Android did not say why (code {0}).	Android nedenini belirtmedi (kod {0}).
-battery volts (flight controller); divide by the cell count for volts per cell	batarya voltu (uçuş kontrolcüsü); hücre başına volt için hücre sayısına bölün
-volts per cell: battery volts divided by the cells of the active battery profile	hücre başına volt: batarya voltu, etkin batarya profilinin hücre sayısına bölünür
-battery current, amps	batarya akımı, amper
-capacity used, mAh	kullanılan kapasite, mAh
-battery remaining, percent	kalan batarya, yüzde
-uplink link quality, percent (0 = no link)	uplink bağlantı kalitesi, yüzde (0 = bağlantı yok)
-uplink signal strength, antenna 1, dBm (negative)	uplink sinyal gücü, anten 1, dBm (negatif)
-uplink signal strength, antenna 2, dBm (negative)	uplink sinyal gücü, anten 2, dBm (negatif)
-uplink signal to noise, dB	uplink sinyal/gürültü, dB
-downlink link quality, percent	downlink bağlantı kalitesi, yüzde
-downlink signal strength, dBm	downlink sinyal gücü, dBm
-downlink signal to noise, dB	downlink sinyal/gürültü, dB
+Battery volts (flight controller); divide by the cell count for volts per cell	Batarya voltu (uçuş kontrolcüsü); hücre başına volt için hücre sayısına bölün
+Volts per cell: battery volts divided by the cells of the active battery profile	Hücre başına volt: batarya voltu, etkin batarya profilinin hücre sayısına bölünür
+Battery current, amps	Batarya akımı, amper
+Capacity used, mAh	Kullanılan kapasite, mAh
+Battery remaining, percent	Kalan batarya, yüzde
+Uplink link quality, percent (0 = no link)	Uplink bağlantı kalitesi, yüzde (0 = bağlantı yok)
+Uplink signal strength, antenna 1, dBm (negative)	Uplink sinyal gücü, anten 1, dBm (negatif)
+Uplink signal strength, antenna 2, dBm (negative)	Uplink sinyal gücü, anten 2, dBm (negatif)
+Uplink signal to noise, dB	Uplink sinyal/gürültü, dB
+Downlink link quality, percent	Downlink bağlantı kalitesi, yüzde
+Downlink signal strength, dBm	Downlink sinyal gücü, dBm
+Downlink signal to noise, dB	Downlink sinyal/gürültü, dB
 ExpressLRS packet rate mode number	ExpressLRS paket hızı modu numarası
-transmitter power, mW	verici gücü, mW
-link quality from the radio, percent	kumandadan bağlantı kalitesi, yüzde
-signal strength from the radio	kumandadan sinyal gücü
-radio's lost-frame counter	kumandanın kayıp kare sayacı
-radio battery volts	kumanda batarya voltu
-receiver volts	alıcı voltu
-telemetry present: 1 yes, 0 lost	telemetri var: 1 evet, 0 kayıp
+Transmitter power, mW	Verici gücü, mW
+Link quality from the radio, percent	Kumandadan bağlantı kalitesi, yüzde
+Signal strength from the radio	Kumandadan sinyal gücü
+Radio's lost-frame counter	Kumandanın kayıp kare sayacı
+Radio battery volts	Kumanda batarya voltu
+Receiver volts	Alıcı voltu
+Telemetry present: 1 yes, 0 lost	Telemetri var: 1 evet, 0 kayıp
 GPS satellites	GPS uyduları
-ground speed, km/h	yer hızı, km/s
-GPS altitude, metres	GPS irtifası, metre
+Ground speed, km/h	Yer hızı, km/s
+GPS altitude, meters	GPS irtifası, metre
 GPS heading, degrees	GPS yönü, derece
-height above the arming point, metres (while armed)	arm noktasının üzerindeki yükseklik, metre (arm iken)
-distance from home, metres (while armed)	eve uzaklık, metre (arm iken)
-latitude	enlem
-longitude	boylam
-pitch angle, degrees	pitch açısı, derece
-roll angle, degrees	roll açısı, derece
-yaw / heading, degrees	yaw / yön, derece
-climb rate, m/s	tırmanma hızı, m/s
-flight mode name from the flight controller (text)	uçuş kontrolcüsünden uçuş modu adı (metin)
+Height above the arming point, meters (while armed)	Arm noktasının üzerindeki yükseklik, metre (arm iken)
+Distance from home, meters (while armed)	Eve uzaklık, metre (arm iken)
+Latitude	Enlem
+Longitude	Boylam
+Pitch angle, degrees	Pitch açısı, derece
+Roll angle, degrees	Roll açısı, derece
+Yaw / heading, degrees	Yaw / yön, derece
+Climb rate, m/s	Tırmanma hızı, m/s
+Flight mode name from the flight controller (text)	Uçuş kontrolcüsünden uçuş modu adı (metin)
 Switches and sticks (channels, 1000 to 2000)	Anahtarlar ve stick'ler (kanallar, 1000 - 2000)
 Battery (from the flight controller)	Batarya (uçuş kontrolcüsünden)
 Link quality and signal	Bağlantı kalitesi ve sinyal
@@ -526,9 +528,9 @@ Flight mode (text)	Uçuş modu (metin)
 Other values from the radio	Kumandadan diğer değerler
 Advanced: the radio's own channel numbers	Gelişmiş: kumandanın kendi kanal sayıları
 Advanced: the radio's logic values	Gelişmiş: kumandanın mantık değerleri
-channel {0}, 1000 to 2000 microseconds	kanal {0}, 1000 - 2000 mikrosaniye
-the radio's own channel number	kumandanın kendi kanal sayısı
-the radio's logic value	kumandanın mantık değeri
+Channel {0}, 1000 to 2000 microseconds	Kanal {0}, 1000 - 2000 mikrosaniye
+The radio's own channel number	Kumandanın kendi kanal sayısı
+The radio's logic value	Kumandanın mantık değeri
 Link quality %	Bağlantı kalitesi %
 Downlink quality %	Downlink kalitesi %
 Cell volts	Hücre voltu
@@ -550,11 +552,10 @@ Signal dBm	Sinyal dBm
 Signal to noise dB	Sinyal/gürültü dB
 Power mW	Güç mW
 Radio volts	Kumanda voltu
-Receiver volts	Alıcı voltu
 Lost frames	Kayıp kareler
 Packet rate mode	Paket hızı modu
 Telemetry	Telemetri
 Channel {0}	Kanal {0}
-now: {0}	şimdi: {0}
-no value now	şu an değer yok
+Now: {0}	Şimdi: {0}
+No value now	Şu an değer yok
 Pick a channel or value	Bir kanal veya değer seçin

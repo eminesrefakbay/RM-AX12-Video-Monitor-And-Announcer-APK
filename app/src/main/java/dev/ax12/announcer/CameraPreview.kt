@@ -59,7 +59,7 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     /** How the video is arriving, from the app's side: frame rate and the gaps between frames. */
     fun videoStats(): String {
         val s = timing.summary(SystemClock.elapsedRealtime())
-        return String.format(java.util.Locale.US, tr("video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)"),
+        return String.format(java.util.Locale.US, tr("Video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)"),
             s.perSecond, s.p95Ms, s.maxMs)
     }
 
@@ -99,10 +99,10 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     }
 
     /** One short line for the status bar shown when there is no video. */
-    fun barText(): String = tr("Camera {0}  {1}x{2}  \u00B7  {3}", (cameraId ?: tr("auto")), bufW, bufH, message)
+    fun barText(): String = tr("Camera {0}  {1}x{2}  \u00B7  {3}", (cameraId ?: tr("Auto")), bufW, bufH, message)
 
     /** One line for the "NO VIDEO" panel. */
-    fun statusLine(): String = tr("Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}", (cameraId ?: tr("auto")), bufW, bufH, rotation, (if (fill) tr("fill") else tr("fit")), view.width, view.height, message)
+    fun statusLine(): String = tr("Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}", (cameraId ?: tr("Auto")), bufW, bufH, rotation, (if (fill) tr("Fill") else tr("Fit")), view.width, view.height, message)
 
     /** (id, description) of every camera Android shows. Pick the HDMI input here. */
     fun listCameras(): List<Pair<String, String>> {

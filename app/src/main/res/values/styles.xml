@@ -10,7 +10,7 @@
         <item name="android:alertDialogTheme">@style/AxDialog</item>
     </style>
 
-    <!-- Flat dark buttons with rounded corners: the same everywhere (panels, menus, dialogs). -->
+    <!-- Flat dark square buttons: the same everywhere (panels, menus, dialogs). -->
     <style name="AxButton" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/ax_button_bg</item>
         <item name="android:textColor">@color/ax_button_text</item>
@@ -20,7 +20,7 @@
         <item name="android:minWidth">64dp</item>
     </style>
 
-    <!-- Every dialog: dark rounded window, white text; the buttons get the light blue accent colour from the theme. -->
+    <!-- Every dialog: dark square window, white text; the buttons get the light blue accent colour from the theme. -->
     <style name="AxDialog" parent="@android:style/Theme.Material.Dialog.Alert">
         <item name="android:windowBackground">@drawable/ax_dialog_bg</item>
         <item name="android:colorBackground">#1A222C</item>

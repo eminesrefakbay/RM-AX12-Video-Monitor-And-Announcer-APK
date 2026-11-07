@@ -92,8 +92,8 @@ class FlightStatsView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), bg)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), edge)
+        canvas.drawRect(rect, bg)
+        canvas.drawRect(rect, edge)
         var y = pad() + textPx * 0.9f
         canvas.drawText(title, pad(), y, titlePaint)
         for (l in lines) {
@@ -105,13 +105,13 @@ class FlightStatsView(context: Context) : View(context) {
                 val left = pad()
                 val right = width - pad()
                 rect.set(left, top, right, top + barH())
-                canvas.drawRoundRect(rect, 3f * density, 3f * density, barBg)
+                canvas.drawRect(rect, barBg)
                 val f = l.bar.coerceIn(0.0, 1.0).toFloat()
                 val over = !l.limit.isNaN() && l.bar > l.limit
                 barFill.color = if (over) 0xFFEF5350.toInt() else 0xFF66BB6A.toInt()
                 if (f > 0f) {
                     rect.set(left, top, left + (right - left) * f, top + barH())
-                    canvas.drawRoundRect(rect, 3f * density, 3f * density, barFill)
+                    canvas.drawRect(rect, barFill)
                 }
                 if (!l.peak.isNaN()) {
                     val px = left + (right - left) * l.peak.coerceIn(0.0, 1.0).toFloat()

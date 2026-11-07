@@ -4,7 +4,7 @@ Close	关闭
 The license text could not be read.	无法读取许可证文本。
 Back	返回
 No web browser found. The address is: {0}	未找到网络浏览器。地址为: {0}
-Video monitor, heads-up display and voice announcer for the RadioMaster AX12.	适用于 RadioMaster AX12 的视频监视器、平视显示和语音播报应用。
+Video monitor, HUD and voice announcer for the RadioMaster AX12.	适用于 RadioMaster AX12 的视频监视器、HUD 和语音播报应用。
 License	许可证
 AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD 是采用 MIT 许可证的自由软件: 只要保留许可证声明, 你可以使用、复制、修改和分享它, 也可用于你自己的项目。本软件不提供任何担保。
 Read the {0}	阅读 {0}
@@ -29,14 +29,14 @@ Profile {0}: the name cannot be empty.	配置 {0}: 名称不能为空。
 Profile {0}: cells must be 1 to 12.	配置 {0}: 节数必须为 1 到 12。
 Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	配置 {0}: 需满足 严重 < 低 < 满电, 且在每节 2.5 到 4.4 伏之间。
 Two profiles have the same name: {0}.	有两个配置同名: {0}。
-low {0}, critical {1}, full {2} V per cell	低 {0}, 严重 {1}, 满电 {2} 伏/节
+Low {0}, critical {1}, full {2} V per cell	低 {0}, 严重 {1}, 满电 {2} 伏/节
 Starting...	正在启动...
-video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	视频: %.1f 帧/秒   帧间隔: 95%% 低于 %d 毫秒, 最差 %d 毫秒 (最近 5 秒)
+Video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	视频: %.1f 帧/秒   帧间隔: 95%% 低于 %d 毫秒, 最差 %d 毫秒 (最近 5 秒)
 Camera {0}  {1}x{2}  ·  {3}	摄像头 {0}  {1}x{2}  ·  {3}
-auto	自动
+Auto	自动
 Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	摄像头 {0}   缓冲 {1}x{2}   旋转 {3} {4}   视图 {5}x{6}\n{7}
-fill	填充
-fit	适应
+Fill	填充
+Fit	适应
 Camera {0}  ({1}, sensor {2} deg)	摄像头 {0}  ({1}, 传感器 {2} 度)
 Camera permission needed	需要摄像头权限
 No camera found - check the HDMI cable and the video receiver	未找到摄像头 - 请检查 HDMI 线和视频接收机
@@ -49,13 +49,13 @@ Waiting for video...	等待视频...
 Preview failed: {0}	预览失败: {0}
 Camera session failed	摄像头会话失败
 Session error: {0}	会话错误: {0}
-last {0} s	最近 {0} 秒
+Last {0} s	最近 {0} 秒
 This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件包含在应用内。感谢 RadioMaster 发布它。
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
-Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动圆形手柄可调整大小。完成后点按“完成”。
+Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动方形手柄可调整大小。完成后点按“完成”。
 Reset the layout	重置布局
 Done	完成
 MENU	菜单
@@ -68,9 +68,9 @@ Warning rules: {0} error(s). Open Settings, then the warning rules.	警告规则
 NO VIDEO  ·  {0}	无视频  ·  {0}
 The SDK is starting in the background...	SDK 正在后台启动...
 No data from the radio yet...	尚未收到遥控器数据...
-TEST CHANNELS ARE ON - the radio is not being read\n	测试通道已开启 - 未读取遥控器\n
-NO SDK IN THIS BUILD - the radio is not being read\n	此版本不含 SDK - 未读取遥控器\n
-SDK IS NOT RUNNING - the radio is not being read\n	SDK 未运行 - 未读取遥控器\n
+Test channels are on - the radio is not being read\n	测试通道已开启 - 未读取遥控器\n
+No SDK in this build - the radio is not being read\n	此版本不含 SDK - 未读取遥控器\n
+The SDK is not running - the radio is not being read\n	SDK 未运行 - 未读取遥控器\n
 Android lists no cameras	Android 未列出任何摄像头
 Choose the HDMI camera	选择 HDMI 摄像头
 Speech is off	语音已关闭
@@ -83,18 +83,18 @@ Stable	稳定版
 Nightly	Nightly
 Stable (tested releases only)	稳定版 (仅经过测试的正式版本)
 Nightly (newest build of every push)	Nightly (每次提交的最新构建)
-top	顶部
-bottom	底部
+Top	顶部
+Bottom	底部
 BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
-small	小
-medium	中
-large	大
-bottom center	底部居中
-bottom left	左下
-bottom right	右下
-top left	左上
-top right	右上
-center	居中
+Small	小
+Medium	中
+Large	大
+Bottom center	底部居中
+Bottom left	左下
+Bottom right	右下
+Top left	左上
+Top right	右上
+Center	居中
 SPEED	速度
 HEIGHT	高度
 CURRENT	电流
@@ -124,13 +124,13 @@ Distance from home (now / maximum)	距离起点 (当前 / 最大)
 Lowest link quality	最低链路质量
 Lowest volts per cell	最低每节电压
 Current limit line (amps)	电流限值线 (安)
-Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.	高度来自相对解锁位置的 GPS 海拔, 可能有几米误差。电流超过限值线时, 条会变红。
+Height comes from the GPS altitude relative to where you armed, so expect a few meters of error. The bar turns red when the current is above the limit line.	高度来自相对解锁位置的 GPS 海拔, 可能有几米误差。电流超过限值线时, 条会变红。
 Flight statistics rows	飞行统计项
 The current limit is 5 to 300 amps	电流限值为 5 到 300 安
 Left of the sticks	摇杆左侧
 Right of the sticks	摇杆右侧
-on      channel      name on the overlay                 reverse	开启      通道      叠加显示名称                 反向
-A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	条会随通道数值填充。灰蓝 = 低, 琥珀 = 中, 绿色 = 高。名称沿条书写, 名称短一些更易读。\n\n反向: 如果遥控器中该开关是反向的, 请勾选, 这样条就会按你拨动开关的方向显示 (向上 = 满格且为绿色)。只改变显示: 语音和警告规则仍使用真实的通道数值。
+On      Channel      Name on the overlay                 Reverse	开启      通道      叠加显示名称                 反向
+A bar fills with the channel value. Gray-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	条会随通道数值填充。灰蓝 = 低, 琥珀 = 中, 绿色 = 高。名称沿条书写, 名称短一些更易读。\n\n反向: 如果遥控器中该开关是反向的, 请勾选, 这样条就会按你拨动开关的方向显示 (向上 = 满格且为绿色)。只改变显示: 语音和警告规则仍使用真实的通道数值。
 Channel bars	通道条
 Defaults	默认
 Bar {0}: the channel must be 1 to 16	第 {0} 个条: 通道必须是 1 到 16
@@ -154,7 +154,7 @@ Android has no {0} voice installed. Install it in Android Settings, Text-to-spee
 Built without the RadioMaster SDK files (test channels only).	构建时未包含 RadioMaster SDK 文件 (仅测试通道)。
 RadioMaster SDK: running.	RadioMaster SDK: 运行中。
 RadioMaster SDK: not running{0}.	RadioMaster SDK: 未运行{0}。
-AX12 Video Monitor and Announcer, version {0}\n{1}	AX12 视频监视器与语音播报, 版本 {0}\n{1}
+AX-HUD, version {0}\n{1}	AX-HUD, 版本 {0}\n{1}
 Thanks to RadioMaster for publishing the AX SDK.	感谢 RadioMaster 公开发布 AX SDK。
 Sound rules saved	语音规则已保存
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	此设备没有文件选择器, 因此文件已保存在这里:\n{0}\n\n请用 USB 线或 adb 复制。导入时, 把同名文件放进该文件夹。
@@ -188,21 +188,24 @@ Use names from the list, such as up_lq or cell.	请使用列表中的名称, 例
 {0}  (in use)	{0}  (使用中)
 Choose the aircraft	选择飞行器
 Aircraft: {0}	飞行器: {0}
-in use	使用中
+In use	使用中
 Aircraft {0}	飞行器 {0}
 At most {0} aircraft.	最多 {0} 个飞行器。
 Add: copy of the current	添加: 复制当前飞行器
 Add: starting settings	添加: 使用初始设置
 Aircraft	飞行器
-name                    battery profile              mAh	名称                    电池配置              mAh
+Name                    Battery profile              mAh	名称                    电池配置              mAh
 Add pack	添加电池包
 Pack {0}	电池包 {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	每个电池包使用一个电池配置 (即其限值)。在菜单中选择电池包会切换到它的配置。容量仅供记录 (0 = 未知)。没有电池包时, 菜单直接切换配置。
 Packs	电池包
 Enter numbers in every field	请在每个栏位中输入数字
+Exit AX-HUD?	退出 AX-HUD?
+The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	遥控器连接将停止, 遥控器的串口将被释放。在你重新启动应用之前, 将没有 HUD 和语音。
+Exit	退出
 Battery profile: {0}\n{1}	电池配置: {0}\n{1}
 Battery {0}	电池 {0}
-name                  cells    full    low    critical	名称                  节数    满电    低    严重
+Name                  Cells    Full    Low    Critical	名称                  节数    满电    低    严重
 Add profile	添加配置
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	单位: 每节伏特。严重值必须低于低压值, 低压值必须低于满电值。规则使用 cell 以及 $low、$crit、$full 这些名称。
 Battery profiles	电池配置
@@ -212,7 +215,7 @@ Imported {0} rules	已导入 {0} 条规则
 Sound rules	语音规则
 Settings	设置
 Mute speech	静音语音
-Speech is OFF - tap to turn on	语音已关闭 - 点按开启
+Speech is off - tap to turn on	语音已关闭 - 点按开启
 Battery: {0}  (tap to switch)	电池: {0}  (点按切换)
 Aircraft: {0}  (tap to choose)	飞行器: {0}  (点按选择)
 At most {0} packs.	最多 {0} 个电池包。
@@ -221,20 +224,20 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	电池包 {0}: 容量为 0
 Two packs have the same name: {0}.	有两个电池包同名: {0}。
 {0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
 {0} ({1})	{0} ({1})
-test sliders	测试滑块
-test sliders (no radio)	测试滑块 (无遥控器)
+Test sliders	测试滑块
+Test sliders (no radio)	测试滑块 (无遥控器)
 RadioMaster SDK	RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)	此版本不含 RadioMaster SDK 文件 (见 README)
 SDK worker thread failed to start	SDK 工作线程启动失败
 The SDK could not open the radio's serial link (see README: serial lock)	SDK 无法打开遥控器的串口连接 (见 README: 串口锁)
 SDK start failed (code {0})	SDK 启动失败 (代码 {0})
-line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
-line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
-line {0}: nothing to say after '->'	第 {0} 行: '->' 之后没有要播报的内容
-line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	第 {0} 行: 无法读取条件 '{1}'  (请使用  ch5 >= 1500   或   vbat / 6 < 3.5   或   fm ~ "RTH" )
-line {0}: cannot divide by zero  ({1})	第 {0} 行: 不能除以零  ({1})
-line {0}: unknown name ${1}  (use $low, $crit or $full)	第 {0} 行: 未知名称 ${1}  (请使用 $low、$crit 或 $full)
-line {0}: bad value for {1} ({2})	第 {0} 行: {1} 的值无效 ({2})
+Line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
+Line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
+Line {0}: nothing to say after '->'	第 {0} 行: '->' 之后没有要播报的内容
+Line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	第 {0} 行: 无法读取条件 '{1}'  (请使用  ch5 >= 1500   或   vbat / 6 < 3.5   或   fm ~ "RTH" )
+Line {0}: cannot divide by zero  ({1})	第 {0} 行: 不能除以零  ({1})
+Line {0}: unknown name ${1}  (use $low, $crit or $full)	第 {0} 行: 未知名称 ${1}  (请使用 $low、$crit 或 $full)
+Line {0}: bad value for {1} ({2})	第 {0} 行: {1} 的值无效 ({2})
 Add at least one condition.	请至少添加一个条件。
 Pick a variable (letters, digits and _ only).	请选择变量 (仅限字母、数字和 _)。
 Text can use is, is not or contains.	文本只能使用 等于、不等于 或 包含。
@@ -252,18 +255,18 @@ The rule could not be read.	无法读取该规则。
 {0} is not “{1}”	{0} 不等于 “{1}”
 {0} or {1}	{0} 或 {1}
 {0} and {1}	{0} 且 {1}
-passes when {0}: ✓ “{1}”	当 {0} 时通过: ✓ “{1}”
+Passes when {0}: ✓ “{1}”	当 {0} 时通过: ✓ “{1}”
 CRITICAL	严重
 INFO	信息
 WARNING	警告
 , hides after {0} s	, {0} 秒后隐藏
-when {0}: show “{1}”	当 {0} 时: 显示 “{1}”
-when {0}: say “{1}”	当 {0} 时: 播报 “{1}”
+When {0}: show “{1}”	当 {0} 时: 显示 “{1}”
+When {0}: say “{1}”	当 {0} 时: 播报 “{1}”
 , then “{0}” when it turns false	, 条件变为假时播报 “{0}”
 , every {0} s while true	, 条件为真时每 {0} 秒一次
  (urgent)	 (紧急)
 Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	文本规则 - 每行一条:   ch5 >= 1500 -> 已解锁 | 已上锁
-and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	可使用 and / or。  ! = 紧急。  @10 = 每 10 秒重复。  设置: hysteresis = 25, hold = 100, initial = on/off。  # = 注释。
+And / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	可使用 and / or。  ! = 紧急。  @10 = 每 10 秒重复。  设置: hysteresis = 25, hold = 100, initial = on/off。  # = 注释。
 Check	检查
 Sample	示例
 OK: {0} rules	正常: {0} 条规则
@@ -307,13 +310,14 @@ Enter numbers (0 or more)	请输入数字 (0 或更大)
 < below	< 低于
 = equals	= 等于
 ≠ not equal	≠ 不等于
-contains (text)	包含 (文本)
-variable (type, or tap List)	变量 (输入, 或点按列表)
-  divide by	  除以
-now: {0}{1}	当前: {0}{1}
-Level: INFO (blue)  - tap to change	级别: 信息 (蓝色)  - 点按更改
-Level: CRITICAL (red, blinking)  - tap to change	级别: 严重 (红色, 闪烁)  - 点按更改
-Level: WARNING (amber)  - tap to change	级别: 警告 (琥珀色)  - 点按更改
+Contains (text)	包含 (文本)
+Variable (type, or tap List)	变量 (输入, 或点按列表)
+Value	值
+  Divide by	  除以
+Now: {0}{1}	当前: {0}{1}
+Level: Info (blue)  - tap to change	级别: 信息 (蓝色)  - 点按更改
+Level: Critical (red, blinking)  - tap to change	级别: 严重 (红色, 闪烁)  - 点按更改
+Level: Warning (amber)  - tap to change	级别: 警告 (琥珀色)  - 点按更改
 The timeout needs a number of seconds, 2 or more.	超时需要 2 秒或更大的秒数。
 Repeat needs a number of seconds, 2 or more.	重复需要 2 秒或更大的秒数。
 No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	还没有通道数值 (遥控器已连接吗? 请查看 设置, 诊断, 显示变量)
@@ -321,20 +325,20 @@ Move the switch now...	请现在拨动开关...
 No switch moved.	没有检测到开关动作。
 Detected {0} at {1}	检测到 {0}, 值 {1}
 When	当
-all of these are true	以下全部为真
-any of these is true	以下任一为真
+All of these are true	以下全部为真
+Any of these is true	以下任一为真
 + condition	+ 条件
 Detect switch	检测开关
 Check label (shown with a tick or a cross)	检查标签 (显示对勾或叉)
 Show in the status bar	在状态栏显示
 Say	播报
-label, for example GPS {sats} satellites	标签, 例如 GPS {sats} 颗卫星
-text, for example BATTERY {vbat/6:2} V	文字, 例如 电池 {vbat/6:2} V
-words to speak	要播报的文字
+Label, for example GPS {sats} satellites	标签, 例如 GPS {sats} 颗卫星
+Text, for example BATTERY {vbat/6:2} V	文字, 例如 电池 {vbat/6:2} V
+Words to speak	要播报的文字
 Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	实时数值: {vbat/6:2} = 每节电压 (2 位小数), {up_lq}, {sats}, {fm}
 Urgent (interrupts what is being said)	紧急 (打断正在播报的内容)
 Also say something when it turns false	条件变为假时也播报
-words when it turns false	条件变为假时播报的文字
+Words when it turns false	条件变为假时播报的文字
 Hide after (seconds), even if the condition stays true	多少秒后隐藏, 即使条件仍为真
 Repeat while it stays true, every (seconds)	条件为真时重复, 每隔 (秒)
 The rule as text	文本形式的规则
@@ -393,7 +397,7 @@ The arm switch starts and stops a flight: the statistics start over when you arm
 Arm detection: channel, thresholds, cells in the pack...	解锁检测: 通道、阈值、电池节数...
 Flight statistics: max speed, max height, peak current	飞行统计: 最大速度、最大高度、峰值电流
 Rows and current limit...	显示项与电流限值...
-Radar map: home in the centre, your track and range rings	雷达图: 起点居中, 显示航迹和距离环
+Radar map: home in the center, your track and range rings	雷达图: 起点居中, 显示航迹和距离环
 Live charts: rolling graphs of telemetry values	实时图表: 遥测数值的滚动曲线
 Charts: choose the values and the time window...	图表: 选择数值和时间窗口...
 Pre-flight checklist (shown while disarmed)	飞行前检查清单 (上锁时显示)
@@ -404,13 +408,13 @@ Layout of the cards	卡片布局
 Move and resize the cards with your finger...	用手指移动卡片并调整大小...
 Put every card back in its corner at normal size	将所有卡片放回各自角落并恢复正常大小
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	将所有卡片放回各自角落并恢复正常大小? 你选择的位置和大小将被清除。
-Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其圆形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
+Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其方形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
 Video and speech	视频和语音
 Video	视频
 Camera: {0}  (tap to choose the HDMI input)	摄像头: {0}  (点按选择 HDMI 输入)
 Rotate video: now {0} degrees  (tap to turn 90)	旋转视频: 当前 {0} 度  (点按旋转 90 度)
 Scale: {0}  (tap to change)	缩放: {0}  (点按更改)
-fill (stretch)	填充 (拉伸)
+Fill (stretch)	填充 (拉伸)
 Speech	语音
 Speech on	语音开启
 Speak a test sentence	播报一句测试语
@@ -442,11 +446,10 @@ The radio link starts on a background thread and keeps running while the app's o
 Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
 About	关于
 About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...
-AX12 video monitor, HUD and announcer	AX12 视频监视器、HUD 与语音播报
 AX-HUD  version {0}  (build {1})	AX-HUD  版本 {0}  (构建 {1})
 Use {variable} for a live value, for example {vbat/6:2}.	使用 {variable} 显示实时数值, 例如 {vbat/6:2}。
 A divisor in { } cannot be 0.	{ } 中的除数不能为 0。
-Cancelled	已取消
+Canceled	已取消
 Only https:// addresses are allowed	仅允许 https:// 地址
 Not a valid address	不是有效的地址
 The server answered {0}	服务器返回 {0}
@@ -464,7 +467,6 @@ The update information could not be read	无法读取更新信息
 No connection	无网络连接
 No build has been published on this channel yet.	此渠道尚未发布任何构建。
 Could not check: {0}\n\nIs the phone hotspot on?	无法检查: {0}\n\n手机热点已开启吗?
-no connection	无网络连接
 You have the latest build: version {0} (build {1})	已是最新构建: 版本 {0} (构建 {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD 有可用更新: {0} (构建 {1})。请打开 设置, 再打开 更新。
 Update available	有可用更新
@@ -477,46 +479,46 @@ Download failed	下载失败
 Allow installing	允许安装
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android 需要你的许可, AX-HUD 才能安装更新。请打开该页面, 为 AX-HUD 打开此选项, 然后返回并重新运行更新。已下载的文件会保留, 不会重复下载。
 Could not start the installation	无法开始安装
-unknown error	未知错误
+Unknown error	未知错误
 Updated. The app will reopen.	已更新。应用将重新打开。
-Installation cancelled	安装已取消
+Installation canceled	安装已取消
 \n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\n已安装的版本使用了不同的密钥签名。请先导出规则 (设置), 卸载一次 AX-HUD, 再安装此构建; 之后更新即可正常使用。详见 UPDATES.md。
 \n\nThis build is older than the installed one.	\n\n此构建比已安装的版本更旧。
 Installation stopped	安装已停止
 Android did not say why (code {0}).	Android 未说明原因 (代码 {0})。
-battery volts (flight controller); divide by the cell count for volts per cell	电池电压 (飞控); 除以节数得到每节电压
-volts per cell: battery volts divided by the cells of the active battery profile	每节电压: 电池电压除以当前电池配置的节数
-battery current, amps	电池电流, 安
-capacity used, mAh	已用容量, mAh
-battery remaining, percent	剩余电量, 百分比
-uplink link quality, percent (0 = no link)	上行链路质量, 百分比 (0 = 无链路)
-uplink signal strength, antenna 1, dBm (negative)	上行信号强度, 天线 1, dBm (负值)
-uplink signal strength, antenna 2, dBm (negative)	上行信号强度, 天线 2, dBm (负值)
-uplink signal to noise, dB	上行信噪比, dB
-downlink link quality, percent	下行链路质量, 百分比
-downlink signal strength, dBm	下行信号强度, dBm
-downlink signal to noise, dB	下行信噪比, dB
+Battery volts (flight controller); divide by the cell count for volts per cell	电池电压 (飞控); 除以节数得到每节电压
+Volts per cell: battery volts divided by the cells of the active battery profile	每节电压: 电池电压除以当前电池配置的节数
+Battery current, amps	电池电流, 安
+Capacity used, mAh	已用容量, mAh
+Battery remaining, percent	剩余电量, 百分比
+Uplink link quality, percent (0 = no link)	上行链路质量, 百分比 (0 = 无链路)
+Uplink signal strength, antenna 1, dBm (negative)	上行信号强度, 天线 1, dBm (负值)
+Uplink signal strength, antenna 2, dBm (negative)	上行信号强度, 天线 2, dBm (负值)
+Uplink signal to noise, dB	上行信噪比, dB
+Downlink link quality, percent	下行链路质量, 百分比
+Downlink signal strength, dBm	下行信号强度, dBm
+Downlink signal to noise, dB	下行信噪比, dB
 ExpressLRS packet rate mode number	ExpressLRS 包速率模式编号
-transmitter power, mW	发射功率, mW
-link quality from the radio, percent	遥控器报告的链路质量, 百分比
-signal strength from the radio	遥控器报告的信号强度
-radio's lost-frame counter	遥控器的丢帧计数
-radio battery volts	遥控器电池电压
-receiver volts	接收机电压
-telemetry present: 1 yes, 0 lost	遥测存在: 1 是, 0 丢失
+Transmitter power, mW	发射功率, mW
+Link quality from the radio, percent	遥控器报告的链路质量, 百分比
+Signal strength from the radio	遥控器报告的信号强度
+Radio's lost-frame counter	遥控器的丢帧计数
+Radio battery volts	遥控器电池电压
+Receiver volts	接收机电压
+Telemetry present: 1 yes, 0 lost	遥测存在: 1 是, 0 丢失
 GPS satellites	GPS 卫星数
-ground speed, km/h	地速, km/h
-GPS altitude, metres	GPS 海拔, 米
+Ground speed, km/h	地速, km/h
+GPS altitude, meters	GPS 海拔, 米
 GPS heading, degrees	GPS 航向, 度
-height above the arming point, metres (while armed)	相对解锁点的高度, 米 (解锁期间)
-distance from home, metres (while armed)	距离起点, 米 (解锁期间)
-latitude	纬度
-longitude	经度
-pitch angle, degrees	俯仰角, 度
-roll angle, degrees	横滚角, 度
-yaw / heading, degrees	偏航 / 航向, 度
-climb rate, m/s	爬升率, m/s
-flight mode name from the flight controller (text)	飞控报告的飞行模式名称 (文本)
+Height above the arming point, meters (while armed)	相对解锁点的高度, 米 (解锁期间)
+Distance from home, meters (while armed)	距离起点, 米 (解锁期间)
+Latitude	纬度
+Longitude	经度
+Pitch angle, degrees	俯仰角, 度
+Roll angle, degrees	横滚角, 度
+Yaw / heading, degrees	偏航 / 航向, 度
+Climb rate, m/s	爬升率, m/s
+Flight mode name from the flight controller (text)	飞控报告的飞行模式名称 (文本)
 Switches and sticks (channels, 1000 to 2000)	开关和摇杆 (通道, 1000 到 2000)
 Battery (from the flight controller)	电池 (来自飞控)
 Link quality and signal	链路质量与信号
@@ -526,9 +528,9 @@ Flight mode (text)	飞行模式 (文本)
 Other values from the radio	遥控器的其他数值
 Advanced: the radio's own channel numbers	高级: 遥控器自身的通道数值
 Advanced: the radio's logic values	高级: 遥控器的逻辑值
-channel {0}, 1000 to 2000 microseconds	通道 {0}, 1000 到 2000 微秒
-the radio's own channel number	遥控器自身的通道数值
-the radio's logic value	遥控器的逻辑值
+Channel {0}, 1000 to 2000 microseconds	通道 {0}, 1000 到 2000 微秒
+The radio's own channel number	遥控器自身的通道数值
+The radio's logic value	遥控器的逻辑值
 Link quality %	链路质量 %
 Downlink quality %	下行链路质量 %
 Cell volts	每节电压
@@ -550,11 +552,10 @@ Signal dBm	信号 dBm
 Signal to noise dB	信噪比 dB
 Power mW	功率 mW
 Radio volts	遥控器电压
-Receiver volts	接收机电压
 Lost frames	丢帧数
 Packet rate mode	包速率模式
 Telemetry	遥测
 Channel {0}	通道 {0}
-now: {0}	当前: {0}
-no value now	当前无数值
+Now: {0}	当前: {0}
+No value now	当前无数值
 Pick a channel or value	选择通道或数值

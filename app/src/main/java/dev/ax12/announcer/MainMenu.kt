@@ -22,7 +22,8 @@ class MainMenu(
     private val batteryName: () -> String,
     private val onBattery: () -> Unit,
     private val aircraftName: () -> String,
-    private val onAircraft: () -> Unit
+    private val onAircraft: () -> Unit,
+    private val onExit: () -> Unit
 ) {
     val root = FrameLayout(activity)
     private val speechButton = Button(activity)
@@ -41,7 +42,7 @@ class MainMenu(
 
         val box = LinearLayout(activity)
         box.orientation = LinearLayout.VERTICAL
-        box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density)
+        box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, CardStyle.MENU)     // the video shows through
         box.setPadding(dp(8), dp(8), dp(8), dp(8))
         box.isClickable = true
 
@@ -76,6 +77,10 @@ class MainMenu(
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         box.addView(item(tr("Settings"), "gear") { onSettings() })
+        val divider = View(activity)
+        divider.setBackgroundColor(0x66FFFFFF)
+        box.addView(divider, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(1)).also { it.topMargin = dp(6); it.bottomMargin = dp(6) })
+        box.addView(item(tr("Exit"), "exit") { onExit() }.also { it.setTextColor(0xFFFF8A80.toInt()) })        // apart from the others, and in a warning colour
 
         val lp = FrameLayout.LayoutParams(dp(300), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
         lp.topMargin = dp(56)
@@ -105,7 +110,7 @@ class MainMenu(
     }
 
     fun show() {
-        speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is OFF - tap to turn on")
+        speechButton.text = if (speechOn()) tr("Mute speech") else tr("Speech is off - tap to turn on")
         style(speechButton, if (speechOn()) "speaker" else "speaker_off")
         batteryButton.text = tr("Battery: {0}  (tap to switch)", batteryName())
         aircraftButton.text = tr("Aircraft: {0}  (tap to choose)", aircraftName())

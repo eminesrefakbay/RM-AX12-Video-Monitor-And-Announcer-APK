@@ -5,7 +5,10 @@ import android.graphics.drawable.GradientDrawable
 /** One look for every card and panel on the video: the same background, edge, corners and colours. */
 object CardStyle {
     val BG: Int = 0xD91A222C.toInt()            // cards over the video: dark navy-grey, a little see-through
-    val PANEL: Int = 0xF21A222C.toInt()         // full panels and menus: nearly solid
+    val PANEL: Int = 0xF21A222C.toInt()         // panels that need to be read closely: nearly solid
+    val SEE_THROUGH: Int = 0x8C1A222C.toInt()   // the backdrop of Settings, About and the rules: the video stays visible behind it
+    val BLOCK: Int = 0xCC1A222C.toInt()         // a block of text or rows on that backdrop: dark enough to read over moving video
+    val MENU: Int = 0xBA1A222C.toInt()          // the MENU box
     val EDGE: Int = 0xFF90A4AE.toInt()
     val TITLE: Int = 0xFF9CDCFE.toInt()
     val LABEL: Int = 0xFFB0BEC5.toInt()
@@ -16,12 +19,12 @@ object CardStyle {
     val BAD: Int = 0xFFEF5350.toInt()
     val ICON: Int = 0xFFE2E8EE.toInt()
 
-    const val RADIUS_DP = 10f
+    const val RADIUS_DP = 0f             // plain rectangles: no rounded corners anywhere
     const val EDGE_DP = 1.2f
 
     fun radius(density: Float): Float = RADIUS_DP * density
 
-    /** The rounded background of a menu or a block of settings. */
+    /** The square background of a menu or a block of settings. */
     fun panelBackground(density: Float, color: Int = PANEL): GradientDrawable {
         val g = GradientDrawable()
         g.setColor(color)

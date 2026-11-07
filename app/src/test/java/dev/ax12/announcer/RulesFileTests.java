@@ -34,7 +34,7 @@ public class RulesFileTests {
         // problems are reported, not hidden
         RulesFile.Summary p = RulesFile.inspect("ch5 >= 1500 -> armed\nthis line is wrong\n#off ch6 > 1 -> x\n");
         check(p.usable && p.rules == 1 && p.disabled == 1 && p.errors.size() == 1, "counts rules, switched-off rules and problems: " + p.message);
-        check(p.message.contains("1 rule") && p.message.contains("1 switched off") && p.message.contains("line 2"), "message names the first problem: " + p.message);
+        check(p.message.contains("1 rule") && p.message.contains("1 switched off") && p.message.contains("Line 2"), "message names the first problem: " + p.message);
 
         // files that must be refused
         check(!RulesFile.inspect("").usable && !RulesFile.inspect(null).usable && !RulesFile.inspect("   \n").usable, "empty file refused");

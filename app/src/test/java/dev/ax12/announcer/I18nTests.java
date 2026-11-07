@@ -127,7 +127,7 @@ public class I18nTests {
         // the descriptions the lists show, in each language
         I18n.load(FILES, "de");
         RuleText.Spec spec = RuleText.fromLine("vbat / 6 < 3.55 and ch5 >= 1950 -> !Akku kritisch @10");
-        check(RuleText.describe(spec).equals("wenn vbat \u00F7 6 < 3.55 und ch5 \u2265 1950: sage \u201EAkku kritisch\u201C, alle 10 s, solange es wahr ist (dringend)".replace("\u201E", "\u201C").replace("sage \u201CAkku", "sage „Akku").replace("kritisch\u201C", "kritisch“")), "German description: " + RuleText.describe(spec));
+        check(RuleText.describe(spec).equals("Wenn vbat \u00F7 6 < 3.55 und ch5 \u2265 1950: sage \u201EAkku kritisch\u201C, alle 10 s, solange es wahr ist (dringend)".replace("\u201E", "\u201C").replace("sage \u201CAkku", "sage „Akku").replace("kritisch\u201C", "kritisch“")), "German description: " + RuleText.describe(spec));
         I18n.load(FILES, "tr");
         check(RuleText.describe(spec).startsWith("vbat \u00F7 6 < 3.55 ve ch5 \u2265 1950 olduğunda: "), "Turkish description: " + RuleText.describe(spec));
         check(RuleText.line(spec).equals("vbat / 6 < 3.55 and ch5 >= 1950 -> !Akku kritisch @10"), "the rule text itself is never translated: " + RuleText.line(spec));

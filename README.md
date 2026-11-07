@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.13.3)
+# AX-HUD: AX12 video monitor, HUD and announcer (v0.14.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -21,7 +21,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 799 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 830 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -42,8 +42,8 @@ centre) and opacity.
 * **Flight statistics card:** speed, **height above the arming point**, **current with a limit line**
   (the bar turns red above the limit; default 50 A) as *now / maximum*, plus optional rows: distance from home,
   lowest link quality, lowest volts per cell. A timer in the title shows the flight time; after landing it says
-  LAST FLIGHT. Height comes from the GPS altitude relative to where you armed, so expect a few metres of error.
-* **Radar:** home in the centre, north up, three range rings, the track of the flight and the aircraft with its
+  LAST FLIGHT. Height comes from the GPS altitude relative to where you armed, so expect a few meters of error.
+* **Radar:** home in the center, north up, three range rings, the track of the flight and the aircraft with its
   heading. It shows only positions relative to home, no coordinates. The scale grows as you fly farther and does not
   shrink during the flight.
 * **Pre-flight checklist:** a card shown while disarmed with one row per check: green tick, red cross, or a grey dash
@@ -123,7 +123,7 @@ as before. The starting rules, warnings and checks use the new names; an existin
 ## Moving and resizing the cards
 
 *Settings > Overlays on the video > Layout of the cards > Move and resize the cards with your finger* opens an edit mode over the video. **Drag a card to
-move it; drag the round handle at its bottom right corner to resize it.** The cards you can edit are the stick view, the flight
+move it; drag the square handle at its bottom right corner to resize it.** The cards you can edit are the stick view, the flight
 statistics, the radar, the pre-flight checklist and the live charts (switched-on ones; cards that are only shown at certain moments,
 like the radar before a flight or the checklist while armed, are shown while you edit). A card snaps lightly to the screen edges and
 can never leave the screen or grow bigger than it. **Done** finishes; **Reset the layout** puts every card back in its corner.
@@ -142,7 +142,7 @@ and distance start at zero so the height of a punch means something; volts and t
 sensible span. A missing value shows as a gap. Size, place and opacity work like the other cards. The charts start off (switch them on in
 Settings) and fill as soon as the app runs.
 
-Two new values come with them, usable in charts **and in rules**: **`height`** (metres above where you armed) and **`dist`** (metres from
+Two new values come with them, usable in charts **and in rules**: **`height`** (meters above where you armed) and **`dist`** (meters from
 home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
 
 ## Start-up time of the radio link
@@ -176,13 +176,25 @@ sample in the app that can move the sticks. The same lines go to logcat under th
 (`start | call took | init done | mixout | config | requests | graph`); `graph` is the time until the first stick value reached the
 screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| Out-File -Encoding utf8` to get UTF-8.
 
-## Looks: one style, icons, settings in groups
+## Looks: one style, plain rectangles, see-through panels, icons
 
+* **Plain rectangles.** Nothing in the app has rounded corners: the cards, the MENU, the panels, the buttons, the dialogs, the switches
+  (a square thumb in a square track), the layout editor's frames and handles, the icons' rectangles. The radar is a square card; only
+  its range rings stay round.
+* **See-through menu and panels.** The MENU box and the backdrop of Settings, About and the rules let the video show through, so you
+  can see that it is there while you change a setting. Rows, notes and text sit on darker blocks, so they stay readable over moving video.
+  Dialogs stay nearly solid, because you type in them.
+* **Exit.** The MENU ends with an **Exit** item (in a warning colour, below a divider). It asks first, then closes the app, removes it
+  from the recent apps and releases the radio's serial port.
+* **One look everywhere.** Every card (sticks, statistics, radar, checklist, charts) shares the same background, edge and colours, and
+  so do the menu and the panels. Buttons are flat and dark, dialog buttons are written like every other button (not in capitals), and
+  every dialog is dark with light blue buttons.
+* **Capitals and spelling.** Every text starts with a capital letter (option values, column headings, error lines, hints, captions);
+  no text is half in capitals and half not; one spelling (American) everywhere; one product name and one tagline on the splash and the
+  About page. The all-capitals HUD labels (SPEED, READY, ...) are on purpose. A test checks all of this, in English, German and Turkish.
 * **Settings are grouped.** *Settings* shows eight collapsible groups with icons (Language and display, Aircraft and battery,
   Overlays on the video, Video and speech, Rules and backup, Updates, Diagnostics, About); tap a group to open it, one at a time. The
   first group is titled in four languages on purpose, so it can always be found.
-* **One look everywhere.** Every card (sticks, statistics, radar, checklist, charts) shares the same background, edge, corners and
-  colours, and so do the menu and the panels. Buttons are flat, rounded and dark, and every dialog is dark with light blue buttons.
 * **Icons** in the MENU and in the Settings groups. They are described in a small text file (`app/src/main/assets/icons.txt`), so they
   can be changed or extended without touching the code.
 * **Soft fades.** Cards fade in and out instead of popping; the MENU fades in.

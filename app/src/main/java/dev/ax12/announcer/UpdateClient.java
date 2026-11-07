@@ -28,7 +28,7 @@ public final class UpdateClient {
         private static final long serialVersionUID = 1L;
 
         public Cancelled() {
-            super(I18n.t("Cancelled"));
+            super(I18n.t("Canceled"));
         }
     }
 

@@ -159,9 +159,8 @@ class SticksView(context: Context) : View(context) {
     }
 
     private fun drawBar(canvas: Canvas, left: Float, name: String, frac: Double) {
-        val r = 4f * density
         rect.set(left, 0f, left + barPx, boxPx.toFloat())
-        canvas.drawRoundRect(rect, r, r, fill)
+        canvas.drawRect(rect, fill)
         if (!frac.isNaN() && frac <= 1.0) {
             val h = (rect.height() * frac).toFloat().coerceAtLeast(5f * density)      // a low switch still shows a stub
             barFill.color = when (AuxBars.level(frac)) {
@@ -170,9 +169,9 @@ class SticksView(context: Context) : View(context) {
                 else -> 0xFF66BB6A.toInt()
             }
             level.set(rect.left + 2 * density, rect.bottom - h, rect.right - 2 * density, rect.bottom - 2 * density)
-            canvas.drawRoundRect(level, 2f * density, 2f * density, barFill)
+            canvas.drawRect(level, barFill)
         }
-        canvas.drawRoundRect(rect, r, r, line)
+        canvas.drawRect(rect, line)
 
         // the name, written upwards along the bar and shrunk to fit its length
         var size = (barPx * 0.62f).coerceIn(8f * density, 14f * density)
@@ -195,8 +194,8 @@ class SticksView(context: Context) : View(context) {
 
     private fun drawStick(canvas: Canvas, left: Float, h: Double, v: Double, hName: String, vName: String) {
         rect.set(left, 0f, left + boxPx, boxPx.toFloat())
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), fill)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), line)
+        canvas.drawRect(rect, fill)
+        canvas.drawRect(rect, line)
         val cx = rect.centerX()
         val cy = rect.centerY()
         canvas.drawLine(rect.left + 4 * density, cy, rect.right - 4 * density, cy, line)

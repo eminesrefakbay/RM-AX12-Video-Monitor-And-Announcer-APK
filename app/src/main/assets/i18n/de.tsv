@@ -4,7 +4,7 @@ Close	Schließen
 The license text could not be read.	Der Lizenztext konnte nicht gelesen werden.
 Back	Zurück
 No web browser found. The address is: {0}	Kein Webbrowser gefunden. Die Adresse lautet: {0}
-Video monitor, heads-up display and voice announcer for the RadioMaster AX12.	Videomonitor, Head-up-Anzeige und Sprachansage für die RadioMaster AX12.
+Video monitor, HUD and voice announcer for the RadioMaster AX12.	Videomonitor, HUD und Sprachansage für die RadioMaster AX12.
 License	Lizenz
 AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.	AX-HUD ist freie Software unter der MIT-Lizenz: Du darfst sie benutzen, kopieren, ändern und weitergeben, auch in eigenen Projekten, solange der Lizenzhinweis erhalten bleibt. Sie wird ohne jede Gewährleistung geliefert.
 Read the {0}	{0} lesen
@@ -29,14 +29,14 @@ Profile {0}: the name cannot be empty.	Profil {0}: Der Name darf nicht leer sein
 Profile {0}: cells must be 1 to 12.	Profil {0}: Die Zellenzahl muss 1 bis 12 sein.
 Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	Profil {0}: kritisch unter niedrig unter voll, zwischen 2,5 und 4,4 Volt pro Zelle.
 Two profiles have the same name: {0}.	Zwei Profile haben denselben Namen: {0}.
-low {0}, critical {1}, full {2} V per cell	niedrig {0}, kritisch {1}, voll {2} V pro Zelle
+Low {0}, critical {1}, full {2} V per cell	Niedrig {0}, kritisch {1}, voll {2} V pro Zelle
 Starting...	Wird gestartet...
-video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	Video: %.1f Bilder/s   Abstand zwischen Bildern: 95 %% unter %d ms, schlimmster %d ms (letzte 5 s)
+Video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	Video: %.1f Bilder/s   Abstand zwischen Bildern: 95 %% unter %d ms, schlimmster %d ms (letzte 5 s)
 Camera {0}  {1}x{2}  ·  {3}	Kamera {0}  {1}x{2}  ·  {3}
-auto	automatisch
+Auto	Automatisch
 Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	Kamera {0}   Puffer {1}x{2}   Drehung {3} {4}   Ansicht {5}x{6}\n{7}
-fill	füllen
-fit	einpassen
+Fill	Füllen
+Fit	Einpassen
 Camera {0}  ({1}, sensor {2} deg)	Kamera {0}  ({1}, Sensor {2} Grad)
 Camera permission needed	Kameraberechtigung erforderlich
 No camera found - check the HDMI cable and the video receiver	Keine Kamera gefunden - HDMI-Kabel und Videoempfänger prüfen
@@ -49,13 +49,13 @@ Waiting for video...	Warte auf Video...
 Preview failed: {0}	Vorschau fehlgeschlagen: {0}
 Camera session failed	Kamerasitzung fehlgeschlagen
 Session error: {0}	Sitzungsfehler: {0}
-last {0} s	letzte {0} s
+Last {0} s	Letzte {0} s
 This app: the HUD, the voice announcer, the rules and the settings.	Diese App: das HUD, die Sprachansage, die Regeln und die Einstellungen.
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Liest die Kanäle und die Telemetrie der Fernsteuerung. Ihre Bibliotheken sind in der App enthalten. Danke, RadioMaster, dass ihr sie veröffentlicht habt.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	Die Qt-Bibliotheken, die mit dem RadioMaster-SDK kommen, so wie sie mitgeliefert werden. Quellcode: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Die C++-Laufzeit des Android-NDK, die das SDK braucht.
 The standard library of the Kotlin language, which the app is written in.	Die Standardbibliothek der Sprache Kotlin, in der die App geschrieben ist.
-Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den runden Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
+Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den quadratischen Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
 Reset the layout	Layout zurücksetzen
 Done	Fertig
 MENU	MENÜ
@@ -68,9 +68,9 @@ Warning rules: {0} error(s). Open Settings, then the warning rules.	Warnregeln: 
 NO VIDEO  ·  {0}	KEIN VIDEO  ·  {0}
 The SDK is starting in the background...	Das SDK startet im Hintergrund...
 No data from the radio yet...	Noch keine Daten von der Fernsteuerung...
-TEST CHANNELS ARE ON - the radio is not being read\n	TESTKANÄLE SIND AN - die Fernsteuerung wird nicht gelesen\n
-NO SDK IN THIS BUILD - the radio is not being read\n	KEIN SDK IN DIESER VERSION - die Fernsteuerung wird nicht gelesen\n
-SDK IS NOT RUNNING - the radio is not being read\n	SDK LÄUFT NICHT - die Fernsteuerung wird nicht gelesen\n
+Test channels are on - the radio is not being read\n	Testkanäle sind an - die Fernsteuerung wird nicht gelesen\n
+No SDK in this build - the radio is not being read\n	Kein SDK in dieser Version - die Fernsteuerung wird nicht gelesen\n
+The SDK is not running - the radio is not being read\n	Das SDK läuft nicht - die Fernsteuerung wird nicht gelesen\n
 Android lists no cameras	Android listet keine Kameras
 Choose the HDMI camera	HDMI-Kamera wählen
 Speech is off	Sprachausgabe ist aus
@@ -83,18 +83,18 @@ Stable	Stabil
 Nightly	Nightly
 Stable (tested releases only)	Stabil (nur getestete Releases)
 Nightly (newest build of every push)	Nightly (neuester Build jedes Pushs)
-top	oben
-bottom	unten
+Top	Oben
+Bottom	Unten
 BATTERY CRITICAL 3.48 V per cell	AKKU KRITISCH 3.48 V pro Zelle
-small	klein
-medium	mittel
-large	groß
-bottom center	unten Mitte
-bottom left	unten links
-bottom right	unten rechts
-top left	oben links
-top right	oben rechts
-center	Mitte
+Small	Klein
+Medium	Mittel
+Large	Groß
+Bottom center	Unten Mitte
+Bottom left	Unten links
+Bottom right	Unten rechts
+Top left	Oben links
+Top right	Oben rechts
+Center	Mitte
 SPEED	TEMPO
 HEIGHT	HÖHE
 CURRENT	STROM
@@ -124,13 +124,13 @@ Distance from home (now / maximum)	Entfernung von Home (jetzt / Maximum)
 Lowest link quality	Niedrigste Verbindungsqualität
 Lowest volts per cell	Niedrigste Spannung pro Zelle
 Current limit line (amps)	Strom-Grenzlinie (Ampere)
-Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.	Die Höhe kommt aus der GPS-Höhe relativ zum Startpunkt, rechne also mit einigen Metern Abweichung. Der Balken wird rot, wenn der Strom über der Grenzlinie liegt.
+Height comes from the GPS altitude relative to where you armed, so expect a few meters of error. The bar turns red when the current is above the limit line.	Die Höhe kommt aus der GPS-Höhe relativ zum Startpunkt, rechne also mit einigen Metern Abweichung. Der Balken wird rot, wenn der Strom über der Grenzlinie liegt.
 Flight statistics rows	Zeilen der Flugstatistik
 The current limit is 5 to 300 amps	Das Stromlimit liegt zwischen 5 und 300 Ampere
 Left of the sticks	Links der Sticks
 Right of the sticks	Rechts der Sticks
-on      channel      name on the overlay                 reverse	an      Kanal      Name in der Anzeige                 umkehren
-A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	Ein Balken füllt sich mit dem Kanalwert. Graublau = niedrig, gelb = Mitte, grün = hoch. Die Namen stehen entlang des Balkens; ein kurzer Name ist am besten lesbar.\n\nUmkehren: für einen Schalter, der in der Fernsteuerung umgekehrt ist, damit der Balken den Schalter so zeigt, wie du ihn umlegst (oben = voll und grün). Nur das Bild ändert sich: Sprach- und Warnregeln nutzen weiter die echten Kanalwerte.
+On      Channel      Name on the overlay                 Reverse	An      Kanal      Name in der Anzeige                 Umkehren
+A bar fills with the channel value. Gray-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	Ein Balken füllt sich mit dem Kanalwert. Graublau = niedrig, gelb = Mitte, grün = hoch. Die Namen stehen entlang des Balkens; ein kurzer Name ist am besten lesbar.\n\nUmkehren: für einen Schalter, der in der Fernsteuerung umgekehrt ist, damit der Balken den Schalter so zeigt, wie du ihn umlegst (oben = voll und grün). Nur das Bild ändert sich: Sprach- und Warnregeln nutzen weiter die echten Kanalwerte.
 Channel bars	Kanalbalken
 Defaults	Standard
 Bar {0}: the channel must be 1 to 16	Balken {0}: Der Kanal muss 1 bis 16 sein
@@ -154,7 +154,7 @@ Android has no {0} voice installed. Install it in Android Settings, Text-to-spee
 Built without the RadioMaster SDK files (test channels only).	Ohne die RadioMaster-SDK-Dateien gebaut (nur Testkanäle).
 RadioMaster SDK: running.	RadioMaster SDK: läuft.
 RadioMaster SDK: not running{0}.	RadioMaster SDK: läuft nicht{0}.
-AX12 Video Monitor and Announcer, version {0}\n{1}	AX12 Videomonitor und Ansager, Version {0}\n{1}
+AX-HUD, version {0}\n{1}	AX-HUD, Version {0}\n{1}
 Thanks to RadioMaster for publishing the AX SDK.	Danke an RadioMaster für die Veröffentlichung des AX SDK.
 Sound rules saved	Sprachregeln gespeichert
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	Dieses Gerät hat keinen Dateiauswahldialog, deshalb wurde die Datei hier gespeichert:\n{0}\n\nKopiere sie mit einem USB-Kabel oder adb. Zum Importieren lege eine Datei mit demselben Namen in diesen Ordner.
@@ -188,21 +188,24 @@ Use names from the list, such as up_lq or cell.	Verwende Namen aus der Liste, zu
 {0}  (in use)	{0}  (in Benutzung)
 Choose the aircraft	Fluggerät wählen
 Aircraft: {0}	Fluggerät: {0}
-in use	in Benutzung
+In use	In Benutzung
 Aircraft {0}	Fluggerät {0}
 At most {0} aircraft.	Höchstens {0} Fluggeräte.
 Add: copy of the current	Hinzufügen: Kopie des aktuellen
 Add: starting settings	Hinzufügen: Startwerte
 Aircraft	Fluggerät
-name                    battery profile              mAh	Name                    Akkuprofil              mAh
+Name                    Battery profile              mAh	Name                    Akkuprofil              mAh
 Add pack	Akku hinzufügen
 Pack {0}	Akku {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	Jeder Akku nutzt ein Akkuprofil (seine Grenzen). Einen Akku im Menü zu wählen schaltet auf sein Profil. Die Kapazität dient deinen Unterlagen (0 = unbekannt). Ohne Akkus wechselt das Menü direkt das Profil.
 Packs	Akkus
 Enter numbers in every field	Gib in jedes Feld eine Zahl ein
+Exit AX-HUD?	AX-HUD beenden?
+The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	Die Verbindung zur Fernsteuerung wird beendet und der serielle Port der Fernsteuerung freigegeben. Bis du die App wieder startest, gibt es kein HUD und keine Sprachausgabe.
+Exit	Beenden
 Battery profile: {0}\n{1}	Akkuprofil: {0}\n{1}
 Battery {0}	Akku {0}
-name                  cells    full    low    critical	Name                  Zellen    voll    niedrig    kritisch
+Name                  Cells    Full    Low    Critical	Name                  Zellen    Voll    Niedrig    Kritisch
 Add profile	Profil hinzufügen
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	Volt pro Zelle. Kritisch muss unter niedrig liegen und niedrig unter voll. Regeln nutzen cell und die Namen $low, $crit und $full.
 Battery profiles	Akkuprofile
@@ -212,7 +215,7 @@ Imported {0} rules	{0} Regeln importiert
 Sound rules	Sprachregeln
 Settings	Einstellungen
 Mute speech	Sprache stummschalten
-Speech is OFF - tap to turn on	Sprache ist AUS - zum Einschalten tippen
+Speech is off - tap to turn on	Sprache ist aus - zum Einschalten tippen
 Battery: {0}  (tap to switch)	Akku: {0}  (zum Wechseln tippen)
 Aircraft: {0}  (tap to choose)	Fluggerät: {0}  (zum Wählen tippen)
 At most {0} packs.	Höchstens {0} Akkus.
@@ -221,20 +224,20 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Akku {0}: Die Kapazität i
 Two packs have the same name: {0}.	Zwei Akkus haben denselben Namen: {0}.
 {0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
 {0} ({1})	{0} ({1})
-test sliders	Testregler
-test sliders (no radio)	Testregler (keine Fernsteuerung)
+Test sliders	Testregler
+Test sliders (no radio)	Testregler (keine Fernsteuerung)
 RadioMaster SDK	RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)	Diese Version enthält keine RadioMaster-SDK-Dateien (siehe README)
 SDK worker thread failed to start	SDK-Arbeitsthread konnte nicht gestartet werden
 The SDK could not open the radio's serial link (see README: serial lock)	Das SDK konnte die serielle Verbindung der Fernsteuerung nicht öffnen (siehe README: serielle Sperre)
 SDK start failed (code {0})	SDK-Start fehlgeschlagen (Code {0})
-line {0}: missing '->'  ({1})	Zeile {0}: '->' fehlt  ({1})
-line {0}: nothing before '->'	Zeile {0}: nichts vor '->'
-line {0}: nothing to say after '->'	Zeile {0}: nach '->' steht nichts zum Sprechen
-line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	Zeile {0}: Bedingung '{1}' nicht lesbar  (verwende  ch5 >= 1500   oder   vbat / 6 < 3.5   oder   fm ~ "RTH" )
-line {0}: cannot divide by zero  ({1})	Zeile {0}: Division durch null nicht möglich  ({1})
-line {0}: unknown name ${1}  (use $low, $crit or $full)	Zeile {0}: unbekannter Name ${1}  (verwende $low, $crit oder $full)
-line {0}: bad value for {1} ({2})	Zeile {0}: ungültiger Wert für {1} ({2})
+Line {0}: missing '->'  ({1})	Zeile {0}: '->' fehlt  ({1})
+Line {0}: nothing before '->'	Zeile {0}: nichts vor '->'
+Line {0}: nothing to say after '->'	Zeile {0}: nach '->' steht nichts zum Sprechen
+Line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	Zeile {0}: Bedingung '{1}' nicht lesbar  (verwende  ch5 >= 1500   oder   vbat / 6 < 3.5   oder   fm ~ "RTH" )
+Line {0}: cannot divide by zero  ({1})	Zeile {0}: Division durch null nicht möglich  ({1})
+Line {0}: unknown name ${1}  (use $low, $crit or $full)	Zeile {0}: unbekannter Name ${1}  (verwende $low, $crit oder $full)
+Line {0}: bad value for {1} ({2})	Zeile {0}: ungültiger Wert für {1} ({2})
 Add at least one condition.	Mindestens eine Bedingung hinzufügen.
 Pick a variable (letters, digits and _ only).	Wähle eine Variable (nur Buchstaben, Ziffern und _).
 Text can use is, is not or contains.	Text kann „ist“, „ist nicht“ oder „enthält“ verwenden.
@@ -252,18 +255,18 @@ The rule could not be read.	Die Regel konnte nicht gelesen werden.
 {0} is not “{1}”	{0} ist nicht „{1}“
 {0} or {1}	{0} oder {1}
 {0} and {1}	{0} und {1}
-passes when {0}: ✓ “{1}”	bestanden, wenn {0}: ✓ „{1}“
+Passes when {0}: ✓ “{1}”	Bestanden, wenn {0}: ✓ „{1}“
 CRITICAL	KRITISCH
 INFO	INFO
 WARNING	WARNUNG
 , hides after {0} s	, wird nach {0} s ausgeblendet
-when {0}: show “{1}”	wenn {0}: zeige „{1}“
-when {0}: say “{1}”	wenn {0}: sage „{1}“
+When {0}: show “{1}”	Wenn {0}: zeige „{1}“
+When {0}: say “{1}”	Wenn {0}: sage „{1}“
 , then “{0}” when it turns false	, dann „{0}“, wenn es falsch wird
 , every {0} s while true	, alle {0} s, solange es wahr ist
  (urgent)	 (dringend)
 Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	Regeln als Text - eine pro Zeile:   ch5 >= 1500 -> Motoren scharf | Motoren gesichert
-and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	and / or erlaubt.  ! = dringend.  @10 = alle 10 s wiederholen.  Einstellungen: hysteresis = 25, hold = 100, initial = on/off.  # = Kommentar.
+And / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	And / or erlaubt.  ! = dringend.  @10 = alle 10 s wiederholen.  Einstellungen: hysteresis = 25, hold = 100, initial = on/off.  # = Kommentar.
 Check	Prüfen
 Sample	Beispiel
 OK: {0} rules	OK: {0} Regeln
@@ -307,13 +310,14 @@ Enter numbers (0 or more)	Zahlen eingeben (0 oder mehr)
 < below	< unter
 = equals	= gleich
 ≠ not equal	≠ ungleich
-contains (text)	enthält (Text)
-variable (type, or tap List)	Variable (tippen oder auf Liste tippen)
-  divide by	  teilen durch
-now: {0}{1}	jetzt: {0}{1}
-Level: INFO (blue)  - tap to change	Stufe: INFO (blau)  - zum Ändern tippen
-Level: CRITICAL (red, blinking)  - tap to change	Stufe: KRITISCH (rot, blinkend)  - zum Ändern tippen
-Level: WARNING (amber)  - tap to change	Stufe: WARNUNG (gelb)  - zum Ändern tippen
+Contains (text)	Enthält (Text)
+Variable (type, or tap List)	Variable (tippen oder auf Liste tippen)
+Value	Wert
+  Divide by	  Teilen durch
+Now: {0}{1}	Jetzt: {0}{1}
+Level: Info (blue)  - tap to change	Stufe: Info (blau)  - zum Ändern tippen
+Level: Critical (red, blinking)  - tap to change	Stufe: Kritisch (rot, blinkend)  - zum Ändern tippen
+Level: Warning (amber)  - tap to change	Stufe: Warnung (gelb)  - zum Ändern tippen
 The timeout needs a number of seconds, 2 or more.	Das Zeitlimit braucht eine Sekundenzahl, 2 oder mehr.
 Repeat needs a number of seconds, 2 or more.	Wiederholen braucht eine Sekundenzahl, 2 oder mehr.
 No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	Noch keine Kanalwerte (ist die Fernsteuerung verbunden? Versuche Einstellungen, Diagnose, Variablen anzeigen)
@@ -321,20 +325,20 @@ Move the switch now...	Bewege jetzt den Schalter...
 No switch moved.	Es wurde kein Schalter bewegt.
 Detected {0} at {1}	{0} erkannt bei {1}
 When	Wenn
-all of these are true	alle diese sind wahr
-any of these is true	eine davon ist wahr
+All of these are true	Alle diese sind wahr
+Any of these is true	Eine davon ist wahr
 + condition	+ Bedingung
 Detect switch	Schalter erkennen
 Check label (shown with a tick or a cross)	Check-Beschriftung (mit Haken oder Kreuz)
 Show in the status bar	In der Statusleiste anzeigen
 Say	Sagen
-label, for example GPS {sats} satellites	Beschriftung, z. B. GPS {sats} Satelliten
-text, for example BATTERY {vbat/6:2} V	Text, z. B. AKKU {vbat/6:2} V
-words to speak	zu sprechende Wörter
+Label, for example GPS {sats} satellites	Beschriftung, z. B. GPS {sats} Satelliten
+Text, for example BATTERY {vbat/6:2} V	Text, z. B. AKKU {vbat/6:2} V
+Words to speak	Zu sprechende Wörter
 Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	Live-Werte: {vbat/6:2} = Volt pro Zelle mit 2 Dezimalstellen, {up_lq}, {sats}, {fm}
 Urgent (interrupts what is being said)	Dringend (unterbricht das Gesprochene)
 Also say something when it turns false	Auch etwas sagen, wenn es falsch wird
-words when it turns false	Wörter, wenn es falsch wird
+Words when it turns false	Wörter, wenn es falsch wird
 Hide after (seconds), even if the condition stays true	Ausblenden nach (Sekunden), auch wenn die Bedingung wahr bleibt
 Repeat while it stays true, every (seconds)	Wiederholen, solange wahr, alle (Sekunden)
 The rule as text	Die Regel als Text
@@ -393,7 +397,7 @@ The arm switch starts and stops a flight: the statistics start over when you arm
 Arm detection: channel, thresholds, cells in the pack...	Arm-Erkennung: Kanal, Schwellen, Zellen im Akku...
 Flight statistics: max speed, max height, peak current	Flugstatistik: Höchstgeschwindigkeit, Maximalhöhe, Spitzenstrom
 Rows and current limit...	Zeilen und Stromgrenze...
-Radar map: home in the centre, your track and range rings	Radarkarte: Home in der Mitte, deine Spur und Entfernungsringe
+Radar map: home in the center, your track and range rings	Radarkarte: Home in der Mitte, deine Spur und Entfernungsringe
 Live charts: rolling graphs of telemetry values	Live-Diagramme: fortlaufende Verläufe von Telemetriewerten
 Charts: choose the values and the time window...	Diagramme: Werte und Zeitfenster wählen...
 Pre-flight checklist (shown while disarmed)	Checkliste vor dem Flug (angezeigt, solange gesichert)
@@ -404,13 +408,13 @@ Layout of the cards	Anordnung der Karten
 Move and resize the cards with your finger...	Karten mit dem Finger verschieben und in der Größe ändern...
 Put every card back in its corner at normal size	Jede Karte in ihre Ecke zurück, in normaler Größe
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Jede Karte in ihre Ecke zurück, in normaler Größe? Die gewählten Positionen und Größen werden vergessen.
-Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Ziehe eine Karte, um sie zu verschieben, und ihren runden Griff, um die Größe zu ändern. Ausgeschaltete Karten werden nicht gezeigt. Die Größe-Einstellung einer Karte ist ihre Startgröße; das Ändern multipliziert sie.
+Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Ziehe eine Karte, um sie zu verschieben, und ihren quadratischen Griff, um die Größe zu ändern. Ausgeschaltete Karten werden nicht gezeigt. Die Größe-Einstellung einer Karte ist ihre Startgröße; das Ändern multipliziert sie.
 Video and speech	Video und Sprache
 Video	Video
 Camera: {0}  (tap to choose the HDMI input)	Kamera: {0}  (zum Wählen des HDMI-Eingangs tippen)
 Rotate video: now {0} degrees  (tap to turn 90)	Video drehen: jetzt {0} Grad  (zum Drehen um 90 tippen)
 Scale: {0}  (tap to change)	Skalierung: {0}  (zum Ändern tippen)
-fill (stretch)	füllen (strecken)
+Fill (stretch)	Füllen (strecken)
 Speech	Sprache
 Speech on	Sprache an
 Speak a test sentence	Testsatz sprechen
@@ -442,11 +446,10 @@ The radio link starts on a background thread and keeps running while the app's o
 Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
 About	Info
 About AX-HUD, licenses and thanks...	Über AX-HUD, Lizenzen und Dank...
-AX12 video monitor, HUD and announcer	AX12 Videomonitor, HUD und Ansager
 AX-HUD  version {0}  (build {1})	AX-HUD  Version {0}  (Build {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Verwende {variable} für einen Live-Wert, zum Beispiel {vbat/6:2}.
 A divisor in { } cannot be 0.	Ein Teiler in { } darf nicht 0 sein.
-Cancelled	Abgebrochen
+Canceled	Abgebrochen
 Only https:// addresses are allowed	Nur https://-Adressen sind erlaubt
 Not a valid address	Keine gültige Adresse
 The server answered {0}	Der Server antwortete {0}
@@ -464,7 +467,6 @@ The update information could not be read	Die Update-Informationen konnten nicht 
 No connection	Keine Verbindung
 No build has been published on this channel yet.	Auf diesem Kanal wurde noch kein Build veröffentlicht.
 Could not check: {0}\n\nIs the phone hotspot on?	Prüfung nicht möglich: {0}\n\nIst der Handy-Hotspot an?
-no connection	keine Verbindung
 You have the latest build: version {0} (build {1})	Du hast den neuesten Build: Version {0} (Build {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD-Update verfügbar: {0} (Build {1}). Öffne Einstellungen, dann Updates.
 Update available	Update verfügbar
@@ -477,46 +479,46 @@ Download failed	Download fehlgeschlagen
 Allow installing	Installation erlauben
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android braucht deine Erlaubnis, bevor AX-HUD ein Update installieren kann. Öffne die Seite, schalte es für AX-HUD ein, komm zurück und starte das Update erneut. Der Download bleibt erhalten und wird nicht zweimal geladen.
 Could not start the installation	Die Installation konnte nicht gestartet werden
-unknown error	unbekannter Fehler
+Unknown error	Unbekannter Fehler
 Updated. The app will reopen.	Aktualisiert. Die App öffnet sich erneut.
-Installation cancelled	Installation abgebrochen
+Installation canceled	Installation abgebrochen
 \n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\nDie installierte Kopie wurde mit einem anderen Schlüssel signiert. Exportiere deine Regeln (Einstellungen), deinstalliere AX-HUD einmal und installiere diesen Build; danach funktionieren Updates. Siehe UPDATES.md.
 \n\nThis build is older than the installed one.	\n\nDieser Build ist älter als der installierte.
 Installation stopped	Installation gestoppt
 Android did not say why (code {0}).	Android hat keinen Grund genannt (Code {0}).
-battery volts (flight controller); divide by the cell count for volts per cell	Akkuspannung (Flugcontroller); durch die Zellenzahl teilen für Volt pro Zelle
-volts per cell: battery volts divided by the cells of the active battery profile	Volt pro Zelle: Akkuspannung geteilt durch die Zellenzahl des aktiven Akkuprofils
-battery current, amps	Akkustrom, Ampere
-capacity used, mAh	verbrauchte Kapazität, mAh
-battery remaining, percent	Akku verbleibend, Prozent
-uplink link quality, percent (0 = no link)	Uplink-Verbindungsqualität, Prozent (0 = keine Verbindung)
-uplink signal strength, antenna 1, dBm (negative)	Uplink-Signalstärke, Antenne 1, dBm (negativ)
-uplink signal strength, antenna 2, dBm (negative)	Uplink-Signalstärke, Antenne 2, dBm (negativ)
-uplink signal to noise, dB	Uplink-Signal-Rausch-Abstand, dB
-downlink link quality, percent	Downlink-Verbindungsqualität, Prozent
-downlink signal strength, dBm	Downlink-Signalstärke, dBm
-downlink signal to noise, dB	Downlink-Signal-Rausch-Abstand, dB
+Battery volts (flight controller); divide by the cell count for volts per cell	Akkuspannung (Flugcontroller); durch die Zellenzahl teilen für Volt pro Zelle
+Volts per cell: battery volts divided by the cells of the active battery profile	Volt pro Zelle: Akkuspannung geteilt durch die Zellenzahl des aktiven Akkuprofils
+Battery current, amps	Akkustrom, Ampere
+Capacity used, mAh	Verbrauchte Kapazität, mAh
+Battery remaining, percent	Akku verbleibend, Prozent
+Uplink link quality, percent (0 = no link)	Uplink-Verbindungsqualität, Prozent (0 = keine Verbindung)
+Uplink signal strength, antenna 1, dBm (negative)	Uplink-Signalstärke, Antenne 1, dBm (negativ)
+Uplink signal strength, antenna 2, dBm (negative)	Uplink-Signalstärke, Antenne 2, dBm (negativ)
+Uplink signal to noise, dB	Uplink-Signal-Rausch-Abstand, dB
+Downlink link quality, percent	Downlink-Verbindungsqualität, Prozent
+Downlink signal strength, dBm	Downlink-Signalstärke, dBm
+Downlink signal to noise, dB	Downlink-Signal-Rausch-Abstand, dB
 ExpressLRS packet rate mode number	ExpressLRS-Paketraten-Modusnummer
-transmitter power, mW	Sendeleistung, mW
-link quality from the radio, percent	Verbindungsqualität von der Fernsteuerung, Prozent
-signal strength from the radio	Signalstärke von der Fernsteuerung
-radio's lost-frame counter	Zähler verlorener Frames der Fernsteuerung
-radio battery volts	Akkuspannung der Fernsteuerung
-receiver volts	Empfängerspannung
-telemetry present: 1 yes, 0 lost	Telemetrie vorhanden: 1 ja, 0 verloren
+Transmitter power, mW	Sendeleistung, mW
+Link quality from the radio, percent	Verbindungsqualität von der Fernsteuerung, Prozent
+Signal strength from the radio	Signalstärke von der Fernsteuerung
+Radio's lost-frame counter	Zähler verlorener Frames der Fernsteuerung
+Radio battery volts	Akkuspannung der Fernsteuerung
+Receiver volts	Empfängerspannung
+Telemetry present: 1 yes, 0 lost	Telemetrie vorhanden: 1 ja, 0 verloren
 GPS satellites	GPS-Satelliten
-ground speed, km/h	Geschwindigkeit über Grund, km/h
-GPS altitude, metres	GPS-Höhe, Meter
+Ground speed, km/h	Geschwindigkeit über Grund, km/h
+GPS altitude, meters	GPS-Höhe, Meter
 GPS heading, degrees	GPS-Kurs, Grad
-height above the arming point, metres (while armed)	Höhe über dem Startpunkt, Meter (solange scharf)
-distance from home, metres (while armed)	Entfernung von Home, Meter (solange scharf)
-latitude	Breitengrad
-longitude	Längengrad
-pitch angle, degrees	Nickwinkel, Grad
-roll angle, degrees	Rollwinkel, Grad
-yaw / heading, degrees	Gier / Kurs, Grad
-climb rate, m/s	Steigrate, m/s
-flight mode name from the flight controller (text)	Flugmodus-Name vom Flugcontroller (Text)
+Height above the arming point, meters (while armed)	Höhe über dem Startpunkt, Meter (solange scharf)
+Distance from home, meters (while armed)	Entfernung von Home, Meter (solange scharf)
+Latitude	Breitengrad
+Longitude	Längengrad
+Pitch angle, degrees	Nickwinkel, Grad
+Roll angle, degrees	Rollwinkel, Grad
+Yaw / heading, degrees	Gier / Kurs, Grad
+Climb rate, m/s	Steigrate, m/s
+Flight mode name from the flight controller (text)	Flugmodus-Name vom Flugcontroller (Text)
 Switches and sticks (channels, 1000 to 2000)	Schalter und Sticks (Kanäle, 1000 bis 2000)
 Battery (from the flight controller)	Akku (vom Flugcontroller)
 Link quality and signal	Verbindungsqualität und Signal
@@ -526,9 +528,9 @@ Flight mode (text)	Flugmodus (Text)
 Other values from the radio	Weitere Werte von der Fernsteuerung
 Advanced: the radio's own channel numbers	Erweitert: die eigenen Kanalwerte der Fernsteuerung
 Advanced: the radio's logic values	Erweitert: die Logikwerte der Fernsteuerung
-channel {0}, 1000 to 2000 microseconds	Kanal {0}, 1000 bis 2000 Mikrosekunden
-the radio's own channel number	der eigene Kanalwert der Fernsteuerung
-the radio's logic value	der Logikwert der Fernsteuerung
+Channel {0}, 1000 to 2000 microseconds	Kanal {0}, 1000 bis 2000 Mikrosekunden
+The radio's own channel number	Der eigene Kanalwert der Fernsteuerung
+The radio's logic value	Der Logikwert der Fernsteuerung
 Link quality %	Verbindungsqualität %
 Downlink quality %	Downlink-Qualität %
 Cell volts	Zellenspannung
@@ -550,11 +552,10 @@ Signal dBm	Signal dBm
 Signal to noise dB	Signal-Rausch dB
 Power mW	Leistung mW
 Radio volts	Spannung der Fernsteuerung
-Receiver volts	Empfängerspannung
 Lost frames	Verlorene Frames
 Packet rate mode	Paketraten-Modus
 Telemetry	Telemetrie
 Channel {0}	Kanal {0}
-now: {0}	jetzt: {0}
-no value now	derzeit kein Wert
+Now: {0}	Jetzt: {0}
+No value now	Derzeit kein Wert
 Pick a channel or value	Kanal oder Wert wählen

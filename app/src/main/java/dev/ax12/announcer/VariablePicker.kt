@@ -63,7 +63,7 @@ object VariablePicker {
                 box.setPadding(dp(12), dp(6), dp(12), dp(6))
                 val shown = liveText(name, nums, txts)
                 val line1 = TextView(activity)
-                line1.text = name + "      " + (if (shown != null) tr("now: {0}", shown) else tr("no value now"))
+                line1.text = name + "      " + (if (shown != null) tr("Now: {0}", shown) else tr("No value now"))
                 line1.textSize = 16f
                 line1.setTextColor(Color.WHITE)
                 box.addView(line1)

@@ -83,7 +83,7 @@ public class BatteryTests {
         check(RuleText.validate(spec) != null && RuleText.validate(spec).contains("not a number"), "but not an unknown name: " + RuleText.validate(spec));
         spec.conds.get(0).value = "$LOW";
         check(RuleText.validate(spec) == null, "upper case is fine");
-        check(RuleText.describe(RuleText.fromLine("cell < $low -> x")).equals("when cell < $low: say \u201Cx\u201D"), "the description shows the name: " + RuleText.describe(RuleText.fromLine("cell < $low -> x")));
+        check(RuleText.describe(RuleText.fromLine("cell < $low -> x")).equals("When cell < $low: say \u201Cx\u201D"), "the description shows the name: " + RuleText.describe(RuleText.fromLine("cell < $low -> x")));
 
         // ---------- switching the profile changes when the rules fire, not the rules ----------
         String rules = "hold = 0\ncell < $low and cell >= $crit -> battery low\ncell < $crit -> !battery critical\n";

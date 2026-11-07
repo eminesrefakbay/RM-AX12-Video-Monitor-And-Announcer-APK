@@ -19,39 +19,39 @@ object VariableCatalog {
     }
 
     private val help: Map<String, String> = mapOf(
-        "vbat" to tn("battery volts (flight controller); divide by the cell count for volts per cell"),
-        "cell" to tn("volts per cell: battery volts divided by the cells of the active battery profile"),
-        "curr" to tn("battery current, amps"),
-        "capa" to tn("capacity used, mAh"),
-        "batpct" to tn("battery remaining, percent"),
-        "up_lq" to tn("uplink link quality, percent (0 = no link)"),
-        "up_rssi1" to tn("uplink signal strength, antenna 1, dBm (negative)"),
-        "up_rssi2" to tn("uplink signal strength, antenna 2, dBm (negative)"),
-        "up_snr" to tn("uplink signal to noise, dB"),
-        "dn_lq" to tn("downlink link quality, percent"),
-        "dn_rssi" to tn("downlink signal strength, dBm"),
-        "dn_snr" to tn("downlink signal to noise, dB"),
+        "vbat" to tn("Battery volts (flight controller); divide by the cell count for volts per cell"),
+        "cell" to tn("Volts per cell: battery volts divided by the cells of the active battery profile"),
+        "curr" to tn("Battery current, amps"),
+        "capa" to tn("Capacity used, mAh"),
+        "batpct" to tn("Battery remaining, percent"),
+        "up_lq" to tn("Uplink link quality, percent (0 = no link)"),
+        "up_rssi1" to tn("Uplink signal strength, antenna 1, dBm (negative)"),
+        "up_rssi2" to tn("Uplink signal strength, antenna 2, dBm (negative)"),
+        "up_snr" to tn("Uplink signal to noise, dB"),
+        "dn_lq" to tn("Downlink link quality, percent"),
+        "dn_rssi" to tn("Downlink signal strength, dBm"),
+        "dn_snr" to tn("Downlink signal to noise, dB"),
         "rf_mode" to tn("ExpressLRS packet rate mode number"),
-        "tx_power" to tn("transmitter power, mW"),
-        "lq" to tn("link quality from the radio, percent"),
-        "dbm" to tn("signal strength from the radio"),
-        "lost" to tn("radio's lost-frame counter"),
-        "txv" to tn("radio battery volts"),
-        "rxv" to tn("receiver volts"),
-        "tlm" to tn("telemetry present: 1 yes, 0 lost"),
+        "tx_power" to tn("Transmitter power, mW"),
+        "lq" to tn("Link quality from the radio, percent"),
+        "dbm" to tn("Signal strength from the radio"),
+        "lost" to tn("Radio's lost-frame counter"),
+        "txv" to tn("Radio battery volts"),
+        "rxv" to tn("Receiver volts"),
+        "tlm" to tn("Telemetry present: 1 yes, 0 lost"),
         "sats" to tn("GPS satellites"),
-        "gps_speed" to tn("ground speed, km/h"),
-        "gps_alt" to tn("GPS altitude, metres"),
+        "gps_speed" to tn("Ground speed, km/h"),
+        "gps_alt" to tn("GPS altitude, meters"),
         "gps_heading" to tn("GPS heading, degrees"),
-        "height" to tn("height above the arming point, metres (while armed)"),
-        "dist" to tn("distance from home, metres (while armed)"),
-        "gps_lat" to tn("latitude"),
-        "gps_lon" to tn("longitude"),
-        "pitch" to tn("pitch angle, degrees"),
-        "roll" to tn("roll angle, degrees"),
-        "yaw" to tn("yaw / heading, degrees"),
-        "vspeed" to tn("climb rate, m/s"),
-        "fm" to tn("flight mode name from the flight controller (text)")
+        "height" to tn("Height above the arming point, meters (while armed)"),
+        "dist" to tn("Distance from home, meters (while armed)"),
+        "gps_lat" to tn("Latitude"),
+        "gps_lon" to tn("Longitude"),
+        "pitch" to tn("Pitch angle, degrees"),
+        "roll" to tn("Roll angle, degrees"),
+        "yaw" to tn("Yaw / heading, degrees"),
+        "vspeed" to tn("Climb rate, m/s"),
+        "fm" to tn("Flight mode name from the flight controller (text)")
     )
 
     class Group(val title: String, val names: List<String>)
@@ -83,9 +83,9 @@ object VariableCatalog {
     fun help(name: String): String {
         val h = help[name]
         if (h != null) return h
-        if (name.startsWith("ch") && name.substring(2).toIntOrNull() != null) return tr("channel {0}, 1000 to 2000 microseconds", name.substring(2))
-        if (name.startsWith("raw")) return tr("the radio's own channel number")
-        if (name.startsWith("lv")) return tr("the radio's logic value")
+        if (name.startsWith("ch") && name.substring(2).toIntOrNull() != null) return tr("Channel {0}, 1000 to 2000 microseconds", name.substring(2))
+        if (name.startsWith("raw")) return tr("The radio's own channel number")
+        if (name.startsWith("lv")) return tr("The radio's logic value")
         return ""
     }
 

@@ -150,7 +150,7 @@ public class FlightTests {
         he.update(hv, ct, 400); check(hm.pass() == 1, "then passes");
         // describing a check
         RuleText.Spec cs = RuleText.fromLine("sats >= 10 -> GPS {sats} satellites");
-        check(RuleText.describeCheck(cs).startsWith("passes when sats \u2265 10: \u2713 "), "check description: " + RuleText.describeCheck(cs));
+        check(RuleText.describeCheck(cs).startsWith("Passes when sats \u2265 10: \u2713 "), "check description: " + RuleText.describeCheck(cs));
         // the shipped defaults
         String dc = readFile("app/src/main/assets/i18n/checks.en.txt");
         RuleParser.Result dcp = RuleParser.parse(dc);

@@ -113,8 +113,8 @@ class ChartView(context: Context) : View(context) {
         val m = model ?: return
         if (m.names.isEmpty()) return
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), bg)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), edge)
+        canvas.drawRect(rect, bg)
+        canvas.drawRect(rect, edge)
         val rowH = rowDp * density
         val pad = 6 * density
         for ((i, name) in m.names.withIndex()) {
@@ -122,7 +122,7 @@ class ChartView(context: Context) : View(context) {
             drawRow(canvas, m, name, colors[i % colors.size], pad, top, width - pad, top + rowH)
         }
         label.textAlign = Paint.Align.RIGHT
-        canvas.drawText(tr("last {0} s", m.windowMs / 1000), width - pad, height - 6 * density, label)
+        canvas.drawText(tr("Last {0} s", m.windowMs / 1000), width - pad, height - 6 * density, label)
         label.textAlign = Paint.Align.LEFT
     }
 

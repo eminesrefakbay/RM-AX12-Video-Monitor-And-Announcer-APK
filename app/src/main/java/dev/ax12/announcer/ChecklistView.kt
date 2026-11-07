@@ -90,8 +90,8 @@ class ChecklistView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), bg)
-        canvas.drawRoundRect(rect, CardStyle.radius(density), CardStyle.radius(density), edge)
+        canvas.drawRect(rect, bg)
+        canvas.drawRect(rect, edge)
         var y = pad() + textPx
         canvas.drawText(title, pad(), y, titlePaint)
         if (subtitle.isNotEmpty()) {
@@ -118,21 +118,21 @@ class ChecklistView(context: Context) : View(context) {
         when (state) {
             1 -> {
                 markFill.color = 0xFF2E7D32.toInt()
-                canvas.drawCircle(cx, cy, r, markFill)
+                canvas.drawRect(cx - r, cy - r, cx + r, cy + r, markFill)
                 markLine.color = 0xFFFFFFFF.toInt()
                 canvas.drawLine(cx - r * 0.5f, cy, cx - r * 0.1f, cy + r * 0.45f, markLine)
                 canvas.drawLine(cx - r * 0.1f, cy + r * 0.45f, cx + r * 0.55f, cy - r * 0.4f, markLine)
             }
             2 -> {
                 markFill.color = 0xFFC62828.toInt()
-                canvas.drawCircle(cx, cy, r, markFill)
+                canvas.drawRect(cx - r, cy - r, cx + r, cy + r, markFill)
                 markLine.color = 0xFFFFFFFF.toInt()
                 canvas.drawLine(cx - r * 0.42f, cy - r * 0.42f, cx + r * 0.42f, cy + r * 0.42f, markLine)
                 canvas.drawLine(cx - r * 0.42f, cy + r * 0.42f, cx + r * 0.42f, cy - r * 0.42f, markLine)
             }
             else -> {
                 markFill.color = 0xFF546E7A.toInt()
-                canvas.drawCircle(cx, cy, r, markFill)
+                canvas.drawRect(cx - r, cy - r, cx + r, cy + r, markFill)
                 markLine.color = 0xFFFFFFFF.toInt()
                 canvas.drawLine(cx - r * 0.45f, cy, cx + r * 0.45f, cy, markLine)
             }

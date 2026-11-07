@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -124,7 +126,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
 
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.PANEL)
+        root.setBackgroundColor(CardStyle.SEE_THROUGH)     // the video stays visible behind the settings, so you can see it is there
         root.setPadding(dp(16), dp(10), dp(16), dp(10))
         root.visibility = View.GONE
         root.isClickable = true
@@ -133,6 +135,8 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         val bar = LinearLayout(activity)
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
+        bar.setBackgroundColor(CardStyle.BLOCK)
+        bar.setPadding(dp(10), dp(4), dp(10), dp(4))
         val title = TextView(activity)
         title.text = tr("Settings")
         title.textSize = 22f
@@ -189,8 +193,29 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         sw.textSize = 15f
         sw.isChecked = checked
         sw.setPadding(dp(4), dp(8), dp(4), dp(8))
+        squareSwitch(sw)
         sw.setOnCheckedChangeListener { _, isOn -> onChange(isOn) }
         target.addView(sw, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+    }
+
+    /** The system switch is round; this one is a square thumb in a square track, to match everything else. */
+    private fun squareSwitch(sw: Switch) {
+        val d = activity.resources.displayMetrics.density
+        fun box(fill: Int, edge: Int, w: Float, h: Float): GradientDrawable {
+            val g = GradientDrawable()
+            g.setColor(fill)
+            g.setStroke((1f * d).toInt().coerceAtLeast(1), edge)
+            g.setSize((w * d).toInt(), (h * d).toInt())
+            return g
+        }
+        val thumb = StateListDrawable()
+        thumb.addState(intArrayOf(android.R.attr.state_checked), box(CardStyle.ACCENT, 0xFFFFFFFF.toInt(), 22f, 22f))
+        thumb.addState(intArrayOf(), box(0xFFB0BEC5.toInt(), 0xFF78909C.toInt(), 22f, 22f))
+        val track = StateListDrawable()
+        track.addState(intArrayOf(android.R.attr.state_checked), box(0x884FC3F7.toInt(), CardStyle.ACCENT, 46f, 26f))
+        track.addState(intArrayOf(), box(0x66263238, 0xFF546E7A.toInt(), 46f, 26f))
+        sw.thumbDrawable = thumb
+        sw.trackDrawable = track
     }
 
     /** A switch for one overlay tile and, when it is on, its size, position and opacity. */
@@ -252,7 +277,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             Icons.drawable(activity, icon, if (open) CardStyle.ACCENT else CardStyle.ICON, 26), null,
             Icons.drawable(activity, if (open) "chevron_down" else "chevron_right", CardStyle.LABEL, 22), null
         )
-        header.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, if (open) 0xFF2C3844.toInt() else 0xFF232C36.toInt())
+        header.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, if (open) 0xF22C3844.toInt() else 0xE6232C36.toInt())
         header.isClickable = true
         header.setOnClickListener {
             openGroup = if (open) "" else id
@@ -264,6 +289,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         if (open) {
             val box = LinearLayout(activity)
             box.orientation = LinearLayout.VERTICAL
+            box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, CardStyle.BLOCK)     // rows and notes stay readable over moving video
             box.setPadding(dp(8), dp(2), dp(8), dp(8))
             list.addView(box, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             target = box
@@ -350,7 +376,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             tileControls("stats", tr("Flight statistics: max speed, max height, peak current")) {
                 action(tr("Rows and current limit...")) { host.editStatsRows() }
             }
-            tileControls("radar", tr("Radar map: home in the centre, your track and range rings")) {}
+            tileControls("radar", tr("Radar map: home in the center, your track and range rings")) {}
             tileControls("chart", tr("Live charts: rolling graphs of telemetry values")) {
                 action(tr("Charts: choose the values and the time window...")) { host.editCharts() }
             }
@@ -366,7 +392,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             action(tr("Put every card back in its corner at normal size")) {
                 confirm(tr("Put every card back in its corner at normal size? The places and sizes you chose will be forgotten."), tr("Reset")) { host.resetLayout() }
             }
-            note(tr("Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it."))
+            note(tr("Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it."))
 
         }
         group("video", tr("Video and speech"), "video") {
@@ -376,7 +402,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
                 host.rotateVideo()
                 refresh()
             }
-            action(tr("Scale: {0}  (tap to change)", (if (host.fill()) tr("fill (stretch)") else "fit"))) {
+            action(tr("Scale: {0}  (tap to change)", (if (host.fill()) tr("Fill (stretch)") else tr("Fit")))) {
                 host.toggleFill()
                 refresh()
             }

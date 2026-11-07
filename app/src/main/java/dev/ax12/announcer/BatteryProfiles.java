@@ -153,7 +153,7 @@ public final class BatteryProfiles {
     }
 
     public static String limitsText(Profile p) {
-        return I18n.t("low {0}, critical {1}, full {2} V per cell", String.format(Locale.US, "%.2f", p.low),
+        return I18n.t("Low {0}, critical {1}, full {2} V per cell", String.format(Locale.US, "%.2f", p.low),
                       String.format(Locale.US, "%.2f", p.crit), String.format(Locale.US, "%.2f", p.full));
     }
 }

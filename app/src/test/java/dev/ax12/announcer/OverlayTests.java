@@ -99,8 +99,8 @@ public class OverlayTests {
 
         // ---------- describing warnings ----------
         RuleText.Spec ws = RuleText.fromLine("vbat / 6 < 3.55 -> !BATTERY CRITICAL {vbat/6:2}");
-        check(RuleText.describeWarning(ws).startsWith("[CRITICAL] when vbat \u00F7 6 < 3.55: show"), "critical description: " + RuleText.describeWarning(ws));
-        check(RuleText.describeWarning(RuleText.fromLine("ch5 >= 1950 -> *ARMED")).equals("[INFO] when ch5 \u2265 1950: show \u201CARMED\u201D"), "info description: " + RuleText.describeWarning(RuleText.fromLine("ch5 >= 1950 -> *ARMED")));
+        check(RuleText.describeWarning(ws).startsWith("[CRITICAL] When vbat \u00F7 6 < 3.55: show"), "critical description: " + RuleText.describeWarning(ws));
+        check(RuleText.describeWarning(RuleText.fromLine("ch5 >= 1950 -> *ARMED")).equals("[INFO] When ch5 \u2265 1950: show \u201CARMED\u201D"), "info description: " + RuleText.describeWarning(RuleText.fromLine("ch5 >= 1950 -> *ARMED")));
         check(RuleText.describeWarning(RuleText.fromLine("up_lq < 70 -> LINK")).startsWith("[WARNING]"), "warning description");
 
         // ---------- sticks ----------
@@ -201,7 +201,7 @@ public class OverlayTests {
         // describing and editing a warning with a timeout
         RuleText.Spec ts = RuleText.fromLine("ch5 >= 1950 -> *ARMED @5");
         check(ts != null && ts.repeatSec == 5 && ts.onTrue.equals("*ARMED"), "the editor reads the timeout");
-        check(RuleText.describeWarning(ts).equals("[INFO] when ch5 \u2265 1950: show \u201CARMED\u201D, hides after 5 s"), "description: " + RuleText.describeWarning(ts));
+        check(RuleText.describeWarning(ts).equals("[INFO] When ch5 \u2265 1950: show \u201CARMED\u201D, hides after 5 s"), "description: " + RuleText.describeWarning(ts));
         check(RuleText.line(ts).equals("ch5 >= 1950 -> *ARMED @5") && RuleText.validate(ts) == null, "the editor writes the same line back: " + RuleText.line(ts));
         ts.repeatSec = 0;
         check(RuleText.line(ts).equals("ch5 >= 1950 -> *ARMED"), "no timeout: no @");

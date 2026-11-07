@@ -75,7 +75,7 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         bar.setBackgroundColor(0x991E1E1E.toInt())          // see-through: a card flush with the top edge stays visible
         bar.setPadding(dp(10), dp(2), dp(10), dp(2))
         val hint = TextView(activity)
-        hint.text = tr("Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.")
+        hint.text = tr("Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.")
         hint.textSize = 12f
         hint.setTextColor(0xFFFFFFFF.toInt())
         bar.addView(hint, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
@@ -129,14 +129,15 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
             val r = rectOf(t)
             rect.set(r.left.toFloat(), r.top.toFloat(), r.right().toFloat(), r.bottom().toFloat())
             frame.strokeWidth = (if (t === active) 3.5f else 2f) * density
-            canvas.drawRoundRect(rect, 6f * density, 6f * density, frame)
+            canvas.drawRect(rect, frame)
             val w = chipText.measureText(t.label) + 12 * density
             // the name tag sits above the card, or inside its corner when the card is too close to the top
             val tagTop = if (rect.top >= 24 * density) rect.top - 18 * density else rect.top + 2 * density
-            canvas.drawRoundRect(rect.left, tagTop, rect.left + w, tagTop + 18 * density, 5f * density, 5f * density, chip)
+            canvas.drawRect(rect.left, tagTop, rect.left + w, tagTop + 18 * density, chip)
             canvas.drawText(t.label, rect.left + 6 * density, tagTop + 13 * density, chipText)
-            canvas.drawCircle(rect.right, rect.bottom, 13f * density, handleFill)
-            canvas.drawCircle(rect.right, rect.bottom, 13f * density, frame)
+            val h = 11f * density                                   // the square handle at the bottom right corner
+            canvas.drawRect(rect.right - h, rect.bottom - h, rect.right + h, rect.bottom + h, handleFill)
+            canvas.drawRect(rect.right - h, rect.bottom - h, rect.right + h, rect.bottom + h, frame)
         }
         if (visibility == View.VISIBLE) postInvalidateDelayed(200)        // follow cards whose size changes by itself
     }

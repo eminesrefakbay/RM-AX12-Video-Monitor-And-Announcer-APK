@@ -63,7 +63,7 @@ class RulesPanel(
 
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.PANEL)
+        root.setBackgroundColor(CardStyle.SEE_THROUGH)         // the video stays visible behind the rules
         root.setPadding(dp(16), dp(10), dp(16), dp(10))
         root.visibility = View.GONE
         root.isClickable = true                       // swallow touches so the video behind is not used
@@ -74,6 +74,8 @@ class RulesPanel(
         title.textSize = 22f
         title.setTextColor(Color.WHITE)
         title.setTypeface(null, Typeface.BOLD)
+        title.setBackgroundColor(CardStyle.BLOCK)
+        title.setPadding(dp(10), dp(6), dp(10), dp(6))
         root.addView(title)
 
         val bar = LinearLayout(activity)
@@ -86,6 +88,7 @@ class RulesPanel(
 
         val scroll = ScrollView(activity)
         list.orientation = LinearLayout.VERTICAL
+        list.setBackgroundColor(CardStyle.BLOCK)
         scroll.addView(list)
         root.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
@@ -98,6 +101,8 @@ class RulesPanel(
             tr("A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.")
         tip.textSize = 12f
         tip.setTextColor(0xFFBDBDBD.toInt())
+        tip.setBackgroundColor(CardStyle.BLOCK)
+        tip.setPadding(dp(10), dp(4), dp(10), dp(4))
         root.addView(tip)
     }
 
@@ -318,7 +323,7 @@ class RulesPanel(
         private val condBox = LinearLayout(activity)
         private val rows = ArrayList<CondRow>()
         private val opCodes = arrayOf(">=", "<=", ">", "<", "==", "!=", "~")
-        private val opLabels = arrayOf(tr("\u2265 at least"), tr("\u2264 at most"), tr("> above"), tr("< below"), tr("= equals"), tr("\u2260 not equal"), tr("contains (text)"))
+        private val opLabels = arrayOf(tr("\u2265 at least"), tr("\u2264 at most"), tr("> above"), tr("< below"), tr("= equals"), tr("\u2260 not equal"), tr("Contains (text)"))
 
         private lateinit var connector: Spinner
         private lateinit var sayField: EditText
@@ -358,7 +363,7 @@ class RulesPanel(
                 varField.setAdapter(ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line, names))
                 varField.threshold = 0
                 varField.setSingleLine(true)
-                varField.hint = tr("variable (type, or tap List)")
+                varField.hint = tr("Variable (type, or tap List)")
                 varField.setText(c.variable)
                 varField.setOnClickListener { varField.showDropDown() }
                 lineA.addView(varField, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
@@ -390,7 +395,7 @@ class RulesPanel(
                 lineB.addView(opSpinner)
 
                 valueField.setSingleLine(true)
-                valueField.hint = "value"
+                valueField.hint = tr("Value")
                 valueField.setText(c.value)
                 lineB.addView(valueField, LinearLayout.LayoutParams(dp(110), ViewGroup.LayoutParams.WRAP_CONTENT))
                 if (BatteryProfiles.isMacro(c.value)) valueField.inputType = InputType.TYPE_CLASS_TEXT
@@ -405,7 +410,7 @@ class RulesPanel(
                 lineB.addView(limits)
 
                 val divLabel = TextView(activity)
-                divLabel.text = tr("  divide by")
+                divLabel.text = tr("  Divide by")
                 divLabel.textSize = 12f
                 lineB.addView(divLabel)
                 divField.setSingleLine(true)
@@ -458,7 +463,7 @@ class RulesPanel(
                     val d = divField.text.toString().trim().toDoubleOrNull() ?: 1.0
                     RuleText.fmt(Math.round(n / (if (d == 0.0) 1.0 else d) * 100.0) / 100.0)
                 } else "-"
-                nowText.text = tr("now: {0}{1}", shown, (if (help.isNotEmpty()) "   (" + help + ")" else ""))
+                nowText.text = tr("Now: {0}{1}", shown, (if (help.isNotEmpty()) "   (" + help + ")" else ""))
             }
         }
 
@@ -513,9 +518,9 @@ class RulesPanel(
         }
 
         private fun severityLabel(): String = when (severity) {
-            0 -> tr("Level: INFO (blue)  - tap to change")
-            2 -> tr("Level: CRITICAL (red, blinking)  - tap to change")
-            else -> tr("Level: WARNING (amber)  - tap to change")
+            0 -> tr("Level: Info (blue)  - tap to change")
+            2 -> tr("Level: Critical (red, blinking)  - tap to change")
+            else -> tr("Level: Warning (amber)  - tap to change")
         }
 
         private fun refreshPreview() {
@@ -603,7 +608,7 @@ class RulesPanel(
             whenLabel.textSize = 16f
             whenRow.addView(whenLabel)
             connector = Spinner(activity)
-            val cad = ArrayAdapter(activity, android.R.layout.simple_spinner_item, arrayOf(tr("all of these are true"), tr("any of these is true")))
+            val cad = ArrayAdapter(activity, android.R.layout.simple_spinner_item, arrayOf(tr("All of these are true"), tr("Any of these is true")))
             cad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             connector.adapter = cad
             connector.setSelection(if (spec.any) 1 else 0)
@@ -636,7 +641,7 @@ class RulesPanel(
             sayField = EditText(activity)
             sayField.setText(if (warning) spec.onTrue.removePrefix("*").trim() else spec.onTrue)
             sayField.setSingleLine(true)
-            sayField.hint = if (check) tr("label, for example GPS {sats} satellites") else if (warning) tr("text, for example BATTERY {vbat/6:2} V") else tr("words to speak")
+            sayField.hint = if (check) tr("Label, for example GPS {sats} satellites") else if (warning) tr("Text, for example BATTERY {vbat/6:2} V") else tr("Words to speak")
             sayField.addTextChangedListener(watcher { refreshPreview() })
             body.addView(sayField)
             val tipLive = TextView(activity)
@@ -671,7 +676,7 @@ class RulesPanel(
             falseField = EditText(activity)
             falseField.setText(spec.onFalse)
             falseField.setSingleLine(true)
-            falseField.hint = tr("words when it turns false")
+            falseField.hint = tr("Words when it turns false")
             falseField.addTextChangedListener(watcher { if (falseField.text.isNotEmpty()) falseCheck.isChecked = true; refreshPreview() })
             if (!warning && !check) body.addView(falseField)
 

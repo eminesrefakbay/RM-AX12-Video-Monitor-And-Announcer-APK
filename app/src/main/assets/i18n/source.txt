@@ -4,7 +4,7 @@ Close
 The license text could not be read.
 Back
 No web browser found. The address is: {0}
-Video monitor, heads-up display and voice announcer for the RadioMaster AX12.
+Video monitor, HUD and voice announcer for the RadioMaster AX12.
 License
 AX-HUD is free software under the MIT License: you may use, copy, change and share it, also in your own projects, as long as the license notice stays with it. It comes without any warranty.
 Read the {0}
@@ -29,14 +29,14 @@ Profile {0}: the name cannot be empty.
 Profile {0}: cells must be 1 to 12.
 Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.
 Two profiles have the same name: {0}.
-low {0}, critical {1}, full {2} V per cell
+Low {0}, critical {1}, full {2} V per cell
 Starting...
-video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)
+Video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)
 Camera {0}  {1}x{2}  ·  {3}
-auto
+Auto
 Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}
-fill
-fit
+Fill
+Fit
 Camera {0}  ({1}, sensor {2} deg)
 Camera permission needed
 No camera found - check the HDMI cable and the video receiver
@@ -49,13 +49,13 @@ Waiting for video...
 Preview failed: {0}
 Camera session failed
 Session error: {0}
-last {0} s
+Last {0} s
 This app: the HUD, the voice announcer, the rules and the settings.
 Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.
 The standard library of the Kotlin language, which the app is written in.
-Drag a card to move it. Drag the round handle to resize it. Tap Done when you are finished.
+Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.
 Reset the layout
 Done
 MENU
@@ -68,9 +68,9 @@ Warning rules: {0} error(s). Open Settings, then the warning rules.
 NO VIDEO  ·  {0}
 The SDK is starting in the background...
 No data from the radio yet...
-TEST CHANNELS ARE ON - the radio is not being read\n
-NO SDK IN THIS BUILD - the radio is not being read\n
-SDK IS NOT RUNNING - the radio is not being read\n
+Test channels are on - the radio is not being read\n
+No SDK in this build - the radio is not being read\n
+The SDK is not running - the radio is not being read\n
 Android lists no cameras
 Choose the HDMI camera
 Speech is off
@@ -83,18 +83,18 @@ Stable
 Nightly
 Stable (tested releases only)
 Nightly (newest build of every push)
-top
-bottom
+Top
+Bottom
 BATTERY CRITICAL 3.48 V per cell
-small
-medium
-large
-bottom center
-bottom left
-bottom right
-top left
-top right
-center
+Small
+Medium
+Large
+Bottom center
+Bottom left
+Bottom right
+Top left
+Top right
+Center
 SPEED
 HEIGHT
 CURRENT
@@ -124,13 +124,13 @@ Distance from home (now / maximum)
 Lowest link quality
 Lowest volts per cell
 Current limit line (amps)
-Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.
+Height comes from the GPS altitude relative to where you armed, so expect a few meters of error. The bar turns red when the current is above the limit line.
 Flight statistics rows
 The current limit is 5 to 300 amps
 Left of the sticks
 Right of the sticks
-on      channel      name on the overlay                 reverse
-A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.
+On      Channel      Name on the overlay                 Reverse
+A bar fills with the channel value. Gray-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.
 Channel bars
 Defaults
 Bar {0}: the channel must be 1 to 16
@@ -154,7 +154,7 @@ Android has no {0} voice installed. Install it in Android Settings, Text-to-spee
 Built without the RadioMaster SDK files (test channels only).
 RadioMaster SDK: running.
 RadioMaster SDK: not running{0}.
-AX12 Video Monitor and Announcer, version {0}\n{1}
+AX-HUD, version {0}\n{1}
 Thanks to RadioMaster for publishing the AX SDK.
 Sound rules saved
 This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.
@@ -188,21 +188,24 @@ Use names from the list, such as up_lq or cell.
 {0}  (in use)
 Choose the aircraft
 Aircraft: {0}
-in use
+In use
 Aircraft {0}
 At most {0} aircraft.
 Add: copy of the current
 Add: starting settings
 Aircraft
-name                    battery profile              mAh
+Name                    Battery profile              mAh
 Add pack
 Pack {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.
 Packs
 Enter numbers in every field
+Exit AX-HUD?
+The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.
+Exit
 Battery profile: {0}\n{1}
 Battery {0}
-name                  cells    full    low    critical
+Name                  Cells    Full    Low    Critical
 Add profile
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.
 Battery profiles
@@ -212,7 +215,7 @@ Imported {0} rules
 Sound rules
 Settings
 Mute speech
-Speech is OFF - tap to turn on
+Speech is off - tap to turn on
 Battery: {0}  (tap to switch)
 Aircraft: {0}  (tap to choose)
 At most {0} packs.
@@ -221,20 +224,20 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).
 Two packs have the same name: {0}.
 {0} ({1}, {2} mAh)
 {0} ({1})
-test sliders
-test sliders (no radio)
+Test sliders
+Test sliders (no radio)
 RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)
 SDK worker thread failed to start
 The SDK could not open the radio's serial link (see README: serial lock)
 SDK start failed (code {0})
-line {0}: missing '->'  ({1})
-line {0}: nothing before '->'
-line {0}: nothing to say after '->'
-line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )
-line {0}: cannot divide by zero  ({1})
-line {0}: unknown name ${1}  (use $low, $crit or $full)
-line {0}: bad value for {1} ({2})
+Line {0}: missing '->'  ({1})
+Line {0}: nothing before '->'
+Line {0}: nothing to say after '->'
+Line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )
+Line {0}: cannot divide by zero  ({1})
+Line {0}: unknown name ${1}  (use $low, $crit or $full)
+Line {0}: bad value for {1} ({2})
 Add at least one condition.
 Pick a variable (letters, digits and _ only).
 Text can use is, is not or contains.
@@ -252,18 +255,18 @@ The rule could not be read.
 {0} is not “{1}”
 {0} or {1}
 {0} and {1}
-passes when {0}: ✓ “{1}”
+Passes when {0}: ✓ “{1}”
 CRITICAL
 INFO
 WARNING
 , hides after {0} s
-when {0}: show “{1}”
-when {0}: say “{1}”
+When {0}: show “{1}”
+When {0}: say “{1}”
 , then “{0}” when it turns false
 , every {0} s while true
  (urgent)
 Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed
-and / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.
+And / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.
 Check
 Sample
 OK: {0} rules
@@ -307,13 +310,14 @@ Enter numbers (0 or more)
 < below
 = equals
 ≠ not equal
-contains (text)
-variable (type, or tap List)
-  divide by
-now: {0}{1}
-Level: INFO (blue)  - tap to change
-Level: CRITICAL (red, blinking)  - tap to change
-Level: WARNING (amber)  - tap to change
+Contains (text)
+Variable (type, or tap List)
+Value
+  Divide by
+Now: {0}{1}
+Level: Info (blue)  - tap to change
+Level: Critical (red, blinking)  - tap to change
+Level: Warning (amber)  - tap to change
 The timeout needs a number of seconds, 2 or more.
 Repeat needs a number of seconds, 2 or more.
 No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)
@@ -321,20 +325,20 @@ Move the switch now...
 No switch moved.
 Detected {0} at {1}
 When
-all of these are true
-any of these is true
+All of these are true
+Any of these is true
 + condition
 Detect switch
 Check label (shown with a tick or a cross)
 Show in the status bar
 Say
-label, for example GPS {sats} satellites
-text, for example BATTERY {vbat/6:2} V
-words to speak
+Label, for example GPS {sats} satellites
+Text, for example BATTERY {vbat/6:2} V
+Words to speak
 Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}
 Urgent (interrupts what is being said)
 Also say something when it turns false
-words when it turns false
+Words when it turns false
 Hide after (seconds), even if the condition stays true
 Repeat while it stays true, every (seconds)
 The rule as text
@@ -393,7 +397,7 @@ The arm switch starts and stops a flight: the statistics start over when you arm
 Arm detection: channel, thresholds, cells in the pack...
 Flight statistics: max speed, max height, peak current
 Rows and current limit...
-Radar map: home in the centre, your track and range rings
+Radar map: home in the center, your track and range rings
 Live charts: rolling graphs of telemetry values
 Charts: choose the values and the time window...
 Pre-flight checklist (shown while disarmed)
@@ -404,13 +408,13 @@ Layout of the cards
 Move and resize the cards with your finger...
 Put every card back in its corner at normal size
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.
-Drag a card to move it and drag its round handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.
+Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.
 Video and speech
 Video
 Camera: {0}  (tap to choose the HDMI input)
 Rotate video: now {0} degrees  (tap to turn 90)
 Scale: {0}  (tap to change)
-fill (stretch)
+Fill (stretch)
 Speech
 Speech on
 Speak a test sentence
@@ -442,11 +446,10 @@ The radio link starts on a background thread and keeps running while the app's o
 Close Settings to see the panels over the video.
 About
 About AX-HUD, licenses and thanks...
-AX12 video monitor, HUD and announcer
 AX-HUD  version {0}  (build {1})
 Use {variable} for a live value, for example {vbat/6:2}.
 A divisor in { } cannot be 0.
-Cancelled
+Canceled
 Only https:// addresses are allowed
 Not a valid address
 The server answered {0}
@@ -464,7 +467,6 @@ The update information could not be read
 No connection
 No build has been published on this channel yet.
 Could not check: {0}\n\nIs the phone hotspot on?
-no connection
 You have the latest build: version {0} (build {1})
 AX-HUD update available: {0} (build {1}). Open Settings, then Updates.
 Update available
@@ -477,46 +479,46 @@ Download failed
 Allow installing
 Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.
 Could not start the installation
-unknown error
+Unknown error
 Updated. The app will reopen.
-Installation cancelled
+Installation canceled
 \n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.
 \n\nThis build is older than the installed one.
 Installation stopped
 Android did not say why (code {0}).
-battery volts (flight controller); divide by the cell count for volts per cell
-volts per cell: battery volts divided by the cells of the active battery profile
-battery current, amps
-capacity used, mAh
-battery remaining, percent
-uplink link quality, percent (0 = no link)
-uplink signal strength, antenna 1, dBm (negative)
-uplink signal strength, antenna 2, dBm (negative)
-uplink signal to noise, dB
-downlink link quality, percent
-downlink signal strength, dBm
-downlink signal to noise, dB
+Battery volts (flight controller); divide by the cell count for volts per cell
+Volts per cell: battery volts divided by the cells of the active battery profile
+Battery current, amps
+Capacity used, mAh
+Battery remaining, percent
+Uplink link quality, percent (0 = no link)
+Uplink signal strength, antenna 1, dBm (negative)
+Uplink signal strength, antenna 2, dBm (negative)
+Uplink signal to noise, dB
+Downlink link quality, percent
+Downlink signal strength, dBm
+Downlink signal to noise, dB
 ExpressLRS packet rate mode number
-transmitter power, mW
-link quality from the radio, percent
-signal strength from the radio
-radio's lost-frame counter
-radio battery volts
-receiver volts
-telemetry present: 1 yes, 0 lost
+Transmitter power, mW
+Link quality from the radio, percent
+Signal strength from the radio
+Radio's lost-frame counter
+Radio battery volts
+Receiver volts
+Telemetry present: 1 yes, 0 lost
 GPS satellites
-ground speed, km/h
-GPS altitude, metres
+Ground speed, km/h
+GPS altitude, meters
 GPS heading, degrees
-height above the arming point, metres (while armed)
-distance from home, metres (while armed)
-latitude
-longitude
-pitch angle, degrees
-roll angle, degrees
-yaw / heading, degrees
-climb rate, m/s
-flight mode name from the flight controller (text)
+Height above the arming point, meters (while armed)
+Distance from home, meters (while armed)
+Latitude
+Longitude
+Pitch angle, degrees
+Roll angle, degrees
+Yaw / heading, degrees
+Climb rate, m/s
+Flight mode name from the flight controller (text)
 Switches and sticks (channels, 1000 to 2000)
 Battery (from the flight controller)
 Link quality and signal
@@ -526,9 +528,9 @@ Flight mode (text)
 Other values from the radio
 Advanced: the radio's own channel numbers
 Advanced: the radio's logic values
-channel {0}, 1000 to 2000 microseconds
-the radio's own channel number
-the radio's logic value
+Channel {0}, 1000 to 2000 microseconds
+The radio's own channel number
+The radio's logic value
 Link quality %
 Downlink quality %
 Cell volts
@@ -550,11 +552,10 @@ Signal dBm
 Signal to noise dB
 Power mW
 Radio volts
-Receiver volts
 Lost frames
 Packet rate mode
 Telemetry
 Channel {0}
-now: {0}
-no value now
+Now: {0}
+No value now
 Pick a channel or value

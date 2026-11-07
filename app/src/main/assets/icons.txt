@@ -8,7 +8,7 @@
 #   arc   left top right bottom startAngle sweepAngle   (outline of the oval; 0 = 3 o'clock, clockwise)
 
 icon rules
-rect 5 3 19 21 2 stroke
+rect 5 3 19 21 0 stroke
 line 8.5 8 15.5 8
 line 8.5 12 15.5 12
 line 8.5 16 12.5 16
@@ -24,9 +24,9 @@ line 16 9.5 21.5 14.5
 line 21.5 9.5 16 14.5
 
 icon battery
-rect 3 7 19 17 2 stroke
-rect 19 10 21.5 14 0.6 fill
-rect 5.5 9.5 11.5 14.5 0.6 fill
+rect 3 7 19 17 0 stroke
+rect 19 10 21.5 14 0 fill
+rect 5.5 9.5 11.5 14.5 0 fill
 
 icon aircraft
 circle 12 12 2.4 fill
@@ -59,11 +59,11 @@ line 5 7.5 19 7.5
 line 5 16.5 19 16.5
 
 icon overlays
-rect 3 4 15 14 2 stroke
-rect 9 10 21 20 2 stroke
+rect 3 4 15 14 0 stroke
+rect 9 10 21 20 0 stroke
 
 icon video
-rect 3 6 16 18 2 stroke
+rect 3 6 16 18 0 stroke
 poly 16 10.5 21 7.5 21 16.5 16 13.5 fill
 
 icon update
@@ -84,3 +84,8 @@ polyline 9 5 16 12 9 19
 
 icon chevron_down
 polyline 5 9 12 16 19 9
+
+icon exit
+polyline 10 4 4 4 4 20 10 20
+line 9 12 20 12
+polyline 15 7 20 12 15 17

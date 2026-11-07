@@ -24,11 +24,11 @@ interface RadioLink {
 /** Sliders in the test panel stand in for the radio. Values are microseconds. */
 class FakeRadioLink : RadioLink {
     val values = DoubleArray(16) { 1500.0 }
-    override val name = tr("test sliders")
+    override val name = tr("Test sliders")
     override fun start(): String? = null
     override fun stop() {}
     override fun poll(): RadioSample? =
-        RadioSample(values.copyOf(), DoubleArray(16), HashMap(), HashMap(), tr("test sliders (no radio)"))
+        RadioSample(values.copyOf(), DoubleArray(16), HashMap(), HashMap(), tr("Test sliders (no radio)"))
 }
 
 /**

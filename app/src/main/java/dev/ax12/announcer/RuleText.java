@@ -244,7 +244,7 @@ public final class RuleText {
 
     /** One readable sentence for the list of pre-flight checks. */
     public static String describeCheck(Spec s) {
-        return I18n.t("passes when {0}: \u2713 \u201C{1}\u201D", conditionsText(s), s.onTrue);
+        return I18n.t("Passes when {0}: \u2713 \u201C{1}\u201D", conditionsText(s), s.onTrue);
     }
 
     /** One readable sentence for the list of warnings. */
@@ -252,12 +252,12 @@ public final class RuleText {
         String level = s.urgentTrue ? I18n.t("CRITICAL") : s.onTrue.startsWith("*") ? I18n.t("INFO") : I18n.t("WARNING");
         String text = s.onTrue.startsWith("*") ? s.onTrue.substring(1) : s.onTrue;
         String timeout = s.repeatSec > 0 ? I18n.t(", hides after {0} s", s.repeatSec) : "";
-        return "[" + level + "] " + I18n.t("when {0}: show \u201C{1}\u201D", conditionsText(s), text) + timeout;
+        return "[" + level + "] " + I18n.t("When {0}: show \u201C{1}\u201D", conditionsText(s), text) + timeout;
     }
 
     /** One readable sentence for the list. */
     public static String describe(Spec s) {
-        StringBuilder sb = new StringBuilder(I18n.t("when {0}: say \u201C{1}\u201D", conditionsText(s), s.onTrue));
+        StringBuilder sb = new StringBuilder(I18n.t("When {0}: say \u201C{1}\u201D", conditionsText(s), s.onTrue));
         if (!s.onFalse.trim().isEmpty()) sb.append(I18n.t(", then \u201C{0}\u201D when it turns false", s.onFalse));
         if (s.repeatSec > 0) sb.append(I18n.t(", every {0} s while true", s.repeatSec));
         if (s.urgentTrue) sb.append(I18n.t(" (urgent)"));

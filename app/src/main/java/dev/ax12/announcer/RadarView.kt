@@ -63,8 +63,8 @@ class RadarView(context: Context) : View(context) {
         val cx = sizePx / 2f
         val cy = sizePx / 2f
         val rpx = sizePx / 2f - 2 * density
-        canvas.drawCircle(cx, cy, rpx, bg)
-        canvas.drawCircle(cx, cy, rpx, edge)
+        canvas.drawRect(0f, 0f, sizePx.toFloat(), sizePx.toFloat(), bg)           // a square card like the others; the range rings stay round
+        canvas.drawRect(1f, 1f, sizePx - 1f, sizePx - 1f, edge)
         val s = stats
         val radiusM = s?.radarRadiusM() ?: 150.0
         for (k in 1..3) canvas.drawCircle(cx, cy, rpx * k / 3f, ring)

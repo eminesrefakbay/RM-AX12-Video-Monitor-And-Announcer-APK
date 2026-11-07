@@ -102,7 +102,7 @@ class Updater(private val activity: Activity) {
         if (info == null) {
             if (manual) {
                 val friendly = if (error != null && error.contains("404")) tr("No build has been published on this channel yet.")
-                else tr("Could not check: {0}\n\nIs the phone hotspot on?", (error ?: tr("no connection")))
+                else tr("Could not check: {0}\n\nIs the phone hotspot on?", (error ?: tr("No connection")))
                 message(tr("Updates"), friendly)
             }
             return
@@ -219,7 +219,7 @@ class Updater(private val activity: Activity) {
                 session.close()
             }
         } catch (e: Exception) {
-            message(tr("Could not start the installation"), e.message ?: tr("unknown error"))
+            message(tr("Could not start the installation"), e.message ?: tr("Unknown error"))
         }
     }
 
@@ -235,7 +235,7 @@ class Updater(private val activity: Activity) {
                         if (confirm != null) activity.startActivity(confirm)
                     }
                     PackageInstaller.STATUS_SUCCESS -> toast(tr("Updated. The app will reopen."))
-                    PackageInstaller.STATUS_FAILURE_ABORTED -> toast(tr("Installation cancelled"))
+                    PackageInstaller.STATUS_FAILURE_ABORTED -> toast(tr("Installation canceled"))
                     else -> {
                         val help = if (status == PackageInstaller.STATUS_FAILURE_CONFLICT || text.contains("UPDATE_INCOMPATIBLE"))
                             tr("\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.")

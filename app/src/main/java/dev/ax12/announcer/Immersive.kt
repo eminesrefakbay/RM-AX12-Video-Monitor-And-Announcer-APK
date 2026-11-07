@@ -43,5 +43,11 @@ object Immersive {
         // the dialog is up, and let the window shrink to make room for the keyboard.
         w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        // The theme writes dialog buttons in ALL CAPS ("CLOSE", "CLEAR"), unlike every other button of the app.
+        if (dialog is android.app.AlertDialog) {
+            for (which in intArrayOf(android.app.AlertDialog.BUTTON_POSITIVE, android.app.AlertDialog.BUTTON_NEGATIVE, android.app.AlertDialog.BUTTON_NEUTRAL)) {
+                dialog.getButton(which)?.isAllCaps = false
+            }
+        }
     }
 }

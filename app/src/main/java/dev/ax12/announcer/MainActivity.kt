@@ -220,7 +220,8 @@ class MainActivity : Activity() {
             { batteryName },
             { switchBattery() },
             { aircraftName },
-            { chooseAircraft() }
+            { chooseAircraft() },
+            { exitApp() }
         )
         frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
 
@@ -498,9 +499,9 @@ class MainActivity : Activity() {
         sb.append('\n')
         if (link is FakeRadioLink) {
             sb.append(
-                if (testVisible) tr("TEST CHANNELS ARE ON - the radio is not being read\n")
-                else if (sdkLink == null) tr("NO SDK IN THIS BUILD - the radio is not being read\n")
-                else tr("SDK IS NOT RUNNING - the radio is not being read\n")
+                if (testVisible) tr("Test channels are on - the radio is not being read\n")
+                else if (sdkLink == null) tr("No SDK in this build - the radio is not being read\n")
+                else tr("The SDK is not running - the radio is not being read\n")
             )
         }
         if (sdkError != null) sb.append("SDK: ").append(sdkError).append('\n')
@@ -558,7 +559,7 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ settings and rules files
 
     private val settingsHost = object : SettingsHost {
-        override fun cameraId(): String = camera.cameraId ?: tr("auto")
+        override fun cameraId(): String = camera.cameraId ?: tr("Auto")
         override fun chooseCamera() = this@MainActivity.chooseCamera()
         override fun rotation(): Int = camera.rotation
         override fun rotateVideo() = camera.rotateNext()
@@ -691,7 +692,7 @@ class MainActivity : Activity() {
             Prefs.setBool(this@MainActivity, "warnBarOn", on)
             applyOverlayPrefs()
         }
-        override fun warningBarPositionLabel(): String = if (Prefs.int(this@MainActivity, "warnBarPos", 0) == 0) tr("top") else tr("bottom")
+        override fun warningBarPositionLabel(): String = if (Prefs.int(this@MainActivity, "warnBarPos", 0) == 0) tr("Top") else tr("Bottom")
         override fun cycleWarningBarPosition() = cyclePref("warnBarPos", 0, 2)
         override fun editWarningRules() {
             settingsPanel.hide()
@@ -704,8 +705,8 @@ class MainActivity : Activity() {
         }
     }
 
-    private val sizeNames = arrayOf(tr("small"), tr("medium"), tr("large"))
-    private val positionNames = arrayOf(tr("bottom center"), tr("bottom left"), tr("bottom right"), tr("top left"), tr("top right"))
+    private val sizeNames = arrayOf(tr("Small"), tr("Medium"), tr("Large"))
+    private val positionNames = arrayOf(tr("Bottom center"), tr("Bottom left"), tr("Bottom right"), tr("Top left"), tr("Top right"))
     private val opacityNames = arrayOf("35%", "65%", "95%")
 
     private fun cyclePref(key: String, def: Int, count: Int) {
@@ -715,7 +716,7 @@ class MainActivity : Activity() {
 
     // ------------------------------------------------------------------ flight overlays
 
-    private val tilePositionNames = arrayOf(tr("top left"), tr("top right"), tr("bottom left"), tr("bottom right"), tr("center"))
+    private val tilePositionNames = arrayOf(tr("Top left"), tr("Top right"), tr("Bottom left"), tr("Bottom right"), tr("Center"))
     private val tileOpacityNames = arrayOf("50%", "75%", "100%")
 
     private fun defaultTilePosition(tile: String): Int = when (tile) {
@@ -918,7 +919,7 @@ class MainActivity : Activity() {
         limit.setText(Prefs.int(this, "currentLimit", 50).toString())
         body.addView(limit)
         val hint = TextView(this)
-        hint.text = tr("Height comes from the GPS altitude relative to where you armed, so expect a few metres of error. The bar turns red when the current is above the limit line.")
+        hint.text = tr("Height comes from the GPS altitude relative to where you armed, so expect a few meters of error. The bar turns red when the current is above the limit line.")
         hint.textSize = 12f
         hint.setPadding(0, dp(8), 0, 0)
         body.addView(hint)
@@ -1011,7 +1012,7 @@ class MainActivity : Activity() {
                 head.setPadding(0, dp(12), 0, dp(2))
                 body.addView(head)
                 val cols = TextView(this)
-                cols.text = tr("on      channel      name on the overlay                 reverse")
+                cols.text = tr("On      Channel      Name on the overlay                 Reverse")
                 cols.textSize = 11f
                 body.addView(cols)
             }
@@ -1041,7 +1042,7 @@ class MainActivity : Activity() {
             nameFields.add(name)
         }
         val hint = TextView(this)
-        hint.text = tr("A bar fills with the channel value. Grey-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.")
+        hint.text = tr("A bar fills with the channel value. Gray-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.")
         hint.textSize = 12f
         hint.setPadding(0, dp(10), 0, 0)
         body.addView(hint)
@@ -1184,7 +1185,7 @@ class MainActivity : Activity() {
         val sdk = if (!AxSdkJni.loaded) tr("Built without the RadioMaster SDK files (test channels only).")
         else if (sdkRunning) tr("RadioMaster SDK: running.")
         else tr("RadioMaster SDK: not running{0}.", (sdkError?.let { " ($it)" } ?: ""))
-        return tr("AX12 Video Monitor and Announcer, version {0}\n{1}", version, sdk) + "\n" + tr("Thanks to RadioMaster for publishing the AX SDK.")
+        return tr("AX-HUD, version {0}\n{1}", version, sdk) + "\n" + tr("Thanks to RadioMaster for publishing the AX SDK.")
     }
 
     private val requestExport = 41
@@ -1604,7 +1605,7 @@ class MainActivity : Activity() {
             line.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             if (a.id == store.activeId()) {
                 val inUse = TextView(this)
-                inUse.text = tr("in use")
+                inUse.text = tr("In use")
                 inUse.textSize = 12f
                 inUse.setPadding(dp(6), 0, dp(6), 0)
                 line.addView(inUse)
@@ -1678,7 +1679,7 @@ class MainActivity : Activity() {
         body.orientation = LinearLayout.VERTICAL
         body.setPadding(dp(16), dp(8), dp(16), dp(8))
         val head = TextView(this)
-        head.text = tr("name                    battery profile              mAh")
+        head.text = tr("Name                    Battery profile              mAh")
         head.textSize = 11f
         body.addView(head)
         class Row(val box: LinearLayout, val name: EditText, val profile: Button, val mah: EditText)
@@ -1761,6 +1762,20 @@ class MainActivity : Activity() {
         }
     }
 
+    // ------------------------------------------------------------------ exit
+
+    /** Closes the app for good: the radio link stops, the radio's serial port is released, and the app leaves the recent apps. */
+    private fun exitApp() {
+        Immersive.show(
+            AlertDialog.Builder(this)
+                .setTitle(tr("Exit AX-HUD?"))
+                .setMessage(tr("The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again."))
+                .setPositiveButton(tr("Exit")) { _, _ -> finishAndRemoveTask() }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
     // ------------------------------------------------------------------ battery profiles
 
     private fun switchBattery() {
@@ -1783,7 +1798,7 @@ class MainActivity : Activity() {
         body.orientation = LinearLayout.VERTICAL
         body.setPadding(dp(16), dp(8), dp(16), dp(8))
         val head = TextView(this)
-        head.text = tr("name                  cells    full    low    critical")
+        head.text = tr("Name                  Cells    Full    Low    Critical")
         head.textSize = 11f
         body.addView(head)
         class Row(val box: LinearLayout, val name: EditText, val cells: EditText, val full: EditText, val low: EditText, val crit: EditText)
