@@ -42,7 +42,12 @@ object Prefs {
     fun int(c: Context, key: String, def: Int): Int = p(c).getInt(key, def)
     fun setInt(c: Context, key: String, v: Int) { p(c).edit().putInt(key, v).apply() }
 
-    fun updateChannel(c: Context): String = if (p(c).getString("updateChannel", "nightly") == "stable") "stable" else "nightly"
+    /** The newest version of the welcome guide that this person has seen (0 = never). */
+    fun guideSeen(c: Context): Int = p(c).getInt("guideSeen", 0)
+    fun setGuideSeen(c: Context, v: Int) { p(c).edit().putInt("guideSeen", v).apply() }
+
+    /** Stable (the tested releases) unless the person chose Nightly on purpose. */
+    fun updateChannel(c: Context): String = if (p(c).getString("updateChannel", "stable") == "nightly") "nightly" else "stable"
     fun setUpdateChannel(c: Context, ch: String) { p(c).edit().putString("updateChannel", ch).apply() }
 
     /** "auto" (follow Android), or en / tr / de / zh */

@@ -64,6 +64,10 @@ class MainActivity : Activity() {
     private var aircraftName = ""
     private var splash: SplashOverlay? = null
     private val splashHide = Runnable { splash?.dismiss() }
+    /** The first time (and after a guide update), once the splash and the permission dialog are out of the way. */
+    private val guideCheck = Runnable {
+        if (!isFinishing && FirstRun.shouldShow(Prefs.guideSeen(this)) && !anyOverlayOpen() && splash?.isShowing != true) welcomeGuide.show()
+    }
     private lateinit var warnPanel: RulesPanel
     private lateinit var checkPanel: RulesPanel
     private lateinit var statsView: FlightStatsView
@@ -72,6 +76,7 @@ class MainActivity : Activity() {
     private lateinit var chartView: ChartView
     private lateinit var connectBanner: ConnectingBanner
     private lateinit var aboutPanel: AboutPanel
+    private lateinit var welcomeGuide: WelcomeGuide
     private val fader = CardFader()             // cards fade in and out
     private val chartModel = ChartModel()
     private var chartOn = false
@@ -217,11 +222,13 @@ class MainActivity : Activity() {
         )
         settingsPanel = SettingsPanel(this, settingsHost)
         aboutPanel = AboutPanel(this) { aboutText() }
+        welcomeGuide = WelcomeGuide(this) { }
         frame.addView(rulesPanel.root, full)
         frame.addView(warnPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(checkPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(settingsPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(aboutPanel.root, FrameLayout.LayoutParams(full))
+        frame.addView(welcomeGuide.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
             this,
@@ -256,6 +263,7 @@ class MainActivity : Activity() {
 
     override fun onBackPressed() {
         if (splash?.isShowing == true) splash?.dismiss()
+        else if (welcomeGuide.isShowing) welcomeGuide.back()
         else if (editingLayout) endLayoutEdit()
         else if (aboutPanel.isShowing) aboutPanel.back()
         else if (mainMenu.isShowing) mainMenu.hide()
@@ -274,7 +282,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || editingLayout
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -300,10 +308,13 @@ class MainActivity : Activity() {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
         }
         ui.post(tick)
+        ui.removeCallbacks(guideCheck)
+        ui.postDelayed(guideCheck, SplashOverlay.SHOW_MS + 1200L)
     }
 
     override fun onPause() {
         ui.removeCallbacks(tick)
+        ui.removeCallbacks(guideCheck)
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
         super.onPause()
@@ -600,7 +611,12 @@ class MainActivity : Activity() {
         }
         override fun cycleLanguage() {
             val i = Lang.choices.indexOf(Prefs.language(this@MainActivity)).coerceAtLeast(0)
-            Prefs.setLanguage(this@MainActivity, Lang.choices[(i + 1) % Lang.choices.size])
+            var next = Lang.choices[(i + 1) % Lang.choices.size]
+            if (next == "zh" && !Lang.hasChineseFont()) {       // skip a language that would show as empty boxes, and say why
+                Toast.makeText(this@MainActivity, tr("This device has no Chinese font, so the Chinese screen language is not available."), Toast.LENGTH_LONG).show()
+                next = Lang.choices[(i + 2) % Lang.choices.size]
+            }
+            Prefs.setLanguage(this@MainActivity, next)
             Lang.apply(this@MainActivity)
             this@MainActivity.recreate()          // every screen is built again in the new language
         }
@@ -664,6 +680,7 @@ class MainActivity : Activity() {
         override fun setTestChannelsOn(on: Boolean) = setTestVisible(on)
         override fun about(): String = this@MainActivity.aboutText()
         override fun openAbout() = aboutPanel.show()
+        override fun openGuide() = welcomeGuide.show()
 
         override fun tileOn(tile: String): Boolean = Prefs.bool(this@MainActivity, tile + "On", tile != "chart")
         override fun setTileOn(tile: String, on: Boolean) {

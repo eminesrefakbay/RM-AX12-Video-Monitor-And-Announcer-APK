@@ -57,6 +57,16 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	Die Qt-Bibliotheken, die mit dem RadioMaster-SDK kommen, so wie sie mitgeliefert werden. Quellcode: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Die C++-Laufzeit des Android-NDK, die das SDK braucht.
 The standard library of the Kotlin language, which the app is written in.	Die Standardbibliothek der Sprache Kotlin, in der die App geschrieben ist.
+Welcome to AX-HUD	Willkommen bei AX-HUD
+AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD zeigt das Video vom HDMI-Eingang deines AX12 im Vollbild, legt ein HUD darüber und spricht Ansagen und Warnungen. Es liest nur von der Fernsteuerung und schreibt nie etwas hinein. Diese Anleitung dauert etwa eine Minute.
+Allow the camera	Kamera erlauben
+The HDMI input reaches Android as a camera, so AX-HUD needs the camera permission. If you said no by mistake, allow it in the Android settings, under Apps, AX-HUD, Permissions. Without it you see the gray No video screen.	Der HDMI-Eingang erscheint in Android als Kamera, deshalb braucht AX-HUD die Kameraberechtigung. Hast du versehentlich Nein gesagt, erlaube sie in den Android-Einstellungen unter Apps, AX-HUD, Berechtigungen. Ohne sie siehst du den grauen Bildschirm Kein Video.
+The first data takes about 12 seconds	Die ersten Daten brauchen etwa 12 Sekunden
+After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Nach dem Öffnen der App erscheinen die Daten der Fernsteuerung (Knüppel, Verbindungsqualität, Telemetrie) nach etwa 12 Sekunden. Diese Wartezeit liegt im RadioMaster-SDK und ist kein Fehler. Ein Banner zählt die Sekunden. Das Video startet sofort.
+Where everything is	Wo was zu finden ist
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.	Tippe oben rechts auf MENÜ für sechs Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Sprachen und die Updates.
+An aid, not a safety system	Eine Hilfe, kein Sicherheitssystem
+AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD hilft dir zu sehen und zu hören, was dein Fluggerät gerade tut. Verlasse dich nicht allein darauf. Fliege immer nach den örtlichen Regeln.
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den quadratischen Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
 Reset the layout	Layout zurücksetzen
 Done	Fertig
@@ -77,6 +87,7 @@ Choose the HDMI camera	HDMI-Kamera wählen
 Speech is off	Sprachausgabe ist aus
 Sound test	Klangtest
 Automatic ({0})	Automatisch ({0})
+This device has no Chinese font, so the Chinese screen language is not available.	Dieses Gerät hat keine chinesische Schriftart, deshalb ist die chinesische Bildschirmsprache nicht verfügbar.
 Same as the app ({0})	Wie die App ({0})
 The voice now speaks {0}.	Die Stimme spricht jetzt {0}.
 Installed: version {0} (build {1})   Channel: {2}	Installiert: Version {0} (Build {1})   Kanal: {2}
@@ -445,6 +456,7 @@ Show the start-up timings of the last launches...	Startzeiten der letzten Starts
 The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	Die Verbindung zur Fernsteuerung startet in einem Hintergrund-Thread und läuft weiter, während die eigenen Bildschirme der App, Dateiauswahlen und Neuaufbauten kommen und gehen; sie endet, wenn du die App verlässt. Das SDK selbst braucht etwa 12 Sekunden, um den seriellen Port der Fernsteuerung zu öffnen; die Zeiten zeigen, wohin die Zeit geht.
 Close Settings to see the panels over the video.	Schließe die Einstellungen, um die Panels über dem Video zu sehen.
 About	Info
+Show the welcome guide...	Willkommensanleitung anzeigen...
 About AX-HUD, licenses and thanks...	Über AX-HUD, Lizenzen und Dank...
 AX-HUD  version {0}  (build {1})	AX-HUD  Version {0}  (Build {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Verwende {variable} für einen Live-Wert, zum Beispiel {vbat/6:2}.
@@ -559,3 +571,6 @@ Channel {0}	Kanal {0}
 Now: {0}	Jetzt: {0}
 No value now	Derzeit kein Wert
 Pick a channel or value	Kanal oder Wert wählen
+Step {0} of {1}	Schritt {0} von {1}
+Skip	Überspringen
+Next	Weiter

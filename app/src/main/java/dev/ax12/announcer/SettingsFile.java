@@ -61,7 +61,7 @@ public final class SettingsFile {
     private static void d(String k, Object v) { DEFAULTS.put(k, v); }
 
     static {
-        d("language", "auto"); d("speechLanguage", "same"); d("updateChannel", "nightly");
+        d("language", "auto"); d("speechLanguage", "same"); d("updateChannel", "stable");
         d("rotation", 0); d("fill", false);
         d("menuAlways", false); d("splashOn", true); d("updateAuto", true);
         d("sticksOn", false); d("sticksSize", 1); d("sticksPos", 0); d("sticksOpacity", 1);

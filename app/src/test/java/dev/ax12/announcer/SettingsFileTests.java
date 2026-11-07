@@ -114,6 +114,7 @@ public class SettingsFileTests {
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) for (String suffix : new String[]{"X", "Y", "Scale"}) used.add(tile + suffix);
         Set<String> notExported = new HashSet<String>();
         notExported.add("rulesBackup"); notExported.add("settingsBackup");
+        notExported.add("guideSeen");               // which welcome guide this device has shown: device state, not a setting to back up
         StringBuilder missing = new StringBuilder();
         for (String k : used) if (!SettingsFile.isKnown(k) && !notExported.contains(k)) missing.append(k).append(' ');
         check(used.size() > 40, "found the settings in the source: " + used.size());

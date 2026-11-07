@@ -57,6 +57,16 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.
 The standard library of the Kotlin language, which the app is written in.
+Welcome to AX-HUD
+AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.
+Allow the camera
+The HDMI input reaches Android as a camera, so AX-HUD needs the camera permission. If you said no by mistake, allow it in the Android settings, under Apps, AX-HUD, Permissions. Without it you see the gray No video screen.
+The first data takes about 12 seconds
+After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.
+Where everything is
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.
+An aid, not a safety system
+AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.
 Reset the layout
 Done
@@ -77,6 +87,7 @@ Choose the HDMI camera
 Speech is off
 Sound test
 Automatic ({0})
+This device has no Chinese font, so the Chinese screen language is not available.
 Same as the app ({0})
 The voice now speaks {0}.
 Installed: version {0} (build {1})   Channel: {2}
@@ -445,6 +456,7 @@ Show the start-up timings of the last launches...
 The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.
 Close Settings to see the panels over the video.
 About
+Show the welcome guide...
 About AX-HUD, licenses and thanks...
 AX-HUD  version {0}  (build {1})
 Use {variable} for a live value, for example {vbat/6:2}.
@@ -559,3 +571,6 @@ Channel {0}
 Now: {0}
 No value now
 Pick a channel or value
+Step {0} of {1}
+Skip
+Next

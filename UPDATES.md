@@ -43,6 +43,8 @@ under *Settings > Updates > Check at start-up*.
 
 ## The two channels
 
+**Stable is the default channel** (since version 1.0.0): a new installation follows the tested releases. Choose Nightly in Settings > Updates if you want every build.
+
 | | **Nightly** | **Stable** |
 | --- | --- | --- |
 | What it is | the newest build: every push to `main` replaces it | a release you made on purpose |

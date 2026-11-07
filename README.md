@@ -2,12 +2,12 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v0.15.1)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.0.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
 * opens straight into **full-screen video** from the HDMI input;
-* shows a grey **No video** screen (a camera icon, "No video" and one line of advice, with a small detail line along the bottom) when no frames arrive, and reconnects by itself;
+* shows a gray **No video** screen (a camera icon, "No video" and one line of advice, with a small detail line along the bottom) when no frames arrive, and reconnects by itself;
 * **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
 * only **reads** from the radio. It never writes a setting.
@@ -34,6 +34,19 @@ before it says READY.*
 
 *On the ground: the same screen before take-off, waiting for a GPS fix.*
 
+## Install and first start
+
+1. Download **`ax-hud.apk`** from the [latest release](../../releases/latest). (`ax-hud-plain.apk` is the same app without the serial-lock
+   patch; it is for tests only. `SHA256SUMS` lets you check the download.)
+2. Install it on the AX12 (allow installs from unknown sources when Android asks) and open it.
+3. Allow the **camera** permission: the HDMI input reaches Android as a camera.
+4. A short **welcome guide** explains the first steps. It can be shown again under *Settings > About > Show the welcome guide*.
+5. The video starts at once. The radio data (sticks, link quality, telemetry) appears after about **12 seconds**; that wait is inside the
+   RadioMaster SDK (see "Start-up time of the radio link"), and a banner counts the seconds.
+6. Choose your aircraft and battery pack first (MENU > Aircraft, Battery): their limits drive the warnings.
+
+The app looks for updates on the **Stable** channel by default (the tested releases). The Nightly channel is for people who want every build.
+
 ## Status
 
 Built and tested by its author on one setup: **RadioMaster AX12 (Android 9, October 2026 system update), INAV 9.1, ExpressLRS**.
@@ -43,15 +56,17 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 888 automated checks pass |
-| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 39 checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,068 automated checks pass |
+| Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
 ## Languages
 
 English, Turkish, German and Simplified Chinese: *Settings > Language* (Automatic follows Android). The voice can speak a
 different language than the screen. German and Chinese have not been checked by native speakers yet; see
-**[TRANSLATING.md](TRANSLATING.md)** to improve a text.
+**[TRANSLATING.md](TRANSLATING.md)** to improve a text. A test estimates whether the translated texts fit their places (menu tiles,
+the welcome guide, buttons); it is a safety net, not a measurement on the radio. If a device has no Chinese font, the Chinese screen
+language is skipped, because every text would show as empty boxes; if there is no voice for a speech language, Settings says so.
 
 ## Flight overlays: statistics, radar and pre-flight checklist
 
@@ -68,7 +83,7 @@ centre) and opacity.
 * **Radar:** home in the center, north up, three range rings, the track of the flight and the aircraft with its
   heading. It shows only positions relative to home, no coordinates. The scale grows as you fly farther and does not
   shrink during the flight.
-* **Pre-flight checklist:** a card shown while disarmed with one row per check: green tick, red cross, or a grey dash
+* **Pre-flight checklist:** a card shown while disarmed with one row per check: green tick, red cross, or a gray dash
   when there is no value yet; READY or NOT READY at the bottom. The checks are **rules**, edited like the warnings
   (Settings > Overlays on the video > Flight overlays > *Edit the checks*): condition, thresholds, `and`/`or`, and a label that can hold live
   values such as `{sats}`. Defaults: battery connected, battery full (4.15 V per cell or more), 10 or more satellites,
@@ -84,7 +99,7 @@ centre) and opacity.
 * **Channel bars:** up to eight bars beside the sticks, four on each side (default channels 5 to 8 on the left,
   9 to 12 on the right). Each bar has an on/off switch, a channel number and a **name written along the bar**
   (defaults ARM, MODE, RTH, PREARM, AIRMODE, HOLD, OSD, BEEP, matching the AKB7's INAV modes; names up to 12
-  characters). A bar fills with the channel value and its colour shows a switch position: grey-blue = low,
+  characters). A bar fills with the channel value and its colour shows a switch position: gray-blue = low,
   amber = middle, green = high. A **reverse** box per bar is for a switch that is reversed in the radio: the bar then
   shows the switch the way you flip it (a reversed bar flips its fill and its colour). Only the picture changes;
   sound and warning rules still use the real channel values. Edit the bars in *Channel bars...* or **press and hold the
@@ -356,7 +371,7 @@ GPS coordinates are shown on screen only. Do not commit flight logs or screensho
 
 **Settings > Updates > Check for updates now** looks on GitHub for a newer build, downloads it, checks its SHA-256, and
 hands it to Android's installer, which asks you to confirm. Two channels: **Nightly** (the newest build, published by CI on every push to `main`, versions like `0.7.1-nightly.45`) and
-**Stable** (the latest GitHub release, made with one click from the Actions tab or by pushing a tag such as `v0.7.1`). The app can
+**Stable**, the default (the latest GitHub release, made with one click from the Actions tab or by pushing a tag such as `v1.0.0`). The app can
 also look for news a few seconds after it starts (switchable). Every build is signed with **one permanent key** kept in GitHub
 secrets, which is what lets each build install over the last one without uninstalling. The one-time setup, the daily routine and
 the error messages are in **[UPDATES.md](UPDATES.md)**. The only network use is fetching two files from github.com; the app has

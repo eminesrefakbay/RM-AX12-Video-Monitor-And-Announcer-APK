@@ -57,6 +57,16 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
+Welcome to AX-HUD	欢迎使用 AX-HUD
+AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD 会把 AX12 的 HDMI 输入视频全屏显示, 在上面叠加 HUD, 并语音播报提示和警告。它只从遥控器读取数据, 绝不向其写入。本指南大约需要一分钟。
+Allow the camera	允许使用相机
+The HDMI input reaches Android as a camera, so AX-HUD needs the camera permission. If you said no by mistake, allow it in the Android settings, under Apps, AX-HUD, Permissions. Without it you see the gray No video screen.	HDMI 输入在 Android 中被识别为相机, 所以 AX-HUD 需要相机权限。如果你误点了拒绝, 请在 Android 设置的“应用”、AX-HUD、“权限”中允许。没有权限时, 你只会看到灰色的“无视频”画面。
+The first data takes about 12 seconds	首批数据约需 12 秒
+After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	打开应用后, 遥控器数据(摇杆、链路质量、遥测)大约 12 秒后才会出现。这段等待发生在 RadioMaster SDK 内部, 不是错误。横幅会显示已等待的秒数。视频会立即开始。
+Where everything is	各项功能在哪里
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.	点按右上角的“菜单”会看到六个图块: 语音规则、语音、电池、飞行器、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、语言和更新。
+An aid, not a safety system	辅助工具, 而非安全系统
+AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD 帮助你看到并听到飞行器的状态。请不要把它当作唯一的警告来源。始终遵守当地规定飞行。
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动方形手柄可调整大小。完成后点按“完成”。
 Reset the layout	重置布局
 Done	完成
@@ -77,6 +87,7 @@ Choose the HDMI camera	选择 HDMI 摄像头
 Speech is off	语音已关闭
 Sound test	语音测试
 Automatic ({0})	自动 ({0})
+This device has no Chinese font, so the Chinese screen language is not available.	此设备没有中文字体, 因此无法使用中文界面语言。
 Same as the app ({0})	与应用相同 ({0})
 The voice now speaks {0}.	语音现在使用 {0}。
 Installed: version {0} (build {1})   Channel: {2}	已安装: 版本 {0} (构建 {1})   渠道: {2}
@@ -445,6 +456,7 @@ Show the start-up timings of the last launches...	显示最近几次启动的计
 The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	遥控器连接在后台线程中启动, 并在应用自己的界面、文件选择器和重建过程中保持运行; 离开应用时才会停止。SDK 自身打开遥控器串口大约需要 12 秒; 计时记录会显示时间花在哪里。
 Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
 About	关于
+Show the welcome guide...	显示欢迎指南...
 About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...
 AX-HUD  version {0}  (build {1})	AX-HUD  版本 {0}  (构建 {1})
 Use {variable} for a live value, for example {vbat/6:2}.	使用 {variable} 显示实时数值, 例如 {vbat/6:2}。
@@ -559,3 +571,6 @@ Channel {0}	通道 {0}
 Now: {0}	当前: {0}
 No value now	当前无数值
 Pick a channel or value	选择通道或数值
+Step {0} of {1}	第 {0} 步, 共 {1} 步
+Skip	跳过
+Next	下一步

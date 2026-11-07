@@ -57,6 +57,16 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK'nın C++ çalışma zamanı; SDK'nın ihtiyaç duyduğu.
 The standard library of the Kotlin language, which the app is written in.	Uygulamanın yazıldığı Kotlin dilinin standart kütüphanesi.
+Welcome to AX-HUD	AX-HUD'a hoş geldiniz
+AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD, AX12'nizin HDMI girişindeki videoyu tam ekran gösterir, üzerine bir HUD ekler ve duyuruları ile uyarıları sesli söyler. Kumandadan yalnızca okur, ona hiçbir şey yazmaz. Bu kılavuz yaklaşık bir dakika sürer.
+Allow the camera	Kameraya izin verin
+The HDMI input reaches Android as a camera, so AX-HUD needs the camera permission. If you said no by mistake, allow it in the Android settings, under Apps, AX-HUD, Permissions. Without it you see the gray No video screen.	HDMI girişi Android'e kamera olarak göründüğü için AX-HUD'un kamera iznine ihtiyacı vardır. Yanlışlıkla hayır dediyseniz Android ayarlarında Uygulamalar, AX-HUD, İzinler altından izin verin. İzin olmadan gri Video yok ekranını görürsünüz.
+The first data takes about 12 seconds	İlk veri yaklaşık 12 saniye sürer
+After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Uygulamayı açtıktan yaklaşık 12 saniye sonra kumanda verileri (çubuklar, bağlantı kalitesi, telemetri) görünür. Bu bekleme RadioMaster SDK'sının içindedir ve bir hata değildir. Bir bant saniyeleri sayar. Video hemen başlar.
+Where everything is	Her şey nerede
+Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; altı kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, diller ve güncellemeler bulunur.
+An aid, not a safety system	Bir yardımcı araç, güvenlik sistemi değil
+AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD, hava aracınızın ne yaptığını görmenize ve duymanıza yardımcı olur. Tek uyarı kaynağınız yapmayın. Her zaman yerel kurallara uygun uçun.
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için kare tutamacı sürükleyin. Bitince Tamam'a dokunun.
 Reset the layout	Yerleşimi sıfırla
 Done	Tamam
@@ -77,6 +87,7 @@ Choose the HDMI camera	HDMI kamerayı seçin
 Speech is off	Konuşma kapalı
 Sound test	Ses testi
 Automatic ({0})	Otomatik ({0})
+This device has no Chinese font, so the Chinese screen language is not available.	Bu cihazda Çince yazı tipi yok, bu yüzden Çince ekran dili kullanılamıyor.
 Same as the app ({0})	Uygulamayla aynı ({0})
 The voice now speaks {0}.	Ses artık {0} konuşuyor.
 Installed: version {0} (build {1})   Channel: {2}	Yüklü: sürüm {0} (yapı {1})   Kanal: {2}
@@ -445,6 +456,7 @@ Show the start-up timings of the last launches...	Son başlatmaların süre kay�
 The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	Kumanda bağlantısı arka plan iş parçacığında başlar; uygulamanın kendi ekranları, dosya seçicileri ve yeniden kurulumları sırasında çalışmaya devam eder, uygulamadan çıkınca durur. SDK'nın kumandanın seri portunu açması kendi içinde yaklaşık 12 saniye sürer; süre kayıtları zamanın nereye gittiğini gösterir.
 Close Settings to see the panels over the video.	Panelleri videonun üzerinde görmek için Ayarlar'ı kapatın.
 About	Hakkında
+Show the welcome guide...	Karşılama kılavuzunu göster...
 About AX-HUD, licenses and thanks...	AX-HUD hakkında, lisanslar ve teşekkürler...
 AX-HUD  version {0}  (build {1})	AX-HUD  sürüm {0}  (yapı {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Canlı değer için {variable} kullanın, örneğin {vbat/6:2}.
@@ -559,3 +571,6 @@ Channel {0}	Kanal {0}
 Now: {0}	Şimdi: {0}
 No value now	Şu an değer yok
 Pick a channel or value	Bir kanal veya değer seçin
+Step {0} of {1}	Adım {0} / {1}
+Skip	Atla
+Next	İleri

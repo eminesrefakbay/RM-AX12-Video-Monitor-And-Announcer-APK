@@ -37,7 +37,7 @@ jobs:
         run: |
           mkdir -p out
           javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
-          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests I18nTests; do
+          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests FirstRunTests LanguageFitTests I18nTests; do
             java -cp out dev.ax12.announcer.$t
           done
       - name: Translations are complete (every text in the code has a Turkish, German and Chinese version)
@@ -134,6 +134,7 @@ jobs:
             # a release made by hand on GitHub: attach the build to it
             gh release upload "$STABLE_TAG" dist/ax-hud.apk dist/ax-hud-plain.apk dist/update.json dist/SHA256SUMS --clobber
           else
+            if [ -f "docs/release-notes/$STABLE_TAG.md" ]; then NOTES_ARG="--notes-file docs/release-notes/$STABLE_TAG.md"; else NOTES_ARG="--generate-notes"; fi
             gh release create "$STABLE_TAG" dist/ax-hud.apk dist/ax-hud-plain.apk dist/update.json dist/SHA256SUMS \
-              --target "$GITHUB_SHA" --title "AX-HUD $STABLE_TAG" --generate-notes
+              --target "$GITHUB_SHA" --title "AX-HUD $STABLE_TAG" $NOTES_ARG
           fi

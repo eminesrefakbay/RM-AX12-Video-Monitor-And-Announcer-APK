@@ -47,6 +47,7 @@ interface SettingsHost {
     fun setTestChannelsOn(on: Boolean)
     fun about(): String
     fun openAbout()
+    fun openGuide()
 
     // languages
     fun languageLabel(): String
@@ -499,6 +500,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         }
         group("about", tr("About"), "about") {
             note(host.about())
+            action(tr("Show the welcome guide...")) { host.openGuide() }
             action(tr("About AX-HUD, licenses and thanks...")) { host.openAbout() }
         }
     }
