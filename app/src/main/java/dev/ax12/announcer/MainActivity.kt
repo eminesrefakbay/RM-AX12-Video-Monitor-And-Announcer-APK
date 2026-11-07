@@ -73,6 +73,7 @@ class MainActivity : Activity() {
     private lateinit var statsView: FlightStatsView
     private lateinit var radarView: RadarView
     private lateinit var checkView: ChecklistView
+    private val checkCard = CheckCardState()          // the pre-flight card can be closed with its X
     private lateinit var chartView: ChartView
     private lateinit var connectBanner: ConnectingBanner
     private lateinit var aboutPanel: AboutPanel
@@ -190,6 +191,7 @@ class MainActivity : Activity() {
         layoutEditor = LayoutEditor(this, layoutHost)
         checkView = ChecklistView(this)
         checkView.visibility = View.GONE
+        checkView.onClose = { checkCard.close() }
         frame.addView(checkView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         frame.addView(layoutEditor, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         for (t in tileNames) watchTileSize(t)
@@ -423,6 +425,7 @@ class MainActivity : Activity() {
     }
 
     private fun reloadChecks() {
+        checkCard.reopen()                               // a new aircraft, pack or set of checks: the card is wanted again
         val text = Prefs.checkRules(this)
         val parsed = RuleParser.parse(text, Battery.macros(this))
         val model = CheckModel(parsed.rules)
@@ -856,7 +859,8 @@ class MainActivity : Activity() {
         if (showRadar) radarView.invalidate()
 
         val cm = checkModel
-        val showCheck = checkOn && cm != null && (!fs.armed() || editingLayout) && (!cm.allUnknown() || editingLayout)
+        checkCard.update(fs.armed())                        // an armed aircraft ends the pre-flight period: the card is back for the next one
+        val showCheck = checkOn && cm != null && (!fs.armed() || editingLayout) && (!cm.allUnknown() || editingLayout) && checkCard.allowed(editingLayout)
         fader.set(checkView, showCheck)
         if (showCheck && cm != null) {
             val rows = ArrayList<ChecklistView.Row>()

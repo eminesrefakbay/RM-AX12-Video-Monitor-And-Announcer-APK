@@ -56,7 +56,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,068 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,078 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -88,6 +88,8 @@ centre) and opacity.
   (Settings > Overlays on the video > Flight overlays > *Edit the checks*): condition, thresholds, `and`/`or`, and a label that can hold live
   values such as `{sats}`. Defaults: battery connected, battery full (4.15 V per cell or more), 10 or more satellites,
   link quality 95 % or more, airmode switch on, arm switch off. The card is hidden when nothing is known yet.
+  A small **X** in its top right corner closes it without arming; it comes back for the next flight (after you arm), or when you change
+  the aircraft, the pack or the checks.
 
 ## OSD overlays: sticks, channel bars and the warning status bar
 

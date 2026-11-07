@@ -9,12 +9,13 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.view.MotionEvent
 import android.view.View
 
 /**
  * The pre-flight card: one row per check with a green tick, a red cross or a grey dash (no value yet),
  * and a line at the bottom: READY or NOT READY. The marks are drawn, not typed, so they look the same
- * on any Android font.
+ * on any Android font. A small X in the top right corner closes the card ([onClose]); the rest of the card lets touches through.
  */
 class ChecklistView(context: Context) : View(context) {
 
@@ -35,6 +36,11 @@ class ChecklistView(context: Context) : View(context) {
     private var footerColor = 0xFFB0BEC5.toInt()
     private var signature = ""
     private var textPx = 16f * density
+
+    /** Called when the X is tapped. */
+    var onClose: (() -> Unit)? = null
+    private var closePressed = false
+    private val closeRect = RectF()
 
     init {
         bg.color = CardStyle.BG
@@ -85,9 +91,45 @@ class ChecklistView(context: Context) : View(context) {
     private fun pad() = textPx * 0.7f
     private fun rowH() = textPx * 1.5f
     private fun markW() = textPx * 1.2f
+    private fun closeSide() = textPx * 1.3f
+
+    /** The X sits in the top right corner. */
+    private fun placeClose() {
+        val m = pad() * 0.55f
+        closeRect.set(width - m - closeSide(), m, width - m, m + closeSide())
+    }
+
+    /** The tap area is at least 48 dp square, around the drawn X. */
+    private fun hit(x: Float, y: Float): Boolean {
+        placeClose()
+        val grow = maxOf(0f, (CardStyle.MIN_TOUCH_DP * density - closeSide()) / 2f)
+        return x >= closeRect.left - grow && x <= closeRect.right + grow && y >= closeRect.top - grow && y <= closeRect.bottom + grow
+    }
+
+    override fun onTouchEvent(e: MotionEvent): Boolean {
+        when (e.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                if (!hit(e.x, e.y)) return false          // not on the X: the touch goes on to whatever is under the card
+                closePressed = true
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                val was = closePressed
+                closePressed = false
+                invalidate()
+                if (was && hit(e.x, e.y)) { performClick(); onClose?.invoke() }
+                return was
+            }
+            MotionEvent.ACTION_CANCEL -> { closePressed = false; invalidate(); return true }
+        }
+        return closePressed
+    }
+
+    override fun performClick(): Boolean { super.performClick(); return true }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var w = maxOf(titlePaint.measureText(title), footPaint.measureText(footer), labelPaint.measureText(subtitle) * 0.8f)
+        var w = maxOf(titlePaint.measureText(title) + closeSide() + pad(), footPaint.measureText(footer), labelPaint.measureText(subtitle) * 0.8f)
         for (r in rows) w = maxOf(w, markW() + labelPaint.measureText(r.label))
         val h = pad() * 2 + rowH() * (rows.size + 2) + (if (subtitle.isEmpty()) 0f else rowH() * 0.8f)
         setMeasuredDimension((w + pad() * 2).toInt() + 2, h.toInt() + 2)
@@ -116,6 +158,21 @@ class ChecklistView(context: Context) : View(context) {
         y += rowH() * 1.1f
         footPaint.color = footerColor
         canvas.drawText(footer, pad(), y, footPaint)
+        drawClose(canvas)
+    }
+
+    /** A plain square with an X, like the marks of the rows. */
+    private fun drawClose(canvas: Canvas) {
+        placeClose()
+        markFill.color = if (closePressed) 0xFF546E7A.toInt() else 0x99000000.toInt()
+        canvas.drawRect(closeRect, markFill)
+        canvas.drawRect(closeRect, edge)
+        markLine.color = 0xFFFFFFFF.toInt()
+        val c = closeRect.centerX()
+        val d = closeRect.centerY()
+        val r = closeSide() * 0.26f
+        canvas.drawLine(c - r, d - r, c + r, d + r, markLine)
+        canvas.drawLine(c - r, d + r, c + r, d - r, markLine)
     }
 
     private fun drawMark(canvas: Canvas, cx: Float, cy: Float, state: Int) {
