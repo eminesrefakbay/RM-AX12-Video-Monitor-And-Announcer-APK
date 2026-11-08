@@ -100,6 +100,8 @@ Storage is almost full	Depolama alanı neredeyse dolu
 The log file cannot be written	Kayıt dosyası yazılamıyor
 Snap to grid	Izgaraya hizala
 Reset the layout	Yerleşimi sıfırla
+Hide the buttons	Düğmeleri gizle
+Show the buttons	Düğmeleri göster
 Tick the values to write into each flight log.	Her uçuş kaydına yazılacak değerleri işaretleyin.
 A replay needs these values and cannot show everything without them: {0}	Bir tekrar oynatma bu değerlere ihtiyaç duyar; onlar olmadan her şeyi gösteremez: {0}
 Replay set	Oynatma seti

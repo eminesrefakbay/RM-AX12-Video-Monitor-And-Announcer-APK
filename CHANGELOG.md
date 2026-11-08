@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+The layout editor strip can be folded to one small arrow button and unfolded again (remembered), and steps aside while a card is dragged.
+
 ## 1.2.1
 
 The layout editor: no explanatory text and no wide bar over the top of the screen, only a small see-through strip of icon buttons

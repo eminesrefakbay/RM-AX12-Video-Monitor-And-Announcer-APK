@@ -44,6 +44,10 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
     private val extraBox = LinearLayout(activity)
     private val bar = LinearLayout(activity)
     private var snapButton: ImageButton? = null
+    private var resetButton: ImageButton? = null
+    private var doneButton: ImageButton? = null
+    private var toggleButton: ImageButton? = null
+    private var stripHidden = Prefs.bool(activity, "layoutStripHidden", false)
     private var snapOn = Prefs.bool(activity, "layoutSnap", true)
     private val gridPaint = Paint()
     private val scrim = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -86,10 +90,12 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         bar.setPadding(dp(4), dp(4), dp(4), dp(4))
         bar.addView(extraBox)
         bar.addView(iconButton("grid", tr("Snap to grid")) { setSnap(!snapOn) }.also { snapButton = it })
-        bar.addView(iconButton("reset", tr("Reset the layout")) { host.reset() })
-        bar.addView(iconButton("check", tr("Done"), CardStyle.OK) { host.done() })
+        bar.addView(iconButton("reset", tr("Reset the layout")) { host.reset() }.also { resetButton = it })
+        bar.addView(iconButton("check", tr("Done"), CardStyle.OK) { host.done() }.also { doneButton = it })
+        bar.addView(iconButton("chevron_up", tr("Hide the buttons")) { setStripHidden(!stripHidden) }.also { toggleButton = it })
         addView(bar, LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).also { it.topMargin = dp(4) })
         paintSnapButton()
+        applyStrip()
     }
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
@@ -116,6 +122,24 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         for (a in actions) extraBox.addView(iconButton(a.icon, a.label, onClick = a.onClick))
     }
 
+    private fun setStripHidden(hidden: Boolean) {
+        stripHidden = hidden
+        Prefs.setBool(activity, "layoutStripHidden", hidden)
+        applyStrip()
+    }
+
+    /** Folded: only the small arrow is left, so the strip hides nothing; unfolded: all the buttons. */
+    private fun applyStrip() {
+        val v = if (stripHidden) View.GONE else View.VISIBLE
+        extraBox.visibility = v
+        snapButton?.visibility = v
+        resetButton?.visibility = v
+        doneButton?.visibility = v
+        toggleButton?.setImageDrawable(Icons.drawable(activity, if (stripHidden) "chevron_down" else "chevron_up", CardStyle.ICON, 24))
+        toggleButton?.contentDescription = if (stripHidden) tr("Show the buttons") else tr("Hide the buttons")
+        bar.setBackgroundColor(if (stripHidden) 0x66101820 else 0x99101820.toInt())
+    }
+
     private fun setSnap(on: Boolean) {
         snapOn = on
         Prefs.setBool(activity, "layoutSnap", on)
@@ -135,12 +159,14 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
     private fun snapToGrid(v: Double): Double = Math.rint(v / gridPx()) * gridPx()
 
     fun show() {
+        applyStrip()
         Anim.show(this)
         invalidate()
     }
 
     fun hide() {
         dragging = false
+        bar.visibility = View.VISIBLE
         active = null
         Anim.hide(this)
     }
@@ -213,6 +239,7 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
                     downX = ev.x
                     downY = ev.y
                     dragging = true
+                    bar.visibility = View.INVISIBLE                 // the strip steps aside while a card is dragged
                 }
                 invalidate()
             }
@@ -257,6 +284,7 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
                     host.placed(t, f[0], f[1], TileLayout.toPercent(s))
                 }
                 dragging = false
+                bar.visibility = View.VISIBLE
                 invalidate()
             }
         }

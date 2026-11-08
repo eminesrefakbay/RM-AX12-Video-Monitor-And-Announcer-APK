@@ -100,6 +100,8 @@ Storage is almost full
 The log file cannot be written
 Snap to grid
 Reset the layout
+Hide the buttons
+Show the buttons
 Tick the values to write into each flight log.
 A replay needs these values and cannot show everything without them: {0}
 Replay set

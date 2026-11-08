@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.2.1)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.2.2)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -170,7 +170,9 @@ like the radar before a flight or the checklist while armed, are shown while you
 can never leave the screen or grow bigger than it. A small see-through strip of icon buttons at the top centre (it hides as little as possible)
 holds the **grid** button (a grid is drawn and a card's corner and size snap to 16 dp cells; on by default, the screen edges still win when a
 card is close), the **reverse arrow** (*Reset the layout*: every card back in its corner) and the **tick** (done). On the dashboard the strip also has
-**+** (add a card), **-** (remove a card) and a **pencil** (edit a value card).
+**+** (add a card), **-** (remove a card) and a **pencil** (edit a value card). The **arrow at the right end** folds the strip to that one small
+button and unfolds it again (the choice is remembered), and the strip steps aside by itself while you drag or resize a card. The back key also
+finishes editing.
 
 A card's place is stored as a fraction of the free space on the screen, so it stays where you meant it on any screen size; its size is
 a factor on top of its *Size* setting (50 % to 250 %, as far as it fits the screen). A card you never touch stays in the corner chosen in
