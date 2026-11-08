@@ -1,8 +1,14 @@
 # Changelog
 
+## 1.2.4
+
+Editing the layout starts only when you hold one spot of the dashboard or of the video for 5 seconds: a swipe, a drag or a second finger
+cancels it, so swiping no longer opens the editor by accident.
+
 ## 1.2.3
 
-Editing the layout starts with a long press, on the dashboard and on the video (as well as from Settings), and the tick returns straight to the page you were on.
+Editing the layout starts with a long press, on the dashboard and on the video (as well as from Settings), and the tick returns straight to
+the page you were on.
 
 ## 1.2.2
 

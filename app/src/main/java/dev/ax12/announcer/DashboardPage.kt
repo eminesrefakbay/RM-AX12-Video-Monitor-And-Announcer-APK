@@ -10,6 +10,7 @@ import android.app.AlertDialog
 import android.text.InputType
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -41,6 +42,14 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
     private val specs = HashMap<String, ValueSpec>()
     private val editor: LayoutEditor
     private var shown = false
+    private var holdX = 0f
+    private var holdY = 0f
+    private val holdFire = Runnable {
+        if (shown && !isEditing) {
+            root.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            startEdit()
+        }
+    }
 
     val isShowing: Boolean get() = shown
     var isEditing = false
@@ -52,13 +61,19 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
         root.setBackgroundColor(0xFF0B1016.toInt())
         root.visibility = View.GONE
         root.isClickable = true                                     // a touch on the page must not reach the video page under it
-        root.isLongClickable = true
-        root.setOnLongClickListener {                               // a long press anywhere on the dashboard starts editing its layout
-            if (shown && !isEditing) {
-                root.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                startEdit()
+        root.setOnTouchListener { _, ev ->                         // a hold on one spot for five seconds starts editing the layout; swiping does not
+            when (ev.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    root.removeCallbacks(holdFire)
+                    holdX = ev.rawX
+                    holdY = ev.rawY
+                    if (shown && !isEditing) root.postDelayed(holdFire, HoldGesture.HOLD_MS)
+                }
+                MotionEvent.ACTION_MOVE ->
+                    if (HoldGesture.moved((ev.rawX - holdX).toDouble(), (ev.rawY - holdY).toDouble(), HoldGesture.SLOP_DP * density.toDouble())) root.removeCallbacks(holdFire)
+                MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> root.removeCallbacks(holdFire)
             }
-            true
+            false
         }
         root.elevation = dp(6).toFloat()                            // above the video and its cards; the MENU button and the warnings sit above it
         editor = LayoutEditor(activity, object : LayoutEditor.Host {
@@ -174,6 +189,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
 
     fun hide() {
         shown = false
+        root.removeCallbacks(holdFire)
         if (isEditing) { isEditing = false; editor.hide() }
         Anim.hide(root)
     }

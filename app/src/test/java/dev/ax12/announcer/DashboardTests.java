@@ -122,24 +122,37 @@ public class DashboardTests {
         check(Double.isNaN(Attitude.bearingToHome(0.1, -0.2)) && Double.isNaN(Attitude.bearingToHome(Double.NaN, 5)), "on top of home, or no position: no direction");
         check(Attitude.cardinal(0).equals("N") && Attitude.cardinal(44).equals("NE") && Attitude.cardinal(90).equals("E") && Attitude.cardinal(200).equals("S") && Attitude.cardinal(271).equals("W") && Attitude.cardinal(359).equals("N") && Attitude.cardinal(-45).equals("NW") && Attitude.cardinal(Double.NaN).isEmpty(), "the eight directions");
 
+        // ---------- the hold that starts editing ----------
+        check(HoldGesture.HOLD_MS == 5000, "the hold is five seconds");
+        double slop = HoldGesture.SLOP_DP * 2.0;
+        check(!HoldGesture.moved(0, 0, slop) && !HoldGesture.moved(10, 10, slop) && !HoldGesture.moved(slop, 0, slop), "a finger that stays on its spot is still holding");
+        check(HoldGesture.moved(slop + 1, 0, slop) && HoldGesture.moved(0, -(slop + 1), slop) && HoldGesture.moved(60, 60, slop) && HoldGesture.moved(400, 5, slop), "a swipe, or a slow drag, leaves the spot");
+        check(HoldGesture.SLOP_DP >= 16 && HoldGesture.SLOP_DP <= 32 && HoldGesture.SLOP_DP % 4 == 0, "the allowance is a few millimetres");
+
         // ---------- how editing starts and ends (checked in the sources: they cannot run here) ----------
         String kt = "app/src/main/java/dev/ax12/announcer/";
         String page = new String(Files.readAllBytes(new File(kt + "DashboardPage.kt").toPath()), StandardCharsets.UTF_8);
         String act = new String(Files.readAllBytes(new File(kt + "MainActivity.kt").toPath()), StandardCharsets.UTF_8);
-        check(page.contains("root.setOnLongClickListener") && page.contains("root.isLongClickable = true") && page.contains("startEdit()"), "a long press on the dashboard starts editing");
-        int at = page.indexOf("root.setOnLongClickListener");
-        check(page.substring(at, page.indexOf("true\n        }", at)).contains("!isEditing") && page.substring(at, page.indexOf("true\n        }", at)).contains("shown"), "and only while the dashboard is shown and not already editing");
+        check(!page.contains("setOnLongClickListener") && !page.contains("isLongClickable") && !act.contains("GestureDetector"), "the quick Android long press does not open the layout editor");
+        check(act.split("onLongPress", -1).length - 1 == 1 && act.contains("sticksView.onLongPress = { editChannelBars() }"), "the only other long press is the one of the stick view, which edits the channel bars");
+        String touch = page.substring(page.indexOf("root.setOnTouchListener"), page.indexOf("root.elevation"));
+        check(touch.contains("HoldGesture.HOLD_MS") && touch.contains("HoldGesture.moved") && touch.contains("ACTION_MOVE") && touch.contains("ACTION_UP") && touch.contains("ACTION_CANCEL") && touch.contains("ACTION_POINTER_DOWN") && touch.contains("shown && !isEditing"), "the dashboard starts the hold on touch and cancels it on movement, a second finger, letting go and cancel");
+        check(page.contains("private val holdFire") && page.substring(page.indexOf("private val holdFire"), page.indexOf("private val holdFire") + 260).contains("startEdit()") && page.contains("root.removeCallbacks(holdFire)"), "after five seconds the dashboard editor opens, and hiding the page cancels it");
         int e = act.indexOf("override fun editEnded()");
         check(e > 0 && !act.substring(e, act.indexOf('\n', e)).contains("settingsPanel"), "finishing the dashboard edit does not open Settings");
         check(act.contains("override fun editDashboard()") && act.substring(act.indexOf("override fun editDashboard()"), act.indexOf("override fun resetDashboard()")).contains("dashboard.startEdit()"), "editing can still be started from Settings");
         check(act.contains("else if (dashboard.isEditing) dashboard.endEdit()"), "the back key finishes the dashboard edit");
-        // the same two behaviours on the video page
-        check(act.contains("GestureDetector.SimpleOnGestureListener") && act.contains("override fun onLongPress") && act.contains("videoLongPress.onTouchEvent(ev)"), "a long press on the video page is watched");
-        String lp = act.substring(act.indexOf("override fun onLongPress"), act.indexOf("startLayoutEdit()", act.indexOf("override fun onLongPress")) + 20);
-        check(lp.contains("startLayoutEdit()") && lp.contains("flightStats.armed()") && lp.contains("anyOverlayOpen()") && lp.contains("dashboardOn") && lp.contains("menuButton"), "it opens the editor, but not when armed, over a panel, on the dashboard or on the MENU button");
+        // the video page
+        String dispatch = act.substring(act.indexOf("override fun dispatchTouchEvent"), act.indexOf("private fun anyOverlayOpen()"));
+        check(dispatch.contains("HoldGesture.HOLD_MS") && dispatch.contains("HoldGesture.moved") && dispatch.contains("ACTION_MOVE") && dispatch.contains("ACTION_UP") && dispatch.contains("ACTION_CANCEL") && dispatch.contains("ACTION_POINTER_DOWN") && dispatch.contains("onMenuButton"), "the video page watches the hold and cancels it on movement, a second finger and letting go, and ignores the MENU button");
+        String allowed = act.substring(act.indexOf("private fun videoEditAllowed()"), act.indexOf("private fun onMenuButton"));
+        check(allowed.contains("flightStats.armed()") && allowed.contains("anyOverlayOpen()") && allowed.contains("dashboardOn") && allowed.contains("editingLayout"), "the video editor is not opened when armed, over a panel, on the dashboard or while editing");
+        String fire = act.substring(act.indexOf("private val holdFire"), act.indexOf("private fun videoEditAllowed()"));
+        check(fire.contains("videoEditAllowed()") && fire.contains("startLayoutEdit()"), "the conditions are checked again when the five seconds are over");
         int le = act.indexOf("private fun endLayoutEdit()");
         check(le > 0 && !act.substring(le, act.indexOf("\n    }", le)).contains("settingsPanel"), "finishing the video edit does not open Settings");
         check(act.contains("else if (editingLayout) endLayoutEdit()"), "the back key finishes the video edit");
+        check(act.contains("ui.removeCallbacks(holdFire)"), "leaving the screen cancels a hold");
 
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);

@@ -18,7 +18,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.GestureDetector
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -327,28 +326,39 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ menu button that hides itself
 
     /** Any touch on the screen brings the MENU button back for a few seconds. */
-    /**
-     * A long press on the video page opens the layout editor, like a long press on the dashboard. Not while the aircraft is armed (nothing
-     * may pop up over the picture in flight), not over a panel, and not on the MENU button.
-     */
-    private val videoLongPress by lazy {
-        GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onLongPress(e: MotionEvent) {
-                if (dashboardOn || editingLayout || anyOverlayOpen() || flightStats.armed() || splash?.isShowing == true) return
-                if (menuButton.visibility == View.VISIBLE) {
-                    val at = IntArray(2)
-                    menuButton.getLocationOnScreen(at)
-                    if (e.rawX >= at[0] && e.rawX <= at[0] + menuButton.width && e.rawY >= at[1] && e.rawY <= at[1] + menuButton.height) return
-                }
-                window.decorView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                startLayoutEdit()
-            }
-        })
+    // ---- the hold that opens the layout editor on the video page: one spot, five seconds, no swiping
+    private var holdX = 0f
+    private var holdY = 0f
+    private val holdFire = Runnable {
+        if (videoEditAllowed()) {
+            window.decorView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            startLayoutEdit()
+        }
+    }
+
+    /** Not on the dashboard, not while editing, not over a panel, not while the aircraft is armed (nothing may pop up over the picture in flight). */
+    private fun videoEditAllowed(): Boolean = !(dashboardOn || editingLayout || anyOverlayOpen() || flightStats.armed() || splash?.isShowing == true)
+
+    private fun onMenuButton(x: Float, y: Float): Boolean {
+        if (menuButton.visibility != View.VISIBLE) return false
+        val at = IntArray(2)
+        menuButton.getLocationOnScreen(at)
+        return x >= at[0] && x <= at[0] + menuButton.width && y >= at[1] && y <= at[1] + menuButton.height
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.actionMasked == MotionEvent.ACTION_DOWN && !anyOverlayOpen()) showMenuButton(4000)
-        videoLongPress.onTouchEvent(ev)
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                ui.removeCallbacks(holdFire)
+                holdX = ev.rawX
+                holdY = ev.rawY
+                if (videoEditAllowed() && !onMenuButton(ev.rawX, ev.rawY)) ui.postDelayed(holdFire, HoldGesture.HOLD_MS)
+            }
+            MotionEvent.ACTION_MOVE ->
+                if (HoldGesture.moved((ev.rawX - holdX).toDouble(), (ev.rawY - holdY).toDouble(), HoldGesture.SLOP_DP * resources.displayMetrics.density.toDouble())) ui.removeCallbacks(holdFire)
+            MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> ui.removeCallbacks(holdFire)
+        }
         return super.dispatchTouchEvent(ev)
     }
 
@@ -386,6 +396,7 @@ class MainActivity : Activity() {
     override fun onPause() {
         ui.removeCallbacks(tick)
         ui.removeCallbacks(guideCheck)
+        ui.removeCallbacks(holdFire)
         flightLogger.close()                            // the file is complete whenever the screen is left
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
