@@ -57,7 +57,7 @@ public class LanguageFitTests {
     }
 
     public static void main(String[] args) throws Exception {
-        String[] tiles = {"Sound rules", "Speech", "Battery", "Aircraft", "Settings", "Exit"};
+        String[] tiles = {"Sound rules", "Speech", "Battery", "Aircraft", "Dashboard", "Video", "Flight logs", "Settings", "Exit"};
         for (String lang : new String[]{"en", "tr", "de", "zh"}) {
             I18n.load(I18nTests.FILES, lang);
 

@@ -80,6 +80,8 @@ class MainActivity : Activity() {
     private lateinit var welcomeGuide: WelcomeGuide
 
     // ---- flight logs and replay
+    private lateinit var dashboard: DashboardPage
+    private var dashboardOn = false                      // the page: the video with its cards, or the dashboard (cards only)
     private lateinit var logDir: File
     private lateinit var flightLogger: FlightLogger
     private lateinit var logViewer: LogViewerPanel
@@ -111,7 +113,7 @@ class MainActivity : Activity() {
     private lateinit var menuButton: Button
     private var overlayWasOpen = false
     private val hideMenuRunnable = Runnable {
-        if (!Prefs.menuAlways(this) && !anyOverlayOpen()) menuButton.visibility = View.GONE
+        if (!Prefs.menuAlways(this) && !dashboardOn && !anyOverlayOpen()) menuButton.visibility = View.GONE
     }
     private var latestNumbers: Map<String, Double> = HashMap()
     private var latestTexts: Map<String, String> = HashMap()
@@ -246,6 +248,21 @@ class MainActivity : Activity() {
         logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) })
         replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() })
         replayUi.attach(frame, 2)                       // the backdrop sits above the video and its no-video screen, below every card
+        dashboard = DashboardPage(this, object : DashboardPage.Host {
+            override fun stats(): FlightStats = if (replay != null) replayStats else flightStats
+            override fun chart(): ChartModel = if (replay != null) replayChart else chartModel
+            override fun statsContent(fs: FlightStats, now: Long) = this@MainActivity.statsContent(fs, now)
+            override fun pickVariable(onPicked: (String) -> Unit) { VariablePicker.show(this@MainActivity, liveValues, false, onPicked) }
+            override fun editEnded() { settingsPanel.show() }
+        })
+        frame.addView(dashboard.root, FrameLayout.LayoutParams(full))
+        // above the dashboard page (elevation 6 dp): the warnings, the connecting banner, the MENU button and the replay tag
+        warningText.elevation = dp(7).toFloat()
+        connectBanner.view.elevation = dp(7).toFloat()
+        menuButton.elevation = dp(8).toFloat()
+        replayUi.tag.elevation = dp(16).toFloat()
+        dashboardOn = Prefs.bool(this, "dashPage", false)
+        if (dashboardOn) dashboard.showNow()
         reloadLogConfig()
         frame.addView(rulesPanel.root, full)
         frame.addView(warnPanel.root, FrameLayout.LayoutParams(full))
@@ -265,6 +282,9 @@ class MainActivity : Activity() {
             { switchBattery() },
             { aircraftName },
             { chooseAircraft() },
+            { dashboardOn },
+            { toggleDashboard() },
+            { logViewer.show() },
             { exitApp() }
         )
         frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
@@ -289,6 +309,7 @@ class MainActivity : Activity() {
     override fun onBackPressed() {
         if (splash?.isShowing == true) splash?.dismiss()
         else if (welcomeGuide.isShowing) welcomeGuide.back()
+        else if (dashboard.isEditing) dashboard.endEdit()
         else if (replay != null) stopReplay()
         else if (logViewer.isShowing) logViewer.hide()
         else if (editingLayout) endLayoutEdit()
@@ -309,12 +330,12 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || replay != null || editingLayout
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || replay != null || dashboard.isEditing || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
         ui.removeCallbacks(hideMenuRunnable)
-        if (!Prefs.menuAlways(this)) ui.postDelayed(hideMenuRunnable, forMs)
+        if (!Prefs.menuAlways(this) && !dashboardOn) ui.postDelayed(hideMenuRunnable, forMs)
     }
 
     private fun applyMenuMode() {
@@ -331,7 +352,7 @@ class MainActivity : Activity() {
         reloadChecks()
         reloadLogConfig()
         startSdk()
-        if (hasCameraPermission()) camera.start() else {
+        if (hasCameraPermission()) { if (!dashboardOn) camera.start() } else {
             holdLink(HOLD_REBUILD_MS)                    // the permission dialog pauses the screen for a moment
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
         }
@@ -365,7 +386,7 @@ class MainActivity : Activity() {
 
     override fun onRequestPermissionsResult(code: Int, permissions: Array<out String>, results: IntArray) {
         super.onRequestPermissionsResult(code, permissions, results)
-        if (results.isNotEmpty() && results[0] == PackageManager.PERMISSION_GRANTED) camera.start()
+        if (results.isNotEmpty() && results[0] == PackageManager.PERMISSION_GRANTED && !dashboardOn) camera.start()
     }
 
     private fun hasCameraPermission() =
@@ -494,7 +515,7 @@ class MainActivity : Activity() {
                 overlayWasOpen = true
             } else if (overlayWasOpen) {
                 overlayWasOpen = false
-                if (Prefs.menuAlways(this@MainActivity)) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
+                if (Prefs.menuAlways(this@MainActivity) || dashboardOn) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
             }
 
             val waitingForSdk = sdkStarting && !testVisible           // the SDK is starting in the background: no data yet, and no pretend data either
@@ -532,6 +553,7 @@ class MainActivity : Activity() {
                         updateTiles(numbers, sample.texts, now)
                     }
                     if (sticksEnabled) sticksView.update(numbers)
+                    dashboard.updateFast(numbers, sample.texts)
                 }
                 if (testVisible) {
                     val sb = StringBuilder()
@@ -730,6 +752,16 @@ class MainActivity : Activity() {
         override fun tileOpacityLabel(tile: String): String = tileOpacityNames[Prefs.int(this@MainActivity, tile + "Opacity", 1).coerceIn(0, 2)]
         override fun cycleTileOpacity(tile: String) = cycleTile(tile + "Opacity", 1, 3)
         override fun editCharts() = this@MainActivity.editCharts()
+        override fun editDashboard() {
+            settingsPanel.hide()
+            if (!dashboardOn) setDashboard(true)
+            dashboard.startEdit()
+        }
+        override fun resetDashboard() = dashboard.resetLayout()
+        override fun horizonInvertPitch(): Boolean = Prefs.bool(this@MainActivity, "horizonInvPitch", false)
+        override fun setHorizonInvertPitch(on: Boolean) { Prefs.setBool(this@MainActivity, "horizonInvPitch", on); dashboard.rebuild() }
+        override fun horizonInvertRoll(): Boolean = Prefs.bool(this@MainActivity, "horizonInvRoll", false)
+        override fun setHorizonInvertRoll(on: Boolean) { Prefs.setBool(this@MainActivity, "horizonInvRoll", on); dashboard.rebuild() }
         override fun logOn(): Boolean = Prefs.logOn(this@MainActivity)
         override fun setLogOn(on: Boolean) { Prefs.setLogOn(this@MainActivity, on); reloadLogConfig() }
         override fun logRateLabel(): String = tr("{0} per second", FlightLogger.RATES_HZ[Prefs.logRate(this@MainActivity)])
@@ -1004,6 +1036,7 @@ class MainActivity : Activity() {
         }
         BatteryProfiles.addDerived(m, replayCells)
         if (sticksEnabled) sticksView.update(m)
+        dashboard.updateFast(m, replayTexts)
         if (now - replayTilesLast >= 100) {
             replayTilesLast = now
             updateTiles(m, replayTexts, ReplayEngine.clock(r.positionMs()), replayStats, replayChart, false)
@@ -1021,6 +1054,42 @@ class MainActivity : Activity() {
     private fun num1(v: Double): String = if (v.isNaN()) "-" else String.format(Locale.US, "%.1f", v)
     private fun clock(ms: Long): String = String.format(Locale.US, "%d:%02d", ms / 60000, (ms / 1000) % 60)
 
+    /** The title and the lines of the statistics card (the rows chosen in Settings), for the video page and for the dashboard. */
+    private fun statsContent(fs: FlightStats, now: Long): Pair<String, List<FlightStatsView.Line>> {
+        val rows = Prefs.int(this, "statsRows", 7)
+        val lines = ArrayList<FlightStatsView.Line>()
+        if (rows and 1 != 0) lines.add(FlightStatsView.Line(tr("SPEED"), num0(fs.speedNow()) + " / " + num0(fs.maxSpeed()) + " km/h"))
+        if (rows and 2 != 0) lines.add(FlightStatsView.Line(tr("HEIGHT"), num0(fs.heightNow()) + " / " + num0(fs.maxHeight()) + " m"))
+        if (rows and 4 != 0) {
+            val limit = Prefs.int(this, "currentLimit", 50).toDouble()
+            val scale = maxOf(limit * 1.2, if (fs.peakCurrent().isNaN()) 0.0 else fs.peakCurrent() * 1.05, 20.0)
+            lines.add(FlightStatsView.Line(tr("CURRENT"), num1(fs.currentNow()) + " / " + num1(fs.peakCurrent()) + " A",
+                if (fs.currentNow().isNaN()) Double.NaN else fs.currentNow() / scale,
+                if (fs.peakCurrent().isNaN()) Double.NaN else fs.peakCurrent() / scale,
+                limit / scale))
+        }
+        if (rows and 8 != 0) lines.add(FlightStatsView.Line(tr("DISTANCE"), num0(fs.distanceNow()) + " / " + num0(fs.maxDistance()) + " m"))
+        if (rows and 16 != 0) lines.add(FlightStatsView.Line(tr("MIN LINK"), num0(fs.minLinkQuality()) + " %"))
+        if (rows and 32 != 0) lines.add(FlightStatsView.Line(tr("MIN CELL"), if (fs.minCellVolts().isNaN()) "-" else String.format(Locale.US, "%.2f V", fs.minCellVolts())))
+        return Pair((if (fs.armed()) tr("FLIGHT  ") else tr("LAST FLIGHT  ")) + clock(fs.armedMs(now)), lines)
+    }
+
+    /** Switches the page: the video with its cards, or the dashboard (cards only). The camera rests while the dashboard is shown. */
+    private fun toggleDashboard() { setDashboard(!dashboardOn) }
+
+    private fun setDashboard(on: Boolean) {
+        dashboardOn = on
+        Prefs.setBool(this, "dashPage", on)
+        if (on) {
+            dashboard.show()
+            camera.stop()
+            menuButton.visibility = View.VISIBLE
+        } else {
+            dashboard.hide()
+            if (hasCameraPermission()) camera.start()
+        }
+    }
+
     /** Refresh the three cards (about five times a second). */
     private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long,
                             fs: FlightStats = flightStats, chart: ChartModel = chartModel, sampleChart: Boolean = true) {
@@ -1033,24 +1102,11 @@ class MainActivity : Activity() {
         val showStats = statsOn && flight
         fader.set(statsView, showStats)
         if (showStats) {
-            val rows = Prefs.int(this, "statsRows", 7)
-            val lines = ArrayList<FlightStatsView.Line>()
-            if (rows and 1 != 0) lines.add(FlightStatsView.Line(tr("SPEED"), num0(fs.speedNow()) + " / " + num0(fs.maxSpeed()) + " km/h"))
-            if (rows and 2 != 0) lines.add(FlightStatsView.Line(tr("HEIGHT"), num0(fs.heightNow()) + " / " + num0(fs.maxHeight()) + " m"))
-            if (rows and 4 != 0) {
-                val limit = Prefs.int(this, "currentLimit", 50).toDouble()
-                val scale = maxOf(limit * 1.2, if (fs.peakCurrent().isNaN()) 0.0 else fs.peakCurrent() * 1.05, 20.0)
-                lines.add(FlightStatsView.Line(tr("CURRENT"), num1(fs.currentNow()) + " / " + num1(fs.peakCurrent()) + " A",
-                    if (fs.currentNow().isNaN()) Double.NaN else fs.currentNow() / scale,
-                    if (fs.peakCurrent().isNaN()) Double.NaN else fs.peakCurrent() / scale,
-                    limit / scale))
-            }
-            if (rows and 8 != 0) lines.add(FlightStatsView.Line(tr("DISTANCE"), num0(fs.distanceNow()) + " / " + num0(fs.maxDistance()) + " m"))
-            if (rows and 16 != 0) lines.add(FlightStatsView.Line(tr("MIN LINK"), num0(fs.minLinkQuality()) + " %"))
-            if (rows and 32 != 0) lines.add(FlightStatsView.Line(tr("MIN CELL"), if (fs.minCellVolts().isNaN()) "-" else String.format(Locale.US, "%.2f V", fs.minCellVolts())))
-            statsView.setContent((if (fs.armed()) tr("FLIGHT  ") else tr("LAST FLIGHT  ")) + clock(fs.armedMs(now)), lines)
+            val content = statsContent(fs, now)
+            statsView.setContent(content.first, content.second)
         }
 
+        dashboard.update(now)
         val showRadar = radarOn && (fs.hasHome() || editingLayout)
         fader.set(radarView, showRadar)
         if (showRadar) radarView.invalidate()

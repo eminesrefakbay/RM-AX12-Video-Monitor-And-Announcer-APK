@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.1.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.2.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -10,6 +10,7 @@
 * shows a gray **No video** screen (a camera icon, "No video" and one line of advice, with a small detail line along the bottom) when no frames arrive, and reconnects by itself;
 * **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
+* has a second page, the **dashboard**: cards only and no video, with an artificial horizon, a compass, value cards, radar, charts and sticks, for goggles or a second pair of eyes;
 * can **record every flight** to a CSV file (off by default) and **replay** it on the radio: radar, sticks, channel bars and charts;
 * only **reads** from the radio. It never writes a setting.
 
@@ -21,9 +22,9 @@
 **1** live charts of link quality, cell volts and current, **2** radar map with home, your track and range rings, **3** flight statistics,
 **4** stick view with the aux channel bars, **5** the MENU button.
 
-![The AX-HUD menu: six large tiles over the live video, and the amber warning bar](docs/screenshots/hud-menu.jpg)
+![The AX-HUD menu: large tiles over the live video, and the amber warning bar](docs/screenshots/hud-menu.jpg)
 
-*The MENU (a photo of the radio's screen): six large tiles with their state: speech on, the pack in use and the aircraft in use. The video
+*The MENU (a photo of an earlier version, with six of today's eight tiles): large tiles with their state: speech on, the pack in use and the aircraft in use. The video
 stays visible behind it. The amber bar along the top is the warning bar; each level has its own shape, here the diamond of a warning.*
 
 ![The pre-flight check card, all items ticked and READY](docs/screenshots/hud-preflight.jpg)
@@ -57,7 +58,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,339 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,433 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -185,6 +186,28 @@ Settings) and fill as soon as the app runs.
 Two new values come with them, usable in charts **and in rules**: **`height`** (meters above where you armed) and **`dist`** (meters from
 home). They exist only while armed, so a rule like `height > 120 -> !above your approved height` (a ceiling warning) is silent on the ground.
 
+## Dashboard: a second page with cards only
+
+The **Dashboard** tile in the MENU switches to a second page with no video (and the camera rests); the same tile, now named **Video**,
+switches back. The page you left is the page the app starts on. It is meant for pilots in goggles, who do not use the HDMI input, and for a
+second pair of eyes beside the pilot. The warnings, the connecting banner and the MENU button stay on top of it, and a replay of a flight log
+runs on it too.
+
+* **Cards.** Horizon, compass, flight statistics, radar map, live charts, stick view and any number of **value cards**. The statistics,
+  radar, charts and sticks are the same cards as on the video, and take their rows, channels and chart values from the same settings.
+* **Horizon.** An artificial horizon from the pitch and roll angles of the flight controller (smoothed a little: telemetry arrives a few times
+  a second). INAV counts a nose down pitch as positive, and the horizon follows that. Settings > Dashboard has *Horizon: invert pitch* and
+  *invert roll* for a flight controller that does it the other way: tilt the aircraft nose down on the bench; the horizon should show more
+  ground. The raw gyro rates are not sent in telemetry (only the blackbox has them), so the horizon shows angles, not rates.
+* **Compass.** A rose that turns with the heading (the flight controller's yaw, or the GPS course when there is no yaw), the heading in
+  degrees, and a green marker that points the way home, with the distance.
+* **Value cards.** Pick any value (the same list as the rule editor), give it a label and a unit, choose the decimals, and set an amber
+  and a red limit with the side that is bad (a battery gets worse downwards, a current upwards). A text value such as the flight mode is
+  shown as text. The first dashboard has the cell volts, the current, the link quality and the flight mode.
+* **Layout.** Settings > Dashboard > *Edit the dashboard layout* opens the same editor as the video cards: drag a card, drag its square
+  handle to resize it, and use *Add a card*, *Remove a card* and *Edit a value card* in the bar. *Reset the dashboard layout* brings back the
+  first dashboard. The layout is part of the settings backup.
+
 ## Flight logs and replay
 
 **Settings > Flight logs** (off by default) writes a log of every flight, from arming to disarming (the arm switch you set under
@@ -248,7 +271,7 @@ screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| 
 * **Settings rows: label and value.** A setting that cycles through values is one row: the label on the left, the value on the right
   in blue ("Size ... Medium"), instead of "Size: Medium (tap to change)". Rows are at least 48 dp tall, and long labels wrap, so German
   and Turkish fit.
-* **The MENU is a grid of six large square tiles** (two rows of three: Sound rules, Speech, Battery, Aircraft, Settings, Exit), each
+* **The MENU is a grid of eight large square tiles** (two rows of four: Sound rules, Speech, Battery, Aircraft, Dashboard or Video, Flight logs, Settings, Exit), each
   with an icon, a name and, where there is something to show, its state: Speech shows On or Off, Battery the pack in use, Aircraft the
   aircraft in use, in words and in a coloured bar along the bottom (green On, red Off, blue for the pack and aircraft). Speech and
   Battery keep the menu open when tapped, so the new state can be seen at once.

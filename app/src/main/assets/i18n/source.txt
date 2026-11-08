@@ -57,6 +57,33 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.
 The standard library of the Kotlin language, which the app is written in.
+Horizon
+Compass
+Flight statistics
+Radar map
+Live charts
+Stick view
+Value
+Add a card...
+Remove a card...
+Edit a value card...
+Add a card
+Cancel
+The dashboard has the most cards it can hold.
+Remove which card?
+There is no value card to edit.
+Edit which value card?
+Value: {0}
+Label (optional)
+Unit
+Decimals: {0}
+Low is bad
+High is bad
+No limits
+Amber limit
+Red limit
+Value card
+Done
 Welcome to AX-HUD
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.
 Allow the camera
@@ -64,7 +91,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.
 Where everything is
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
+Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
 Logging stopped: {0}
@@ -73,14 +100,12 @@ Storage is almost full
 The log file cannot be written
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.
 Reset the layout
-Done
 Tick the values to write into each flight log.
 A replay needs these values and cannot show everything without them: {0}
 Replay set
 Everything
 None
 Values in the log
-Cancel
 Tick at least one value.
 Max height {0} m
 Max distance {0} m
@@ -195,7 +220,6 @@ Left stick left/right drawn reversed
 Right stick up/down drawn reversed
 Right stick left/right drawn reversed
 The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.
-Stick view
 Channels are numbers from 1 to 16
 Each of the four needs its own channel
 Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.
@@ -231,7 +255,6 @@ List
 Add a chart
 Time window: {0} s  (tap to change)
 Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.
-Live charts
 Use names from the list, such as up_lq or cell.
 {0}  (in use)
 Choose the aircraft
@@ -263,9 +286,11 @@ Imported {0} rules
 Sound rules
 Speech
 Battery
+Dashboard
 Settings
 On
 Off
+Video
 No video
 At most {0} packs.
 Pack {0}: the name cannot be empty.
@@ -363,7 +388,6 @@ Enter numbers (0 or more)
 ≠ not equal
 Contains (text)
 Variable (type, or tap List)
-Value
   Divide by
 Now: {0}{1}
 Level: Info (blue)  - tap to change
@@ -460,13 +484,19 @@ Put every card back in its corner at normal size
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.
 Video and speech
-Video
 Camera (HDMI input)
 Rotate video
 Scale
 Fill (stretch)
 Speech on
 Speak a test sentence
+A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU.
+Edit the dashboard layout...
+Reset the dashboard layout
+Replace the dashboard layout with the first one?
+Horizon: invert pitch
+Horizon: invert roll
+Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll.
 Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.
 Log every flight
 Rows per second

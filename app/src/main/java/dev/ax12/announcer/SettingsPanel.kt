@@ -86,6 +86,14 @@ interface SettingsHost {
     fun cycleTileOpacity(tile: String)
     fun editCharts()
 
+    // dashboard
+    fun editDashboard()
+    fun resetDashboard()
+    fun horizonInvertPitch(): Boolean
+    fun setHorizonInvertPitch(on: Boolean)
+    fun horizonInvertRoll(): Boolean
+    fun setHorizonInvertRoll(on: Boolean)
+
     // flight logs
     fun logOn(): Boolean
     fun setLogOn(on: Boolean)
@@ -464,6 +472,16 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             toggle(tr("Speech on"), host.speechOn()) { host.setSpeechOn(it) }
             action(tr("Speak a test sentence")) { host.speakTest() }
 
+        }
+        group("dashboard", tr("Dashboard"), "dashboard") {
+            note(tr("A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU."))
+            action(tr("Edit the dashboard layout...")) { host.editDashboard() }
+            action(tr("Reset the dashboard layout")) {
+                confirm(tr("Replace the dashboard layout with the first one?"), tr("Reset")) { host.resetDashboard() }
+            }
+            toggle(tr("Horizon: invert pitch"), host.horizonInvertPitch()) { host.setHorizonInvertPitch(it) }
+            toggle(tr("Horizon: invert roll"), host.horizonInvertRoll()) { host.setHorizonInvertRoll(it) }
+            note(tr("Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll."))
         }
         group("logs", tr("Flight logs"), "logs") {
             note(tr("Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio."))

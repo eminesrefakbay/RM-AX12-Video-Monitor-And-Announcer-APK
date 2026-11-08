@@ -19,7 +19,7 @@ import android.widget.TextView
 /**
  * The main menu as a panel inside the screen, not a popup window. A popup window takes the
  * keyboard focus, and Android answers that by showing its navigation buttons; a view does not.
- * Six large square tiles in two rows of three: an icon, a name, and, where there is something to show, the state (speech on or off,
+ * Eight large square tiles in two rows of four: an icon, a name, and, where there is something to show, the state (speech on or off,
  * the pack in use, the aircraft in use) in words and in a coloured bar. Tapping outside the panel closes it.
  */
 class MainMenu(
@@ -32,6 +32,9 @@ class MainMenu(
     private val onBattery: () -> Unit,
     private val aircraftName: () -> String,
     private val onAircraft: () -> Unit,
+    private val dashboardOn: () -> Boolean,
+    private val onDashboard: () -> Unit,
+    private val onLogs: () -> Unit,
     private val onExit: () -> Unit
 ) {
     val root = FrameLayout(activity)
@@ -81,7 +84,8 @@ class MainMenu(
         }
 
         /** @param barColor the colour of the bar along the bottom (0 = none) */
-        fun set(iconName: String, stateText: String, barColor: Int, iconColor: Int = CardStyle.ICON, nameColor: Int = Color.WHITE) {
+        fun set(iconName: String, stateText: String, barColor: Int, iconColor: Int = CardStyle.ICON, nameColor: Int = Color.WHITE, nameText: String? = null) {
+            if (nameText != null) name.text = nameText
             icon.setImageDrawable(Icons.drawable(activity, iconName, iconColor, 32))
             name.setTextColor(nameColor)
             state.text = stateText
@@ -94,6 +98,8 @@ class MainMenu(
     private val speechTile = Tile(tr("Speech"), false) { onToggleSpeech() }          // stays open, so the new state can be seen
     private val batteryTile = Tile(tr("Battery"), false) { onBattery() }              // the same: the new pack shows on the tile
     private val aircraftTile = Tile(tr("Aircraft"), true) { onAircraft() }
+    private val dashboardTile = Tile(tr("Dashboard"), true) { onDashboard() }       // the other page: cards only, no video
+    private val logsTile = Tile(tr("Flight logs"), true) { onLogs() }
     private val settingsTile = Tile(tr("Settings"), true) { onSettings() }
     private val exitTile = Tile(tr("Exit"), true) { onExit() }
 
@@ -108,7 +114,7 @@ class MainMenu(
         box.background = CardStyle.panelBackground(density, CardStyle.MENU)     // the video shows through
         box.setPadding(dp(8), dp(8), dp(8), dp(8))
         box.isClickable = true
-        for (row in listOf(listOf(rulesTile, speechTile, batteryTile), listOf(aircraftTile, settingsTile, exitTile))) {
+        for (row in listOf(listOf(rulesTile, speechTile, batteryTile, aircraftTile), listOf(dashboardTile, logsTile, settingsTile, exitTile))) {
             val line = LinearLayout(activity)
             line.orientation = LinearLayout.HORIZONTAL
             for (t in row) line.addView(t.view, LinearLayout.LayoutParams(dp(104), dp(112)).also { it.setMargins(dp(4), dp(4), dp(4), dp(4)) })
@@ -127,6 +133,8 @@ class MainMenu(
         speechTile.set(if (speechOn()) "speaker" else "speaker_off", if (speechOn()) tr("On") else tr("Off"), if (speechOn()) CardStyle.OK else CardStyle.BAD)
         batteryTile.set("battery", batteryName(), CardStyle.ACCENT)
         aircraftTile.set("aircraft", aircraftName(), CardStyle.ACCENT)
+        dashboardTile.set(if (dashboardOn()) "video" else "dashboard", "", 0, nameText = if (dashboardOn()) tr("Video") else tr("Dashboard"))
+        logsTile.set("logs", "", 0)
         settingsTile.set("gear", "", 0)
         exitTile.set("exit", "", 0, iconColor = 0xFFFF8A80.toInt(), nameColor = 0xFFFF8A80.toInt())          // apart from the others: a warning colour
     }

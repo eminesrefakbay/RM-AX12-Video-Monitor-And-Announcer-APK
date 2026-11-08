@@ -57,6 +57,33 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK'nın C++ çalışma zamanı; SDK'nın ihtiyaç duyduğu.
 The standard library of the Kotlin language, which the app is written in.	Uygulamanın yazıldığı Kotlin dilinin standart kütüphanesi.
+Horizon	Yapay ufuk
+Compass	Pusula
+Flight statistics	Uçuş istatistikleri
+Radar map	Radar haritası
+Live charts	Canlı grafikler
+Stick view	Stick görünümü
+Value	Değer
+Add a card...	Kart ekle...
+Remove a card...	Kart kaldır...
+Edit a value card...	Değer kartını düzenle...
+Add a card	Kart ekle
+Cancel	İptal
+The dashboard has the most cards it can hold.	Panoda olabilecek en çok kart var.
+Remove which card?	Hangi kart kaldırılsın?
+There is no value card to edit.	Düzenlenecek değer kartı yok.
+Edit which value card?	Hangi değer kartı düzenlensin?
+Value: {0}	Değer: {0}
+Label (optional)	Etiket (isteğe bağlı)
+Unit	Birim
+Decimals: {0}	Ondalık: {0}
+Low is bad	Düşük kötü
+High is bad	Yüksek kötü
+No limits	Limit yok
+Amber limit	Sarı limit
+Red limit	Kırmızı limit
+Value card	Değer kartı
+Done	Tamam
 Welcome to AX-HUD	AX-HUD'a hoş geldiniz
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD, AX12'nizin HDMI girişindeki videoyu tam ekran gösterir, üzerine bir HUD ekler ve duyuruları ile uyarıları sesli söyler. Kumandadan yalnızca okur, ona hiçbir şey yazmaz. Bu kılavuz yaklaşık bir dakika sürer.
 Allow the camera	Kameraya izin verin
@@ -64,7 +91,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	İlk veri yaklaşık 12 saniye sürer
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Uygulamayı açtıktan yaklaşık 12 saniye sonra kumanda verileri (çubuklar, bağlantı kalitesi, telemetri) görünür. Bu bekleme RadioMaster SDK'sının içindedir ve bir hata değildir. Bir bant saniyeleri sayar. Video hemen başlar.
 Where everything is	Her şey nerede
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; altı kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, uçuş kayıtları, diller ve güncellemeler bulunur.
+Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; sekiz kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Pano, Uçuş kayıtları, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, uçuş kayıtları, diller ve güncellemeler bulunur.
 An aid, not a safety system	Bir yardımcı araç, güvenlik sistemi değil
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD, hava aracınızın ne yaptığını görmenize ve duymanıza yardımcı olur. Tek uyarı kaynağınız yapmayın. Her zaman yerel kurallara uygun uçun.
 Logging stopped: {0}	Kayıt durdu: {0}
@@ -73,14 +100,12 @@ Storage is almost full	Depolama alanı neredeyse dolu
 The log file cannot be written	Kayıt dosyası yazılamıyor
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için kare tutamacı sürükleyin. Bitince Tamam'a dokunun.
 Reset the layout	Yerleşimi sıfırla
-Done	Tamam
 Tick the values to write into each flight log.	Her uçuş kaydına yazılacak değerleri işaretleyin.
 A replay needs these values and cannot show everything without them: {0}	Bir tekrar oynatma bu değerlere ihtiyaç duyar; onlar olmadan her şeyi gösteremez: {0}
 Replay set	Oynatma seti
 Everything	Hepsi
 None	Hiçbiri
 Values in the log	Kayıttaki değerler
-Cancel	İptal
 Tick at least one value.	En az bir değer işaretleyin.
 Max height {0} m	En yüksek irtifa {0} m
 Max distance {0} m	En uzak mesafe {0} m
@@ -195,7 +220,6 @@ Left stick left/right drawn reversed	Sol stick sol/sağ ters çizilsin
 Right stick up/down drawn reversed	Sağ stick yukarı/aşağı ters çizilsin
 Right stick left/right drawn reversed	Sağ stick sol/sağ ters çizilsin
 The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	Stick'ler, kumandanın gönderdiği kanal değerlerini gösterir. Yaygın sıra: roll 1, pitch 2, gaz 3, yaw 4. Nokta yanlış yöne giderse bir yönü ters çevirin.
-Stick view	Stick görünümü
 Channels are numbers from 1 to 16	Kanallar 1 ile 16 arasında sayılardır
 Each of the four needs its own channel	Dördünün her biri kendi kanalına ihtiyaç duyar
 Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Android'de {0} sesi yüklü değil. Android Ayarları'nda Metinden konuşmaya çıkışı bölümünden yükleyin.
@@ -231,7 +255,6 @@ List	Liste
 Add a chart	Grafik ekle
 Time window: {0} s  (tap to change)	Zaman aralığı: {0} sn  (değiştirmek için dokunun)
 Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	Her grafik, son saniyelerdeki tek bir değeri kendi ölçeğiyle gösterir. Değerleri listeden seçin (en fazla dört). Bağlantı kalitesi her zaman 0 ile 100 arasında çizilir, böylece küçük bir dalgalanma küçük kalır.
-Live charts	Canlı grafikler
 Use names from the list, such as up_lq or cell.	Listedeki adları kullanın, örneğin up_lq veya cell.
 {0}  (in use)	{0}  (kullanımda)
 Choose the aircraft	Hava aracını seçin
@@ -263,9 +286,11 @@ Imported {0} rules	{0} kural içe aktarıldı
 Sound rules	Ses kuralları
 Speech	Konuşma
 Battery	Batarya
+Dashboard	Pano
 Settings	Ayarlar
 On	Açık
 Off	Kapalı
+Video	Video
 No video	Video yok
 At most {0} packs.	En fazla {0} paket olabilir.
 Pack {0}: the name cannot be empty.	Paket {0}: ad boş olamaz.
@@ -363,7 +388,6 @@ Enter numbers (0 or more)	Sayı girin (0 veya daha fazla)
 ≠ not equal	≠ eşit değil
 Contains (text)	İçerir (metin)
 Variable (type, or tap List)	Değişken (yazın veya Liste'ye dokunun)
-Value	Değer
   Divide by	  Bölen
 Now: {0}{1}	Şimdi: {0}{1}
 Level: Info (blue)  - tap to change	Seviye: Bilgi (mavi)  - değiştirmek için dokunun
@@ -460,13 +484,19 @@ Put every card back in its corner at normal size	Her kartı köşesine, normal b
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Her kart köşesine, normal boyutta geri konsun mu? Seçtiğiniz yerler ve boyutlar unutulacak.
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Bir kartı taşımak için sürükleyin, boyutunu değiştirmek için kare tutamacını sürükleyin. Kapalı kartlar gösterilmez. Bir kartın Boyut ayarı başlangıç boyutudur; yeniden boyutlandırma onu çarpar.
 Video and speech	Video ve konuşma
-Video	Video
 Camera (HDMI input)	Kamera (HDMI girişi)
 Rotate video	Videoyu döndür
 Scale	Ölçek
 Fill (stretch)	Doldur (esnet)
 Speech on	Konuşma açık
 Speak a test sentence	Bir deneme cümlesi söyle
+A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU.	Yalnızca kartlardan oluşan, videosuz ikinci bir sayfa: gözlük kullananlar veya ikinci bir çift göz için. Sayfalar arasında MENÜ'deki Pano kutucuğuyla geçersiniz.
+Edit the dashboard layout...	Pano düzenini düzenle...
+Reset the dashboard layout	Pano düzenini sıfırla
+Replace the dashboard layout with the first one?	Pano düzeni ilk düzenle değiştirilsin mi?
+Horizon: invert pitch	Ufuk: eğimi ters çevir
+Horizon: invert roll	Ufuk: yatışı ters çevir
+Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll.	Hava aracının burnunu aşağı eğin: ufuk daha çok zemin göstermeli. Tersini gösteriyorsa eğim ters çevirmeyi açın; yatış için de aynısı.
 Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	Her uçuşun kaydını arm edilmesinden disarm edilmesine kadar yazar: seçtiğiniz değerler, saniyede birkaç satır. Dosyalar bir hesap tablosunun açabildiği düz CSV'dir ve kayıt görüntüleyici bunları kumanda üzerinde yeniden oynatabilir.
 Log every flight	Her uçuşu kaydet
 Rows per second	Saniyedeki satır sayısı

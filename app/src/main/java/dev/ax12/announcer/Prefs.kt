@@ -42,6 +42,11 @@ object Prefs {
     fun int(c: Context, key: String, def: Int): Int = p(c).getInt(key, def)
     fun setInt(c: Context, key: String, v: Int) { p(c).edit().putInt(key, v).apply() }
 
+    // ---- dashboard
+    /** The cards of the dashboard page, one per line; empty means the first dashboard. */
+    fun dashTiles(c: Context): String = p(c).getString("dashTiles", null) ?: ""
+    fun setDashTiles(c: Context, text: String) { p(c).edit().putString("dashTiles", text).apply() }
+
     // ---- flight logs
     fun logOn(c: Context): Boolean = p(c).getBoolean("logOn", false)
     fun setLogOn(c: Context, on: Boolean) = setBool(c, "logOn", on)

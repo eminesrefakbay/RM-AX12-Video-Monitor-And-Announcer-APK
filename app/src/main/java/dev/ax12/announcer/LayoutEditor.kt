@@ -41,6 +41,7 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
     }
 
     private val density = activity.resources.displayMetrics.density
+    private val extraBox = LinearLayout(activity)
     private val scrim = Paint(Paint.ANTI_ALIAS_FLAG)
     private val frame = Paint(Paint.ANTI_ALIAS_FLAG)
     private val chip = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -84,6 +85,7 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         hint.textSize = 12f
         hint.setTextColor(0xFFFFFFFF.toInt())
         bar.addView(hint, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        bar.addView(extraBox)
         val reset = Button(activity)
         reset.text = tr("Reset the layout")
         reset.isAllCaps = false
@@ -104,6 +106,22 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
     }
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
+
+    /** Extra buttons in the bar, before Reset and Done (the dashboard adds, removes and edits cards). */
+    fun setActions(actions: List<Pair<String, () -> Unit>>) {
+        extraBox.removeAllViews()
+        extraBox.orientation = LinearLayout.HORIZONTAL
+        for ((label, click) in actions) {
+            val b = Button(activity)
+            b.text = label
+            b.isAllCaps = false
+            b.textSize = 13f
+            b.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
+            b.setPadding(dp(12), dp(0), dp(12), dp(0))
+            b.setOnClickListener { click() }
+            extraBox.addView(b)
+        }
+    }
 
     fun show() {
         Anim.show(this)

@@ -57,6 +57,33 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
+Horizon	地平仪
+Compass	指南针
+Flight statistics	飞行统计
+Radar map	雷达地图
+Live charts	实时图表
+Stick view	摇杆视图
+Value	值
+Add a card...	添加卡片...
+Remove a card...	移除卡片...
+Edit a value card...	编辑数值卡片...
+Add a card	添加卡片
+Cancel	取消
+The dashboard has the most cards it can hold.	仪表盘已达到卡片数量上限。
+Remove which card?	移除哪张卡片?
+There is no value card to edit.	没有可编辑的数值卡片。
+Edit which value card?	编辑哪张数值卡片?
+Value: {0}	数值: {0}
+Label (optional)	标签(可选)
+Unit	单位
+Decimals: {0}	小数位: {0}
+Low is bad	越低越差
+High is bad	越高越差
+No limits	无限值
+Amber limit	黄色限值
+Red limit	红色限值
+Value card	数值卡片
+Done	完成
 Welcome to AX-HUD	欢迎使用 AX-HUD
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD 会把 AX12 的 HDMI 输入视频全屏显示, 在上面叠加 HUD, 并语音播报提示和警告。它只从遥控器读取数据, 绝不向其写入。本指南大约需要一分钟。
 Allow the camera	允许使用相机
@@ -64,7 +91,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	首批数据约需 12 秒
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	打开应用后, 遥控器数据(摇杆、链路质量、遥测)大约 12 秒后才会出现。这段等待发生在 RadioMaster SDK 内部, 不是错误。横幅会显示已等待的秒数。视频会立即开始。
 Where everything is	各项功能在哪里
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到六个图块: 语音规则、语音、电池、飞行器、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
+Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到八个图块: 语音规则、语音、电池、飞行器、仪表盘、飞行日志、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
 An aid, not a safety system	辅助工具, 而非安全系统
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD 帮助你看到并听到飞行器的状态。请不要把它当作唯一的警告来源。始终遵守当地规定飞行。
 Logging stopped: {0}	记录已停止: {0}
@@ -73,14 +100,12 @@ Storage is almost full	存储空间几乎已满
 The log file cannot be written	无法写入日志文件
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动方形手柄可调整大小。完成后点按“完成”。
 Reset the layout	重置布局
-Done	完成
 Tick the values to write into each flight log.	勾选要写入每个飞行日志的数值。
 A replay needs these values and cannot show everything without them: {0}	回放需要这些数值, 缺少它们就无法显示全部内容: {0}
 Replay set	回放集
 Everything	全部
 None	无
 Values in the log	日志中的数值
-Cancel	取消
 Tick at least one value.	请至少勾选一个数值。
 Max height {0} m	最大高度 {0} m
 Max distance {0} m	最远距离 {0} m
@@ -195,7 +220,6 @@ Left stick left/right drawn reversed	左摇杆左右反向显示
 Right stick up/down drawn reversed	右摇杆上下反向显示
 Right stick left/right drawn reversed	右摇杆左右反向显示
 The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	摇杆显示遥控器发送的通道数值。常见顺序: 横滚 1, 俯仰 2, 油门 3, 偏航 4。如果圆点移动方向不对, 请反转该方向。
-Stick view	摇杆视图
 Channels are numbers from 1 to 16	通道为 1 到 16 的数字
 Each of the four needs its own channel	四项各需要独立的通道
 Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Android 未安装 {0} 语音。请在 Android 设置的文字转语音输出中安装。
@@ -231,7 +255,6 @@ List	列表
 Add a chart	添加图表
 Time window: {0} s  (tap to change)	时间窗口: {0} 秒  (点按更改)
 Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	每个图表以自己的刻度显示一个数值在最近几秒内的变化。请从列表中选择数值 (最多四个)。链路质量始终按 0 到 100 绘制, 因此小幅波动看起来仍然很小。
-Live charts	实时图表
 Use names from the list, such as up_lq or cell.	请使用列表中的名称, 例如 up_lq 或 cell。
 {0}  (in use)	{0}  (使用中)
 Choose the aircraft	选择飞行器
@@ -263,9 +286,11 @@ Imported {0} rules	已导入 {0} 条规则
 Sound rules	语音规则
 Speech	语音
 Battery	电池
+Dashboard	仪表盘
 Settings	设置
 On	开
 Off	关
+Video	视频
 No video	无视频
 At most {0} packs.	最多 {0} 个电池包。
 Pack {0}: the name cannot be empty.	电池包 {0}: 名称不能为空。
@@ -363,7 +388,6 @@ Enter numbers (0 or more)	请输入数字 (0 或更大)
 ≠ not equal	≠ 不等于
 Contains (text)	包含 (文本)
 Variable (type, or tap List)	变量 (输入, 或点按列表)
-Value	值
   Divide by	  除以
 Now: {0}{1}	当前: {0}{1}
 Level: Info (blue)  - tap to change	级别: 信息 (蓝色)  - 点按更改
@@ -460,13 +484,19 @@ Put every card back in its corner at normal size	将所有卡片放回各自角�
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	将所有卡片放回各自角落并恢复正常大小? 你选择的位置和大小将被清除。
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其方形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
 Video and speech	视频和语音
-Video	视频
 Camera (HDMI input)	摄像头 (HDMI 输入)
 Rotate video	旋转视频
 Scale	缩放
 Fill (stretch)	填充 (拉伸)
 Speech on	语音开启
 Speak a test sentence	播报一句测试语
+A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU.	只有卡片、没有视频的第二页, 适合戴视频眼镜时使用, 或供另一个人查看。在“菜单”中用“仪表盘”图块切换页面。
+Edit the dashboard layout...	编辑仪表盘布局...
+Reset the dashboard layout	重置仪表盘布局
+Replace the dashboard layout with the first one?	用初始布局替换仪表盘布局吗?
+Horizon: invert pitch	地平仪: 反转俯仰
+Horizon: invert roll	地平仪: 反转横滚
+Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll.	让飞行器机头朝下: 地平仪应显示更多地面。如果相反, 请切换俯仰反转; 横滚同理。
 Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	为每次飞行写入日志, 从解锁到上锁: 记录你选择的数值, 每秒数行。文件是电子表格可直接打开的纯 CSV, 日志查看器可以在遥控器上回放它们。
 Log every flight	记录每次飞行
 Rows per second	每秒行数

@@ -57,6 +57,33 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	Die Qt-Bibliotheken, die mit dem RadioMaster-SDK kommen, so wie sie mitgeliefert werden. Quellcode: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Die C++-Laufzeit des Android-NDK, die das SDK braucht.
 The standard library of the Kotlin language, which the app is written in.	Die Standardbibliothek der Sprache Kotlin, in der die App geschrieben ist.
+Horizon	Horizont
+Compass	Kompass
+Flight statistics	Flugstatistik
+Radar map	Radarkarte
+Live charts	Live-Diagramme
+Stick view	Stick-Ansicht
+Value	Wert
+Add a card...	Karte hinzufügen...
+Remove a card...	Karte entfernen...
+Edit a value card...	Wertkarte bearbeiten...
+Add a card	Karte hinzufügen
+Cancel	Abbrechen
+The dashboard has the most cards it can hold.	Das Dashboard hat die höchstmögliche Zahl von Karten.
+Remove which card?	Welche Karte entfernen?
+There is no value card to edit.	Es gibt keine Wertkarte zum Bearbeiten.
+Edit which value card?	Welche Wertkarte bearbeiten?
+Value: {0}	Wert: {0}
+Label (optional)	Beschriftung (optional)
+Unit	Einheit
+Decimals: {0}	Dezimalstellen: {0}
+Low is bad	Niedrig ist schlecht
+High is bad	Hoch ist schlecht
+No limits	Keine Grenzen
+Amber limit	Gelbe Grenze
+Red limit	Rote Grenze
+Value card	Wertkarte
+Done	Fertig
 Welcome to AX-HUD	Willkommen bei AX-HUD
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD zeigt das Video vom HDMI-Eingang deines AX12 im Vollbild, legt ein HUD darüber und spricht Ansagen und Warnungen. Es liest nur von der Fernsteuerung und schreibt nie etwas hinein. Diese Anleitung dauert etwa eine Minute.
 Allow the camera	Kamera erlauben
@@ -64,7 +91,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	Die ersten Daten brauchen etwa 12 Sekunden
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Nach dem Öffnen der App erscheinen die Daten der Fernsteuerung (Knüppel, Verbindungsqualität, Telemetrie) nach etwa 12 Sekunden. Diese Wartezeit liegt im RadioMaster-SDK und ist kein Fehler. Ein Banner zählt die Sekunden. Das Video startet sofort.
 Where everything is	Wo was zu finden ist
-Tap MENU at the top right for six tiles: Sound rules, Speech, Battery, Aircraft, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Tippe oben rechts auf MENÜ für sechs Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Flugprotokolle, die Sprachen und die Updates.
+Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Tippe oben rechts auf MENÜ für acht Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Dashboard, Flugprotokolle, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Flugprotokolle, die Sprachen und die Updates.
 An aid, not a safety system	Eine Hilfe, kein Sicherheitssystem
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD hilft dir zu sehen und zu hören, was dein Fluggerät gerade tut. Verlasse dich nicht allein darauf. Fliege immer nach den örtlichen Regeln.
 Logging stopped: {0}	Aufzeichnung gestoppt: {0}
@@ -73,14 +100,12 @@ Storage is almost full	Der Speicher ist fast voll
 The log file cannot be written	Die Protokolldatei kann nicht geschrieben werden
 Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den quadratischen Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
 Reset the layout	Layout zurücksetzen
-Done	Fertig
 Tick the values to write into each flight log.	Hake die Werte an, die in jedes Flugprotokoll geschrieben werden.
 A replay needs these values and cannot show everything without them: {0}	Eine Wiedergabe braucht diese Werte und kann ohne sie nicht alles zeigen: {0}
 Replay set	Wiedergabe
 Everything	Alles
 None	Keine
 Values in the log	Werte im Protokoll
-Cancel	Abbrechen
 Tick at least one value.	Hake mindestens einen Wert an.
 Max height {0} m	Max. Höhe {0} m
 Max distance {0} m	Max. Entfernung {0} m
@@ -195,7 +220,6 @@ Left stick left/right drawn reversed	Linker Stick links/rechts umgekehrt
 Right stick up/down drawn reversed	Rechter Stick hoch/runter umgekehrt
 Right stick left/right drawn reversed	Rechter Stick links/rechts umgekehrt
 The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	Die Sticks zeigen die Kanalwerte, die die Fernsteuerung sendet. Übliche Reihenfolge: Roll 1, Nick 2, Gas 3, Gier 4. Kehre eine Richtung um, wenn sich der Punkt falsch herum bewegt.
-Stick view	Stick-Ansicht
 Channels are numbers from 1 to 16	Kanäle sind Zahlen von 1 bis 16
 Each of the four needs its own channel	Jeder der vier braucht einen eigenen Kanal
 Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Auf Android ist keine {0}-Stimme installiert. Installiere sie in den Android-Einstellungen unter Sprachausgabe.
@@ -231,7 +255,6 @@ List	Liste
 Add a chart	Diagramm hinzufügen
 Time window: {0} s  (tap to change)	Zeitfenster: {0} s  (zum Ändern tippen)
 Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	Jedes Diagramm zeigt einen Wert über die letzten Sekunden, mit eigener Skala. Wähle die Werte aus der Liste (bis zu vier). Die Verbindungsqualität wird immer von 0 bis 100 gezeichnet, damit ein kleines Schwanken klein bleibt.
-Live charts	Live-Diagramme
 Use names from the list, such as up_lq or cell.	Verwende Namen aus der Liste, zum Beispiel up_lq oder cell.
 {0}  (in use)	{0}  (in Benutzung)
 Choose the aircraft	Fluggerät wählen
@@ -263,9 +286,11 @@ Imported {0} rules	{0} Regeln importiert
 Sound rules	Sprachregeln
 Speech	Sprachausgabe
 Battery	Akku
+Dashboard	Dashboard
 Settings	Einstellungen
 On	An
 Off	Aus
+Video	Video
 No video	Kein Video
 At most {0} packs.	Höchstens {0} Akkus.
 Pack {0}: the name cannot be empty.	Akku {0}: Der Name darf nicht leer sein.
@@ -363,7 +388,6 @@ Enter numbers (0 or more)	Zahlen eingeben (0 oder mehr)
 ≠ not equal	≠ ungleich
 Contains (text)	Enthält (Text)
 Variable (type, or tap List)	Variable (tippen oder auf Liste tippen)
-Value	Wert
   Divide by	  Teilen durch
 Now: {0}{1}	Jetzt: {0}{1}
 Level: Info (blue)  - tap to change	Stufe: Info (blau)  - zum Ändern tippen
@@ -460,13 +484,19 @@ Put every card back in its corner at normal size	Jede Karte in ihre Ecke zurück
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Jede Karte in ihre Ecke zurück, in normaler Größe? Die gewählten Positionen und Größen werden vergessen.
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Ziehe eine Karte, um sie zu verschieben, und ihren quadratischen Griff, um die Größe zu ändern. Ausgeschaltete Karten werden nicht gezeigt. Die Größe-Einstellung einer Karte ist ihre Startgröße; das Ändern multipliziert sie.
 Video and speech	Video und Sprachausgabe
-Video	Video
 Camera (HDMI input)	Kamera (HDMI-Eingang)
 Rotate video	Video drehen
 Scale	Skalierung
 Fill (stretch)	Füllen (strecken)
 Speech on	Sprache an
 Speak a test sentence	Testsatz sprechen
+A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU.	Eine zweite Seite nur mit Karten und ohne Video, für die Videobrille oder ein zweites Augenpaar. Die Seiten wechselst du mit der Kachel Dashboard im MENÜ.
+Edit the dashboard layout...	Dashboard-Layout bearbeiten...
+Reset the dashboard layout	Dashboard-Layout zurücksetzen
+Replace the dashboard layout with the first one?	Das Dashboard-Layout durch das erste ersetzen?
+Horizon: invert pitch	Horizont: Nicken umkehren
+Horizon: invert roll	Horizont: Rollen umkehren
+Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll.	Neige das Fluggerät mit der Nase nach unten: Der Horizont sollte mehr Boden zeigen. Zeigt er das Gegenteil, schalte die Nick-Umkehrung um; ebenso beim Rollen.
 Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	Schreibt von jedem Flug ein Protokoll, vom Scharfschalten bis zum Entschärfen: die gewählten Werte, mehrere Zeilen pro Sekunde. Die Dateien sind einfaches CSV, das eine Tabellenkalkulation öffnet, und der Protokollbetrachter kann sie auf der Fernsteuerung wiedergeben.
 Log every flight	Jeden Flug aufzeichnen
 Rows per second	Zeilen pro Sekunde

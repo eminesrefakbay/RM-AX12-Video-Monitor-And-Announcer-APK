@@ -79,6 +79,12 @@ rect 4 3 20 21 0 stroke
 polyline 7 16.5 10 11.5 13 14.5 17 8.5
 circle 17 8.5 1.3 fill
 
+icon dashboard
+rect 3.5 3.5 10.5 10.5 0 stroke
+rect 13.5 3.5 20.5 10.5 0 stroke
+rect 3.5 13.5 10.5 20.5 0 stroke
+rect 13.5 13.5 20.5 20.5 0 stroke
+
 icon about
 circle 12 12 9.5 stroke
 circle 12 7.6 1.3 fill

@@ -29,7 +29,7 @@ public class FirstRunTests {
         check(en.get(0).title.equals("Welcome to AX-HUD") && en.get(0).body.contains("never writes"), "page 1 welcomes and says the app only reads");
         check(en.get(1).body.contains("camera permission") && en.get(1).body.contains("Permissions"), "page 2 explains the camera permission and where to allow it");
         check(en.get(2).title.contains("12 seconds") && en.get(2).body.contains("RadioMaster SDK") && en.get(2).body.contains("not an error"), "page 3 explains the 12 second wait");
-        check(en.get(3).body.contains("MENU") && en.get(3).body.contains("Sound rules") && en.get(3).body.contains("Exit"), "page 4 says where the MENU is and what is in it");
+        check(en.get(3).body.contains("MENU") && en.get(3).body.contains("eight tiles") && en.get(3).body.contains("Dashboard") && en.get(3).body.contains("Sound rules") && en.get(3).body.contains("Exit"), "page 4 says where the MENU is and what is in it");
         check(en.get(4).title.contains("not a safety system") && en.get(4).body.contains("local rules"), "page 5 says the app is an aid");
         // the other languages really are translated (not the English text again)
         for (String lang : new String[]{"tr", "de", "zh"}) {

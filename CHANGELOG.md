@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+A dashboard page (cards only, no video): horizon, compass, value cards, statistics, radar, charts and sticks, with its own editable layout
+and a Dashboard / Video tile in the MENU, which now has eight tiles.
+
 ## 1.1.0
 
 Flight logs and replay: a CSV log of every flight from arming to disarming (off by default; chosen values, rate and number of flights),
