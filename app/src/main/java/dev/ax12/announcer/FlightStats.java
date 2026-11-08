@@ -51,6 +51,7 @@ public final class FlightStats {
     private final double[] trailX = new double[TRAIL_MAX];
     private final double[] trailY = new double[TRAIL_MAX];
     private int trailN;
+    private final FlightTotals totals = new FlightTotals();
 
     public void configure(int armChannel, double armHighUs, double armLowUs, int cells) {
         this.armChannel = armChannel;
@@ -75,6 +76,11 @@ public final class FlightStats {
     public double minLinkQuality() { return minLq; }
     public double minCellVolts() { return minCell; }
     public double headingDeg() { return heading; }
+    public double homeLat() { return homeLat; }
+    public double homeLon() { return homeLon; }
+    /** The distance, energy and capacity of this flight so far, or of the last one after landing. */
+    public FlightTotals totals() { return totals; }
+    public long disarmedAtMs() { return disarmedAtMs; }
     public double eastM() { return posX; }
     public double northM() { return posY; }
     public int trailSize() { return trailN; }
@@ -101,6 +107,7 @@ public final class FlightStats {
         maxSpeed = maxHeight = peakCurrent = maxDist = minLq = minCell = Double.NaN;
         posX = posY = Double.NaN;
         trailN = 0;
+        totals.reset();
     }
 
     private static double max(double a, double b) { return Double.isNaN(a) ? b : Math.max(a, b); }
@@ -133,7 +140,7 @@ public final class FlightStats {
 
         // ---- readings
         Double lat = v.get("gps_lat"), lon = v.get("gps_lon"), alt = v.get("gps_alt"), sats = v.get("sats");
-        Double spd = v.get("gps_speed"), cur = v.get("curr"), lq = v.get("up_lq"), vbat = v.get("vbat");
+        Double spd = v.get("gps_speed"), cur = v.get("curr"), lq = v.get("up_lq"), vbat = v.get("vbat"), capa = v.get("capa");
         Double yaw = v.get("yaw"), course = v.get("gps_heading");
 
         if (!Double.isNaN(heading) || yaw != null || course != null) {
@@ -169,6 +176,7 @@ public final class FlightStats {
             currentNow = cur;
             peakCurrent = max(peakCurrent, cur);
         }
+        totals.update(nowMs, spd == null ? Double.NaN : spd, vbat == null ? Double.NaN : vbat, cur == null ? Double.NaN : cur, capa == null ? Double.NaN : capa);
         if (lq != null) minLq = min(minLq, lq);
         if (vbat != null && vbat > 6.0) minCell = min(minCell, vbat / cells);
     }

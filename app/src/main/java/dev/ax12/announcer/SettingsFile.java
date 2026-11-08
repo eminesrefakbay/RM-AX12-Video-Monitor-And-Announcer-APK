@@ -56,6 +56,7 @@ public final class SettingsFile {
         s("aircraftStore"); s("aircraftActive");
         // flight logs
         b("layoutSnap"); b("layoutStripHidden"); b("dashPage"); s("dashTiles"); b("horizonInvPitch"); b("horizonInvRoll");
+        b("winOn"); i("winStart", 0, 1439); i("winEnd", 0, 1439); s("winWarn"); b("winSpeech"); b("debriefOn"); b("lossSpeech"); s("packBook");
         b("logOn"); i("logRate", 0, FlightLogger.RATES_HZ.length - 1); i("logKeep", 0, FlightLogger.KEEP.length - 1); s("logFields");
     }
 
@@ -77,6 +78,7 @@ public final class SettingsFile {
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) { d(tile + "X", -1); d(tile + "Y", -1); d(tile + "Scale", 100); }
         d("batActive", 0); d("packActive", 0);
         d("layoutSnap", true); d("layoutStripHidden", false); d("dashPage", false); d("dashTiles", ""); d("horizonInvPitch", false); d("horizonInvRoll", false);
+        d("winOn", false); d("winStart", 960); d("winEnd", 1080); d("winWarn", ApprovalWindow.DEFAULT_WARN); d("winSpeech", true); d("debriefOn", true); d("lossSpeech", true); d("packBook", "");
         d("logOn", false); d("logRate", 3); d("logKeep", 1); d("logFields", "");
         d("chartOn", false); d("chartSize", 1); d("chartPos", 1); d("chartOpacity", 1); d("chartWindow", 1); d("chartSeries", ChartConfig.DEFAULT);
     }
@@ -205,6 +207,8 @@ public final class SettingsFile {
         if (key.equals("dashTiles")) return DashLayout.valid(value) ? value : null;
         if (key.equals("logFields")) return value.isEmpty() ? value : (LogFields.parse(value).isEmpty() ? null : LogFields.join(LogFields.parse(value)));
         if (key.equals("packs")) return Packs.parseStrict(value) != null ? value : null;
+        if (key.equals("winWarn")) return ApprovalWindow.validWarn(value) ? value : null;
+        if (key.equals("packBook")) return PackBook.valid(value) ? value : null;
         if (key.equals("aircraftStore")) return value.length() <= 500000 && AircraftStore.decodeStrict(value, null) != null ? value : null;
         if (key.equals("aircraftActive")) return value.matches("[a-z0-9]{1,8}") ? value : null;
         if (key.equals("camera")) return value.matches("[A-Za-z0-9_.:-]{1,40}") ? value : null;

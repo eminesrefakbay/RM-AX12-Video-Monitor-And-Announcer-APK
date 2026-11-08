@@ -22,6 +22,13 @@ There is already an aircraft with this name: {0}.	Es gibt bereits ein Fluggerät
 That aircraft does not exist.	Dieses Fluggerät gibt es nicht.
 At least one aircraft must stay.	Mindestens ein Fluggerät muss bleiben.
 You cannot delete the aircraft in use. Switch to another one first.	Du kannst das benutzte Fluggerät nicht löschen. Wechsle zuerst zu einem anderen.
+One minute left in the approval window.	Noch eine Minute im Genehmigungszeitraum.
+{0} minutes left in the approval window.	Noch {0} Minuten im Genehmigungszeitraum.
+The approval window has ended. Land now.	Der Genehmigungszeitraum ist abgelaufen. Jetzt landen.
+Warning: you are outside the approval window.	Warnung: Sie sind außerhalb des Genehmigungszeitraums.
+Window {0} left	Zeitraum: noch {0}
+Window opens in {0}	Zeitraum beginnt in {0}
+Window ended {0} ago	Zeitraum endete vor {0}
 Bar {0}: the channel must be 1 to 16.	Balken {0}: Der Kanal muss 1 bis 16 sein.
 Add at least one battery profile.	Füge mindestens ein Akkuprofil hinzu.
 At most {0} battery profiles.	Höchstens {0} Akkuprofile.
@@ -84,6 +91,15 @@ Amber limit	Gelbe Grenze
 Red limit	Rote Grenze
 Value card	Wertkarte
 Done	Fertig
+Flight time {0} minutes {1} seconds.	Flugzeit {0} Minuten {1} Sekunden.
+Flight time {0} minute {1} seconds.	Flugzeit {0} Minute {1} Sekunden.
+Flight time {0} seconds.	Flugzeit {0} Sekunden.
+Distance {0} kilometers.	Strecke {0} Kilometer.
+Used {0} milliamp hours.	{0} Milliamperestunden verbraucht.
+Efficiency {0} watt hours per kilometer.	Effizienz {0} Wattstunden pro Kilometer.
+Lowest cell {0} volts.	Niedrigste Zelle {0} Volt.
+Resting cell {0} volts.	Ruhespannung pro Zelle {0} Volt.
+Pack {0}, flight {1}.	Akku {0}, Flug {1}.
 Welcome to AX-HUD	Willkommen bei AX-HUD
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD zeigt das Video vom HDMI-Eingang deines AX12 im Vollbild, legt ein HUD darüber und spricht Ansagen und Warnungen. Es liest nur von der Fernsteuerung und schreibt nie etwas hinein. Diese Anleitung dauert etwa eine Minute.
 Allow the camera	Kamera erlauben
@@ -94,14 +110,62 @@ Where everything is	Wo was zu finden ist
 Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Tippe oben rechts auf MENÜ für acht Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Dashboard, Flugprotokolle, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Flugprotokolle, die Sprachen und die Updates.
 An aid, not a safety system	Eine Hilfe, kein Sicherheitssystem
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD hilft dir zu sehen und zu hören, was dein Fluggerät gerade tut. Verlasse dich nicht allein darauf. Fliege immer nach den örtlichen Regeln.
+Packs	Akkus
+Last known position	Letzte bekannte Position
+LINK LOST {0}	VERBINDUNG VERLOREN {0}
+The link is back	Die Verbindung ist wieder da
+Copied: {0}	Kopiert: {0}
+No flights counted yet. Every flight of 20 seconds or more is added to the pack that is selected, when you land.	Noch keine Flüge gezählt. Jeder Flug ab 20 Sekunden wird nach der Landung dem gewählten Akku hinzugefügt.
+Flights {0}	Flüge: {0}
+{0} mAh	{0} mAh
+{0} Wh	{0} Wh
+{0} km	{0} km
+{0} Wh/km	{0} Wh/km
+{0} mAh/km	{0} mAh/km
+Average flight {0} min	Mittlerer Flug {0} Min
+{0} full charges of {1} mAh	{0} volle Ladungen à {1} mAh
+Lowest cell {0} V	Niedrigste Zelle {0} V
+Rest {0} V	Ruhe {0} V
+Remove this pack from the book...	Diesen Akku aus dem Buch entfernen...
+Remove {0} and its flights from the book? It cannot be brought back.	{0} und seine Flüge aus dem Buch entfernen? Das kann nicht rückgängig gemacht werden.
+Remove	Entfernen
+The book counts every flight of 20 seconds or more when you land, for the pack that is selected. It is part of the settings backup, and it does not depend on the flight logs.	Das Buch zählt bei der Landung jeden Flug ab 20 Sekunden für den gewählten Akku. Es gehört zur Einstellungssicherung und hängt nicht von den Flugprotokollen ab.
+Clear the whole book...	Das ganze Buch löschen...
+Clear the book of all {0} packs? It cannot be brought back.	Das Buch aller {0} Akkus löschen? Das kann nicht rückgängig gemacht werden.
+Clear	Löschen
+No position is saved yet. The radio saves one every 5 seconds in flight, and at once when the link is lost.	Noch keine Position gespeichert. Das Funkgerät speichert im Flug alle 5 Sekunden eine, und sofort bei Verbindungsverlust.
+Link lost	Verbindung verloren
+In flight, the latest position	Im Flug, die letzte Position
+Saved {0}	Gespeichert: {0}
+No position was received in this flight.	In diesem Flug wurde keine Position empfangen.
+{0} m from home, bearing {1} deg {2}	{0} m von Home, Peilung {1} Grad {2}
+Height {0} m	Höhe {0} m
+Speed {0} km/h	Tempo {0} km/h
+{0} satellites	{0} Satelliten
+Copy position	Position kopieren
+Open in a maps app	In einer Karten-App öffnen
+No maps app on this radio. Copy the position instead.	Auf diesem Funkgerät ist keine Karten-App. Kopieren Sie stattdessen die Position.
+Delete this note...	Diese Notiz löschen...
+Delete the saved position? It cannot be brought back.	Gespeicherte Position löschen? Das kann nicht rückgängig gemacht werden.
+Delete	Löschen
+The file is {0}	Die Datei ist {0}
 Logging stopped: {0}	Aufzeichnung gestoppt: {0}
 The log folder cannot be made	Der Protokollordner kann nicht angelegt werden
 Storage is almost full	Der Speicher ist fast voll
 The log file cannot be written	Die Protokolldatei kann nicht geschrieben werden
+North	Norden
+North east	Nordosten
+East	Osten
+South east	Südosten
+South	Süden
+South west	Südwesten
+West	Westen
+North west	Nordwesten
 Snap to grid	Am Raster ausrichten
 Reset the layout	Layout zurücksetzen
 Hide the buttons	Schaltflächen ausblenden
 Show the buttons	Schaltflächen einblenden
+Saved on this radio: Settings > Flight logs > Last known position.	Auf diesem Funkgerät gespeichert: Einstellungen > Flugprotokolle > Letzte bekannte Position.
 Tick the values to write into each flight log.	Hake die Werte an, die in jedes Flugprotokoll geschrieben werden.
 A replay needs these values and cannot show everything without them: {0}	Eine Wiedergabe braucht diese Werte und kann ohne sie nicht alles zeigen: {0}
 Replay set	Wiedergabe
@@ -113,8 +177,9 @@ Max height {0} m	Max. Höhe {0} m
 Max distance {0} m	Max. Entfernung {0} m
 Top speed {0} km/h	Höchstgeschwindigkeit {0} km/h
 Peak current {0} A	Spitzenstrom {0} A
-Lowest cell {0} V	Niedrigste Zelle {0} V
 {0} mAh used	{0} mAh verbraucht
+Flew {0} km	{0} km geflogen
+{0} Wh used	{0} Wh verbraucht
 The log was cut off: the app was stopped while it was writing.	Das Protokoll ist abgebrochen: Die App wurde beim Schreiben beendet.
 {0} logs, {1}	{0} Protokolle, {1}
 Flight logs	Flugprotokolle
@@ -122,7 +187,6 @@ Loading the log...	Protokoll wird geladen...
 No flight logs yet. Switch on logging in Settings, then arm to start one.	Noch keine Flugprotokolle. Schalte die Aufzeichnung in den Einstellungen ein und schalte dann scharf, um eines zu starten.
 Delete all the logs...	Alle Protokolle löschen...
 Delete all {0} logs? They cannot be brought back.	Alle {0} Protokolle löschen? Sie lassen sich nicht wiederherstellen.
-Delete	Löschen
 The logs hold GPS positions and stay on this radio, in the folder {0}	Die Protokolle enthalten GPS-Positionen und bleiben auf dieser Fernsteuerung im Ordner {0}
 Recording now	Wird gerade aufgezeichnet
 Replay	Wiedergabe
@@ -156,6 +220,8 @@ Nightly (newest build of every push)	Nightly (neuester Build jedes Pushs)
 {0} values	{0} Werte
 {0} flights	{0} Flüge
 Logging now: {0} rows	Aufzeichnung läuft: {0} Zeilen
+Opens at	Beginnt um
+Closes at	Endet um
 Top	Oben
 Bottom	Unten
 BATTERY CRITICAL 3.48 V per cell	AKKU KRITISCH 3.48 V pro Zelle
@@ -184,6 +250,10 @@ NOT READY: 1 check failed	NICHT BEREIT: 1 Check fehlgeschlagen
 NOT READY: {0} checks failed	NICHT BEREIT: {0} Checks fehlgeschlagen
 WAITING FOR DATA	WARTE AUF DATEN
 PRE-FLIGHT CHECK	CHECK VOR DEM FLUG
+Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	Ganze Minuten von 1 bis 240, höchstens 8, zum Beispiel 30,15,10,5,2,1. Leer bedeutet keine Warnungen; das Ende des Zeitraums wird immer angesagt.
+Warn at (minutes left)	Warnen bei (verbleibende Minuten)
+OK	OK
+Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	Verwenden Sie ganze Minuten von 1 bis 240, höchstens 8, zum Beispiel 30,15,10,5,2,1.
 Arm switch channel (1 to 16, AUX1 is channel 5)	Kanal des Arm-Schalters (1 bis 16, AUX1 ist Kanal 5)
 Counts as armed at or above (microseconds)	Gilt als scharf ab (Mikrosekunden)
 Counts as disarmed below (microseconds)	Gilt als gesichert darunter (Mikrosekunden)
@@ -252,7 +322,6 @@ Charts	Diagramme
 Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	Millisekunden seit dem Start der App. "graph" ist der Moment, in dem der erste Stick-Wert den Bildschirm erreichte. Der neueste Start steht zuletzt.
 No timings yet. Start the app, wait until the sticks move, and look again.	Noch keine Zeiten. Starte die App, warte bis sich die Sticks bewegen, und schau noch einmal nach.
 Start-up timings	Startzeiten
-Clear	Löschen
 List	Liste
 Add a chart	Diagramm hinzufügen
 Time window: {0} s  (tap to change)	Zeitfenster: {0} s  (zum Ändern tippen)
@@ -271,7 +340,6 @@ Name                    Battery profile              mAh	Name                   
 Add pack	Akku hinzufügen
 Pack {0}	Akku {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	Jeder Akku nutzt ein Akkuprofil (seine Grenzen). Einen Akku im Menü zu wählen schaltet auf sein Profil. Die Kapazität dient deinen Unterlagen (0 = unbekannt). Ohne Akkus wechselt das Menü direkt das Profil.
-Packs	Akkus
 Enter numbers in every field	Gib in jedes Feld eine Zahl ein
 Exit AX-HUD?	AX-HUD beenden?
 The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	Die Verbindung zur Fernsteuerung wird beendet und der serielle Port der Fernsteuerung freigegeben. Bis du die App wieder startest, gibt es kein HUD und keine Sprachausgabe.
@@ -300,6 +368,10 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Akku {0}: Die Kapazität i
 Two packs have the same name: {0}.	Zwei Akkus haben denselben Namen: {0}.
 {0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
 {0} ({1})	{0} ({1})
+Link lost.	Verbindung verloren.
+Link lost. The last position is saved.	Verbindung verloren. Die letzte Position ist gespeichert.
+Link lost. Last position {0} meters {1} of home, height {2} meters.	Verbindung verloren. Letzte Position {0} Meter in Richtung {1} von Home, Höhe {2} Meter.
+Link lost. Last position {0} meters {1} of home.	Verbindung verloren. Letzte Position {0} Meter in Richtung {1} von Home.
 Test sliders	Testregler
 Test sliders (no radio)	Testregler (keine Fernsteuerung)
 RadioMaster SDK	RadioMaster SDK
@@ -504,6 +576,19 @@ Log every flight	Jeden Flug aufzeichnen
 Rows per second	Zeilen pro Sekunde
 Flights to keep	Aufzubewahrende Flüge
 Flight logs: list, replay and delete...	Flugprotokolle: Liste, Wiedergabe und Löschen...
+Approval window	Genehmigungszeitraum
+The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.	Die Zeit, in der Sie fliegen dürfen, zum Beispiel die zwei Stunden, die die Behörde genehmigt hat. Das Funkgerät zeigt die Restzeit, spricht Warnungen, solange das Fluggerät scharf ist, und warnt, wenn Sie außerhalb des Zeitraums scharf schalten. Er wiederholt sich täglich und nutzt die Uhr dieses Funkgeräts, die jetzt {0} anzeigt.
+Use an approval window	Genehmigungszeitraum verwenden
+Two hours from now	Zwei Stunden ab jetzt
+Speak the warnings	Warnungen ansagen
+The value win_left (minutes left) can be used in value cards, charts, rules and logs.	Der Wert win_left (verbleibende Minuten) kann in Wertkarten, Diagrammen, Regeln und Protokollen verwendet werden.
+Landing, link loss and packs	Landung, Verbindungsverlust und Akkus
+Speak a debrief after landing	Nach der Landung eine Zusammenfassung ansagen
+After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	Nach einem Flug von 20 Sekunden oder mehr: Flugzeit, Strecke, verbrauchte Kapazität, Effizienz, niedrigste Zelle und die Spannung, auf die sich der Akku erholt.
+Speak the last position when the link is lost	Bei Verbindungsverlust die letzte Position ansagen
+When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	Bei Verbindungsverlust im Flug zeigt eine Karte die letzte Position mit Entfernung und Peilung von Home; die Position wird auf diesem Funkgerät gespeichert.
+Last known position...	Letzte bekannte Position...
+Packs: totals per pack...	Akkus: Summen je Akku...
 Rules and backup	Regeln und Sicherung
 Export sound rules to a file...	Sprachregeln in eine Datei exportieren...
 Import sound rules from a file...	Sprachregeln aus einer Datei importieren...
@@ -606,11 +691,17 @@ Roll angle, degrees	Rollwinkel, Grad
 Yaw / heading, degrees	Gier / Kurs, Grad
 Climb rate, m/s	Steigrate, m/s
 Flight mode name from the flight controller (text)	Flugmodus-Name vom Flugcontroller (Text)
+Distance flown in this flight, km (kept after landing)	Geflogene Strecke in diesem Flug, km (bleibt nach der Landung)
+Energy used in this flight, Wh (volts times amps over time)	In diesem Flug verbrauchte Energie, Wh (Volt mal Ampere über die Zeit)
+Energy per kilometre flown, Wh/km (after the first 0.2 km)	Energie pro geflogenem Kilometer, Wh/km (nach den ersten 0,2 km)
+Capacity per kilometre flown, mAh/km (after the first 0.2 km)	Kapazität pro geflogenem Kilometer, mAh/km (nach den ersten 0,2 km)
+Minutes left in the approval window (only while it is open)	Verbleibende Minuten im Genehmigungszeitraum (nur solange er offen ist)
 Switches and sticks (channels, 1000 to 2000)	Schalter und Sticks (Kanäle, 1000 bis 2000)
 Battery (from the flight controller)	Akku (vom Flugcontroller)
 Link quality and signal	Verbindungsqualität und Signal
 Radio status	Status der Fernsteuerung
 GPS and attitude	GPS und Lage
+Flight totals and approval window	Flugsummen und Genehmigungszeitraum
 Flight mode (text)	Flugmodus (Text)
 Other values from the radio	Weitere Werte von der Fernsteuerung
 Advanced: the radio's own channel numbers	Erweitert: die eigenen Kanalwerte der Fernsteuerung
@@ -642,6 +733,11 @@ Radio volts	Spannung der Fernsteuerung
 Lost frames	Verlorene Frames
 Packet rate mode	Paketraten-Modus
 Telemetry	Telemetrie
+Distance flown km	Geflogen km
+Energy Wh	Energie Wh
+Energy Wh/km	Energie Wh/km
+Capacity mAh/km	Kapazität mAh/km
+Window minutes	Zeitraum Minuten
 Channel {0}	Kanal {0}
 Now: {0}	Jetzt: {0}
 No value now	Derzeit kein Wert

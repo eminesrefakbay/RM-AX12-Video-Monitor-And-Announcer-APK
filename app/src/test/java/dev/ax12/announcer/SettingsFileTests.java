@@ -104,7 +104,7 @@ public class SettingsFileTests {
         // ---------- the schema covers every setting the app uses ----------
         Set<String> used = new HashSet<String>();
         File dir = new File("app/src/main/java/dev/ax12/announcer");
-        Pattern lit = Pattern.compile("(?:getString|getInt|getBoolean)\\(\"([A-Za-z0-9_]+)\"|Prefs\\.(?:int|bool|setInt|setBool)\\([^,]+,\\s*\"([A-Za-z0-9_]+)\"|(?:putString|putInt|putBoolean)\\(\"([A-Za-z0-9_]+)\"");
+        Pattern lit = Pattern.compile("(?:getString|getInt|getBoolean)\\(\"([A-Za-z0-9_]+)\"|Prefs\\.(?:int|bool|string|setInt|setBool|setString)\\([^,]+,\\s*\"([A-Za-z0-9_]+)\"|(?:putString|putInt|putBoolean)\\(\"([A-Za-z0-9_]+)\"");
         for (File f : dir.listFiles()) {
             if (!f.getName().endsWith(".kt")) continue;
             Matcher m = lit.matcher(new String(Files.readAllBytes(f.toPath()), "UTF-8"));

@@ -39,6 +39,8 @@ object Prefs {
 
     fun bool(c: Context, key: String, def: Boolean): Boolean = p(c).getBoolean(key, def)
     fun setBool(c: Context, key: String, v: Boolean) { p(c).edit().putBoolean(key, v).apply() }
+    fun string(c: Context, key: String, def: String): String = p(c).getString(key, def) ?: def
+    fun setString(c: Context, key: String, v: String) { p(c).edit().putString(key, v).apply() }
     fun int(c: Context, key: String, def: Int): Int = p(c).getInt(key, def)
     fun setInt(c: Context, key: String, v: Int) { p(c).edit().putInt(key, v).apply() }
 
@@ -82,6 +84,8 @@ object Prefs {
     // ---- packs and aircraft ----
     fun packsText(c: Context): String = p(c).getString("packs", null) ?: ""
     fun setPacksText(c: Context, text: String) { p(c).edit().putString("packs", text).apply() }
+    fun packBookText(c: Context): String = p(c).getString("packBook", null) ?: ""
+    fun setPackBookText(c: Context, text: String) { p(c).edit().putString("packBook", text).apply() }
     fun aircraftStoreText(c: Context): String? = p(c).getString("aircraftStore", null)
     fun setAircraftStoreText(c: Context, text: String) { p(c).edit().putString("aircraftStore", text).apply() }
     fun aircraftActive(c: Context): String? = p(c).getString("aircraftActive", null)

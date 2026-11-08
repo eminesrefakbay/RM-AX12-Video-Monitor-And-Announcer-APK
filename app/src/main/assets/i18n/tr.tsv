@@ -22,6 +22,13 @@ There is already an aircraft with this name: {0}.	Bu adda bir hava aracı zaten 
 That aircraft does not exist.	Böyle bir hava aracı yok.
 At least one aircraft must stay.	En az bir hava aracı kalmalı.
 You cannot delete the aircraft in use. Switch to another one first.	Kullanımdaki hava aracını silemezsiniz. Önce başkasına geçin.
+One minute left in the approval window.	Onay penceresinde bir dakika kaldı.
+{0} minutes left in the approval window.	Onay penceresinde {0} dakika kaldı.
+The approval window has ended. Land now.	Onay penceresi sona erdi. Şimdi inin.
+Warning: you are outside the approval window.	Uyarı: onay penceresinin dışındasınız.
+Window {0} left	Pencere: {0} kaldı
+Window opens in {0}	Pencere {0} sonra açılır
+Window ended {0} ago	Pencere {0} önce bitti
 Bar {0}: the channel must be 1 to 16.	Çubuk {0}: kanal 1 ile 16 arasında olmalı.
 Add at least one battery profile.	En az bir batarya profili ekleyin.
 At most {0} battery profiles.	En fazla {0} batarya profili olabilir.
@@ -84,6 +91,15 @@ Amber limit	Sarı limit
 Red limit	Kırmızı limit
 Value card	Değer kartı
 Done	Tamam
+Flight time {0} minutes {1} seconds.	Uçuş süresi {0} dakika {1} saniye.
+Flight time {0} minute {1} seconds.	Uçuş süresi {0} dakika {1} saniye.
+Flight time {0} seconds.	Uçuş süresi {0} saniye.
+Distance {0} kilometers.	Mesafe {0} kilometre.
+Used {0} milliamp hours.	{0} miliamper saat kullanıldı.
+Efficiency {0} watt hours per kilometer.	Verimlilik kilometre başına {0} watt saat.
+Lowest cell {0} volts.	En düşük hücre {0} volt.
+Resting cell {0} volts.	Dinlenme hücre gerilimi {0} volt.
+Pack {0}, flight {1}.	Paket {0}, uçuş {1}.
 Welcome to AX-HUD	AX-HUD'a hoş geldiniz
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD, AX12'nizin HDMI girişindeki videoyu tam ekran gösterir, üzerine bir HUD ekler ve duyuruları ile uyarıları sesli söyler. Kumandadan yalnızca okur, ona hiçbir şey yazmaz. Bu kılavuz yaklaşık bir dakika sürer.
 Allow the camera	Kameraya izin verin
@@ -94,14 +110,62 @@ Where everything is	Her şey nerede
 Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; sekiz kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Pano, Uçuş kayıtları, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, uçuş kayıtları, diller ve güncellemeler bulunur.
 An aid, not a safety system	Bir yardımcı araç, güvenlik sistemi değil
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD, hava aracınızın ne yaptığını görmenize ve duymanıza yardımcı olur. Tek uyarı kaynağınız yapmayın. Her zaman yerel kurallara uygun uçun.
+Packs	Paketler
+Last known position	Bilinen son konum
+LINK LOST {0}	BAĞLANTI KOPTU {0}
+The link is back	Bağlantı geri geldi
+Copied: {0}	Kopyalandı: {0}
+No flights counted yet. Every flight of 20 seconds or more is added to the pack that is selected, when you land.	Henüz sayılan uçuş yok. 20 saniye ve üzeri her uçuş, indiğinizde seçili pakete eklenir.
+Flights {0}	Uçuş: {0}
+{0} mAh	{0} mAh
+{0} Wh	{0} Wh
+{0} km	{0} km
+{0} Wh/km	{0} Wh/km
+{0} mAh/km	{0} mAh/km
+Average flight {0} min	Ortalama uçuş {0} dk
+{0} full charges of {1} mAh	{1} mAh'lik {0} tam şarj
+Lowest cell {0} V	En düşük hücre {0} V
+Rest {0} V	Dinlenme {0} V
+Remove this pack from the book...	Bu paketi defterden kaldır...
+Remove {0} and its flights from the book? It cannot be brought back.	{0} ve uçuşları defterden kaldırılsın mı? Geri getirilemez.
+Remove	Kaldır
+The book counts every flight of 20 seconds or more when you land, for the pack that is selected. It is part of the settings backup, and it does not depend on the flight logs.	Defter, indiğinizde 20 saniye ve üzeri her uçuşu seçili paket için sayar. Ayar yedeğinin parçasıdır ve uçuş kayıtlarına bağlı değildir.
+Clear the whole book...	Tüm defteri temizle...
+Clear the book of all {0} packs? It cannot be brought back.	Tüm {0} paketin defteri temizlensin mi? Geri getirilemez.
+Clear	Temizle
+No position is saved yet. The radio saves one every 5 seconds in flight, and at once when the link is lost.	Henüz kayıtlı konum yok. Telsiz uçuşta 5 saniyede bir, bağlantı koptuğunda ise hemen bir konum kaydeder.
+Link lost	Bağlantı koptu
+In flight, the latest position	Uçuşta, en son konum
+Saved {0}	Kaydedildi: {0}
+No position was received in this flight.	Bu uçuşta konum alınmadı.
+{0} m from home, bearing {1} deg {2}	Eve {0} m, yön {1} derece {2}
+Height {0} m	Yükseklik {0} m
+Speed {0} km/h	Hız {0} km/sa
+{0} satellites	{0} uydu
+Copy position	Konumu kopyala
+Open in a maps app	Harita uygulamasında aç
+No maps app on this radio. Copy the position instead.	Bu telsizde harita uygulaması yok. Bunun yerine konumu kopyalayın.
+Delete this note...	Bu notu sil...
+Delete the saved position? It cannot be brought back.	Kayıtlı konum silinsin mi? Geri getirilemez.
+Delete	Sil
+The file is {0}	Dosya: {0}
 Logging stopped: {0}	Kayıt durdu: {0}
 The log folder cannot be made	Kayıt klasörü oluşturulamıyor
 Storage is almost full	Depolama alanı neredeyse dolu
 The log file cannot be written	Kayıt dosyası yazılamıyor
+North	Kuzey
+North east	Kuzeydoğu
+East	Doğu
+South east	Güneydoğu
+South	Güney
+South west	Güneybatı
+West	Batı
+North west	Kuzeybatı
 Snap to grid	Izgaraya hizala
 Reset the layout	Yerleşimi sıfırla
 Hide the buttons	Düğmeleri gizle
 Show the buttons	Düğmeleri göster
+Saved on this radio: Settings > Flight logs > Last known position.	Bu telsize kaydedildi: Ayarlar > Uçuş kayıtları > Bilinen son konum.
 Tick the values to write into each flight log.	Her uçuş kaydına yazılacak değerleri işaretleyin.
 A replay needs these values and cannot show everything without them: {0}	Bir tekrar oynatma bu değerlere ihtiyaç duyar; onlar olmadan her şeyi gösteremez: {0}
 Replay set	Oynatma seti
@@ -113,8 +177,9 @@ Max height {0} m	En yüksek irtifa {0} m
 Max distance {0} m	En uzak mesafe {0} m
 Top speed {0} km/h	En yüksek hız {0} km/sa
 Peak current {0} A	Tepe akım {0} A
-Lowest cell {0} V	En düşük hücre {0} V
 {0} mAh used	{0} mAh kullanıldı
+Flew {0} km	{0} km uçuldu
+{0} Wh used	{0} Wh kullanıldı
 The log was cut off: the app was stopped while it was writing.	Kayıt yarım kaldı: uygulama yazarken durduruldu.
 {0} logs, {1}	{0} kayıt, {1}
 Flight logs	Uçuş kayıtları
@@ -122,7 +187,6 @@ Loading the log...	Kayıt yükleniyor...
 No flight logs yet. Switch on logging in Settings, then arm to start one.	Henüz uçuş kaydı yok. Ayarlar'dan kaydı açın, sonra bir tane başlatmak için arm edin.
 Delete all the logs...	Tüm kayıtları sil...
 Delete all {0} logs? They cannot be brought back.	Tüm {0} kayıt silinsin mi? Geri getirilemezler.
-Delete	Sil
 The logs hold GPS positions and stay on this radio, in the folder {0}	Kayıtlar GPS konumlarını içerir ve bu kumandada {0} klasöründe kalır
 Recording now	Şu an kaydediliyor
 Replay	Yeniden oynat
@@ -156,6 +220,8 @@ Nightly (newest build of every push)	Nightly (her push'un en yeni yapısı)
 {0} values	{0} değer
 {0} flights	{0} uçuş
 Logging now: {0} rows	Kayıt sürüyor: {0} satır
+Opens at	Açılış
+Closes at	Kapanış
 Top	Üst
 Bottom	Alt
 BATTERY CRITICAL 3.48 V per cell	BATARYA KRİTİK 3.48 V hücre başına
@@ -184,6 +250,10 @@ NOT READY: 1 check failed	HAZIR DEĞİL: 1 kontrol başarısız
 NOT READY: {0} checks failed	HAZIR DEĞİL: {0} kontrol başarısız
 WAITING FOR DATA	VERİ BEKLENİYOR
 PRE-FLIGHT CHECK	UÇUŞ ÖNCESİ KONTROL
+Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	Tam dakikalar, 1 ile 240 arası, en fazla 8, örneğin 30,15,10,5,2,1. Boş bırakırsanız uyarı olmaz; pencerenin bitişi her zaman söylenir.
+Warn at (minutes left)	Uyarı zamanı (kalan dakika)
+OK	Tamam
+Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	Tam dakikalar kullanın: 1 ile 240 arası, en fazla 8, örneğin 30,15,10,5,2,1.
 Arm switch channel (1 to 16, AUX1 is channel 5)	Arm anahtarı kanalı (1-16, AUX1 kanal 5'tir)
 Counts as armed at or above (microseconds)	Bu değer ve üzerinde arm sayılır (mikrosaniye)
 Counts as disarmed below (microseconds)	Bu değerin altında disarm sayılır (mikrosaniye)
@@ -252,7 +322,6 @@ Charts	Grafikler
 Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	Uygulama başladığından beri geçen milisaniye. "graph", ilk stick değerinin ekrana ulaştığı andır. En yeni başlatma en sondadır.
 No timings yet. Start the app, wait until the sticks move, and look again.	Henüz süre yok. Uygulamayı başlatın, stick'ler hareket edene kadar bekleyin ve tekrar bakın.
 Start-up timings	Başlatma süreleri
-Clear	Temizle
 List	Liste
 Add a chart	Grafik ekle
 Time window: {0} s  (tap to change)	Zaman aralığı: {0} sn  (değiştirmek için dokunun)
@@ -271,7 +340,6 @@ Name                    Battery profile              mAh	Ad                     
 Add pack	Paket ekle
 Pack {0}	Paket {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	Her paket bir batarya profili kullanır (sınırları). Menüden bir paket seçmek onun profiline geçer. Kapasite kayıtlarınız içindir (0 = bilinmiyor). Paket yoksa menü doğrudan profili değiştirir.
-Packs	Paketler
 Enter numbers in every field	Her alana sayı girin
 Exit AX-HUD?	AX-HUD'dan çıkılsın mı?
 The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	Kumanda bağlantısı durur ve kumandanın seri portu serbest bırakılır. Uygulamayı yeniden başlatana kadar HUD ve ses olmaz.
@@ -300,6 +368,10 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	Paket {0}: kapasite 0 ile 
 Two packs have the same name: {0}.	İki paketin adı aynı: {0}.
 {0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
 {0} ({1})	{0} ({1})
+Link lost.	Bağlantı koptu.
+Link lost. The last position is saved.	Bağlantı koptu. Son konum kaydedildi.
+Link lost. Last position {0} meters {1} of home, height {2} meters.	Bağlantı koptu. Son konum eve {0} metre, {1} yönünde, yükseklik {2} metre.
+Link lost. Last position {0} meters {1} of home.	Bağlantı koptu. Son konum eve {0} metre, {1} yönünde.
 Test sliders	Test kaydırıcıları
 Test sliders (no radio)	Test kaydırıcıları (kumanda yok)
 RadioMaster SDK	RadioMaster SDK
@@ -504,6 +576,19 @@ Log every flight	Her uçuşu kaydet
 Rows per second	Saniyedeki satır sayısı
 Flights to keep	Saklanacak uçuşlar
 Flight logs: list, replay and delete...	Uçuş kayıtları: listele, oynat ve sil...
+Approval window	Onay penceresi
+The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.	Uçmaya onaylı olduğunuz süre, örneğin yetkilinin verdiği iki saat. Telsiz kalan süreyi gösterir, hava aracı arm iken uyarıları seslendirir ve pencerenin dışında arm ettiğinizde uyarır. Her gün tekrarlanır ve bu telsizin saatini kullanır; saat şu an {0}.
+Use an approval window	Onay penceresi kullan
+Two hours from now	Şimdiden iki saat
+Speak the warnings	Uyarıları seslendir
+The value win_left (minutes left) can be used in value cards, charts, rules and logs.	Değer win_left (kalan dakika) değer kartlarında, grafiklerde, kurallarda ve kayıtlarda kullanılabilir.
+Landing, link loss and packs	İniş, bağlantı kaybı ve paketler
+Speak a debrief after landing	İnişten sonra özet seslendir
+After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	Uçuş 20 saniye veya daha uzunsa: uçuş süresi, mesafe, kullanılan kapasite, verimlilik, en düşük hücre ve paketin dinlendiği gerilim.
+Speak the last position when the link is lost	Bağlantı koptuğunda son konumu seslendir
+When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	Uçuşta bağlantı koptuğunda, bir kart son konumu eve uzaklığı ve yönüyle gösterir; konum bu telsize kaydedilir.
+Last known position...	Bilinen son konum...
+Packs: totals per pack...	Paketler: her paketin toplamları...
 Rules and backup	Kurallar ve yedekleme
 Export sound rules to a file...	Ses kurallarını dosyaya aktar...
 Import sound rules from a file...	Ses kurallarını dosyadan içe aktar...
@@ -606,11 +691,17 @@ Roll angle, degrees	Roll açısı, derece
 Yaw / heading, degrees	Yaw / yön, derece
 Climb rate, m/s	Tırmanma hızı, m/s
 Flight mode name from the flight controller (text)	Uçuş kontrolcüsünden uçuş modu adı (metin)
+Distance flown in this flight, km (kept after landing)	Bu uçuşta uçulan mesafe, km (iniş sonrası da kalır)
+Energy used in this flight, Wh (volts times amps over time)	Bu uçuşta kullanılan enerji, Wh (volt çarpı amper, zaman boyunca)
+Energy per kilometre flown, Wh/km (after the first 0.2 km)	Uçulan kilometre başına enerji, Wh/km (ilk 0,2 km'den sonra)
+Capacity per kilometre flown, mAh/km (after the first 0.2 km)	Uçulan kilometre başına kapasite, mAh/km (ilk 0,2 km'den sonra)
+Minutes left in the approval window (only while it is open)	Onay penceresinde kalan dakika (yalnızca açıkken)
 Switches and sticks (channels, 1000 to 2000)	Anahtarlar ve stick'ler (kanallar, 1000 - 2000)
 Battery (from the flight controller)	Batarya (uçuş kontrolcüsünden)
 Link quality and signal	Bağlantı kalitesi ve sinyal
 Radio status	Kumanda durumu
 GPS and attitude	GPS ve duruş
+Flight totals and approval window	Uçuş toplamları ve onay penceresi
 Flight mode (text)	Uçuş modu (metin)
 Other values from the radio	Kumandadan diğer değerler
 Advanced: the radio's own channel numbers	Gelişmiş: kumandanın kendi kanal sayıları
@@ -642,6 +733,11 @@ Radio volts	Kumanda voltu
 Lost frames	Kayıp kareler
 Packet rate mode	Paket hızı modu
 Telemetry	Telemetri
+Distance flown km	Uçulan mesafe km
+Energy Wh	Enerji Wh
+Energy Wh/km	Enerji Wh/km
+Capacity mAh/km	Kapasite mAh/km
+Window minutes	Pencere dakika
 Channel {0}	Kanal {0}
 Now: {0}	Şimdi: {0}
 No value now	Şu an değer yok

@@ -55,6 +55,12 @@ public final class LogText {
         if (!Double.isNaN(e.peakCurrent)) parts.add(I18n.t("Peak current {0} A", n0(e.peakCurrent)));
         if (!Double.isNaN(e.minCell)) parts.add(I18n.t("Lowest cell {0} V", String.format(Locale.US, "%.2f", e.minCell)));
         if (!Double.isNaN(e.mah)) parts.add(I18n.t("{0} mAh used", n0(e.mah)));
+        if (!Double.isNaN(e.distanceKm)) parts.add(I18n.t("Flew {0} km", String.format(Locale.US, "%.1f", e.distanceKm)));
+        if (!Double.isNaN(e.energyWh)) parts.add(I18n.t("{0} Wh used", String.format(Locale.US, "%.1f", e.energyWh)));
+        if (!Double.isNaN(e.distanceKm) && e.distanceKm >= FlightTotals.MIN_KM_FOR_EFFICIENCY) {
+            if (!Double.isNaN(e.energyWh) && e.energyWh > 0) parts.add(I18n.t("{0} Wh/km", String.format(Locale.US, "%.1f", e.energyWh / e.distanceKm)));
+            if (!Double.isNaN(e.mah) && e.mah > 0) parts.add(I18n.t("{0} mAh/km", n0(e.mah / e.distanceKm)));
+        }
         StringBuilder sb = new StringBuilder();
         for (String p : parts) { if (sb.length() > 0) sb.append("  \u00B7  "); sb.append(p); }
         if (!e.clean) {

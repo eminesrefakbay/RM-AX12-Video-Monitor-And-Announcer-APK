@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0
+
+Around the flight: the last known position when the link is lost (card, voice, saved note), an approval window with a time-left chip and
+spoken warnings, distance, energy and efficiency of every flight (cards, rules, logs and the flight list), a pack book with totals per pack,
+and a voice debrief after landing. The build now pins the SDK commit.
+
 ## 1.2.4
 
 Editing the layout starts only when you hold one spot of the dashboard or of the video for 5 seconds: a swipe, a drag or a second finger

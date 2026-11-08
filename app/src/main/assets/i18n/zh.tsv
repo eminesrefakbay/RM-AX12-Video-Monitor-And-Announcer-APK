@@ -22,6 +22,13 @@ There is already an aircraft with this name: {0}.	已经有同名的飞行器: {
 That aircraft does not exist.	该飞行器不存在。
 At least one aircraft must stay.	至少要保留一个飞行器。
 You cannot delete the aircraft in use. Switch to another one first.	不能删除正在使用的飞行器。请先切换到另一个。
+One minute left in the approval window.	批准时段还剩一分钟。
+{0} minutes left in the approval window.	批准时段还剩{0}分钟。
+The approval window has ended. Land now.	批准时段已结束。请立即降落。
+Warning: you are outside the approval window.	警告：您不在批准时段内。
+Window {0} left	时段剩余 {0}
+Window opens in {0}	时段将在 {0} 后开始
+Window ended {0} ago	时段已于 {0} 前结束
 Bar {0}: the channel must be 1 to 16.	第 {0} 个条: 通道必须是 1 到 16。
 Add at least one battery profile.	请至少添加一个电池配置。
 At most {0} battery profiles.	最多 {0} 个电池配置。
@@ -84,6 +91,15 @@ Amber limit	黄色限值
 Red limit	红色限值
 Value card	数值卡片
 Done	完成
+Flight time {0} minutes {1} seconds.	飞行时间{0}分{1}秒。
+Flight time {0} minute {1} seconds.	飞行时间{0}分{1}秒。
+Flight time {0} seconds.	飞行时间{0}秒。
+Distance {0} kilometers.	距离{0}公里。
+Used {0} milliamp hours.	用电{0}毫安时。
+Efficiency {0} watt hours per kilometer.	能耗每公里{0}瓦时。
+Lowest cell {0} volts.	最低单节电压{0}伏。
+Resting cell {0} volts.	静置单节电压{0}伏。
+Pack {0}, flight {1}.	电池包{0}，第{1}次飞行。
 Welcome to AX-HUD	欢迎使用 AX-HUD
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD 会把 AX12 的 HDMI 输入视频全屏显示, 在上面叠加 HUD, 并语音播报提示和警告。它只从遥控器读取数据, 绝不向其写入。本指南大约需要一分钟。
 Allow the camera	允许使用相机
@@ -94,14 +110,62 @@ Where everything is	各项功能在哪里
 Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到八个图块: 语音规则、语音、电池、飞行器、仪表盘、飞行日志、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
 An aid, not a safety system	辅助工具, 而非安全系统
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD 帮助你看到并听到飞行器的状态。请不要把它当作唯一的警告来源。始终遵守当地规定飞行。
+Packs	电池包
+Last known position	最后已知位置
+LINK LOST {0}	链路丢失 {0}
+The link is back	链路已恢复
+Copied: {0}	已复制：{0}
+No flights counted yet. Every flight of 20 seconds or more is added to the pack that is selected, when you land.	尚无记录的飞行。每次20秒以上的飞行，降落后会记入当前选中的电池包。
+Flights {0}	飞行 {0} 次
+{0} mAh	{0} mAh
+{0} Wh	{0} Wh
+{0} km	{0} km
+{0} Wh/km	{0} Wh/km
+{0} mAh/km	{0} mAh/km
+Average flight {0} min	平均每次 {0} 分钟
+{0} full charges of {1} mAh	相当于 {0} 次充满（{1} mAh）
+Lowest cell {0} V	最低单芯电压 {0} V
+Rest {0} V	静置 {0} V
+Remove this pack from the book...	从记录簿中移除这个电池包...
+Remove {0} and its flights from the book? It cannot be brought back.	要从记录簿中移除{0}及其飞行记录吗？无法恢复。
+Remove	移除
+The book counts every flight of 20 seconds or more when you land, for the pack that is selected. It is part of the settings backup, and it does not depend on the flight logs.	每次降落时，记录簿会为当前选中的电池包记入20秒以上的飞行。它是设置备份的一部分，不依赖飞行日志。
+Clear the whole book...	清空整个记录簿...
+Clear the book of all {0} packs? It cannot be brought back.	要清空全部{0}个电池包的记录簿吗？无法恢复。
+Clear	清除
+No position is saved yet. The radio saves one every 5 seconds in flight, and at once when the link is lost.	尚未保存位置。遥控器在飞行中每5秒保存一次，链路丢失时立即保存。
+Link lost	链路丢失
+In flight, the latest position	飞行中，最新位置
+Saved {0}	保存于 {0}
+No position was received in this flight.	本次飞行未收到位置。
+{0} m from home, bearing {1} deg {2}	距起点 {0} 米，方位 {1} 度 {2}
+Height {0} m	高度 {0} 米
+Speed {0} km/h	速度 {0} km/h
+{0} satellites	{0} 颗卫星
+Copy position	复制位置
+Open in a maps app	在地图应用中打开
+No maps app on this radio. Copy the position instead.	这台遥控器上没有地图应用。请改为复制位置。
+Delete this note...	删除此记录...
+Delete the saved position? It cannot be brought back.	要删除已保存的位置吗？无法恢复。
+Delete	删除
+The file is {0}	文件：{0}
 Logging stopped: {0}	记录已停止: {0}
 The log folder cannot be made	无法创建日志文件夹
 Storage is almost full	存储空间几乎已满
 The log file cannot be written	无法写入日志文件
+North	北
+North east	东北
+East	东
+South east	东南
+South	南
+South west	西南
+West	西
+North west	西北
 Snap to grid	对齐网格
 Reset the layout	重置布局
 Hide the buttons	隐藏按钮
 Show the buttons	显示按钮
+Saved on this radio: Settings > Flight logs > Last known position.	已保存在这台遥控器上：设置 > 飞行日志 > 最后已知位置。
 Tick the values to write into each flight log.	勾选要写入每个飞行日志的数值。
 A replay needs these values and cannot show everything without them: {0}	回放需要这些数值, 缺少它们就无法显示全部内容: {0}
 Replay set	回放集
@@ -113,8 +177,9 @@ Max height {0} m	最大高度 {0} m
 Max distance {0} m	最远距离 {0} m
 Top speed {0} km/h	最高速度 {0} km/h
 Peak current {0} A	峰值电流 {0} A
-Lowest cell {0} V	最低单芯电压 {0} V
 {0} mAh used	已用 {0} mAh
+Flew {0} km	飞行 {0} km
+{0} Wh used	用电 {0} Wh
 The log was cut off: the app was stopped while it was writing.	日志不完整: 应用在写入时被停止。
 {0} logs, {1}	{0} 个日志, {1}
 Flight logs	飞行日志
@@ -122,7 +187,6 @@ Loading the log...	正在加载日志...
 No flight logs yet. Switch on logging in Settings, then arm to start one.	还没有飞行日志。请在设置中开启记录, 然后解锁以开始一个。
 Delete all the logs...	删除所有日志...
 Delete all {0} logs? They cannot be brought back.	删除全部 {0} 个日志吗? 无法恢复。
-Delete	删除
 The logs hold GPS positions and stay on this radio, in the folder {0}	日志包含 GPS 位置, 保存在此遥控器的文件夹 {0} 中
 Recording now	正在记录
 Replay	回放
@@ -156,6 +220,8 @@ Nightly (newest build of every push)	Nightly (每次提交的最新构建)
 {0} values	{0} 个数值
 {0} flights	{0} 次飞行
 Logging now: {0} rows	正在记录: {0} 行
+Opens at	开始时间
+Closes at	结束时间
 Top	顶部
 Bottom	底部
 BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
@@ -184,6 +250,10 @@ NOT READY: 1 check failed	未就绪: 1 项检查未通过
 NOT READY: {0} checks failed	未就绪: {0} 项检查未通过
 WAITING FOR DATA	等待数据
 PRE-FLIGHT CHECK	飞行前检查
+Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	1到240之间的整数分钟，最多8个，例如 30,15,10,5,2,1。留空表示不提醒；时段结束总会语音播报。
+Warn at (minutes left)	提醒时间（剩余分钟）
+OK	确定
+Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	请使用1到240之间的整数分钟，最多8个，例如 30,15,10,5,2,1。
 Arm switch channel (1 to 16, AUX1 is channel 5)	解锁开关通道 (1 到 16, AUX1 为通道 5)
 Counts as armed at or above (microseconds)	大于等于此值视为已解锁 (微秒)
 Counts as disarmed below (microseconds)	低于此值视为已上锁 (微秒)
@@ -252,7 +322,6 @@ Charts	图表
 Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	自应用启动以来的毫秒数。"graph" 表示第一个摇杆数值到达屏幕的时刻。最新一次启动排在最后。
 No timings yet. Start the app, wait until the sticks move, and look again.	还没有计时记录。启动应用, 等到摇杆有反应后再查看。
 Start-up timings	启动计时
-Clear	清除
 List	列表
 Add a chart	添加图表
 Time window: {0} s  (tap to change)	时间窗口: {0} 秒  (点按更改)
@@ -271,7 +340,6 @@ Name                    Battery profile              mAh	名称                 
 Add pack	添加电池包
 Pack {0}	电池包 {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	每个电池包使用一个电池配置 (即其限值)。在菜单中选择电池包会切换到它的配置。容量仅供记录 (0 = 未知)。没有电池包时, 菜单直接切换配置。
-Packs	电池包
 Enter numbers in every field	请在每个栏位中输入数字
 Exit AX-HUD?	退出 AX-HUD?
 The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	遥控器连接将停止, 遥控器的串口将被释放。在你重新启动应用之前, 将没有 HUD 和语音。
@@ -300,6 +368,10 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	电池包 {0}: 容量为 0
 Two packs have the same name: {0}.	有两个电池包同名: {0}。
 {0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
 {0} ({1})	{0} ({1})
+Link lost.	链路丢失。
+Link lost. The last position is saved.	链路丢失。最后位置已保存。
+Link lost. Last position {0} meters {1} of home, height {2} meters.	链路丢失。最后位置在起点{1}方向{0}米，高度{2}米。
+Link lost. Last position {0} meters {1} of home.	链路丢失。最后位置在起点{1}方向{0}米。
 Test sliders	测试滑块
 Test sliders (no radio)	测试滑块 (无遥控器)
 RadioMaster SDK	RadioMaster SDK
@@ -504,6 +576,19 @@ Log every flight	记录每次飞行
 Rows per second	每秒行数
 Flights to keep	保留的飞行数
 Flight logs: list, replay and delete...	飞行日志: 列表、回放和删除...
+Approval window	批准时段
+The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.	您获准飞行的时间，例如主管部门批准的两小时。遥控器会显示剩余时间，在飞机解锁期间语音提醒，并在时段之外解锁时发出警告。每天重复，使用这台遥控器的时钟，现在是 {0}。
+Use an approval window	使用批准时段
+Two hours from now	从现在起两小时
+Speak the warnings	语音播报提醒
+The value win_left (minutes left) can be used in value cards, charts, rules and logs.	win_left（剩余分钟）可用于数值卡片、图表、规则和日志。
+Landing, link loss and packs	降落、链路丢失与电池包
+Speak a debrief after landing	降落后语音播报总结
+After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	20秒以上的飞行结束后：飞行时间、距离、用电量、能耗、最低单节电压和电池静置电压。
+Speak the last position when the link is lost	链路丢失时语音播报最后位置
+When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	飞行中链路丢失时，卡片会显示最后位置及其到起点的距离和方位，并把位置保存在这台遥控器上。
+Last known position...	最后已知位置...
+Packs: totals per pack...	电池包：每个电池包的累计...
 Rules and backup	规则和备份
 Export sound rules to a file...	将语音规则导出到文件...
 Import sound rules from a file...	从文件导入语音规则...
@@ -606,11 +691,17 @@ Roll angle, degrees	横滚角, 度
 Yaw / heading, degrees	偏航 / 航向, 度
 Climb rate, m/s	爬升率, m/s
 Flight mode name from the flight controller (text)	飞控报告的飞行模式名称 (文本)
+Distance flown in this flight, km (kept after landing)	本次飞行已飞距离，km（降落后保留）
+Energy used in this flight, Wh (volts times amps over time)	本次飞行消耗的能量，Wh（电压乘电流对时间积分）
+Energy per kilometre flown, Wh/km (after the first 0.2 km)	每飞行一公里的能量，Wh/km（前0.2公里之后）
+Capacity per kilometre flown, mAh/km (after the first 0.2 km)	每飞行一公里的容量，mAh/km（前0.2公里之后）
+Minutes left in the approval window (only while it is open)	批准时段剩余分钟（仅在时段内）
 Switches and sticks (channels, 1000 to 2000)	开关和摇杆 (通道, 1000 到 2000)
 Battery (from the flight controller)	电池 (来自飞控)
 Link quality and signal	链路质量与信号
 Radio status	遥控器状态
 GPS and attitude	GPS 与姿态
+Flight totals and approval window	飞行累计与批准时段
 Flight mode (text)	飞行模式 (文本)
 Other values from the radio	遥控器的其他数值
 Advanced: the radio's own channel numbers	高级: 遥控器自身的通道数值
@@ -642,6 +733,11 @@ Radio volts	遥控器电压
 Lost frames	丢帧数
 Packet rate mode	包速率模式
 Telemetry	遥测
+Distance flown km	已飞距离 km
+Energy Wh	能量 Wh
+Energy Wh/km	能耗 Wh/km
+Capacity mAh/km	容量 mAh/km
+Window minutes	时段分钟
 Channel {0}	通道 {0}
 Now: {0}	当前: {0}
 No value now	当前无数值

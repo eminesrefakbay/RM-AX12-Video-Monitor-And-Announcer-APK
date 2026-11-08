@@ -59,6 +59,7 @@ public final class FlightLogger {
     private int rows, dropped;
     private String error = "";
     private double maxHeight = Double.NaN, maxDist = Double.NaN, minCell = Double.NaN, maxSpeed = Double.NaN, peakCurrent = Double.NaN, mah = Double.NaN;
+    private final FlightTotals totals = new FlightTotals();
 
     public FlightLogger(File dir, Wall wall, MetaSource metaSource) { this(dir, wall, metaSource, 2048, true); }
 
@@ -110,6 +111,7 @@ public final class FlightLogger {
             peakCurrent = mx(peakCurrent, nz(numbers.get("curr")));
             double capa = nz(numbers.get("capa"));
             if (!Double.isNaN(capa)) mah = capa;
+            totals.update(nowMs, nz(numbers.get("gps_speed")), nz(numbers.get("vbat")), nz(numbers.get("curr")), capa);
 
             int interval = 1000 / rateHz;
             if (rows > 0 && nowMs - lastRowMs < interval - 4) return;
@@ -164,6 +166,7 @@ public final class FlightLogger {
         dropped = 0;
         error = "";
         maxHeight = maxDist = minCell = maxSpeed = peakCurrent = mah = Double.NaN;
+        totals.reset();
         sink.offer("# AX-HUD flight log");
         sink.offer(LogFormat.metaLine("format", Integer.toString(LogFormat.VERSION)));
         sink.offer(LogFormat.metaLine("started", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date(wallMs))));
@@ -188,6 +191,8 @@ public final class FlightLogger {
         end.put("max_speed", LogFormat.fmt("", maxSpeed));
         end.put("peak_current", LogFormat.fmt("", peakCurrent));
         end.put("mah", LogFormat.fmt("", mah));
+        end.put("distance_km", LogFormat.fmt("", totals.distanceKm() > 0 ? totals.distanceKm() : Double.NaN));
+        end.put("energy_wh", LogFormat.fmt("", totals.energyWh() > 0 ? totals.energyWh() : Double.NaN));
         Sink s = sink;
         sink = null;
         s.close(LogFormat.endLine(end));

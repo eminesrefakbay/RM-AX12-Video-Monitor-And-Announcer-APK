@@ -8,6 +8,7 @@ package dev.ax12.announcer
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -86,6 +87,7 @@ class MainActivity : Activity() {
     private lateinit var logDir: File
     private lateinit var flightLogger: FlightLogger
     private lateinit var logViewer: LogViewerPanel
+    private lateinit var extras: FlightExtras
     private lateinit var replayUi: ReplayOverlay
     private var replay: ReplayEngine? = null
     private var replayStats = FlightStats()               // the replay's own statistics: the live ones are never touched
@@ -205,6 +207,7 @@ class MainActivity : Activity() {
         chartView.visibility = View.GONE
         frame.addView(chartView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         rootFrame = frame
+        extras = FlightExtras(this, frame, speaker, flightStats) { aircraftName }
         connectBanner = ConnectingBanner(this)
         frame.addView(connectBanner.view, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).also { it.topMargin = dp(64) })
         layoutEditor = LayoutEditor(this, layoutHost)
@@ -272,6 +275,8 @@ class MainActivity : Activity() {
         frame.addView(aboutPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(welcomeGuide.root, FrameLayout.LayoutParams(full))
         frame.addView(logViewer.root, FrameLayout.LayoutParams(full))
+        frame.addView(extras.packPanel.root, FrameLayout.LayoutParams(full))
+        frame.addView(extras.positionPanel.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
             this,
@@ -312,6 +317,8 @@ class MainActivity : Activity() {
         else if (welcomeGuide.isShowing) welcomeGuide.back()
         else if (dashboard.isEditing) dashboard.endEdit()
         else if (replay != null) stopReplay()
+        else if (extras.packPanel.isShowing) extras.packPanel.hide()
+        else if (extras.positionPanel.isShowing) extras.positionPanel.hide()
         else if (logViewer.isShowing) logViewer.hide()
         else if (editingLayout) endLayoutEdit()
         else if (aboutPanel.isShowing) aboutPanel.back()
@@ -362,7 +369,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || replay != null || dashboard.isEditing || editingLayout
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || extras.packPanel.isShowing || extras.positionPanel.isShowing || replay != null || dashboard.isEditing || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -397,6 +404,7 @@ class MainActivity : Activity() {
         ui.removeCallbacks(tick)
         ui.removeCallbacks(guideCheck)
         ui.removeCallbacks(holdFire)
+        extras.onPause()                                // a landing that waits for the rest voltage is counted now
         flightLogger.close()                            // the file is complete whenever the screen is left
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
@@ -573,6 +581,7 @@ class MainActivity : Activity() {
                     if (!flightStats.heightNow().isNaN()) numbers["height"] = flightStats.heightNow()
                     if (!flightStats.distanceNow().isNaN()) numbers["dist"] = flightStats.distanceNow()
                 }
+                extras.tick(now, numbers)                       // distance, energy, link loss, landing and the pack book
                 latestNumbers = numbers
                 latestTexts = sample.texts
                 flightLogger.update(now, flightStats.armed(), numbers, sample.texts)       // a log from arming to disarming, when it is switched on
@@ -604,6 +613,7 @@ class MainActivity : Activity() {
             }
             // while the radio link comes up (about 12 s): say so, count the seconds, and say what to check if it takes long
             if (replay != null) replayStep(now)
+            extras.clock(now)                                // the approval window: the chip and the spoken warnings
             val connecting = (sdkStarting || sdkRunning) && !StartupState.connected && !testVisible && sdkError == null && replay == null
             fader.set(connectBanner.view, connecting)
             if (connecting) connectBanner.update(StartupState.secondsSinceLinkStart(now))
@@ -822,6 +832,43 @@ class MainActivity : Activity() {
         override fun logStatus(): String = if (flightLogger.isLogging()) tr("Logging now: {0} rows", flightLogger.rows()) else flightLogger.problem()
         override fun logFolder(): String = logDir.absolutePath
         override fun openLogViewer() = logViewer.show()
+
+        override fun windowOn(): Boolean = Prefs.bool(this@MainActivity, "winOn", false)
+        override fun setWindowOn(on: Boolean) { Prefs.setBool(this@MainActivity, "winOn", on); extras.reload() }
+        override fun windowStartLabel(): String = ApprovalWindow.hm(Prefs.int(this@MainActivity, "winStart", 960))
+        override fun pickWindowStart() = pickClock(tr("Opens at"), "winStart", 960)
+        override fun windowEndLabel(): String = ApprovalWindow.hm(Prefs.int(this@MainActivity, "winEnd", 1080))
+        override fun pickWindowEnd() = pickClock(tr("Closes at"), "winEnd", 1080)
+        override fun windowTwoHours() {
+            val c = java.util.Calendar.getInstance()
+            val nowMin = c.get(java.util.Calendar.HOUR_OF_DAY) * 60 + c.get(java.util.Calendar.MINUTE)
+            Prefs.setInt(this@MainActivity, "winStart", nowMin)
+            Prefs.setInt(this@MainActivity, "winEnd", (nowMin + 120) % 1440)
+            extras.reload()
+        }
+        override fun windowWarnLabel(): String {
+            val w = Prefs.string(this@MainActivity, "winWarn", ApprovalWindow.DEFAULT_WARN)
+            return if (w.isBlank()) tr("None") else w
+        }
+        override fun editWindowWarn() = this@MainActivity.editWindowWarn()
+        override fun windowClockNote(): String {
+            val c = java.util.Calendar.getInstance()
+            return ApprovalWindow.hm(c.get(java.util.Calendar.HOUR_OF_DAY) * 60 + c.get(java.util.Calendar.MINUTE))
+        }
+        override fun windowSpeechOn(): Boolean = Prefs.bool(this@MainActivity, "winSpeech", true)
+        override fun setWindowSpeechOn(on: Boolean) { Prefs.setBool(this@MainActivity, "winSpeech", on) }
+        override fun debriefOn(): Boolean = Prefs.bool(this@MainActivity, "debriefOn", true)
+        override fun setDebriefOn(on: Boolean) { Prefs.setBool(this@MainActivity, "debriefOn", on) }
+        override fun lossSpeechOn(): Boolean = Prefs.bool(this@MainActivity, "lossSpeech", true)
+        override fun setLossSpeechOn(on: Boolean) { Prefs.setBool(this@MainActivity, "lossSpeech", on) }
+        override fun openPackBook() {
+            settingsPanel.hide()
+            extras.packPanel.show()
+        }
+        override fun openPosition() {
+            settingsPanel.hide()
+            extras.positionPanel.show()
+        }
         override fun showStartupTimings() = this@MainActivity.showStartupTimings()
         override fun editLayout() {
             settingsPanel.hide()
@@ -950,6 +997,7 @@ class MainActivity : Activity() {
     /** Hands the logging settings to the logger (at start, when the screen comes back, and after a change in Settings). */
     private fun reloadLogConfig() {
         flightLogger.configure(Prefs.logOn(this), Prefs.logRate(this), LogFields.selection(Prefs.logFields(this)), Prefs.logKeep(this))
+        extras.reload()
     }
 
     /** What the top of every log says: the app, the aircraft, the pack and the arm switch (a replay needs the last ones). */
@@ -1174,6 +1222,50 @@ class MainActivity : Activity() {
     }
 
     /** Which channel is the arm switch, and when it counts as armed (it also needs the cell count for volts per cell). */
+    /** A clock dialog for one of the two times of the approval window. */
+    private fun pickClock(title: String, key: String, default: Int) {
+        val minutes = Prefs.int(this, key, default).coerceIn(0, 1439)
+        val dlg = TimePickerDialog(this, { _, h, m ->
+            Prefs.setInt(this, key, h * 60 + m)
+            extras.reload()
+            settingsPanel.refresh()
+        }, minutes / 60, minutes % 60, true)
+        dlg.setTitle(title)
+        Immersive.show(dlg)
+    }
+
+    /** The minutes left at which the voice warns, as numbers separated by commas. */
+    private fun editWindowWarn() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val hint = TextView(this)
+        hint.text = tr("Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.")
+        hint.textSize = 12f
+        body.addView(hint)
+        val e = EditText(this)
+        e.inputType = android.text.InputType.TYPE_CLASS_TEXT
+        e.setText(Prefs.string(this, "winWarn", ApprovalWindow.DEFAULT_WARN))
+        body.addView(e)
+        Immersive.show(
+            AlertDialog.Builder(this)
+                .setTitle(tr("Warn at (minutes left)"))
+                .setView(body)
+                .setPositiveButton(tr("OK")) { _, _ ->
+                    val marks = ApprovalWindow.parseWarn(e.text.toString())
+                    if (marks == null) {
+                        Toast.makeText(this, tr("Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1."), Toast.LENGTH_LONG).show()
+                    } else {
+                        Prefs.setString(this, "winWarn", ApprovalWindow.joinWarn(marks))
+                        extras.reload()
+                        settingsPanel.refresh()
+                    }
+                }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
     private fun editArmDetection() {
         val body = LinearLayout(this)
         body.orientation = LinearLayout.VERTICAL

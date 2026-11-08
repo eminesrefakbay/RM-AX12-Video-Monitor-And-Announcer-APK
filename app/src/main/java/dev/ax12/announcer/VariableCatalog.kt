@@ -16,7 +16,8 @@ object VariableCatalog {
             "up_lq", "up_rssi1", "up_rssi2", "up_snr", "dn_lq", "dn_rssi", "dn_snr", "rf_mode", "tx_power",
             "lq", "dbm", "lost", "txv", "rxv", "tlm",
             "sats", "gps_speed", "gps_alt", "gps_heading", "gps_lat", "gps_lon",
-            "pitch", "roll", "yaw", "vspeed", "fm"
+            "pitch", "roll", "yaw", "vspeed", "fm",
+            "flown_km", "energy_wh", "wh_km", "mah_km", "win_left"
         ))
         for (i in 1..16) l.add("raw$i")
         for (i in 1..16) l.add("lv$i")
@@ -56,7 +57,12 @@ object VariableCatalog {
         "roll" to tn("Roll angle, degrees"),
         "yaw" to tn("Yaw / heading, degrees"),
         "vspeed" to tn("Climb rate, m/s"),
-        "fm" to tn("Flight mode name from the flight controller (text)")
+        "fm" to tn("Flight mode name from the flight controller (text)"),
+        "flown_km" to tn("Distance flown in this flight, km (kept after landing)"),
+        "energy_wh" to tn("Energy used in this flight, Wh (volts times amps over time)"),
+        "wh_km" to tn("Energy per kilometre flown, Wh/km (after the first 0.2 km)"),
+        "mah_km" to tn("Capacity per kilometre flown, mAh/km (after the first 0.2 km)"),
+        "win_left" to tn("Minutes left in the approval window (only while it is open)")
     )
 
     class Group(val title: String, val names: List<String>)
@@ -71,6 +77,7 @@ object VariableCatalog {
         out.add(Group(tr("Link quality and signal"), take(listOf("up_lq", "up_rssi1", "up_rssi2", "up_snr", "dn_lq", "dn_rssi", "dn_snr", "rf_mode", "tx_power"))))
         out.add(Group(tr("Radio status"), take(listOf("lq", "dbm", "lost", "txv", "rxv", "tlm"))))
         out.add(Group(tr("GPS and attitude"), take(listOf("sats", "gps_speed", "gps_alt", "height", "dist", "gps_heading", "gps_lat", "gps_lon", "pitch", "roll", "yaw", "vspeed"))))
+        out.add(Group(tr("Flight totals and approval window"), take(listOf("flown_km", "energy_wh", "wh_km", "mah_km", "win_left"))))
         out.add(Group(tr("Flight mode (text)"), take(listOf("fm"))))
         val other = take(live.sorted())
         if (other.isNotEmpty()) out.add(Group(tr("Other values from the radio"), other))
@@ -104,7 +111,8 @@ object VariableCatalog {
         "up_rssi1" to tn("Signal dBm"), "up_rssi2" to tn("Signal dBm"), "dn_rssi" to tn("Signal dBm"), "dbm" to tn("Signal dBm"),
         "up_snr" to tn("Signal to noise dB"), "dn_snr" to tn("Signal to noise dB"),
         "tx_power" to tn("Power mW"), "txv" to tn("Radio volts"), "rxv" to tn("Receiver volts"),
-        "lost" to tn("Lost frames"), "rf_mode" to tn("Packet rate mode"), "tlm" to tn("Telemetry")
+        "lost" to tn("Lost frames"), "rf_mode" to tn("Packet rate mode"), "tlm" to tn("Telemetry"),
+        "flown_km" to tn("Distance flown km"), "energy_wh" to tn("Energy Wh"), "wh_km" to tn("Energy Wh/km"), "mah_km" to tn("Capacity mAh/km"), "win_left" to tn("Window minutes")
     )
 
     fun chartLabel(name: String): String {

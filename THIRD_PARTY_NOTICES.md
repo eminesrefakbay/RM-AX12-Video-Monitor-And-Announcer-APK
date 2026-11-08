@@ -15,7 +15,7 @@ names and trademarks belong to their owners.
 
 ## RadioMaster AX SDK
 
-- Holder: RadioMaster. Published for app developers at <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>.
+- Holder: RadioMaster. Published for app developers at <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>. The build uses the commit `7aa7facc0f3680a286a01cb7335f310211d7b9ef` (12 Oct 2026); its maintainers also publish the same files at <https://github.com/flyshark2024/rmAxSdk>.
 - It reads the radio's channels and telemetry. Its libraries (`librmAxSdk1.so`) are included in the APK.
 - The SDK is **not stored in this repository**: the build downloads it from RadioMaster's repository, so the terms RadioMaster publishes
   there apply to it. AX-HUD does not relicense it.

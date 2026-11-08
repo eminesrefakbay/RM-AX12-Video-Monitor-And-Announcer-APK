@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.2.4)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.3.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -58,7 +58,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,433 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,641 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -237,6 +237,32 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
   A card shows only what the log holds: with fewer values chosen, some cards stay empty (a toast names what is missing).
 * **Privacy.** A log contains GPS positions. It stays on the radio unless you copy it. Do not publish a log that shows where you fly.
 
+## Around the flight: last position, approval window, packs and debrief
+
+* **Last known position.** When the link is lost in flight (telemetry stops or the uplink quality is zero for 1.5 seconds, after the link had
+  been good with a GPS fix), a card appears in the middle of the screen, on the video and on the dashboard: how long ago, the coordinates,
+  the distance and bearing from home, height and speed. The voice says *Link lost, last position 412 meters south west of home, height 80
+  meters*. The position is saved at once in `last_position.txt` in the app's folder on the radio (the folder of the flight logs, one level
+  up), and refreshed every 5 seconds in flight, so it survives a restart. It stays on the screen until the link is back or you close it,
+  also after you disarmed. *Settings > Landing, link loss and packs > Last known position* shows the file, copies the coordinates and opens
+  them in a maps app when the radio has one.
+* **Approval window.** *Settings > Approval window*: opens at, closes at (or *Two hours from now*), and the minutes at which to warn
+  (default 30, 15, 10, 5, 2, 1). It repeats every day, may cross midnight and uses the clock of the radio (shown in the settings, so you can
+  check it). A small chip under the MENU button shows the time left (yellow under 15 minutes, red under 5 and after the end). While the
+  aircraft is armed the voice speaks each mark, speaks the end and repeats it every minute, and warns when you arm outside the window. The
+  value `win_left` (minutes left) is available to value cards, charts, rules and logs.
+* **Totals of a flight.** Distance flown (ground speed over time), energy (volts times amps over time) and capacity are added up from arming
+  on and kept after landing. The values `flown_km`, `energy_wh`, `wh_km` and `mah_km` can be used in value cards, charts, rules and logs. The
+  flight log footer holds `distance_km` and `energy_wh`, and the flight list shows distance, energy, Wh/km and mAh/km (for logs written
+  before, they are worked out from the rows when the list opens).
+* **Pack book.** Every flight of 20 seconds or more is added, when you land, to the pack that is selected: flights, flying time, mAh, Wh, km,
+  efficiency, full charges (when the pack has a capacity), lowest cell and the last ten flights with the voltage the pack rested at four
+  seconds after landing. *Settings > Landing, link loss and packs > Packs*. The book is part of the settings backup and does not depend on the
+  flight logs.
+* **Voice debrief.** Four seconds after landing: *Flight time 12 minutes 14 seconds. Distance 11.8 kilometers. Used 2918 milliamp hours.
+  Efficiency 21.1 watt hours per kilometer. Lowest cell 3.40 volts. Resting cell 3.81 volts. Pack Li-ion 1, flight 4.* What is not known is
+  left out. It has its own switch.
+
 ## Start-up time of the radio link
 
 **Why the sticks take about 12 seconds to move after the app starts.** Measured on an AX12 with the logcat of both apps: the SDK's own
@@ -384,7 +410,7 @@ CRSF values older than 5 s are dropped, so a rule never acts on a stale reading.
 ## Build
 
 The RadioMaster SDK files are **not stored in this repository** (the SDK repository states no licence of its own).
-The CI workflow clones <https://github.com/Radiomaster-RC/RadiomasterAX_SDK> and copies the five `.so` files into
+The CI workflow clones <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>, checks out the commit `7aa7fac` (pinned in `.github/workflows/build.yml`, so that a change on their side cannot break the build or change what is shipped) and copies the five `.so` files into
 `app/src/main/jniLibs/arm64-v8a/` and the headers into `app/src/main/cpp/sdk-include/rmAxSdk1/` before building.
 Without those files the app still builds and runs on the test sliders.
 

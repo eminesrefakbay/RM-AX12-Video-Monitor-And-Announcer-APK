@@ -30,6 +30,7 @@ public final class LogStore {
         public int rows;
         public boolean clean;
         public double maxHeight = Double.NaN, maxDist = Double.NaN, minCell = Double.NaN, maxSpeed = Double.NaN, peakCurrent = Double.NaN, mah = Double.NaN;
+        public double distanceKm = Double.NaN, energyWh = Double.NaN;
     }
 
     public static boolean isLog(File f) {
@@ -101,6 +102,8 @@ public final class LogStore {
                         e.maxSpeed = num(t.end.get("max_speed"));
                         e.peakCurrent = num(t.end.get("peak_current"));
                         e.mah = num(t.end.get("mah"));
+                        e.distanceKm = num(t.end.get("distance_km"));
+                        e.energyWh = num(t.end.get("energy_wh"));
                         break;
                     }
                 }

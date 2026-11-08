@@ -22,6 +22,13 @@ There is already an aircraft with this name: {0}.
 That aircraft does not exist.
 At least one aircraft must stay.
 You cannot delete the aircraft in use. Switch to another one first.
+One minute left in the approval window.
+{0} minutes left in the approval window.
+The approval window has ended. Land now.
+Warning: you are outside the approval window.
+Window {0} left
+Window opens in {0}
+Window ended {0} ago
 Bar {0}: the channel must be 1 to 16.
 Add at least one battery profile.
 At most {0} battery profiles.
@@ -84,6 +91,15 @@ Amber limit
 Red limit
 Value card
 Done
+Flight time {0} minutes {1} seconds.
+Flight time {0} minute {1} seconds.
+Flight time {0} seconds.
+Distance {0} kilometers.
+Used {0} milliamp hours.
+Efficiency {0} watt hours per kilometer.
+Lowest cell {0} volts.
+Resting cell {0} volts.
+Pack {0}, flight {1}.
 Welcome to AX-HUD
 AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.
 Allow the camera
@@ -94,14 +110,62 @@ Where everything is
 Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
+Packs
+Last known position
+LINK LOST {0}
+The link is back
+Copied: {0}
+No flights counted yet. Every flight of 20 seconds or more is added to the pack that is selected, when you land.
+Flights {0}
+{0} mAh
+{0} Wh
+{0} km
+{0} Wh/km
+{0} mAh/km
+Average flight {0} min
+{0} full charges of {1} mAh
+Lowest cell {0} V
+Rest {0} V
+Remove this pack from the book...
+Remove {0} and its flights from the book? It cannot be brought back.
+Remove
+The book counts every flight of 20 seconds or more when you land, for the pack that is selected. It is part of the settings backup, and it does not depend on the flight logs.
+Clear the whole book...
+Clear the book of all {0} packs? It cannot be brought back.
+Clear
+No position is saved yet. The radio saves one every 5 seconds in flight, and at once when the link is lost.
+Link lost
+In flight, the latest position
+Saved {0}
+No position was received in this flight.
+{0} m from home, bearing {1} deg {2}
+Height {0} m
+Speed {0} km/h
+{0} satellites
+Copy position
+Open in a maps app
+No maps app on this radio. Copy the position instead.
+Delete this note...
+Delete the saved position? It cannot be brought back.
+Delete
+The file is {0}
 Logging stopped: {0}
 The log folder cannot be made
 Storage is almost full
 The log file cannot be written
+North
+North east
+East
+South east
+South
+South west
+West
+North west
 Snap to grid
 Reset the layout
 Hide the buttons
 Show the buttons
+Saved on this radio: Settings > Flight logs > Last known position.
 Tick the values to write into each flight log.
 A replay needs these values and cannot show everything without them: {0}
 Replay set
@@ -113,8 +177,9 @@ Max height {0} m
 Max distance {0} m
 Top speed {0} km/h
 Peak current {0} A
-Lowest cell {0} V
 {0} mAh used
+Flew {0} km
+{0} Wh used
 The log was cut off: the app was stopped while it was writing.
 {0} logs, {1}
 Flight logs
@@ -122,7 +187,6 @@ Loading the log...
 No flight logs yet. Switch on logging in Settings, then arm to start one.
 Delete all the logs...
 Delete all {0} logs? They cannot be brought back.
-Delete
 The logs hold GPS positions and stay on this radio, in the folder {0}
 Recording now
 Replay
@@ -156,6 +220,8 @@ Nightly (newest build of every push)
 {0} values
 {0} flights
 Logging now: {0} rows
+Opens at
+Closes at
 Top
 Bottom
 BATTERY CRITICAL 3.48 V per cell
@@ -184,6 +250,10 @@ NOT READY: 1 check failed
 NOT READY: {0} checks failed
 WAITING FOR DATA
 PRE-FLIGHT CHECK
+Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.
+Warn at (minutes left)
+OK
+Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.
 Arm switch channel (1 to 16, AUX1 is channel 5)
 Counts as armed at or above (microseconds)
 Counts as disarmed below (microseconds)
@@ -252,7 +322,6 @@ Charts
 Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.
 No timings yet. Start the app, wait until the sticks move, and look again.
 Start-up timings
-Clear
 List
 Add a chart
 Time window: {0} s  (tap to change)
@@ -271,7 +340,6 @@ Name                    Battery profile              mAh
 Add pack
 Pack {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.
-Packs
 Enter numbers in every field
 Exit AX-HUD?
 The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.
@@ -300,6 +368,10 @@ Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).
 Two packs have the same name: {0}.
 {0} ({1}, {2} mAh)
 {0} ({1})
+Link lost.
+Link lost. The last position is saved.
+Link lost. Last position {0} meters {1} of home, height {2} meters.
+Link lost. Last position {0} meters {1} of home.
 Test sliders
 Test sliders (no radio)
 RadioMaster SDK
@@ -504,6 +576,19 @@ Log every flight
 Rows per second
 Flights to keep
 Flight logs: list, replay and delete...
+Approval window
+The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.
+Use an approval window
+Two hours from now
+Speak the warnings
+The value win_left (minutes left) can be used in value cards, charts, rules and logs.
+Landing, link loss and packs
+Speak a debrief after landing
+After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.
+Speak the last position when the link is lost
+When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.
+Last known position...
+Packs: totals per pack...
 Rules and backup
 Export sound rules to a file...
 Import sound rules from a file...
@@ -606,11 +691,17 @@ Roll angle, degrees
 Yaw / heading, degrees
 Climb rate, m/s
 Flight mode name from the flight controller (text)
+Distance flown in this flight, km (kept after landing)
+Energy used in this flight, Wh (volts times amps over time)
+Energy per kilometre flown, Wh/km (after the first 0.2 km)
+Capacity per kilometre flown, mAh/km (after the first 0.2 km)
+Minutes left in the approval window (only while it is open)
 Switches and sticks (channels, 1000 to 2000)
 Battery (from the flight controller)
 Link quality and signal
 Radio status
 GPS and attitude
+Flight totals and approval window
 Flight mode (text)
 Other values from the radio
 Advanced: the radio's own channel numbers
@@ -642,6 +733,11 @@ Radio volts
 Lost frames
 Packet rate mode
 Telemetry
+Distance flown km
+Energy Wh
+Energy Wh/km
+Capacity mAh/km
+Window minutes
 Channel {0}
 Now: {0}
 No value now

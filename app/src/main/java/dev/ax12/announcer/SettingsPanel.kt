@@ -107,6 +107,25 @@ interface SettingsHost {
     fun logFolder(): String
     fun openLogViewer()
     fun editLayout()
+    // approval window, landing, link loss and packs
+    fun windowOn(): Boolean
+    fun setWindowOn(on: Boolean)
+    fun windowStartLabel(): String
+    fun pickWindowStart()
+    fun windowEndLabel(): String
+    fun pickWindowEnd()
+    fun windowTwoHours()
+    fun windowWarnLabel(): String
+    fun editWindowWarn()
+    fun windowClockNote(): String
+    fun windowSpeechOn(): Boolean
+    fun setWindowSpeechOn(on: Boolean)
+    fun debriefOn(): Boolean
+    fun setDebriefOn(on: Boolean)
+    fun lossSpeechOn(): Boolean
+    fun setLossSpeechOn(on: Boolean)
+    fun openPackBook()
+    fun openPosition()
     fun showStartupTimings()
     fun resetLayout()
     fun editArmDetection()
@@ -504,6 +523,32 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             val status = host.logStatus()
             if (status.isNotEmpty()) note(status)
             note(tr("The logs hold GPS positions and stay on this radio, in the folder {0}", host.logFolder()))
+        }
+        group("window", tr("Approval window"), "clock") {
+            note(tr("The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.", host.windowClockNote()))
+            toggle(tr("Use an approval window"), host.windowOn()) {
+                host.setWindowOn(it)
+                refresh()
+            }
+            if (host.windowOn()) {
+                valueRow(tr("Opens at"), host.windowStartLabel()) { host.pickWindowStart() }
+                valueRow(tr("Closes at"), host.windowEndLabel()) { host.pickWindowEnd() }
+                action(tr("Two hours from now")) {
+                    host.windowTwoHours()
+                    refresh()
+                }
+                valueRow(tr("Warn at (minutes left)"), host.windowWarnLabel()) { host.editWindowWarn() }
+                toggle(tr("Speak the warnings"), host.windowSpeechOn()) { host.setWindowSpeechOn(it) }
+                note(tr("The value win_left (minutes left) can be used in value cards, charts, rules and logs."))
+            }
+        }
+        group("after", tr("Landing, link loss and packs"), "battery") {
+            toggle(tr("Speak a debrief after landing"), host.debriefOn()) { host.setDebriefOn(it) }
+            note(tr("After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at."))
+            toggle(tr("Speak the last position when the link is lost"), host.lossSpeechOn()) { host.setLossSpeechOn(it) }
+            note(tr("When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio."))
+            action(tr("Last known position...")) { host.openPosition() }
+            action(tr("Packs: totals per pack...")) { host.openPackBook() }
         }
         group("rules", tr("Rules and backup"), "rules") {
             section(tr("Sound rules"))
