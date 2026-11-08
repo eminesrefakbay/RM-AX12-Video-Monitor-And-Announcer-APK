@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.5.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.6.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -58,7 +58,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,836 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,911 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -296,6 +296,21 @@ part of the settings backup.
   page* (or copies its address when the radio has no browser) and *Clear the events*.
 * **After a crash** the page says so, shows the first lines of the record and lets you delete it. The record is a small text file; nothing
   is sent anywhere by the app.
+
+## Fonts
+
+Text is set in **Manrope** (four weights), titles and the big numbers in **Teko**, a narrow techno face; both are open fonts (SIL OFL 1.1),
+bundled in `app/src/main/assets/fonts` and credited in About. They were chosen by measuring: Teko is the most condensed of the futuristic
+fonts that have Turkish and German letters, so a number such as `126.4` takes little room on a card.
+
+* **Teko has no fixed-width digits** (its 1 is narrow), so the numbers of the cards are drawn **digit by digit in slots of the same width**:
+  a speed or a time never shifts sideways while it counts. The text font has fixed-width digits of its own.
+* **A typography scale:** card titles in capitals (in the language of the screen: a Turkish i becomes İ), letter-spaced and medium weight;
+  headings semi-bold; labels medium; body regular; page titles in Teko, a fifth bigger because Teko looks small.
+* **No hunting through the code:** one routine gives every text of a screen its font by its role, after a screen or a dialog is built, so
+  new screens follow the scale by themselves. Monospace text (the report, the rules text) stays monospace.
+* **If the font files cannot be loaded** the system fonts stay and nothing breaks (an event in the diagnostics says so). Chinese still uses the
+  radio's own font.
 
 ## Start-up time of the radio link
 

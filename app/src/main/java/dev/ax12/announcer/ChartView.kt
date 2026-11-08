@@ -69,6 +69,7 @@ class ChartView(context: Context) : View(context) {
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
         label.color = 0xFFB0BEC5.toInt()
+        CardStyle.styleLabel(label)
         valuePaint.color = 0xFFFFFFFF.toInt()
         CardStyle.styleNumbers(valuePaint)          // condensed bold, digits of equal width
         valuePaint.textAlign = Paint.Align.RIGHT
@@ -109,7 +110,7 @@ class ChartView(context: Context) : View(context) {
     private fun applyText(level: Int) {
         val sp = floatArrayOf(10f, 12f, 14f)[level.coerceIn(0, 2)]
         label.textSize = sp * density
-        valuePaint.textSize = sp * 1.1f * density
+        valuePaint.textSize = sp * 1.1f * density * CardStyle.numberScale
         axis.textSize = sp * 0.75f * density
     }
 
@@ -155,7 +156,7 @@ class ChartView(context: Context) : View(context) {
         canvas.drawText(VariableCatalog.chartLabel(name), left, top + textH, label)
         label.color = Sunlight.cIf(light, 0xFFB0BEC5.toInt())
         val last = s?.last() ?: Double.NaN
-        canvas.drawText(ChartScale.format(name, last), right, top + textH, valuePaint)
+        CardStyle.drawNumber(canvas, ChartScale.format(name, last), right, top + textH, valuePaint)
 
         val gTop = top + textH + 3 * density
         val gBottom = bottom - 3 * density

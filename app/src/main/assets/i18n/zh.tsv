@@ -64,6 +64,8 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
+The typeface of the menus, settings and all running text, in four weights (trimmed to the letters the app needs).	菜单、设置和所有正文使用的字体，共四种字重（已裁剪为应用所需的字符）。
+The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs).	标题和大号数字使用的窄体字体，共两种字重（已裁剪为应用所需的字符）。
 Horizon	地平仪
 Compass	指南针
 Flight statistics	飞行统计

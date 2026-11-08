@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0
+
+New fonts: Manrope for text, Teko (a narrow techno face) for titles and the big numbers, with a typography scale (card titles in capitals,
+semi-bold headings, medium labels) and digit slots so that numbers never shift sideways. Both fonts are open (SIL OFL) and credited in About.
+
 ## 1.5.0
 
 Diagnostics and a bug-report button: a page with the versions, the device, the radio link and its start-up timing, a digest of the settings,

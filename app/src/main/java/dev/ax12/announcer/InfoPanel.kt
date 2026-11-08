@@ -81,6 +81,11 @@ class InfoPanel(
     }
 
     fun refresh() {
+        refreshRows()
+        Fonts.apply(root)
+    }
+
+    private fun refreshRows() {
         content.removeAllViews()
         build(this)
     }

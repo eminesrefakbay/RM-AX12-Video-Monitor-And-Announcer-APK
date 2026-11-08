@@ -145,6 +145,11 @@ class MainMenu(
 
     /** Brings every tile's state up to date. */
     private fun refresh() {
+        refreshRows()
+        Fonts.apply(root)
+    }
+
+    private fun refreshRows() {
         skin()
         sunlightTile.set("sun", if (sunlightOn()) tr("On") else tr("Off"), if (sunlightOn()) Sunlight.c(CardStyle.OK) else 0)
         rulesTile.set("rules", "", 0)

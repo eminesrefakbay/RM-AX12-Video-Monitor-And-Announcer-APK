@@ -94,6 +94,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         skin()
         build()
         showPage()
+        Fonts.apply(root)
         shown = true
         Anim.panelIn(root)
     }

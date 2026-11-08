@@ -29,7 +29,7 @@ class WarningBar(private val bar: TextView) {
     private var lastLevel = -1
     private var lastLight = false
     private val normalTextPx = bar.textSize
-    private val normalTypeface = bar.typeface
+    private val normalTypeface = Fonts.text(500, bar.typeface)
 
     /** Draws the bar again in the current style (the theme was switched). */
     fun restyle() { lastLevel = -1 }
@@ -104,7 +104,7 @@ class WarningBar(private val bar: TextView) {
                 box.setStroke((SunlightPalette.BAR_OUTLINE_DP * density).toInt(), if (worst == 1) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
                 bar.background = box
                 bar.setTextSize(TypedValue.COMPLEX_UNIT_SP, SunlightPalette.BAR_TEXT_SP)
-                bar.setTypeface(null, Typeface.BOLD)
+                bar.typeface = Fonts.text(700, bar.typeface)
                 bar.setTextColor(foreground)
                 bar.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(bar.context, shape, foreground, SunlightPalette.BAR_ICON_DP, SunlightPalette.BAR_ICON_STROKE), null, null, null)
             } else {

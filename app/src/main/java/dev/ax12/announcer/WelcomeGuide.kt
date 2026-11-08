@@ -121,6 +121,11 @@ class WelcomeGuide(private val activity: Activity, private val onFinished: () ->
     }
 
     private fun render() {
+        renderRows()
+        Fonts.apply(root)
+    }
+
+    private fun renderRows() {
         val page = pages[index]
         stepView.text = tr("Step {0} of {1}", index + 1, pages.size)
         titleView.text = page.title

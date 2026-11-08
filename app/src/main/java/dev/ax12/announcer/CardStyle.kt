@@ -5,6 +5,7 @@
 
 package dev.ax12.announcer
 
+import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -51,16 +52,59 @@ object CardStyle {
     private val numberFont: Typeface = Typeface.create("sans-serif-condensed", Typeface.BOLD)
     private val smallNumberFont: Typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL)
 
+    /** The big numbers are set in a narrow face that looks small, so they are drawn a little bigger. */
+    val numberScale: Float get() = if (Fonts.ready) Fonts.DISPLAY_SCALE else 1f
+
     /** The numbers of the HUD: a condensed bold font and digits of equal width, so values do not jitter and take less room. */
     fun styleNumbers(p: Paint) {
-        p.typeface = numberFont
+        p.typeface = Fonts.display(true, numberFont)
         p.fontFeatureSettings = "tnum"
     }
 
     /** The same for small figures (the ends of an axis, a range in metres): condensed, not bold, digits of equal width. */
     fun styleSmallNumbers(p: Paint) {
-        p.typeface = smallNumberFont
+        p.typeface = Fonts.text(500, smallNumberFont)
         p.fontFeatureSettings = "tnum"
+    }
+
+    /** The small titles of the cards: medium weight with a little air between the letters. */
+    fun styleLabel(p: Paint) {
+        p.typeface = Fonts.text(500, p.typeface)
+        p.letterSpacing = 0.04f
+        p.fontFeatureSettings = "tnum"
+    }
+
+    /** Card titles and names: bold, with more air. */
+    fun styleTitle(p: Paint) {
+        p.typeface = Fonts.text(700, p.typeface)
+        p.letterSpacing = 0.08f
+        p.fontFeatureSettings = "tnum"
+    }
+
+    /** A title in capitals, in the language of the screen (a Turkish i becomes İ). */
+    fun upper(s: String): String = s.uppercase(Lang.locale(I18n.language()))
+
+    /** A number whose every digit has a slot of the same width, whatever the font: it does not shift sideways while it counts. */
+    private fun advance(p: Paint) = NumberLayout.Advance { c -> p.measureText(c.toString()) }
+
+    fun measureNumber(text: String, p: Paint): Float = NumberLayout.width(text, NumberLayout.slot(advance(p)), advance(p))
+
+    /** Draws a number at x (left, centre or right of x as the paint's alignment says), baseline y. */
+    fun drawNumber(canvas: Canvas, text: String, x: Float, y: Float, p: Paint) {
+        val adv = advance(p)
+        val slot = NumberLayout.slot(adv)
+        val width = NumberLayout.width(text, slot, adv)
+        val align = when (p.textAlign) { Paint.Align.RIGHT -> 1; Paint.Align.CENTER -> 0; else -> -1 }
+        val saved = p.textAlign
+        p.textAlign = Paint.Align.LEFT
+        var cx = NumberLayout.left(align, x, width)
+        for (ch in text) {
+            val a = NumberLayout.advance(ch, slot, adv)
+            val own = adv.of(ch)
+            canvas.drawText(ch.toString(), if (NumberLayout.isDigit(ch)) cx + (a - own) / 2f else cx, y, p)       // a digit sits in the middle of its slot
+            cx += a
+        }
+        p.textAlign = saved
     }
 
     /** Lets a text shrink to fit its box (down to minSp) instead of being cut off, and wrap to two lines first. Android 8 and newer. */

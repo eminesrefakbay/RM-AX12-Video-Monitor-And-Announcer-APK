@@ -50,10 +50,11 @@ class FlightStatsView(context: Context) : View(context) {
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
         labelPaint.color = 0xFFB0BEC5.toInt()
+        CardStyle.styleLabel(labelPaint)
         valuePaint.color = 0xFFFFFFFF.toInt()
         CardStyle.styleNumbers(valuePaint)          // condensed bold, digits of equal width
         titlePaint.color = CardStyle.TITLE
-        titlePaint.isFakeBoldText = true
+        CardStyle.styleTitle(titlePaint)
         barBg.color = 0xFF37474F.toInt()
         barFill.color = 0xFF66BB6A.toInt()
         mark.style = Paint.Style.STROKE
@@ -83,7 +84,7 @@ class FlightStatsView(context: Context) : View(context) {
 
     private fun applyTextSize() {
         labelPaint.textSize = textPx * 0.8f
-        valuePaint.textSize = textPx
+        valuePaint.textSize = textPx * CardStyle.numberScale
         titlePaint.textSize = textPx * 0.85f
     }
 
@@ -105,7 +106,7 @@ class FlightStatsView(context: Context) : View(context) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var w = titlePaint.measureText(title)
-        for (l in lines) w = maxOf(w, labelPaint.measureText(l.label) + textPx * 0.9f + valuePaint.measureText(l.value))
+        for (l in lines) w = maxOf(w, labelPaint.measureText(l.label) + textPx * 0.9f + CardStyle.measureNumber(l.value, valuePaint))
         var h = pad() * 2 + rowH()
         for (l in lines) h += rowH() + (if (l.bar.isNaN()) 0f else barH() + textPx * 0.25f)
         setMeasuredDimension((w + pad() * 2).toInt() + 2, h.toInt() + 2)
@@ -120,7 +121,7 @@ class FlightStatsView(context: Context) : View(context) {
         for (l in lines) {
             y += rowH()
             canvas.drawText(l.label, pad(), y, labelPaint)
-            canvas.drawText(l.value, width - pad() - valuePaint.measureText(l.value), y, valuePaint)
+            CardStyle.drawNumber(canvas, l.value, width - pad() - CardStyle.measureNumber(l.value, valuePaint), y, valuePaint)
             if (!l.bar.isNaN()) {
                 val top = y + textPx * 0.25f
                 val left = pad()

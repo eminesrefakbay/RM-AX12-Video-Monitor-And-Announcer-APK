@@ -48,3 +48,15 @@ names and trademarks belong to their owners.
 
 - The logo and the launcher icon are the author's own artwork. The in-app icons are simple shapes drawn by the app itself
   (`app/src/main/assets/icons.txt`) and are covered by the GPL like the rest of the code.
+
+## Fonts
+
+- **Manrope (the font of the text)**, the font of the menus, settings and running text. Copyright 2018 The Manrope Project Authors
+  (<https://github.com/googlefonts/manrope>). SIL Open Font License, Version 1.1; the text is in the app (About) and in
+  `app/src/main/assets/licenses/Manrope-OFL.txt`. Four weights, made from the variable font and trimmed to the letters the app needs.
+- **Teko (the font of titles and big numbers)**, the narrow font of titles and the big numbers. Copyright 2023 The Teko Project Authors (<https://github.com/googlefonts/teko>).
+  SIL Open Font License, Version 1.1; the text is in the app (About) and in `app/src/main/assets/licenses/Teko-OFL.txt`. Two weights,
+  made from the variable font and trimmed to the letters the app needs.
+
+The fonts are modified (weights cut from the variable fonts, letters removed); the license allows this, and the modified files keep their
+names' family but carry no reserved font name.

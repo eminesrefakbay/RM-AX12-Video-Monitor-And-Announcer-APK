@@ -305,6 +305,7 @@ class MainActivity : Activity() {
 
         applyMenuMode()
         applyOverlayPrefs()
+        Fonts.apply(frame)
         applyTiles()
         applyFlightConfig()
 

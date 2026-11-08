@@ -29,6 +29,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Diagnostics.install(this)
+        Fonts.init(this)
         StartupState.begin()
         Lang.apply(this)
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {

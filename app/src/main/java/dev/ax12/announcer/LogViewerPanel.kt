@@ -124,6 +124,11 @@ class LogViewerPanel(
     }
 
     private fun build(list: List<LogStore.Entry>, bytes: Long) {
+        buildList(list, bytes)
+        Fonts.apply(root)
+    }
+
+    private fun buildList(list: List<LogStore.Entry>, bytes: Long) {
         content.removeAllViews()
         if (list.isEmpty()) {
             content.addView(text(tr("No flight logs yet. Switch on logging in Settings, then arm to start one."), 14f, Sunlight.c(Color.WHITE), topDp = 8))

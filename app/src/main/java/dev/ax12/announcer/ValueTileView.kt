@@ -39,9 +39,11 @@ class ValueTileView(context: Context) : View(context) {
         edge.strokeWidth = 1.2f * density
         labelPaint.color = CardStyle.LABEL
         labelPaint.textSize = 12f * density
-        valuePaint.typeface = Typeface.create("sans-serif-condensed", Typeface.BOLD)
+        CardStyle.styleLabel(labelPaint)
+        CardStyle.styleNumbers(valuePaint)
         unitPaint.color = CardStyle.LABEL
         unitPaint.textSize = 14f * density
+        CardStyle.styleLabel(unitPaint)
     }
     /** The sunlight look: dark text on a light card (and back). */
     fun applyLight(on: Boolean) {
@@ -78,20 +80,20 @@ class ValueTileView(context: Context) : View(context) {
         levelPaint.color = when (level) { 2 -> Sunlight.cIf(light, CardStyle.BAD); 1 -> Sunlight.cIf(light, CardStyle.WARN); else -> Sunlight.cIf(light, CardStyle.ACCENT) }
         canvas.drawRect(1f, 1f, 5f * density, h - 1f, levelPaint)
         val pad = 12f * density
-        var title = spec.title()
+        var title = CardStyle.upper(spec.title())
         while (title.length > 1 && labelPaint.measureText(title) > w - pad * 2) title = title.substring(0, title.length - 1)
         canvas.drawText(title, pad, 20f * density, labelPaint)
         valuePaint.color = when (level) { 2 -> Sunlight.cIf(light, CardStyle.BAD); 1 -> Sunlight.cIf(light, CardStyle.WARN); else -> Sunlight.cIf(light, 0xFFFFFFFF.toInt()) }
         val unit = spec.unit
         val unitW = if (unit.isEmpty()) 0f else unitPaint.measureText(unit) + 4f * density
-        var size = 38f * density
+        var size = 38f * density * CardStyle.numberScale
         valuePaint.textSize = size
-        while (size > 12f * density && valuePaint.measureText(shown) + unitW > w - pad * 2) {
+        while (size > 12f * density && CardStyle.measureNumber(shown, valuePaint) + unitW > w - pad * 2) {
             size -= 1f * density
             valuePaint.textSize = size
         }
         val baseline = h - 14f * density
-        canvas.drawText(shown, pad, baseline, valuePaint)
-        if (unit.isNotEmpty()) canvas.drawText(unit, pad + valuePaint.measureText(shown) + 4f * density, baseline, unitPaint)
+        CardStyle.drawNumber(canvas, shown, pad, baseline, valuePaint)
+        if (unit.isNotEmpty()) canvas.drawText(unit, pad + CardStyle.measureNumber(shown, valuePaint) + 4f * density, baseline, unitPaint)
     }
 }

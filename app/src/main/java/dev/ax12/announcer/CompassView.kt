@@ -50,12 +50,13 @@ class CompassView(context: Context) : View(context) {
         tick.strokeWidth = 1.2f * density
         label.color = 0xFFFFFFFF.toInt()
         label.textSize = 13f * density
-        label.isFakeBoldText = true
+        CardStyle.styleTitle(label)
         big.color = 0xFFFFFFFF.toInt()
-        big.textSize = 26f * density
-        big.isFakeBoldText = true
+        big.textSize = 26f * density * CardStyle.numberScale
+        CardStyle.styleNumbers(big)
         small.color = CardStyle.LABEL
         small.textSize = 12f * density
+        CardStyle.styleLabel(small)
         nose.color = 0xFFFFC107.toInt()
         home.color = 0xFF66BB6A.toInt()
         edge.color = CardStyle.EDGE
@@ -145,7 +146,7 @@ class CompassView(context: Context) : View(context) {
         path.close()
         canvas.drawPath(path, nose)
         val hs = if (heading.isNaN()) "-" else String.format(Locale.US, "%03.0f\u00B0", heading)
-        canvas.drawText(hs, cx - big.measureText(hs) / 2f, cy + 4f * density, big)
+        CardStyle.drawNumber(canvas, hs, cx - CardStyle.measureNumber(hs, big) / 2f, cy + 4f * density, big)
         val card = Attitude.cardinal(heading)
         if (card.isNotEmpty()) canvas.drawText(card, cx - small.measureText(card) / 2f, cy + 22f * density, small)
         if (!homeBearing.isNaN() && !homeDistance.isNaN()) {

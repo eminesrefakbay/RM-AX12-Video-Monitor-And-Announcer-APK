@@ -184,6 +184,11 @@ class RulesPanel(
     // ------------------------------------------------------------------ the list
 
     private fun refresh() {
+        refreshRows()
+        Fonts.apply(root)
+    }
+
+    private fun refreshRows() {
         list.removeAllViews()
         var count = 0
         for (item in items) {

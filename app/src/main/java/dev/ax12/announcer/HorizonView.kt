@@ -50,6 +50,7 @@ class HorizonView(context: Context) : View(context) {
         ladder.color = 0xCCFFFFFF.toInt()
         ladder.strokeWidth = 1.5f * density
         text.color = 0xFFFFFFFF.toInt()
+        CardStyle.styleSmallNumbers(text)
         text.textSize = 11f * density
         text.setShadowLayer(2f * density, 0f, 0f, 0xFF000000.toInt())
         symbol.color = 0xFFFFC107.toInt()

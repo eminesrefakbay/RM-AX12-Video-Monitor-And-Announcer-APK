@@ -396,6 +396,11 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
     // ------------------------------------------------------------------ the screen
 
     fun refresh() {
+        refreshRows()
+        Fonts.apply(root)
+    }
+
+    private fun refreshRows() {
         list.removeAllViews()
         target = list
 

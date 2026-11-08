@@ -64,6 +64,8 @@ Reads the radio's channels and telemetry. Its libraries are included in the app.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.
 The standard library of the Kotlin language, which the app is written in.
+The typeface of the menus, settings and all running text, in four weights (trimmed to the letters the app needs).
+The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs).
 Horizon
 Compass
 Flight statistics

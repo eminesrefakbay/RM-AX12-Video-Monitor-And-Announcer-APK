@@ -97,7 +97,7 @@ public class SunlightTests {
             check(s.contains("fun skin()") && s.matches("(?s).*fun show\\(\\) \\{\\s*skin\\(\\).*"), f + ": the frame colours are set again each time it opens");
         }
         String menu = read("MainMenu.kt");
-        check(menu.contains("Tile(tr(\"Sunlight\"), false)") && menu.contains("listOf(rulesTile, speechTile, batteryTile, aircraftTile, sunlightTile)") && menu.contains("private fun refresh() {\n        skin()"), "the MENU has the Sunlight tile, five tiles in the first row, and draws its colours again each time");
+        check(menu.contains("Tile(tr(\"Sunlight\"), false)") && menu.contains("listOf(rulesTile, speechTile, batteryTile, aircraftTile, sunlightTile)") && menu.contains("private fun refreshRows() {\n        skin()"), "the MENU has the Sunlight tile, five tiles in the first row, and draws its colours again each time");
         int dashFiles = 0;
         for (String f : new String[]{"HorizonView.kt", "CompassView.kt", "FlightStatsView.kt", "RadarView.kt", "ChartView.kt", "SticksView.kt", "ValueTileView.kt"}) {
             String s = read(f);

@@ -71,6 +71,14 @@ public final class Credits {
             "https://kotlinlang.org",
             I18n.n("The standard library of the Kotlin language, which the app is written in."),
             new Text("Apache License 2.0", "licenses/Apache-2.0.txt")));
+        e.add(new Entry("Manrope (the font of the text)", "The Manrope Project Authors (Mikhail Sharanda)", "SIL Open Font License 1.1",
+            "https://github.com/googlefonts/manrope",
+            I18n.n("The typeface of the menus, settings and all running text, in four weights (trimmed to the letters the app needs)."),
+            new Text("SIL Open Font License 1.1 (Manrope)", "licenses/Manrope-OFL.txt")));
+        e.add(new Entry("Teko (the font of titles and big numbers)", "The Teko Project Authors (Indian Type Foundry)", "SIL Open Font License 1.1",
+            "https://github.com/googlefonts/teko",
+            I18n.n("The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs)."),
+            new Text("SIL Open Font License 1.1 (Teko)", "licenses/Teko-OFL.txt")));
         ENTRIES = Collections.unmodifiableList(e);
     }
 

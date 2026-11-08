@@ -68,13 +68,16 @@ class SticksView(context: Context) : View(context) {
         dot.color = 0xFF66BB6A.toInt()
         text.color = 0xFFFFFFFF.toInt()
         text.textSize = 11f * density
+        CardStyle.styleLabel(text)
         text.textAlign = Paint.Align.CENTER
         nameFill.color = 0xFFFFFFFF.toInt()
         nameFill.textAlign = Paint.Align.CENTER
+        CardStyle.styleTitle(nameFill)
         nameOutline.color = 0xE0000000.toInt()
         nameOutline.style = Paint.Style.STROKE
         nameOutline.strokeWidth = 2.5f * density
         nameOutline.textAlign = Paint.Align.CENTER
+        CardStyle.styleTitle(nameOutline)
         isLongClickable = true
         setOnLongClickListener {
             onLongPress?.invoke()
