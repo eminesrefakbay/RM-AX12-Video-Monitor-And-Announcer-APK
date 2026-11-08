@@ -161,6 +161,16 @@ public class DashboardTests {
         int lookApplied = act.indexOf("Look.apply(frame)");
         int menuElevation = act.indexOf("menuButton.elevation = dp(8).toFloat()");
         check(lookApplied > 0 && menuElevation > lookApplied, "the MENU button stays above the dashboard after button styling resets elevation");
+        String camera = new String(Files.readAllBytes(new File(kt + "CameraPreview.kt").toPath()), StandardCharsets.UTF_8);
+        int cameraStop = camera.indexOf("    fun stop() {");
+        int cameraStart = camera.indexOf("\n    /** One short line", cameraStop);
+        String stopBody = camera.substring(cameraStop, cameraStart);
+        int queuedStop = stopBody.indexOf("cameraHandler.post {");
+        int opened = camera.indexOf("override fun onOpened");
+        int disconnected = camera.indexOf("override fun onDisconnected", opened);
+        check(queuedStop >= 0 && stopBody.indexOf("closeCamera()", queuedStop) > queuedStop
+              && stopBody.contains("restartAfterStop") && camera.substring(opened, disconnected).contains("if (!running)") && camera.substring(opened, disconnected).contains("d.close()"),
+              "camera shutdown runs off the UI thread and a quick return to video restarts it safely");
         String allowed = act.substring(act.indexOf("private fun videoEditAllowed()"), act.indexOf("private fun onMenuButton"));
         check(allowed.contains("flightStats.armed()") && allowed.contains("anyOverlayOpen()") && allowed.contains("dashboardOn") && allowed.contains("editingLayout"), "the video editor is not opened when armed, over a panel, on the dashboard or while editing");
         String fire = act.substring(act.indexOf("private val holdFire"), act.indexOf("private fun videoEditAllowed()"));

@@ -41,7 +41,9 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     private var handler: Handler? = null
     private var device: CameraDevice? = null
     private var session: CameraCaptureSession? = null
-    private var running = false
+    @Volatile private var running = false
+    private var stopping = false
+    private var restartAfterStop = false
     private var bufW = 1920
     private var bufH = 1080
 
@@ -87,6 +89,10 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     }
 
     fun start() {
+        if (stopping) {
+            restartAfterStop = true
+            return
+        }
         if (running) return
         running = true
         thread = HandlerThread("camera").also { it.start() }
@@ -97,10 +103,29 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     fun stop() {
         running = false
         main.removeCallbacks(retry)
-        closeCamera()
-        thread?.quitSafely()
-        thread = null
-        handler = null
+        if (stopping) return
+        val cameraThread = thread
+        val cameraHandler = handler
+        if (cameraThread == null || cameraHandler == null) {
+            closeCamera()
+            return
+        }
+        stopping = true
+        cameraHandler.post {
+            closeCamera()
+            cameraThread.quitSafely()
+            main.post {
+                if (thread === cameraThread) {
+                    thread = null
+                    handler = null
+                }
+                stopping = false
+                if (restartAfterStop) {
+                    restartAfterStop = false
+                    start()
+                }
+            }
+        }
     }
 
     /** One short line for the status bar shown when there is no video. */
@@ -169,6 +194,10 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
             message = tr("Opening camera {0}...", id)
             manager.openCamera(id, object : CameraDevice.StateCallback() {
                 override fun onOpened(d: CameraDevice) {
+                    if (!running) {
+                        d.close()
+                        return
+                    }
                     device = d
                     startSession(d)
                 }
@@ -205,6 +234,10 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
             request.addTarget(surface)
             d.createCaptureSession(listOf(surface), object : CameraCaptureSession.StateCallback() {
                 override fun onConfigured(s: CameraCaptureSession) {
+                    if (!running) {
+                        s.close()
+                        return
+                    }
                     session = s
                     try {
                         s.setRepeatingRequest(request.build(), null, handler)
