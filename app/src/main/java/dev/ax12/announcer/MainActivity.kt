@@ -153,6 +153,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Sunlight.on = Prefs.bool(this, "sunlight", false)
+        Shapes.style = ShapeGeometry.clampStyle(Prefs.int(this, "shape", 0))
         StartupState.mark(StartupTimeline.SCREEN_CREATED)
         Icons.load(this)
         setContentView(R.layout.activity_main)
@@ -785,6 +786,14 @@ class MainActivity : Activity() {
         override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)
         override fun sunlightOn(): Boolean = Sunlight.on
+        override fun shapeLabel(): String = Shapes.label(Shapes.style)
+        override fun cycleShape() {
+            Shapes.style = (Shapes.style + 1) % ShapeGeometry.COUNT
+            Prefs.setInt(this@MainActivity, "shape", Shapes.style)
+            invalidateTree(rootFrame)
+            warningBar.restyle()
+            if (settingsPanel.isShowing) settingsPanel.skin()
+        }
         override fun setSunlightOn(on: Boolean) = this@MainActivity.setSunlight(on)
         override fun setMenuAlways(on: Boolean) {
             Prefs.setMenuAlways(this@MainActivity, on)
@@ -1369,6 +1378,12 @@ class MainActivity : Activity() {
     }
 
     private fun toggleSunlight() = setSunlight(!Sunlight.on)
+
+    /** Every view draws itself again (the shape style is read when a view draws). */
+    private fun invalidateTree(v: View) {
+        v.invalidate()
+        if (v is ViewGroup) for (i in 0 until v.childCount) invalidateTree(v.getChildAt(i))
+    }
 
     /** The sunlight theme on or off: kept, and shown at once on the dashboard, the warning bar and the screen that is open. */
     private fun setSunlight(on: Boolean) {

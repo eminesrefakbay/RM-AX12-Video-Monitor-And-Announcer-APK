@@ -75,10 +75,13 @@ class ValueTileView(context: Context) : View(context) {
         val w = width.toFloat()
         val h = height.toFloat()
         rect.set(1f, 1f, w - 1f, h - 1f)
-        canvas.drawRect(rect, bg)
-        canvas.drawRect(rect, edge)
+        CardStyle.drawFill(canvas, rect, bg, density)
         levelPaint.color = when (level) { 2 -> Sunlight.cIf(light, CardStyle.BAD); 1 -> Sunlight.cIf(light, CardStyle.WARN); else -> Sunlight.cIf(light, CardStyle.ACCENT) }
+        canvas.save()
+        CardStyle.clipFrame(canvas, rect, density)               // the bar runs along the edge: it is cut to the shape
         canvas.drawRect(1f, 1f, 5f * density, h - 1f, levelPaint)
+        canvas.restore()
+        CardStyle.drawEdge(canvas, rect, edge, density, Sunlight.cIf(light, CardStyle.ACCENT))
         val pad = 12f * density
         var title = CardStyle.upper(spec.title())
         while (title.length > 1 && labelPaint.measureText(title) > w - pad * 2) title = title.substring(0, title.length - 1)

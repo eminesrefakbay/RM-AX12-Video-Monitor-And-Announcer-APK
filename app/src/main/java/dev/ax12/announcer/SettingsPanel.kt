@@ -41,6 +41,8 @@ interface SettingsHost {
     fun setSplashOn(on: Boolean)
     fun menuAlways(): Boolean
     fun sunlightOn(): Boolean
+    fun shapeLabel(): String
+    fun cycleShape()
     fun setSunlightOn(on: Boolean)
     fun setMenuAlways(on: Boolean)
     fun variablesOn(): Boolean
@@ -417,6 +419,11 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
                 host.setSunlightOn(it)
                 refresh()
             }
+            valueRow(tr("Shape"), host.shapeLabel()) {
+                host.cycleShape()
+                refresh()
+            }
+            note(tr("The shape of cards, tiles and rows: two cut corners (the default), four cut corners, corner brackets, soft corners or plain rectangles. Warnings keep a solid fill."))
             note(tr("Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch."))
             toggle(tr("Always show the MENU button"), host.menuAlways()) { host.setMenuAlways(it) }
             note(tr("Off: the button hides and appears when you touch the screen."))

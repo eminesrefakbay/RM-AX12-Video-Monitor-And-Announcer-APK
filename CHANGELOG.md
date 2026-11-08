@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.0
+
+Shapes: cards, tiles, rows and the warning bar can have two cut corners (the new default), four cut corners, corner brackets, soft corners or
+plain rectangles, chosen in Settings > Display > Shape. Warnings keep a solid fill.
+
 ## 1.6.0
 
 New fonts: Manrope for text, Teko (a narrow techno face) for titles and the big numbers, with a typography scale (card titles in capitals,

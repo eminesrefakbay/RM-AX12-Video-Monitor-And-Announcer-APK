@@ -6,7 +6,6 @@
 package dev.ax12.announcer
 
 import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -99,10 +98,8 @@ class WarningBar(private val bar: TextView) {
                     1 -> { background = SunlightPalette.BAR_WARNING; foreground = SunlightPalette.BAR_WARNING_TEXT; shape = "warn_warning" }
                     else -> { background = SunlightPalette.BAR_INFO; foreground = SunlightPalette.BAR_INFO_TEXT; shape = "about" }
                 }
-                val box = GradientDrawable()
-                box.setColor(background)
-                box.setStroke((SunlightPalette.BAR_OUTLINE_DP * density).toInt(), if (worst == 1) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
-                bar.background = box
+                val outline = if (worst == 1) 0xFF000000.toInt() else 0xFFFFFFFF.toInt()
+                bar.background = FrameDrawable(background, outline, SunlightPalette.BAR_OUTLINE_DP * density, density, outline, true)
                 bar.setTextSize(TypedValue.COMPLEX_UNIT_SP, SunlightPalette.BAR_TEXT_SP)
                 bar.typeface = Fonts.text(700, bar.typeface)
                 bar.setTextColor(foreground)
@@ -113,7 +110,7 @@ class WarningBar(private val bar: TextView) {
                     1 -> { background = 0xFFFFA000.toInt(); foreground = 0xFF000000.toInt(); shape = "warn_warning" }
                     else -> { background = 0xFF1565C0.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "about" }
                 }
-                bar.setBackgroundColor(background)
+                bar.background = FrameDrawable(background, 0, 0f, density, background, true)
                 bar.setTextSize(TypedValue.COMPLEX_UNIT_PX, normalTextPx)
                 bar.typeface = normalTypeface
                 bar.setTextColor(foreground)

@@ -32,6 +32,7 @@ class RadarView(context: Context) : View(context) {
     private val tri = Path()
     private val edge = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    private val frame = android.graphics.RectF()
     private var stats: FlightStats? = null
     private var sizePx = (150 * density).toInt()
 
@@ -85,8 +86,9 @@ class RadarView(context: Context) : View(context) {
         val cx = sizePx / 2f
         val cy = sizePx / 2f
         val rpx = sizePx / 2f - 2 * density
-        canvas.drawRect(0f, 0f, sizePx.toFloat(), sizePx.toFloat(), bg)           // a square card like the others; the range rings stay round
-        canvas.drawRect(1f, 1f, sizePx - 1f, sizePx - 1f, edge)
+        frame.set(1f, 1f, sizePx - 1f, sizePx - 1f)                              // a square card like the others; the range rings stay round
+        CardStyle.drawFill(canvas, frame, bg, density)
+        CardStyle.drawEdge(canvas, frame, edge, density, Sunlight.cIf(light, CardStyle.ACCENT))
         val s = stats
         val radiusM = s?.radarRadiusM() ?: 150.0
         for (k in 1..3) canvas.drawCircle(cx, cy, rpx * k / 3f, ring)

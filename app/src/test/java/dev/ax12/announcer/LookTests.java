@@ -50,7 +50,8 @@ public class LookTests {
 
         // ---------- plain rectangles ----------
         String card = read(kt + "CardStyle.kt");
-        check(card.contains("const val RADIUS_DP = 0f"), "the card style has no rounded corners");
+        check(!card.contains("RADIUS_DP") && !card.contains("cornerRadius") && card.contains("ShapeGeometry.radius("), "the card style has no fixed radius: rounded corners exist only as one of the shape styles (and Plain is one too)");
+        check(Integer.valueOf(0).equals(SettingsFile.defaultOf("shape")) && read(kt + "Shapes.kt").contains("@JvmField var style: Int = ShapeGeometry.CHAMFER2"), "the default shape is two cut corners, not rounded");
         for (String f : new File(res + "drawable").list()) {
             if (f.endsWith(".xml")) check(!read(res + "drawable/" + f).contains("<corners"), "no rounded corners in the drawable " + f);
         }
@@ -64,12 +65,12 @@ public class LookTests {
             if (!f.endsWith(".kt")) continue;
             String src = read(kt + f);
             Matcher m = Pattern.compile("drawRoundRect\\(([^;\\n]*)").matcher(src);
-            while (m.find()) { if (!f.equals("Icons.kt")) roundCalls++; }
+            while (m.find()) { if (!f.equals("Icons.kt") && !f.equals("CardStyle.kt")) roundCalls++; }
             Matcher c = Pattern.compile("cornerRadius\\s*=\\s*([^\\n]*)").matcher(src);
             while (c.find()) if (!f.equals("CardStyle.kt") || !c.group(1).contains("radius(density)")) literalRadii++;
         }
-        check(roundCalls == 0, "no card or panel is drawn with rounded corners (" + roundCalls + " rounded calls)");
-        check(literalRadii == 0, "no corner radius is set except through the card style");
+        check(roundCalls == 0, "rounded corners are drawn in one place only, the card style (" + roundCalls + " stray rounded calls)");
+        check(literalRadii == 0, "no corner radius is set anywhere");
         check(read(kt + "Icons.kt").contains("drawRoundRect(rect, n[4]"), "icons take their corner from the icon file (all zero)");
         check(read(kt + "SettingsPanel.kt").contains("squareSwitch(sw)") && read(kt + "LayoutEditor.kt").contains("The square handle") == false, "switches are square");
 

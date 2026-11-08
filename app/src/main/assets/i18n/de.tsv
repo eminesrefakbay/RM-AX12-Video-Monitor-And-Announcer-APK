@@ -544,6 +544,8 @@ Speech language	Sprache der Ansagen
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Anzeige und Stimme können verschiedene Sprachen nutzen. Deine Regeln behalten ihren Wortlaut: „Regeln auf Standard zurücksetzen“ lädt die Startregeln in der Sprache der Stimme.
 Display	Anzeige
 Sunlight theme	Sonnenlicht-Design
+Shape	Form
+The shape of cards, tiles and rows: two cut corners (the default), four cut corners, corner brackets, soft corners or plain rectangles. Warnings keep a solid fill.	Die Form von Karten, Kacheln und Zeilen: zwei abgeschrägte Ecken (Standard), vier abgeschrägte Ecken, Eckklammern, weiche Ecken oder schlichte Rechtecke. Warnungen behalten eine volle Füllung.
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	Dunkle Schrift auf hellem Grund für das Menü, die Einstellungen, die anderen Bildschirme und das Dashboard, dazu kräftigere Warnungen. In direkter Sonne ist das besser lesbar als helle Schrift auf dunklem Grund. Das MENÜ hat eine Kachel Sonnenlicht als Schnellschalter.
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
@@ -653,6 +655,11 @@ Close Settings to see the panels over the video.	Schließe die Einstellungen, um
 About	Info
 Show the welcome guide...	Willkommensanleitung anzeigen...
 About AX-HUD, licenses and thanks...	Über AX-HUD, Lizenzen und Dank...
+Chamfer, two corners	Abgeschrägt, zwei Ecken
+Chamfer, four corners	Abgeschrägt, vier Ecken
+Corner brackets	Eckklammern
+Soft corners	Weiche Ecken
+Plain rectangles	Schlichte Rechtecke
 AX-HUD  version {0}  (build {1})	AX-HUD  Version {0}  (Build {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Verwende {variable} für einen Live-Wert, zum Beispiel {vbat/6:2}.
 A divisor in { } cannot be 0.	Ein Teiler in { } darf nicht 0 sein.

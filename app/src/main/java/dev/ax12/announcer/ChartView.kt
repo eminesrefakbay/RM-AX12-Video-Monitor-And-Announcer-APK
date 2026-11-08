@@ -135,8 +135,8 @@ class ChartView(context: Context) : View(context) {
         val m = model ?: return
         if (m.names.isEmpty()) return
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRect(rect, bg)
-        canvas.drawRect(rect, edge)
+        CardStyle.drawFill(canvas, rect, bg, density)
+        CardStyle.drawEdge(canvas, rect, edge, density, Sunlight.cIf(light, CardStyle.ACCENT))
         val rowH = rowDp * density
         val pad = 6 * density
         for ((i, name) in m.names.withIndex()) {

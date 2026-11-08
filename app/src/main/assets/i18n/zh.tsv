@@ -544,6 +544,8 @@ Speech language	语音语言
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	屏幕和语音可以使用不同的语言。你的规则保持原有文字: “将规则重置为默认值” 会以语音的语言载入初始规则。
 Display	显示
 Sunlight theme	阳光主题
+Shape	形状
+The shape of cards, tiles and rows: two cut corners (the default), four cut corners, corner brackets, soft corners or plain rectangles. Warnings keep a solid fill.	卡片、图块和行的形状：两个切角（默认）、四个切角、角标框、圆角或直角矩形。警告始终保持实心填充。
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	菜单、设置、其他界面和仪表盘使用浅色背景上的深色文字，并加强警告显示。在强烈日光下，这比深色背景上的浅色文字更易读。菜单中的“阳光”图块可快速切换。
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
@@ -653,6 +655,11 @@ Close Settings to see the panels over the video.	关闭设置即可在视频上�
 About	关于
 Show the welcome guide...	显示欢迎指南...
 About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...
+Chamfer, two corners	切角（两个角）
+Chamfer, four corners	切角（四个角）
+Corner brackets	角标框
+Soft corners	圆角
+Plain rectangles	直角矩形
 AX-HUD  version {0}  (build {1})	AX-HUD  版本 {0}  (构建 {1})
 Use {variable} for a live value, for example {vbat/6:2}.	使用 {variable} 显示实时数值, 例如 {vbat/6:2}。
 A divisor in { } cannot be 0.	{ } 中的除数不能为 0。

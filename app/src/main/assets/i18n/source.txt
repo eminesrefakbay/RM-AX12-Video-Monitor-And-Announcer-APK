@@ -544,6 +544,8 @@ Speech language
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.
 Display
 Sunlight theme
+Shape
+The shape of cards, tiles and rows: two cut corners (the default), four cut corners, corner brackets, soft corners or plain rectangles. Warnings keep a solid fill.
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.
 Always show the MENU button
 Off: the button hides and appears when you touch the screen.
@@ -653,6 +655,11 @@ Close Settings to see the panels over the video.
 About
 Show the welcome guide...
 About AX-HUD, licenses and thanks...
+Chamfer, two corners
+Chamfer, four corners
+Corner brackets
+Soft corners
+Plain rectangles
 AX-HUD  version {0}  (build {1})
 Use {variable} for a live value, for example {vbat/6:2}.
 A divisor in { } cannot be 0.

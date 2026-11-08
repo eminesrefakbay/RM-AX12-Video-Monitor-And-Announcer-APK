@@ -544,6 +544,8 @@ Speech language	Konuşma dili
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Ekran ve ses farklı dilleri kullanabilir. Kurallarınız kendi sözcüklerini korur: "Kuralları varsayılanlara sıfırla" başlangıç kurallarını sesin diliyle yükler.
 Display	Ekran
 Sunlight theme	Güneş ışığı teması
+Shape	Şekil
+The shape of cards, tiles and rows: two cut corners (the default), four cut corners, corner brackets, soft corners or plain rectangles. Warnings keep a solid fill.	Kartların, kutucukların ve satırların şekli: iki kesik köşe (varsayılan), dört kesik köşe, köşe ayraçları, yumuşak köşeler veya düz dikdörtgenler. Uyarılar dolu zeminini korur.
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	Menü, ayarlar, diğer ekranlar ve pano için açık zemin üzerinde koyu yazı, ayrıca daha güçlü uyarılar. Doğrudan güneşte bu, koyu zeminde açık yazıdan daha iyi okunur. MENÜ'deki Güneş kutucuğu hızlı anahtardır.
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
@@ -653,6 +655,11 @@ Close Settings to see the panels over the video.	Panelleri videonun üzerinde g�
 About	Hakkında
 Show the welcome guide...	Karşılama kılavuzunu göster...
 About AX-HUD, licenses and thanks...	AX-HUD hakkında, lisanslar ve teşekkürler...
+Chamfer, two corners	Pahlı, iki köşe
+Chamfer, four corners	Pahlı, dört köşe
+Corner brackets	Köşe ayraçları
+Soft corners	Yumuşak köşeler
+Plain rectangles	Düz dikdörtgenler
 AX-HUD  version {0}  (build {1})	AX-HUD  sürüm {0}  (yapı {1})
 Use {variable} for a live value, for example {vbat/6:2}.	Canlı değer için {variable} kullanın, örneğin {vbat/6:2}.
 A divisor in { } cannot be 0.	{ } içindeki bölen 0 olamaz.

@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir -p out
           javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
-          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests FirstRunTests LanguageFitTests CheckCardTests LogFormatTests FlightLoggerTests LogStoreTests ReplayTests LogTextTests DashboardTests PositionTests WindowTests PackTests SunlightTests DiagTests FontTests I18nTests; do
+          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests FirstRunTests LanguageFitTests CheckCardTests LogFormatTests FlightLoggerTests LogStoreTests ReplayTests LogTextTests DashboardTests PositionTests WindowTests PackTests SunlightTests DiagTests FontTests ShapeTests I18nTests; do
             java -cp out dev.ax12.announcer.$t
           done
       - name: Translations are complete (every text in the code has a Turkish, German and Chinese version)

@@ -94,7 +94,7 @@ class HorizonView(context: Context) : View(context) {
         val w = width.toFloat()
         val h = height.toFloat()
         rect.set(1f, 1f, w - 1f, h - 1f)
-        canvas.drawRect(rect, bg)
+        CardStyle.drawFill(canvas, rect, bg, density)
         val noData = pitch.isNaN() || roll.isNaN() || SystemClock.uptimeMillis() - lastValidMs > 2000
         val cx = w / 2f
         val cy = h / 2f
@@ -103,7 +103,7 @@ class HorizonView(context: Context) : View(context) {
             val noseUp = if (invertPitch) pitch else -pitch
             val rollShown = if (invertRoll) -roll else roll
             canvas.save()
-            canvas.clipRect(rect)
+            CardStyle.clipFrame(canvas, rect, density)
             canvas.translate(cx, cy)
             canvas.rotate((-rollShown).toFloat())
             val off = (noseUp * perDeg).toFloat()
@@ -134,6 +134,6 @@ class HorizonView(context: Context) : View(context) {
         canvas.drawLine(cx - w * 0.10f, cy, cx - w * 0.10f, cy + 8f * density, symbol)
         canvas.drawLine(cx + w * 0.10f, cy, cx + w * 0.10f, cy + 8f * density, symbol)
         canvas.drawCircle(cx, cy, 2.5f * density, symbol)
-        canvas.drawRect(rect, edge)
+        CardStyle.drawEdge(canvas, rect, edge, density, Sunlight.cIf(light, CardStyle.ACCENT))
     }
 }

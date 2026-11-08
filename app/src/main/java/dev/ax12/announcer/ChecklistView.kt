@@ -137,8 +137,8 @@ class ChecklistView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         rect.set(1f, 1f, width - 1f, height - 1f)
-        canvas.drawRect(rect, bg)
-        canvas.drawRect(rect, edge)
+        CardStyle.drawFill(canvas, rect, bg, density)
+        CardStyle.drawEdge(canvas, rect, edge, density, CardStyle.ACCENT)
         var y = pad() + textPx
         canvas.drawText(title, pad(), y, titlePaint)
         if (subtitle.isNotEmpty()) {

@@ -98,7 +98,7 @@ class CompassView(context: Context) : View(context) {
         val w = width.toFloat()
         val h = height.toFloat()
         rect.set(1f, 1f, w - 1f, h - 1f)
-        canvas.drawRect(rect, bg)
+        CardStyle.drawFill(canvas, rect, bg, density)
         val cx = w / 2f
         val cy = h / 2f
         val r = w * 0.38f
@@ -154,6 +154,6 @@ class CompassView(context: Context) : View(context) {
             home.textSize = 12f * density
             canvas.drawText(d, cx - home.measureText(d) / 2f, h - 5f * density, home)
         }
-        canvas.drawRect(rect, edge)
+        CardStyle.drawEdge(canvas, rect, edge, density, Sunlight.cIf(light, CardStyle.ACCENT))
     }
 }
