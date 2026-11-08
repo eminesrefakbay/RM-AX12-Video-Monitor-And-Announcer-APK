@@ -567,6 +567,9 @@ class MainActivity : Activity() {
             if (anyOverlayOpen()) {
                 menuButton.visibility = View.GONE
                 overlayWasOpen = true
+            } else if (dashboardOn) {
+                menuButton.visibility = View.VISIBLE
+                overlayWasOpen = false
             } else if (overlayWasOpen) {
                 overlayWasOpen = false
                 if (Prefs.menuAlways(this@MainActivity) || dashboardOn) menuButton.visibility = View.VISIBLE else showMenuButton(4000)

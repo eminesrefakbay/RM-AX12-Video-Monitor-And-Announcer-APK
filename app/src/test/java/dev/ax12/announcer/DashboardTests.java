@@ -145,6 +145,11 @@ public class DashboardTests {
         // the video page
         String dispatch = act.substring(act.indexOf("override fun dispatchTouchEvent"), act.indexOf("private fun anyOverlayOpen()"));
         check(dispatch.contains("HoldGesture.HOLD_MS") && dispatch.contains("HoldGesture.moved") && dispatch.contains("ACTION_MOVE") && dispatch.contains("ACTION_UP") && dispatch.contains("ACTION_CANCEL") && dispatch.contains("ACTION_POINTER_DOWN") && dispatch.contains("onMenuButton"), "the video page watches the hold and cancels it on movement, a second finger and letting go, and ignores the MENU button");
+        int menuVisibility = act.indexOf("if (anyOverlayOpen())");
+        int dashboardVisible = act.indexOf("} else if (dashboardOn) {", menuVisibility);
+        check(menuVisibility > 0 && dashboardVisible > menuVisibility
+              && act.substring(dashboardVisible, act.indexOf("} else if (overlayWasOpen)", dashboardVisible)).contains("menuButton.visibility = View.VISIBLE"),
+              "the MENU button is restored whenever the dashboard is shown without an overlay");
         String allowed = act.substring(act.indexOf("private fun videoEditAllowed()"), act.indexOf("private fun onMenuButton"));
         check(allowed.contains("flightStats.armed()") && allowed.contains("anyOverlayOpen()") && allowed.contains("dashboardOn") && allowed.contains("editingLayout"), "the video editor is not opened when armed, over a panel, on the dashboard or while editing");
         String fire = act.substring(act.indexOf("private val holdFire"), act.indexOf("private fun videoEditAllowed()"));
