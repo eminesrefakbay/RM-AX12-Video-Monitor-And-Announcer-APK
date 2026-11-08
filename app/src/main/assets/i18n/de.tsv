@@ -192,6 +192,7 @@ Recording now	Wird gerade aufgezeichnet
 Replay	Wiedergabe
 Delete this log? It cannot be brought back.	Dieses Protokoll löschen? Es lässt sich nicht wiederherstellen.
 MENU	MENÜ
+Diagnostics	Diagnose
 Warning rules	Warnregeln
 Pre-flight checks	Checks vor dem Flug
 SDK start failed ({0})	SDK-Start fehlgeschlagen ({0})
@@ -250,9 +251,37 @@ NOT READY: 1 check failed	NICHT BEREIT: 1 Check fehlgeschlagen
 NOT READY: {0} checks failed	NICHT BEREIT: {0} Checks fehlgeschlagen
 WAITING FOR DATA	WARTE AUF DATEN
 PRE-FLIGHT CHECK	CHECK VOR DEM FLUG
+Version {0} (build {1})	Version {0} (Build {1})
+{0} {1}, Android {2}	{0} {1}, Android {2}
+Radio link: connected after {0} s	Funkverbindung: nach {0} s verbunden
+Radio link: not connected	Funkverbindung: nicht verbunden
+Events: {0} ({1} warnings, {2} errors)	Ereignisse: {0} ({1} Warnungen, {2} Fehler)
+The app stopped unexpectedly	Die App wurde unerwartet beendet
+Delete the crash record	Absturzprotokoll löschen
+The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	Der Bericht enthält keine GPS-Positionen, keine Namen von Fluggeräten oder Akkus und nichts Persönliches. Lies ihn, bevor du ihn sendest.
+Copy the report	Bericht kopieren
+Report copied. Paste it into the issue.	Bericht kopiert. Füge ihn in das Issue ein.
+Share the report...	Bericht teilen...
+Share the report	Bericht teilen
+Nothing on this radio can take it. Copy the report instead.	Auf diesem Funkgerät kann nichts den Bericht annehmen. Kopiere ihn stattdessen.
+Read the report	Bericht lesen
+The report	Der Bericht
+Add a note...	Notiz hinzufügen...
+Edit the note...	Notiz bearbeiten...
+Save the report to a file	Bericht in einer Datei speichern
+Saved: {0}	Gespeichert: {0}
+Could not save the report	Der Bericht konnte nicht gespeichert werden
+Open the issue page	Issue-Seite öffnen
+No browser on this radio. The address was copied.	Auf diesem Funkgerät ist kein Browser. Die Adresse wurde kopiert.
+Clear the events	Ereignisse löschen
+Events cleared	Ereignisse gelöscht
+Recent events	Letzte Ereignisse
+No events yet.	Noch keine Ereignisse.
+What did you do, and what happened? Positions and addresses are removed from the note automatically.	Was hast du getan, und was ist passiert? Positionen und Adressen werden automatisch aus der Notiz entfernt.
+Describe the problem (optional)	Das Problem beschreiben (optional)
+OK	OK
 Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	Ganze Minuten von 1 bis 240, höchstens 8, zum Beispiel 30,15,10,5,2,1. Leer bedeutet keine Warnungen; das Ende des Zeitraums wird immer angesagt.
 Warn at (minutes left)	Warnen bei (verbleibende Minuten)
-OK	OK
 Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	Verwenden Sie ganze Minuten von 1 bis 240, höchstens 8, zum Beispiel 30,15,10,5,2,1.
 Arm switch channel (1 to 16, AUX1 is channel 5)	Kanal des Arm-Schalters (1 bis 16, AUX1 ist Kanal 5)
 Counts as armed at or above (microseconds)	Gilt als scharf ab (Mikrosekunden)
@@ -592,6 +621,8 @@ Speak the last position when the link is lost	Bei Verbindungsverlust die letzte 
 When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	Bei Verbindungsverlust im Flug zeigt eine Karte die letzte Position mit Entfernung und Peilung von Home; die Position wird auf diesem Funkgerät gespeichert.
 Last known position...	Letzte bekannte Position...
 Packs: totals per pack...	Akkus: Summen je Akku...
+If something goes wrong, this page collects what a bug report needs: versions, the device, the state of the radio link and its start-up timing, a digest of the settings and the last events. It holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	Wenn etwas schiefgeht, sammelt diese Seite, was ein Fehlerbericht braucht: Versionen, das Gerät, den Zustand der Funkverbindung und ihre Startzeiten, eine Übersicht der Einstellungen und die letzten Ereignisse. Sie enthält keine GPS-Positionen, keine Namen von Fluggeräten oder Akkus und nichts Persönliches. Lies sie, bevor du sie sendest.
+Diagnostics and bug report...	Diagnose und Fehlerbericht...
 Rules and backup	Regeln und Sicherung
 Export sound rules to a file...	Sprachregeln in eine Datei exportieren...
 Import sound rules from a file...	Sprachregeln aus einer Datei importieren...
@@ -612,7 +643,6 @@ Check for updates now	Jetzt nach Updates suchen
 Update channel	Update-Kanal
 Check at start-up (needs internet)	Beim Start prüfen (Internet nötig)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android lässt dich jedes Update bestätigen. Beim ersten Mal fragt es auch, ob AX-HUD Installationen erlaubt sein sollen. Aktualisiere nie während eines Fluges.
-Diagnostics	Diagnose
 Show the variables panel (every value the radio sends)	Variablen-Panel anzeigen (jeder Wert, den die Fernsteuerung sendet)
 Test channels: sliders instead of the radio	Testkanäle: Schieberegler statt der Fernsteuerung
 Show the start-up timings of the last launches...	Startzeiten der letzten Starts anzeigen...

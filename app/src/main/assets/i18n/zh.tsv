@@ -192,6 +192,7 @@ Recording now	正在记录
 Replay	回放
 Delete this log? It cannot be brought back.	删除此日志吗? 无法恢复。
 MENU	菜单
+Diagnostics	诊断
 Warning rules	警告规则
 Pre-flight checks	飞行前检查项
 SDK start failed ({0})	SDK 启动失败 ({0})
@@ -250,9 +251,37 @@ NOT READY: 1 check failed	未就绪: 1 项检查未通过
 NOT READY: {0} checks failed	未就绪: {0} 项检查未通过
 WAITING FOR DATA	等待数据
 PRE-FLIGHT CHECK	飞行前检查
+Version {0} (build {1})	版本 {0}（构建 {1}）
+{0} {1}, Android {2}	{0} {1}，Android {2}
+Radio link: connected after {0} s	遥控器链路：{0} 秒后已连接
+Radio link: not connected	遥控器链路：未连接
+Events: {0} ({1} warnings, {2} errors)	事件：{0}（{1} 条警告，{2} 个错误）
+The app stopped unexpectedly	应用意外停止
+Delete the crash record	删除崩溃记录
+The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	报告不含GPS位置、飞行器或电池包名称，也不含任何个人信息。发送前请先阅读。
+Copy the report	复制报告
+Report copied. Paste it into the issue.	报告已复制。请粘贴到问题反馈中。
+Share the report...	分享报告...
+Share the report	分享报告
+Nothing on this radio can take it. Copy the report instead.	这台遥控器上没有能接收它的应用。请改为复制报告。
+Read the report	查看报告
+The report	报告
+Add a note...	添加备注...
+Edit the note...	编辑备注...
+Save the report to a file	将报告保存为文件
+Saved: {0}	已保存：{0}
+Could not save the report	无法保存报告
+Open the issue page	打开问题反馈页面
+No browser on this radio. The address was copied.	这台遥控器上没有浏览器。地址已复制。
+Clear the events	清除事件
+Events cleared	事件已清除
+Recent events	最近事件
+No events yet.	暂无事件。
+What did you do, and what happened? Positions and addresses are removed from the note automatically.	您做了什么，发生了什么？备注中的位置和地址会被自动删除。
+Describe the problem (optional)	描述问题（可选）
+OK	确定
 Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	1到240之间的整数分钟，最多8个，例如 30,15,10,5,2,1。留空表示不提醒；时段结束总会语音播报。
 Warn at (minutes left)	提醒时间（剩余分钟）
-OK	确定
 Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	请使用1到240之间的整数分钟，最多8个，例如 30,15,10,5,2,1。
 Arm switch channel (1 to 16, AUX1 is channel 5)	解锁开关通道 (1 到 16, AUX1 为通道 5)
 Counts as armed at or above (microseconds)	大于等于此值视为已解锁 (微秒)
@@ -592,6 +621,8 @@ Speak the last position when the link is lost	链路丢失时语音播报最后�
 When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	飞行中链路丢失时，卡片会显示最后位置及其到起点的距离和方位，并把位置保存在这台遥控器上。
 Last known position...	最后已知位置...
 Packs: totals per pack...	电池包：每个电池包的累计...
+If something goes wrong, this page collects what a bug report needs: versions, the device, the state of the radio link and its start-up timing, a digest of the settings and the last events. It holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	出现问题时，此页面会收集错误报告所需的信息：版本、设备、遥控器链路状态及其启动耗时、设置摘要和最近的事件。其中不含GPS位置、飞行器或电池包名称，也不含任何个人信息。发送前请先阅读。
+Diagnostics and bug report...	诊断与错误报告...
 Rules and backup	规则和备份
 Export sound rules to a file...	将语音规则导出到文件...
 Import sound rules from a file...	从文件导入语音规则...
@@ -612,7 +643,6 @@ Check for updates now	立即检查更新
 Update channel	更新通道
 Check at start-up (needs internet)	启动时检查 (需要联网)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android 会要求你确认每次更新。第一次还会要求你允许 AX-HUD 安装应用。切勿在飞行中更新。
-Diagnostics	诊断
 Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
 Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
 Show the start-up timings of the last launches...	显示最近几次启动的计时...

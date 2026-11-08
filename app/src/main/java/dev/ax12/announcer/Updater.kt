@@ -104,6 +104,8 @@ class Updater(private val activity: Activity) {
     }
 
     private fun onChecked(info: UpdateInfo?, error: String?, manual: Boolean, channel: String) {
+        if (info == null) Diagnostics.event("update", "check failed on the " + channel + " channel: " + (error ?: "no connection"), "warn")
+        else Diagnostics.event("update", "checked the " + channel + " channel: build " + info.versionCode + " is published")
         if (info == null) {
             if (manual) {
                 val friendly = if (error != null && error.contains("404")) tr("No build has been published on this channel yet.")

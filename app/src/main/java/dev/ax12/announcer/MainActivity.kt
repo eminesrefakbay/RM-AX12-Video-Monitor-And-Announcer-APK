@@ -8,6 +8,8 @@ package dev.ax12.announcer
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
+import android.os.Build
 import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -88,6 +90,7 @@ class MainActivity : Activity() {
     private lateinit var flightLogger: FlightLogger
     private lateinit var logViewer: LogViewerPanel
     private lateinit var extras: FlightExtras
+    private lateinit var diagPanel: InfoPanel
     private lateinit var replayUi: ReplayOverlay
     private var replay: ReplayEngine? = null
     private var replayStats = FlightStats()               // the replay's own statistics: the live ones are never touched
@@ -209,6 +212,7 @@ class MainActivity : Activity() {
         frame.addView(chartView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         rootFrame = frame
         extras = FlightExtras(this, frame, speaker, flightStats) { aircraftName }
+        diagPanel = InfoPanel(this, { tr("Diagnostics") }) { buildDiagnostics(it) }
         connectBanner = ConnectingBanner(this)
         frame.addView(connectBanner.view, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).also { it.topMargin = dp(64) })
         layoutEditor = LayoutEditor(this, layoutHost)
@@ -278,6 +282,7 @@ class MainActivity : Activity() {
         frame.addView(logViewer.root, FrameLayout.LayoutParams(full))
         frame.addView(extras.packPanel.root, FrameLayout.LayoutParams(full))
         frame.addView(extras.positionPanel.root, FrameLayout.LayoutParams(full))
+        frame.addView(diagPanel.root, FrameLayout.LayoutParams(full))
 
         mainMenu = MainMenu(
             this,
@@ -320,6 +325,7 @@ class MainActivity : Activity() {
         else if (welcomeGuide.isShowing) welcomeGuide.back()
         else if (dashboard.isEditing) dashboard.endEdit()
         else if (replay != null) stopReplay()
+        else if (diagPanel.isShowing) diagPanel.hide()
         else if (extras.packPanel.isShowing) extras.packPanel.hide()
         else if (extras.positionPanel.isShowing) extras.positionPanel.hide()
         else if (logViewer.isShowing) logViewer.hide()
@@ -372,7 +378,7 @@ class MainActivity : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || extras.packPanel.isShowing || extras.positionPanel.isShowing || replay != null || dashboard.isEditing || editingLayout
+    private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || extras.packPanel.isShowing || extras.positionPanel.isShowing || diagPanel.isShowing || replay != null || dashboard.isEditing || editingLayout
 
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
@@ -409,6 +415,7 @@ class MainActivity : Activity() {
         ui.removeCallbacks(holdFire)
         extras.onPause()                                // a landing that waits for the rest voltage is counted now
         flightLogger.close()                            // the file is complete whenever the screen is left
+        flightLogger.problem()?.let { Diagnostics.event("logger", it, "warn") }
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
         super.onPause()
@@ -461,6 +468,7 @@ class MainActivity : Activity() {
                     StartupState.mark(StartupTimeline.SDK_CALLED)
                     error = link.start()
                     StartupState.mark(StartupTimeline.SDK_RETURNED)
+                    Diagnostics.event("link", if (error == null) "radio link started" else error, if (error == null) "info" else "error")
                 }
             } catch (t: Throwable) {
                 error = tr("SDK start failed ({0})", t.javaClass.simpleName)       // always report back, or the screen would wait for ever
@@ -574,6 +582,7 @@ class MainActivity : Activity() {
                     reloadChecks()
                 }
                 if (sample.cfgReady && link is AxSdkRadioLink) {      // the first value that can move the sticks has reached the screen
+                    if (!StartupState.connected) Diagnostics.event("link", "radio configuration loaded after " + String.format(java.util.Locale.US, "%.1f", StartupState.secondsSinceLinkStart()) + " s")
                     StartupState.connected = true
                     StartupState.mark(StartupTimeline.FIRST_UI)
                     StartupState.logLaunch(this@MainActivity, sdkLink)
@@ -873,6 +882,10 @@ class MainActivity : Activity() {
         override fun openPosition() {
             settingsPanel.hide()
             extras.positionPanel.show()
+        }
+        override fun openDiagnostics() {
+            settingsPanel.hide()
+            diagPanel.show()
         }
         override fun showStartupTimings() = this@MainActivity.showStartupTimings()
         override fun editLayout() {
@@ -1227,6 +1240,133 @@ class MainActivity : Activity() {
     }
 
     /** Which channel is the arm switch, and when it counts as armed (it also needs the cell count for volts per cell). */
+    // ------------------------------------------------------------------ diagnostics and the bug report
+
+    private fun logFolder(): java.io.File = java.io.File(getExternalFilesDir(null) ?: filesDir, "flights")
+
+    private fun diagReport(): String = Diagnostics.report(this, sdkLinkIfReady, flightLogger, latestNumbers, logFolder())
+
+    private fun copyToClipboard(text: String) {
+        val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        cm.setPrimaryClip(android.content.ClipData.newPlainText("AX-HUD", text))
+    }
+
+    private fun issueUrl(): String = "https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK/issues/new"
+
+    @Suppress("DEPRECATION")        // versionCode: the old field is what API levels below 28 offer
+    private fun buildDiagnostics(p: InfoPanel) {
+        val info = try { packageManager.getPackageInfo(packageName, 0) } catch (e: Exception) { null }
+        val code = if (info == null) 0L else if (Build.VERSION.SDK_INT >= 28) info.longVersionCode else info.versionCode.toLong()
+        val log = Diagnostics.log
+        val summary = p.card()
+        p.line(summary, tr("Version {0} (build {1})", info?.versionName ?: "?", code), 17f, Sunlight.c(Color.WHITE), bold = true)
+        p.line(summary, tr("{0} {1}, Android {2}", Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE), 13f, Sunlight.c(CardStyle.LABEL), topDp = 2)
+        val linkLine = if (StartupState.connected) tr("Radio link: connected after {0} s", String.format(java.util.Locale.US, "%.1f", StartupState.secondsSinceLinkStart()))
+        else tr("Radio link: not connected")
+        p.line(summary, linkLine, 13f, if (StartupState.connected) Sunlight.c(CardStyle.OK) else Sunlight.c(CardStyle.WARN), topDp = 2)
+        p.line(summary, tr("Events: {0} ({1} warnings, {2} errors)", log.size(), log.count("warn"), log.count("error")), 13f, Sunlight.c(CardStyle.LABEL), topDp = 2)
+
+        val crash = Diagnostics.crashText()
+        if (crash != null) {
+            val c = p.card()
+            p.line(c, tr("The app stopped unexpectedly"), 16f, Sunlight.c(CardStyle.BAD), bold = true)
+            p.line(c, crash.trim().split("\n").take(6).joinToString("\n"), 11f, Sunlight.c(0xFFDDE3E8.toInt()), topDp = 4)
+            p.button(c, tr("Delete the crash record")) {
+                Diagnostics.clearCrash()
+                p.refresh()
+            }
+        }
+
+        val actions = p.card()
+        p.line(actions, tr("The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it."), 12f, Sunlight.c(CardStyle.LABEL))
+        p.button(actions, tr("Copy the report")) {
+            copyToClipboard(diagReport())
+            Toast.makeText(this, tr("Report copied. Paste it into the issue."), Toast.LENGTH_LONG).show()
+        }
+        p.button(actions, tr("Share the report...")) {
+            try {
+                holdLink(HOLD_OPENED_MS)
+                val i = Intent(Intent.ACTION_SEND)
+                i.type = "text/plain"
+                i.putExtra(Intent.EXTRA_SUBJECT, "AX-HUD bug report")
+                i.putExtra(Intent.EXTRA_TEXT, diagReport())
+                startActivity(Intent.createChooser(i, tr("Share the report")))
+            } catch (e: Exception) {
+                Toast.makeText(this, tr("Nothing on this radio can take it. Copy the report instead."), Toast.LENGTH_LONG).show()
+            }
+        }
+        p.button(actions, tr("Read the report")) {
+            val tv = TextView(this)
+            tv.text = diagReport()
+            tv.typeface = Typeface.MONOSPACE
+            tv.textSize = 11f
+            tv.setPadding(dp(16), dp(8), dp(16), dp(8))
+            tv.setTextIsSelectable(true)
+            val sv = ScrollView(this)
+            sv.addView(tv)
+            Immersive.show(Sunlight.builder(this).setTitle(tr("The report")).setView(sv).setPositiveButton(tr("Close"), null).create())
+        }
+        p.button(actions, if (Diagnostics.note.isEmpty()) tr("Add a note...") else tr("Edit the note...")) { editDiagNote(p) }
+        p.button(actions, tr("Save the report to a file")) {
+            try {
+                val f = java.io.File(getExternalFilesDir(null) ?: filesDir, "bug_report.txt")
+                f.writeText(diagReport(), Charsets.UTF_8)
+                Toast.makeText(this, tr("Saved: {0}", f.absolutePath), Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(this, tr("Could not save the report"), Toast.LENGTH_LONG).show()
+            }
+        }
+        p.button(actions, tr("Open the issue page")) {
+            try {
+                holdLink(HOLD_OPENED_MS)
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(issueUrl())))
+            } catch (e: Exception) {
+                copyToClipboard(issueUrl())
+                Toast.makeText(this, tr("No browser on this radio. The address was copied."), Toast.LENGTH_LONG).show()
+            }
+        }
+        p.button(actions, tr("Clear the events")) {
+            Diagnostics.log.clear()
+            Toast.makeText(this, tr("Events cleared"), Toast.LENGTH_SHORT).show()
+            p.refresh()
+        }
+
+        val ev = p.card()
+        p.line(ev, tr("Recent events"), 15f, Sunlight.c(CardStyle.TITLE), bold = true)
+        val list = log.snapshot().takeLast(15).reversed()
+        if (list.isEmpty()) p.line(ev, tr("No events yet."), 12f, Sunlight.c(CardStyle.LABEL), topDp = 4)
+        for (e in list) {
+            val mark = if (e.level == "error") Sunlight.c(CardStyle.BAD) else if (e.level == "warn") Sunlight.c(CardStyle.WARN) else Sunlight.c(0xFFDDE3E8.toInt())
+            p.line(ev, BugReport.time(e.wallMs, java.util.TimeZone.getDefault()) + "  " + e.tag + ": " + e.message, 11f, mark, topDp = 3)
+        }
+    }
+
+    private fun editDiagNote(p: InfoPanel) {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val hint = TextView(this)
+        hint.text = tr("What did you do, and what happened? Positions and addresses are removed from the note automatically.")
+        hint.textSize = 12f
+        body.addView(hint)
+        val e = EditText(this)
+        e.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        e.setText(Diagnostics.note)
+        e.minLines = 3
+        body.addView(e)
+        Immersive.show(
+            Sunlight.builder(this)
+                .setTitle(tr("Describe the problem (optional)"))
+                .setView(body)
+                .setPositiveButton(tr("OK")) { _, _ ->
+                    Diagnostics.note = e.text.toString().take(BugReport.MAX_NOTE)
+                    p.refresh()
+                }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
     private fun toggleSunlight() = setSunlight(!Sunlight.on)
 
     /** The sunlight theme on or off: kept, and shown at once on the dashboard, the warning bar and the screen that is open. */

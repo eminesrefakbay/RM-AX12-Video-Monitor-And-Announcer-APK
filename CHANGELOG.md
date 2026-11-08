@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+
+Diagnostics and a bug-report button: a page with the versions, the device, the radio link and its start-up timing, a digest of the settings,
+the last events and the record of a crash, as a report to copy, share or save, with no positions and nothing personal in it.
+
 ## 1.4.0
 
 Sunlight theme: dark text on light backgrounds for the menu, the settings and the other screens, the dashboard page and the dialogs, with

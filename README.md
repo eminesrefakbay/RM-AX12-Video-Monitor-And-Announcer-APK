@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.4.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.5.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -58,7 +58,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,781 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,836 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -278,6 +278,24 @@ part of the settings backup.
 * **What does not change:** the cards over the video (statistics, radar, checklist, charts, sticks), the banners and the layout editor keep
   their look. The colours are checked by tests for contrast (text on its background at least 6 to 12 times as bright or dark as the
   background for the main text, at least 4.5 for the signal colours).
+
+## Diagnostics and bug report
+
+*Settings > Diagnostics > Diagnostics and bug report...* collects what a bug report needs, in one place:
+
+* **A summary:** the version and build, the radio, the state of the radio link (connected after how many seconds) and the number of events.
+* **The report:** versions, the device (Android, screen, memory, free space), the radio link with its **start-up timeline** and the last
+  launches, the state of flight logging, a **digest of the settings** that tell how the app behaves, the **last events** of the session
+  (the app started, the link came up or failed, the aircraft armed and disarmed, the link was lost and came back, an update check failed)
+  and, after an unexpected stop, the **stack trace** of the crash. *Read the report* shows it before you send it.
+* **What it never holds:** no GPS positions, no aircraft or pack names, no rules, no layouts and nothing personal. It is built from facts
+  that carry none of these, and every line also passes a filter that takes out position pairs, long decimals, MAC and IP addresses,
+  e-mail addresses and long numbers (also from your own note).
+* **Buttons:** *Copy the report* (paste it into a GitHub issue), *Share the report...* (the radio's share sheet, when it has one),
+  *Save the report to a file* (`bug_report.txt` in the app's folder), *Add a note...* (what you did and what happened), *Open the issue
+  page* (or copies its address when the radio has no browser) and *Clear the events*.
+* **After a crash** the page says so, shows the first lines of the record and lets you delete it. The record is a small text file; nothing
+  is sent anywhere by the app.
 
 ## Start-up time of the radio link
 

@@ -128,6 +128,7 @@ interface SettingsHost {
     fun setLossSpeechOn(on: Boolean)
     fun openPackBook()
     fun openPosition()
+    fun openDiagnostics()
     fun showStartupTimings()
     fun resetLayout()
     fun editArmDetection()
@@ -568,6 +569,10 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             note(tr("When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio."))
             action(tr("Last known position...")) { host.openPosition() }
             action(tr("Packs: totals per pack...")) { host.openPackBook() }
+        }
+        group("diag", tr("Diagnostics"), "bug") {
+            note(tr("If something goes wrong, this page collects what a bug report needs: versions, the device, the state of the radio link and its start-up timing, a digest of the settings and the last events. It holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it."))
+            action(tr("Diagnostics and bug report...")) { host.openDiagnostics() }
         }
         group("rules", tr("Rules and backup"), "rules") {
             section(tr("Sound rules"))

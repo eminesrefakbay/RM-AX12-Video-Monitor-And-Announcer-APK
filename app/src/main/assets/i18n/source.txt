@@ -192,6 +192,7 @@ Recording now
 Replay
 Delete this log? It cannot be brought back.
 MENU
+Diagnostics
 Warning rules
 Pre-flight checks
 SDK start failed ({0})
@@ -250,9 +251,37 @@ NOT READY: 1 check failed
 NOT READY: {0} checks failed
 WAITING FOR DATA
 PRE-FLIGHT CHECK
+Version {0} (build {1})
+{0} {1}, Android {2}
+Radio link: connected after {0} s
+Radio link: not connected
+Events: {0} ({1} warnings, {2} errors)
+The app stopped unexpectedly
+Delete the crash record
+The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.
+Copy the report
+Report copied. Paste it into the issue.
+Share the report...
+Share the report
+Nothing on this radio can take it. Copy the report instead.
+Read the report
+The report
+Add a note...
+Edit the note...
+Save the report to a file
+Saved: {0}
+Could not save the report
+Open the issue page
+No browser on this radio. The address was copied.
+Clear the events
+Events cleared
+Recent events
+No events yet.
+What did you do, and what happened? Positions and addresses are removed from the note automatically.
+Describe the problem (optional)
+OK
 Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.
 Warn at (minutes left)
-OK
 Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.
 Arm switch channel (1 to 16, AUX1 is channel 5)
 Counts as armed at or above (microseconds)
@@ -592,6 +621,8 @@ Speak the last position when the link is lost
 When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.
 Last known position...
 Packs: totals per pack...
+If something goes wrong, this page collects what a bug report needs: versions, the device, the state of the radio link and its start-up timing, a digest of the settings and the last events. It holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.
+Diagnostics and bug report...
 Rules and backup
 Export sound rules to a file...
 Import sound rules from a file...
@@ -612,7 +643,6 @@ Check for updates now
 Update channel
 Check at start-up (needs internet)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.
-Diagnostics
 Show the variables panel (every value the radio sends)
 Test channels: sliders instead of the radio
 Show the start-up timings of the last launches...

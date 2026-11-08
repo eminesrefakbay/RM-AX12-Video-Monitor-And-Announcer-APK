@@ -192,6 +192,7 @@ Recording now	Şu an kaydediliyor
 Replay	Yeniden oynat
 Delete this log? It cannot be brought back.	Bu kayıt silinsin mi? Geri getirilemez.
 MENU	MENÜ
+Diagnostics	Tanılama
 Warning rules	Uyarı kuralları
 Pre-flight checks	Uçuş öncesi kontroller
 SDK start failed ({0})	SDK başlatılamadı ({0})
@@ -250,9 +251,37 @@ NOT READY: 1 check failed	HAZIR DEĞİL: 1 kontrol başarısız
 NOT READY: {0} checks failed	HAZIR DEĞİL: {0} kontrol başarısız
 WAITING FOR DATA	VERİ BEKLENİYOR
 PRE-FLIGHT CHECK	UÇUŞ ÖNCESİ KONTROL
+Version {0} (build {1})	Sürüm {0} (derleme {1})
+{0} {1}, Android {2}	{0} {1}, Android {2}
+Radio link: connected after {0} s	Telsiz bağlantısı: {0} sn sonra bağlandı
+Radio link: not connected	Telsiz bağlantısı: bağlı değil
+Events: {0} ({1} warnings, {2} errors)	Olaylar: {0} ({1} uyarı, {2} hata)
+The app stopped unexpectedly	Uygulama beklenmedik şekilde durdu
+Delete the crash record	Çökme kaydını sil
+The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	Rapor GPS konumu, hava aracı veya paket adı ve kişisel hiçbir şey içermez. Göndermeden önce okuyun.
+Copy the report	Raporu kopyala
+Report copied. Paste it into the issue.	Rapor kopyalandı. Sorun kaydına yapıştırın.
+Share the report...	Raporu paylaş...
+Share the report	Raporu paylaş
+Nothing on this radio can take it. Copy the report instead.	Bu telsizde bunu alabilecek bir şey yok. Bunun yerine raporu kopyalayın.
+Read the report	Raporu oku
+The report	Rapor
+Add a note...	Not ekle...
+Edit the note...	Notu düzenle...
+Save the report to a file	Raporu dosyaya kaydet
+Saved: {0}	Kaydedildi: {0}
+Could not save the report	Rapor kaydedilemedi
+Open the issue page	Sorun sayfasını aç
+No browser on this radio. The address was copied.	Bu telsizde tarayıcı yok. Adres kopyalandı.
+Clear the events	Olayları temizle
+Events cleared	Olaylar temizlendi
+Recent events	Son olaylar
+No events yet.	Henüz olay yok.
+What did you do, and what happened? Positions and addresses are removed from the note automatically.	Ne yaptınız ve ne oldu? Konumlar ve adresler nottan otomatik olarak çıkarılır.
+Describe the problem (optional)	Sorunu anlatın (isteğe bağlı)
+OK	Tamam
 Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	Tam dakikalar, 1 ile 240 arası, en fazla 8, örneğin 30,15,10,5,2,1. Boş bırakırsanız uyarı olmaz; pencerenin bitişi her zaman söylenir.
 Warn at (minutes left)	Uyarı zamanı (kalan dakika)
-OK	Tamam
 Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	Tam dakikalar kullanın: 1 ile 240 arası, en fazla 8, örneğin 30,15,10,5,2,1.
 Arm switch channel (1 to 16, AUX1 is channel 5)	Arm anahtarı kanalı (1-16, AUX1 kanal 5'tir)
 Counts as armed at or above (microseconds)	Bu değer ve üzerinde arm sayılır (mikrosaniye)
@@ -592,6 +621,8 @@ Speak the last position when the link is lost	Bağlantı koptuğunda son konumu 
 When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	Uçuşta bağlantı koptuğunda, bir kart son konumu eve uzaklığı ve yönüyle gösterir; konum bu telsize kaydedilir.
 Last known position...	Bilinen son konum...
 Packs: totals per pack...	Paketler: her paketin toplamları...
+If something goes wrong, this page collects what a bug report needs: versions, the device, the state of the radio link and its start-up timing, a digest of the settings and the last events. It holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	Bir şey ters giderse, bu sayfa bir hata raporu için gerekenleri toplar: sürümler, cihaz, telsiz bağlantısının durumu ve başlangıç süreleri, ayarların bir özeti ve son olaylar. GPS konumu, hava aracı veya paket adı ve kişisel hiçbir şey içermez. Göndermeden önce okuyun.
+Diagnostics and bug report...	Tanılama ve hata raporu...
 Rules and backup	Kurallar ve yedekleme
 Export sound rules to a file...	Ses kurallarını dosyaya aktar...
 Import sound rules from a file...	Ses kurallarını dosyadan içe aktar...
@@ -612,7 +643,6 @@ Check for updates now	Güncellemeleri şimdi denetle
 Update channel	Güncelleme kanalı
 Check at start-up (needs internet)	Açılışta denetle (internet gerekir)
 Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android her güncellemeyi onaylamanızı ister. İlk seferde ayrıca AX-HUD'dan kuruluma izin vermenizi ister. Uçuş sırasında asla güncellemeyin.
-Diagnostics	Tanılama
 Show the variables panel (every value the radio sends)	Değişkenler panelini göster (kumandanın gönderdiği her değer)
 Test channels: sliders instead of the radio	Test kanalları: kumanda yerine kaydırıcılar
 Show the start-up timings of the last launches...	Son başlatmaların süre kayıtlarını göster...

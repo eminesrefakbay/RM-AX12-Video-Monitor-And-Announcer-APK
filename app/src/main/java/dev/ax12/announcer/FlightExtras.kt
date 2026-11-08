@@ -115,9 +115,16 @@ class FlightExtras(
             val left = window.leftSeconds(secOfDay(wallMs))
             if (!left.isNaN()) numbers["win_left"] = left / 60.0
         }
+        if (armed != wasArmed) Diagnostics.event("flight", if (armed) "armed" else "disarmed after " + ApprovalWindow.clock(stats.armedMs(now) / 1000.0))
         when (loss.update(now, armed, numbers)) {
-            LinkLoss.Event.LOST -> onLost(wallMs)
-            LinkLoss.Event.RECOVERED -> backUntil = now + 6000
+            LinkLoss.Event.LOST -> {
+                Diagnostics.event("link", "lost in flight", "warn")
+                onLost(wallMs)
+            }
+            LinkLoss.Event.RECOVERED -> {
+                Diagnostics.event("link", "back after " + ApprovalWindow.clock(loss.lostForMs(now) / 1000.0))
+                backUntil = now + 6000
+            }
             else -> {}
         }
         val fix = loss.lastFix()
