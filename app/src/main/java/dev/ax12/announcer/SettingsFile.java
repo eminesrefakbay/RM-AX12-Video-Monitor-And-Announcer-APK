@@ -55,7 +55,7 @@ public final class SettingsFile {
         s("packs"); i("packActive", 0, Packs.MAX - 1);
         s("aircraftStore"); s("aircraftActive");
         // flight logs
-        b("dashPage"); s("dashTiles"); b("horizonInvPitch"); b("horizonInvRoll");
+        b("layoutSnap"); b("dashPage"); s("dashTiles"); b("horizonInvPitch"); b("horizonInvRoll");
         b("logOn"); i("logRate", 0, FlightLogger.RATES_HZ.length - 1); i("logKeep", 0, FlightLogger.KEEP.length - 1); s("logFields");
     }
 
@@ -76,7 +76,7 @@ public final class SettingsFile {
         d("armCh", 5); d("armHigh", 1750); d("armLow", 1650);
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) { d(tile + "X", -1); d(tile + "Y", -1); d(tile + "Scale", 100); }
         d("batActive", 0); d("packActive", 0);
-        d("dashPage", false); d("dashTiles", ""); d("horizonInvPitch", false); d("horizonInvRoll", false);
+        d("layoutSnap", true); d("dashPage", false); d("dashTiles", ""); d("horizonInvPitch", false); d("horizonInvRoll", false);
         d("logOn", false); d("logRate", 3); d("logKeep", 1); d("logFields", "");
         d("chartOn", false); d("chartSize", 1); d("chartPos", 1); d("chartOpacity", 1); d("chartWindow", 1); d("chartSeries", ChartConfig.DEFAULT);
     }

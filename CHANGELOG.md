@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+
+The layout editor: no explanatory text and no wide bar over the top of the screen, only a small see-through strip of icon buttons
+(+ add, - remove, pencil edit, grid, reverse arrow reset, tick done), and a grid with snapping for moving and resizing cards.
+
 ## 1.2.0
 
 A dashboard page (cards only, no video): horizon, compass, value cards, statistics, radar, charts and sticks, with its own editable layout

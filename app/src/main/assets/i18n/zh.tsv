@@ -98,7 +98,7 @@ Logging stopped: {0}	记录已停止: {0}
 The log folder cannot be made	无法创建日志文件夹
 Storage is almost full	存储空间几乎已满
 The log file cannot be written	无法写入日志文件
-Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	拖动卡片可移动它。拖动方形手柄可调整大小。完成后点按“完成”。
+Snap to grid	对齐网格
 Reset the layout	重置布局
 Tick the values to write into each flight log.	勾选要写入每个飞行日志的数值。
 A replay needs these values and cannot show everything without them: {0}	回放需要这些数值, 缺少它们就无法显示全部内容: {0}

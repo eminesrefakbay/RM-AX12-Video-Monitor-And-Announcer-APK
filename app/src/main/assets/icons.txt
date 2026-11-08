@@ -85,6 +85,31 @@ rect 13.5 3.5 20.5 10.5 0 stroke
 rect 3.5 13.5 10.5 20.5 0 stroke
 rect 13.5 13.5 20.5 20.5 0 stroke
 
+icon plus
+line 12 5 12 19
+line 5 12 19 12
+
+icon minus
+line 5 12 19 12
+
+icon pencil
+poly 15.5 4.5 19.5 8.5 9 19 4.5 19.5 5 15 stroke
+line 13 7 17 11
+
+icon reset
+polyline 16.82 6.25 15.17 5.2 13.3 4.61 11.35 4.53 9.43 4.95 7.7 5.86 6.25 7.18 5.2 8.83 4.61 10.7 4.53 12.65 4.95 14.57 5.86 16.3 7.18 17.75 8.83 18.8 10.7 19.39 12.65 19.47 14.57 19.05 16.3 18.14 17.75 16.82
+polyline 13.05 18.53 17.75 16.82 16.88 21.74
+
+icon check
+polyline 5 13 10 18 19 7
+
+icon grid
+rect 4 4 20 20 0 stroke
+line 4 9.3 20 9.3
+line 4 14.7 20 14.7
+line 9.3 4 9.3 20
+line 14.7 4 14.7 20
+
 icon about
 circle 12 12 9.5 stroke
 circle 12 7.6 1.3 fill

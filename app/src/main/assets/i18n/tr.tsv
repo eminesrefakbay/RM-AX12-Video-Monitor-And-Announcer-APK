@@ -98,7 +98,7 @@ Logging stopped: {0}	Kayıt durdu: {0}
 The log folder cannot be made	Kayıt klasörü oluşturulamıyor
 Storage is almost full	Depolama alanı neredeyse dolu
 The log file cannot be written	Kayıt dosyası yazılamıyor
-Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Bir kartı taşımak için sürükleyin. Boyutunu değiştirmek için kare tutamacı sürükleyin. Bitince Tamam'a dokunun.
+Snap to grid	Izgaraya hizala
 Reset the layout	Yerleşimi sıfırla
 Tick the values to write into each flight log.	Her uçuş kaydına yazılacak değerleri işaretleyin.
 A replay needs these values and cannot show everything without them: {0}	Bir tekrar oynatma bu değerlere ihtiyaç duyar; onlar olmadan her şeyi gösteremez: {0}

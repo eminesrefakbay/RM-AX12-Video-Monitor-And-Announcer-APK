@@ -209,9 +209,9 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
     fun startEdit() {
         isEditing = true
         editor.setActions(listOf(
-            Pair(tr("Add a card...")) { addCard() },
-            Pair(tr("Remove a card...")) { removeCard() },
-            Pair(tr("Edit a value card...")) { editValueCard() }
+            LayoutEditor.Action("plus", tr("Add a card...")) { addCard() },
+            LayoutEditor.Action("minus", tr("Remove a card...")) { removeCard() },
+            LayoutEditor.Action("pencil", tr("Edit a value card...")) { editValueCard() }
         ))
         editor.show()
     }

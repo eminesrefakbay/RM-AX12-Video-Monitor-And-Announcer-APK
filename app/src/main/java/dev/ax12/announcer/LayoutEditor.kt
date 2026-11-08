@@ -13,7 +13,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -42,6 +42,10 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
 
     private val density = activity.resources.displayMetrics.density
     private val extraBox = LinearLayout(activity)
+    private val bar = LinearLayout(activity)
+    private var snapButton: ImageButton? = null
+    private var snapOn = Prefs.bool(activity, "layoutSnap", true)
+    private val gridPaint = Paint()
     private val scrim = Paint(Paint.ANTI_ALIAS_FLAG)
     private val frame = Paint(Paint.ANTI_ALIAS_FLAG)
     private val chip = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -75,53 +79,60 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
         chipText.isFakeBoldText = true
         handleFill.color = 0xFFFFFFFF.toInt()
 
-        val bar = LinearLayout(activity)
+        // a small see-through strip of icon buttons at the top centre: it takes as little of the screen as it can
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
-        bar.setBackgroundColor(0x991E1E1E.toInt())          // see-through: a card flush with the top edge stays visible
-        bar.setPadding(dp(8), dp(0), dp(8), dp(0))
-        val hint = TextView(activity)
-        hint.text = tr("Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.")
-        hint.textSize = 12f
-        hint.setTextColor(0xFFFFFFFF.toInt())
-        bar.addView(hint, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        bar.setBackgroundColor(0x99101820.toInt())
+        bar.setPadding(dp(4), dp(4), dp(4), dp(4))
         bar.addView(extraBox)
-        val reset = Button(activity)
-        reset.text = tr("Reset the layout")
-        reset.isAllCaps = false
-        reset.textSize = 13f
-        reset.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
-        reset.setPadding(dp(16), dp(0), dp(16), dp(0))
-        reset.setOnClickListener { host.reset() }
-        bar.addView(reset)
-        val done = Button(activity)
-        done.text = tr("Done")
-        done.isAllCaps = false
-        done.textSize = 13f
-        done.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
-        done.setPadding(dp(16), dp(0), dp(16), dp(0))
-        done.setOnClickListener { host.done() }
-        bar.addView(done)
-        addView(bar, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP))
+        bar.addView(iconButton("grid", tr("Snap to grid")) { setSnap(!snapOn) }.also { snapButton = it })
+        bar.addView(iconButton("reset", tr("Reset the layout")) { host.reset() })
+        bar.addView(iconButton("check", tr("Done"), CardStyle.OK) { host.done() })
+        addView(bar, LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).also { it.topMargin = dp(4) })
+        paintSnapButton()
     }
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
-    /** Extra buttons in the bar, before Reset and Done (the dashboard adds, removes and edits cards). */
-    fun setActions(actions: List<Pair<String, () -> Unit>>) {
+    /** A button of the strip: an icon, and a name for the screen reader. */
+    class Action(val icon: String, val label: String, val onClick: () -> Unit)
+
+    private fun iconButton(icon: String, label: String, color: Int = CardStyle.ICON, onClick: () -> Unit): ImageButton {
+        val b = ImageButton(activity)
+        b.setImageDrawable(Icons.drawable(activity, icon, color, 24))
+        b.contentDescription = label
+        b.background = CardStyle.stateBackground(density, 0xE6232C36.toInt(), 0xF24F6272.toInt(), 0xFF546E7A.toInt())
+        b.scaleType = android.widget.ImageView.ScaleType.CENTER
+        b.setOnClickListener { onClick() }
+        val side = dp(CardStyle.MIN_TOUCH_DP)
+        b.layoutParams = LinearLayout.LayoutParams(side, side).also { it.setMargins(dp(4), 0, 0, 0) }
+        return b
+    }
+
+    /** Extra buttons in the strip, before the grid, Reset and Done (the dashboard adds, removes and edits cards). */
+    fun setActions(actions: List<Action>) {
         extraBox.removeAllViews()
         extraBox.orientation = LinearLayout.HORIZONTAL
-        for ((label, click) in actions) {
-            val b = Button(activity)
-            b.text = label
-            b.isAllCaps = false
-            b.textSize = 13f
-            b.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
-            b.setPadding(dp(12), dp(0), dp(12), dp(0))
-            b.setOnClickListener { click() }
-            extraBox.addView(b)
-        }
+        for (a in actions) extraBox.addView(iconButton(a.icon, a.label, onClick = a.onClick))
     }
+
+    private fun setSnap(on: Boolean) {
+        snapOn = on
+        Prefs.setBool(activity, "layoutSnap", on)
+        paintSnapButton()
+        invalidate()
+    }
+
+    /** The grid button is lit while snapping is on. */
+    private fun paintSnapButton() {
+        val b = snapButton ?: return
+        b.setImageDrawable(Icons.drawable(activity, "grid", if (snapOn) CardStyle.ACCENT else CardStyle.ICON, 24))
+    }
+
+    /** The grid: a line every 16 dp, a little stronger every fourth. */
+    private fun gridPx(): Double = 16.0 * density
+
+    private fun snapToGrid(v: Double): Double = Math.rint(v / gridPx()) * gridPx()
 
     fun show() {
         Anim.show(this)
@@ -146,6 +157,15 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), scrim)
+        if (snapOn) {
+            val g = gridPx().toFloat()
+            var i = 0
+            var x = 0f
+            while (x <= width) { gridPaint.color = if (i % 4 == 0) 0x40FFFFFF else 0x1CFFFFFF; canvas.drawLine(x, 0f, x, height.toFloat(), gridPaint); x += g; i++ }
+            i = 0
+            var y = 0f
+            while (y <= height) { gridPaint.color = if (i % 4 == 0) 0x40FFFFFF else 0x1CFFFFFF; canvas.drawLine(0f, y, width.toFloat(), y, gridPaint); y += g; i++ }
+        }
         for (t in host.tiles()) {
             val r = rectOf(t)
             rect.set(r.left.toFloat(), r.top.toFloat(), r.right().toFloat(), r.bottom().toFloat())
@@ -201,7 +221,12 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
                 val v = t.view
                 if (v.width <= 0 || v.height <= 0) return true
                 if (resizing) {
-                    val s = TileLayout.scaleFromDrag(rw, rh, v.width.toDouble(), v.height.toDouble(), startLeft, ev.x.toDouble())
+                    var s = TileLayout.scaleFromDrag(rw, rh, v.width.toDouble(), v.height.toDouble(), startLeft, ev.x.toDouble())
+                    if (snapOn) {                                  // the right edge goes to the grid: the width is a whole number of cells
+                        val baseW = v.width.toDouble()
+                        val cells = Math.max(1.0, Math.rint(baseW * s / gridPx()))
+                        s = TileLayout.clampScale(cells * gridPx() / baseW, rw, rh, baseW, v.height.toDouble())
+                    }
                     v.scaleX = s.toFloat()
                     v.scaleY = s.toFloat()
                 } else {
@@ -209,6 +234,13 @@ class LayoutEditor(private val activity: Activity, private val host: Host) : Fra
                     val h = v.height * v.scaleY.toDouble()
                     var pos = TileLayout.keepOnScreen(startLeft + (ev.x - downX), startTop + (ev.y - downY), w, h, rw, rh)
                     pos = TileLayout.snap(pos[0], pos[1], w, h, rw, rh, 14.0 * density)
+                    if (snapOn) {                                  // the top left corner goes to the grid (the screen's edges still win when close)
+                        val gx = snapToGrid(pos[0])
+                        val gy = snapToGrid(pos[1])
+                        val nearEdgeX = pos[0] + w >= rw - 1.0 || pos[0] <= 1.0
+                        val nearEdgeY = pos[1] + h >= rh - 1.0 || pos[1] <= 1.0
+                        pos = doubleArrayOf(if (nearEdgeX) pos[0] else gx, if (nearEdgeY) pos[1] else gy)
+                    }
                     v.translationX = pos[0].toFloat()
                     v.translationY = pos[1].toFloat()
                 }

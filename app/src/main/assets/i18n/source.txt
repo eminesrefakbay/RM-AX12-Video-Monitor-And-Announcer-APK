@@ -98,7 +98,7 @@ Logging stopped: {0}
 The log folder cannot be made
 Storage is almost full
 The log file cannot be written
-Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.
+Snap to grid
 Reset the layout
 Tick the values to write into each flight log.
 A replay needs these values and cannot show everything without them: {0}

@@ -98,7 +98,7 @@ Logging stopped: {0}	Aufzeichnung gestoppt: {0}
 The log folder cannot be made	Der Protokollordner kann nicht angelegt werden
 Storage is almost full	Der Speicher ist fast voll
 The log file cannot be written	Die Protokolldatei kann nicht geschrieben werden
-Drag a card to move it. Drag the square handle to resize it. Tap Done when you are finished.	Ziehe eine Karte, um sie zu verschieben. Ziehe den quadratischen Griff, um die Größe zu ändern. Tippe auf Fertig, wenn du fertig bist.
+Snap to grid	Am Raster ausrichten
 Reset the layout	Layout zurücksetzen
 Tick the values to write into each flight log.	Hake die Werte an, die in jedes Flugprotokoll geschrieben werden.
 A replay needs these values and cannot show everything without them: {0}	Eine Wiedergabe braucht diese Werte und kann ohne sie nicht alles zeigen: {0}
