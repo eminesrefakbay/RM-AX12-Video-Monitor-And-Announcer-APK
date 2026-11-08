@@ -18,7 +18,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.view.GestureDetector
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.TextureView
 import android.view.View
@@ -253,7 +255,7 @@ class MainActivity : Activity() {
             override fun chart(): ChartModel = if (replay != null) replayChart else chartModel
             override fun statsContent(fs: FlightStats, now: Long) = this@MainActivity.statsContent(fs, now)
             override fun pickVariable(onPicked: (String) -> Unit) { VariablePicker.show(this@MainActivity, liveValues, false, onPicked) }
-            override fun editEnded() { settingsPanel.show() }
+            override fun editEnded() {}                      // the tick returns straight to the dashboard, however editing was started
         })
         frame.addView(dashboard.root, FrameLayout.LayoutParams(full))
         // above the dashboard page (elevation 6 dp): the warnings, the connecting banner, the MENU button and the replay tag
@@ -325,8 +327,28 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ menu button that hides itself
 
     /** Any touch on the screen brings the MENU button back for a few seconds. */
+    /**
+     * A long press on the video page opens the layout editor, like a long press on the dashboard. Not while the aircraft is armed (nothing
+     * may pop up over the picture in flight), not over a panel, and not on the MENU button.
+     */
+    private val videoLongPress by lazy {
+        GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onLongPress(e: MotionEvent) {
+                if (dashboardOn || editingLayout || anyOverlayOpen() || flightStats.armed() || splash?.isShowing == true) return
+                if (menuButton.visibility == View.VISIBLE) {
+                    val at = IntArray(2)
+                    menuButton.getLocationOnScreen(at)
+                    if (e.rawX >= at[0] && e.rawX <= at[0] + menuButton.width && e.rawY >= at[1] && e.rawY <= at[1] + menuButton.height) return
+                }
+                window.decorView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                startLayoutEdit()
+            }
+        })
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.actionMasked == MotionEvent.ACTION_DOWN && !anyOverlayOpen()) showMenuButton(4000)
+        videoLongPress.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
     }
 
@@ -1734,8 +1756,7 @@ class MainActivity : Activity() {
     private fun endLayoutEdit() {
         editingLayout = false
         layoutEditor.hide()
-        lastTileUpdate = 0
-        settingsPanel.show()
+        lastTileUpdate = 0                              // the tick returns straight to the video, however editing was started
     }
 
     /** Every card back in its corner at normal size. */

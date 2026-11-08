@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.2.2)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.2.3)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -163,7 +163,7 @@ as before. The starting rules, warnings and checks use the new names; an existin
 
 ## Moving and resizing the cards
 
-*Settings > Overlays on the video > Layout of the cards > Move and resize the cards with your finger* opens an edit mode over the video. **Drag a card to
+**Press and hold on the video** (not while the aircraft is armed, not over a panel and not on the MENU button), or use *Settings > Overlays on the video > Layout of the cards > Move and resize the cards with your finger*, to open an edit mode over the video. The tick, or the back key, returns straight to the video. **Drag a card to
 move it; drag the square handle at its bottom right corner to resize it.** The cards you can edit are the stick view, the flight
 statistics, the radar, the pre-flight checklist and the live charts (switched-on ones; cards that are only shown at certain moments,
 like the radar before a flight or the checklist while armed, are shown while you edit). A card snaps lightly to the screen edges and
@@ -209,7 +209,7 @@ runs on it too.
 * **Value cards.** Pick any value (the same list as the rule editor), give it a label and a unit, choose the decimals, and set an amber
   and a red limit with the side that is bad (a battery gets worse downwards, a current upwards). A text value such as the flight mode is
   shown as text. The first dashboard has the cell volts, the current, the link quality and the flight mode.
-* **Layout.** Settings > Dashboard > *Edit the dashboard layout* opens the same editor as the video cards: drag a card, drag its square
+* **Layout.** **Press and hold anywhere on the dashboard**, or use Settings > Dashboard > *Edit the dashboard layout*, to open the same editor as the video cards (the tick, or the back key, returns straight to the dashboard; on the dashboard a long press works even in flight, because it hides no video): drag a card, drag its square
   handle to resize it, and use *Add a card*, *Remove a card* and *Edit a value card* in the bar. *Reset the dashboard layout* brings back the
   first dashboard. The layout is part of the settings backup.
 

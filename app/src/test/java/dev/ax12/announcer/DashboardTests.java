@@ -5,6 +5,9 @@
 
 package dev.ax12.announcer;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -118,6 +121,25 @@ public class DashboardTests {
         check(near(Attitude.bearingToHome(100, 100), 225, 1e-6), "north-east of home: home is south-west");
         check(Double.isNaN(Attitude.bearingToHome(0.1, -0.2)) && Double.isNaN(Attitude.bearingToHome(Double.NaN, 5)), "on top of home, or no position: no direction");
         check(Attitude.cardinal(0).equals("N") && Attitude.cardinal(44).equals("NE") && Attitude.cardinal(90).equals("E") && Attitude.cardinal(200).equals("S") && Attitude.cardinal(271).equals("W") && Attitude.cardinal(359).equals("N") && Attitude.cardinal(-45).equals("NW") && Attitude.cardinal(Double.NaN).isEmpty(), "the eight directions");
+
+        // ---------- how editing starts and ends (checked in the sources: they cannot run here) ----------
+        String kt = "app/src/main/java/dev/ax12/announcer/";
+        String page = new String(Files.readAllBytes(new File(kt + "DashboardPage.kt").toPath()), StandardCharsets.UTF_8);
+        String act = new String(Files.readAllBytes(new File(kt + "MainActivity.kt").toPath()), StandardCharsets.UTF_8);
+        check(page.contains("root.setOnLongClickListener") && page.contains("root.isLongClickable = true") && page.contains("startEdit()"), "a long press on the dashboard starts editing");
+        int at = page.indexOf("root.setOnLongClickListener");
+        check(page.substring(at, page.indexOf("true\n        }", at)).contains("!isEditing") && page.substring(at, page.indexOf("true\n        }", at)).contains("shown"), "and only while the dashboard is shown and not already editing");
+        int e = act.indexOf("override fun editEnded()");
+        check(e > 0 && !act.substring(e, act.indexOf('\n', e)).contains("settingsPanel"), "finishing the dashboard edit does not open Settings");
+        check(act.contains("override fun editDashboard()") && act.substring(act.indexOf("override fun editDashboard()"), act.indexOf("override fun resetDashboard()")).contains("dashboard.startEdit()"), "editing can still be started from Settings");
+        check(act.contains("else if (dashboard.isEditing) dashboard.endEdit()"), "the back key finishes the dashboard edit");
+        // the same two behaviours on the video page
+        check(act.contains("GestureDetector.SimpleOnGestureListener") && act.contains("override fun onLongPress") && act.contains("videoLongPress.onTouchEvent(ev)"), "a long press on the video page is watched");
+        String lp = act.substring(act.indexOf("override fun onLongPress"), act.indexOf("startLayoutEdit()", act.indexOf("override fun onLongPress")) + 20);
+        check(lp.contains("startLayoutEdit()") && lp.contains("flightStats.armed()") && lp.contains("anyOverlayOpen()") && lp.contains("dashboardOn") && lp.contains("menuButton"), "it opens the editor, but not when armed, over a panel, on the dashboard or on the MENU button");
+        int le = act.indexOf("private fun endLayoutEdit()");
+        check(le > 0 && !act.substring(le, act.indexOf("\n    }", le)).contains("settingsPanel"), "finishing the video edit does not open Settings");
+        check(act.contains("else if (editingLayout) endLayoutEdit()"), "the back key finishes the video edit");
 
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);

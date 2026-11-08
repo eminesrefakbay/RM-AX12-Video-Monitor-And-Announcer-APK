@@ -9,6 +9,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.text.InputType
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -51,6 +52,14 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
         root.setBackgroundColor(0xFF0B1016.toInt())
         root.visibility = View.GONE
         root.isClickable = true                                     // a touch on the page must not reach the video page under it
+        root.isLongClickable = true
+        root.setOnLongClickListener {                               // a long press anywhere on the dashboard starts editing its layout
+            if (shown && !isEditing) {
+                root.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                startEdit()
+            }
+            true
+        }
         root.elevation = dp(6).toFloat()                            // above the video and its cards; the MENU button and the warnings sit above it
         editor = LayoutEditor(activity, object : LayoutEditor.Host {
             override fun tiles(): List<LayoutEditor.Tile> =

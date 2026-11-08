@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3
+
+Editing the layout starts with a long press, on the dashboard and on the video (as well as from Settings), and the tick returns straight to the page you were on.
+
 ## 1.2.2
 
 The layout editor strip can be folded to one small arrow button and unfolded again (remembered), and steps aside while a card is dragged.
