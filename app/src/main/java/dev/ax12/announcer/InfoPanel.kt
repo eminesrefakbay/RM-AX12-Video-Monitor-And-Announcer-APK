@@ -82,7 +82,7 @@ class InfoPanel(
 
     fun refresh() {
         refreshRows()
-        Fonts.apply(root)
+        Look.apply(root)
     }
 
     private fun refreshRows() {

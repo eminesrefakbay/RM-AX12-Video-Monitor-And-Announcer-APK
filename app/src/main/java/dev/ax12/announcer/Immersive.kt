@@ -43,6 +43,7 @@ object Immersive {
         dialog.show()
         w.decorView.systemUiVisibility = FLAGS
         Fonts.apply(w.decorView)
+        dialog.findViewById<View>(android.R.id.custom)?.let { ShapeSkin.apply(it) }          // the buttons inside a dialog's content
         // An AlertDialog decides when it opens whether it can take text: it looks for a text field in its view, and if there is
         // none it sets FLAG_ALT_FOCUSABLE_IM, which keeps the keyboard away for good. A dialog that starts without text fields and
         // adds them later (the packs editor, which starts with no packs) would never show the keyboard. Clear the flag after

@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.7.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.8.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -58,7 +58,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,952 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,994 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -309,6 +309,8 @@ fonts that have Turkish and German letters, so a number such as `126.4` takes li
   headings semi-bold; labels medium; body regular; page titles in Teko, a fifth bigger because Teko looks small.
 * **No hunting through the code:** one routine gives every text of a screen its font by its role, after a screen or a dialog is built, so
   new screens follow the scale by themselves. Monospace text (the report, the rules text) stays monospace.
+* **Buttons** (the rules and settings buttons, the rows you tap) take the shape style of the tiles; a plain Android button is a flat
+  rectangle with a shadow that no cut corner can follow.
 * **If the font files cannot be loaded** the system fonts stay and nothing breaks (an event in the diagnostics says so). Chinese still uses the
   radio's own font.
 
@@ -328,6 +330,22 @@ checklist, compass, horizon, value cards), the banners and the warning bar. **Wa
 cut at two corners instead, because brackets would leave them nearly empty. The stick boxes stay plain rectangles (they are measuring
 displays), and so do the switches and the big text pages. The corner geometry is plain Java with tests; the style is read each time a view
 draws, so a change shows at once.
+
+## Splash screen
+
+The start-up splash is drawn and animated in one view (about 2.9 seconds; a tap or Back skips it; *Settings > Display* can switch it off). The
+frame around the logo draws itself along its cut-corner outline, two corner brackets close it, the logo grows in under a passing light, a
+tag slides in, the title **AX-HUD** appears letter by letter in Teko and catches a light that runs across the letters only, a line draws
+under it, the tagline follows, and the version chip draws itself last. The timing is plain Java with tests (`SplashTimeline`); the
+animation reads nothing from the radio and the app starts up behind it, so it costs no waiting.
+
+## Chinese
+
+Some radios, the AX12 among them, ship without a Chinese system font, and every Chinese text would show as empty boxes. The app therefore
+carries **Noto Sans SC** (SIL OFL), cut down to the 733 characters its Chinese texts use plus the usual punctuation (two weights, 207 KB
+each), and uses it for all text when the language is Chinese. Chinese can now be chosen on every radio, in *Settings > Language* (it comes
+after German). Numbers stay in Teko. A test checks that every character of the Chinese texts is in the font, so a text added later cannot
+silently show as a box; `tools/make_fonts.py` rebuilds the font files.
 
 ## Start-up time of the radio link
 

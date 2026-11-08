@@ -306,7 +306,7 @@ class MainActivity : Activity() {
 
         applyMenuMode()
         applyOverlayPrefs()
-        Fonts.apply(frame)
+        Look.apply(frame)
         applyTiles()
         applyFlightConfig()
 
@@ -480,7 +480,7 @@ class MainActivity : Activity() {
                     sdkError = error
                     sdkRunning = link != null && error == null
                     sdkStarting = false
-                    error?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+                    error?.let { Toasts.make(this, it, Toast.LENGTH_LONG).show() }
                 }
             }
         }
@@ -523,7 +523,7 @@ class MainActivity : Activity() {
             else -> ChannelScaler(true, ChannelScaler.Mode.PERCENT)
         }
         if (parsed.errors.isNotEmpty()) {
-            Toast.makeText(this, tr("Sound rules: {0} error(s). Open the rules editor.", parsed.errors.size), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Sound rules: {0} error(s). Open the rules editor.", parsed.errors.size), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -535,7 +535,7 @@ class MainActivity : Activity() {
         checkModel = model
         checkEngine = RuleEngine(parsed, null, model)
         if (parsed.errors.isNotEmpty()) {
-            Toast.makeText(this, tr("Pre-flight checks: {0} error(s). Open Settings, then the checks.", parsed.errors.size), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Pre-flight checks: {0} error(s). Open Settings, then the checks.", parsed.errors.size), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -545,7 +545,7 @@ class MainActivity : Activity() {
         warningBar.load(text, macros)
         val errors = RuleParser.parse(text, macros).errors
         if (errors.isNotEmpty()) {
-            Toast.makeText(this, tr("Warning rules: {0} error(s). Open Settings, then the warning rules.", errors.size), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Warning rules: {0} error(s). Open Settings, then the warning rules.", errors.size), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -679,7 +679,7 @@ class MainActivity : Activity() {
     private fun chooseCamera() {
         val list = camera.listCameras()
         if (list.isEmpty()) {
-            Toast.makeText(this, tr("Android lists no cameras"), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Android lists no cameras"), Toast.LENGTH_LONG).show()
             return
         }
         val names = Array(list.size) { list[it].second }
@@ -715,8 +715,8 @@ class MainActivity : Activity() {
         override fun speechOn(): Boolean = !speaker.muted
         override fun setSpeechOn(on: Boolean) { speaker.muted = !on }
         override fun speakTest() {
-            if (speaker.muted) Toast.makeText(this@MainActivity, tr("Speech is off"), Toast.LENGTH_SHORT).show()
-            else if (!speaker.languageOk()) Toast.makeText(this@MainActivity, voiceMissingText(), Toast.LENGTH_LONG).show()
+            if (speaker.muted) Toasts.make(this@MainActivity, tr("Speech is off"), Toast.LENGTH_SHORT).show()
+            else if (!speaker.languageOk()) Toasts.make(this@MainActivity, voiceMissingText(), Toast.LENGTH_LONG).show()
             else speaker.say(I18n.tIn(Lang.speechCode(this@MainActivity), "Sound test"), true)
         }
 
@@ -728,7 +728,7 @@ class MainActivity : Activity() {
             val i = Lang.choices.indexOf(Prefs.language(this@MainActivity)).coerceAtLeast(0)
             var next = Lang.choices[(i + 1) % Lang.choices.size]
             if (next == "zh" && !Lang.hasChineseFont()) {       // skip a language that would show as empty boxes, and say why
-                Toast.makeText(this@MainActivity, tr("This device has no Chinese font, so the Chinese screen language is not available."), Toast.LENGTH_LONG).show()
+                Toasts.make(this@MainActivity, tr("This device has no Chinese font, so the Chinese screen language is not available."), Toast.LENGTH_LONG).show()
                 next = Lang.choices[(i + 2) % Lang.choices.size]
             }
             Prefs.setLanguage(this@MainActivity, next)
@@ -744,7 +744,7 @@ class MainActivity : Activity() {
             val i = order.indexOf(Prefs.speechLanguage(this@MainActivity)).coerceAtLeast(0)
             Prefs.setSpeechLanguage(this@MainActivity, order[(i + 1) % order.size])
             speaker.setLanguage(Lang.locale(Lang.speechCode(this@MainActivity)))
-            Toast.makeText(this@MainActivity, if (speaker.languageOk()) tr("The voice now speaks {0}.", Lang.nativeName(Lang.speechCode(this@MainActivity))) else voiceMissingText(), Toast.LENGTH_LONG).show()
+            Toasts.make(this@MainActivity, if (speaker.languageOk()) tr("The voice now speaks {0}.", Lang.nativeName(Lang.speechCode(this@MainActivity))) else voiceMissingText(), Toast.LENGTH_LONG).show()
         }
         override fun exportRules() = this@MainActivity.exportRules()
         override fun importRules() = this@MainActivity.importRules()
@@ -1044,20 +1044,20 @@ class MainActivity : Activity() {
 
     /** Reads a log on a background thread, then starts its replay. */
     private fun startReplayFrom(file: File) {
-        Toast.makeText(this, tr("Loading the log..."), Toast.LENGTH_SHORT).show()
+        Toasts.make(this, tr("Loading the log..."), Toast.LENGTH_SHORT).show()
         Thread {
             try {
                 val log = LogFormat.readFile(file, 4_000_000)
                 runOnUiThread { if (!isFinishing) startReplay(log, file.name) }
             } catch (e: Exception) {
-                runOnUiThread { Toast.makeText(this, tr("The log cannot be read: {0}", e.message ?: ""), Toast.LENGTH_LONG).show() }
+                runOnUiThread { Toasts.make(this, tr("The log cannot be read: {0}", e.message ?: ""), Toast.LENGTH_LONG).show() }
             }
         }.start()
     }
 
     private fun startReplay(log: FlightLog, name: String) {
         if (flightStats.armed()) return                                   // flying: the live screen comes first
-        if (log.rows < 2) { Toast.makeText(this, tr("The log cannot be read: {0}", name), Toast.LENGTH_LONG).show(); return }
+        if (log.rows < 2) { Toasts.make(this, tr("The log cannot be read: {0}", name), Toast.LENGTH_LONG).show(); return }
         stopReplay()
         logViewer.hide()
         settingsPanel.hide()
@@ -1072,7 +1072,7 @@ class MainActivity : Activity() {
         replayUi.show(title)
         rebuildReplay(0)
         val missing = LogFields.missingForReplay(log.columns.toList(), log.metaNumber("arm_ch", 5.0).toInt())
-        if (missing.isNotEmpty()) Toast.makeText(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
+        if (missing.isNotEmpty()) Toasts.make(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
         replay?.play()
     }
 
@@ -1291,7 +1291,7 @@ class MainActivity : Activity() {
         p.line(actions, tr("The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it."), 12f, Sunlight.c(CardStyle.LABEL))
         p.button(actions, tr("Copy the report")) {
             copyToClipboard(diagReport())
-            Toast.makeText(this, tr("Report copied. Paste it into the issue."), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Report copied. Paste it into the issue."), Toast.LENGTH_LONG).show()
         }
         p.button(actions, tr("Share the report...")) {
             try {
@@ -1302,7 +1302,7 @@ class MainActivity : Activity() {
                 i.putExtra(Intent.EXTRA_TEXT, diagReport())
                 startActivity(Intent.createChooser(i, tr("Share the report")))
             } catch (e: Exception) {
-                Toast.makeText(this, tr("Nothing on this radio can take it. Copy the report instead."), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Nothing on this radio can take it. Copy the report instead."), Toast.LENGTH_LONG).show()
             }
         }
         p.button(actions, tr("Read the report")) {
@@ -1321,9 +1321,9 @@ class MainActivity : Activity() {
             try {
                 val f = java.io.File(getExternalFilesDir(null) ?: filesDir, "bug_report.txt")
                 f.writeText(diagReport(), Charsets.UTF_8)
-                Toast.makeText(this, tr("Saved: {0}", f.absolutePath), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Saved: {0}", f.absolutePath), Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
-                Toast.makeText(this, tr("Could not save the report"), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Could not save the report"), Toast.LENGTH_LONG).show()
             }
         }
         p.button(actions, tr("Open the issue page")) {
@@ -1332,12 +1332,12 @@ class MainActivity : Activity() {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(issueUrl())))
             } catch (e: Exception) {
                 copyToClipboard(issueUrl())
-                Toast.makeText(this, tr("No browser on this radio. The address was copied."), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("No browser on this radio. The address was copied."), Toast.LENGTH_LONG).show()
             }
         }
         p.button(actions, tr("Clear the events")) {
             Diagnostics.log.clear()
-            Toast.makeText(this, tr("Events cleared"), Toast.LENGTH_SHORT).show()
+            Toasts.make(this, tr("Events cleared"), Toast.LENGTH_SHORT).show()
             p.refresh()
         }
 
@@ -1426,7 +1426,7 @@ class MainActivity : Activity() {
                 .setPositiveButton(tr("OK")) { _, _ ->
                     val marks = ApprovalWindow.parseWarn(e.text.toString())
                     if (marks == null) {
-                        Toast.makeText(this, tr("Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1."), Toast.LENGTH_LONG).show()
+                        Toasts.make(this, tr("Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1."), Toast.LENGTH_LONG).show()
                     } else {
                         Prefs.setString(this, "winWarn", ApprovalWindow.joinWarn(marks))
                         extras.reload()
@@ -1474,8 +1474,8 @@ class MainActivity : Activity() {
             val c = ch.text.toString().trim().toIntOrNull()
             val h = high.text.toString().trim().toIntOrNull()
             val l = low.text.toString().trim().toIntOrNull()
-            if (c == null || c < 1 || c > 16) Toast.makeText(this, tr("The channel is 1 to 16"), Toast.LENGTH_SHORT).show()
-            else if (h == null || l == null || h < 1000 || h > 2100 || l < 900 || l > h) Toast.makeText(this, tr("Use microseconds, with the disarmed value not above the armed one"), Toast.LENGTH_LONG).show()
+            if (c == null || c < 1 || c > 16) Toasts.make(this, tr("The channel is 1 to 16"), Toast.LENGTH_SHORT).show()
+            else if (h == null || l == null || h < 1000 || h > 2100 || l < 900 || l > h) Toasts.make(this, tr("Use microseconds, with the disarmed value not above the armed one"), Toast.LENGTH_LONG).show()
             else {
                 Prefs.setInt(this, "armCh", c)
                 Prefs.setInt(this, "armHigh", h)
@@ -1527,7 +1527,7 @@ class MainActivity : Activity() {
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val a = limit.text.toString().trim().toIntOrNull()
             if (a == null || a < 5 || a > 300) {
-                Toast.makeText(this, tr("The current limit is 5 to 300 amps"), Toast.LENGTH_SHORT).show()
+                Toasts.make(this, tr("The current limit is 5 to 300 amps"), Toast.LENGTH_SHORT).show()
             } else {
                 var m = 0
                 for (i in names.indices) if (boxes[i].isChecked) m = m or (1 shl i)
@@ -1670,7 +1670,7 @@ class MainActivity : Activity() {
                 list.add(AuxBars.Bar(boxes[i].isChecked, ch, AuxBars.cleanName(nameFields[i].text.toString(), ch), reverseBoxes[i].isChecked))
             }
             if (bad != null) {
-                Toast.makeText(this, bad, Toast.LENGTH_SHORT).show()
+                Toasts.make(this, bad, Toast.LENGTH_SHORT).show()
             } else {
                 Prefs.setBarsConfig(this, AuxBars.encode(list))
                 applyOverlayPrefs()
@@ -1747,9 +1747,9 @@ class MainActivity : Activity() {
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val values = listOf(roll, pitch, throttle, yaw).map { it.text.toString().trim().toIntOrNull() }
             if (values.any { it == null || it < 1 || it > 16 }) {
-                Toast.makeText(this, tr("Channels are numbers from 1 to 16"), Toast.LENGTH_SHORT).show()
+                Toasts.make(this, tr("Channels are numbers from 1 to 16"), Toast.LENGTH_SHORT).show()
             } else if (values.toSet().size < 4) {
-                Toast.makeText(this, tr("Each of the four needs its own channel"), Toast.LENGTH_SHORT).show()
+                Toasts.make(this, tr("Each of the four needs its own channel"), Toast.LENGTH_SHORT).show()
             } else {
                 Prefs.setInt(this, "stickMode", mode)
                 Prefs.setInt(this, "stickRoll", values[0]!!)
@@ -1813,7 +1813,7 @@ class MainActivity : Activity() {
                     .create()
             )
         } catch (e: Exception) {
-            Toast.makeText(this, tr("Could not save the rules: {0}", e.message), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Could not save the rules: {0}", e.message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -1839,7 +1839,7 @@ class MainActivity : Activity() {
                     .create()
             )
         } catch (e: Exception) {
-            Toast.makeText(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -1858,9 +1858,9 @@ class MainActivity : Activity() {
     private fun writeSettings(uri: Uri) {
         try {
             contentResolver.openOutputStream(uri, "wt")?.use { it.write(settingsText().toByteArray(Charsets.UTF_8)) }
-            Toast.makeText(this, tr("Settings saved"), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Settings saved"), Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
-            Toast.makeText(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -1873,7 +1873,7 @@ class MainActivity : Activity() {
         } catch (e: ActivityNotFoundException) {
             val f = File(getExternalFilesDir(null) ?: filesDir, settingsFileName)
             if (f.exists()) askImportSettings(readTextLimited(f.inputStream())) else {
-                Toast.makeText(this, tr("No file picker, and no {0} to import", f.absolutePath), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("No file picker, and no {0} to import", f.absolutePath), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -1881,10 +1881,10 @@ class MainActivity : Activity() {
     private fun readSettings(uri: Uri) {
         try {
             val stream = contentResolver.openInputStream(uri)
-            if (stream == null) Toast.makeText(this, tr("Could not open the file"), Toast.LENGTH_LONG).show()
+            if (stream == null) Toasts.make(this, tr("Could not open the file"), Toast.LENGTH_LONG).show()
             else askImportSettings(readTextLimited(stream))
         } catch (e: Exception) {
-            Toast.makeText(this, tr("Could not read the file: {0}", e.message), Toast.LENGTH_LONG).show()
+            Toasts.make(this, tr("Could not read the file: {0}", e.message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -1921,7 +1921,7 @@ class MainActivity : Activity() {
 
     private fun afterSettingsChanged(message: String) {
         Lang.apply(this)                      // the language may have changed
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toasts.make(this, message, Toast.LENGTH_LONG).show()
         recreate()                            // every screen is built again with the new settings
     }
 
@@ -2143,7 +2143,7 @@ class MainActivity : Activity() {
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val typed = rows.map { it.name.text.toString().trim() }.filter { it.isNotEmpty() }
             if (typed.any { !Regex("[A-Za-z_][A-Za-z0-9_]{0,23}").matches(it) }) {
-                Toast.makeText(this, tr("Use names from the list, such as up_lq or cell."), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Use names from the list, such as up_lq or cell."), Toast.LENGTH_LONG).show()
             } else {
                 Prefs.setChartSeries(this, ChartConfig.encode(ChartConfig.parse(typed.joinToString(","))))
                 Prefs.setInt(this, "chartWindow", window)
@@ -2172,7 +2172,7 @@ class MainActivity : Activity() {
     private fun switchAircraft(id: String) {
         if (id == Aircraft.store(this).activeId()) return
         if (!Aircraft.switchTo(this, id)) return
-        Toast.makeText(this, tr("Aircraft: {0}", Aircraft.activeName(this)), Toast.LENGTH_LONG).show()
+        Toasts.make(this, tr("Aircraft: {0}", Aircraft.activeName(this)), Toast.LENGTH_LONG).show()
         recreate()
     }
 
@@ -2205,7 +2205,7 @@ class MainActivity : Activity() {
             del.text = "X"
             del.setOnClickListener {
                 val err = store.remove(a.id)
-                if (err != null) Toast.makeText(this, err, Toast.LENGTH_LONG).show()
+                if (err != null) Toasts.make(this, err, Toast.LENGTH_LONG).show()
                 else {
                     list.removeView(line)
                     rows.removeAll { it.id == a.id }
@@ -2224,7 +2224,7 @@ class MainActivity : Activity() {
         }
         fun addAircraft(values: Map<String, Any>) {
             if (store.list().size >= AircraftStore.MAX) {
-                Toast.makeText(this, tr("At most {0} aircraft.", AircraftStore.MAX), Toast.LENGTH_SHORT).show()
+                Toasts.make(this, tr("At most {0} aircraft.", AircraftStore.MAX), Toast.LENGTH_SHORT).show()
                 return
             }
             val a = store.add(newName(), values)
@@ -2254,7 +2254,7 @@ class MainActivity : Activity() {
                 if (problem != null) break
             }
             if (problem != null) {
-                Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+                Toasts.make(this, problem, Toast.LENGTH_LONG).show()
             } else {
                 Aircraft.save(this, store)
                 applyFlightConfig()
@@ -2342,7 +2342,7 @@ class MainActivity : Activity() {
             }
             val problem = if (bad) tr("Enter numbers in every field") else Packs.validate(out)
             if (problem != null) {
-                Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+                Toasts.make(this, problem, Toast.LENGTH_LONG).show()
             } else {
                 Battery.setPacks(this, out)
                 Battery.applyActivePack(this)
@@ -2372,7 +2372,7 @@ class MainActivity : Activity() {
     private fun switchBattery() {
         Battery.cycle(this)
         applyBattery()
-        Toast.makeText(this, tr("Battery profile: {0}\n{1}", Battery.label(this), BatteryProfiles.limitsText(Battery.active(this))), Toast.LENGTH_LONG).show()
+        Toasts.make(this, tr("Battery profile: {0}\n{1}", Battery.label(this), BatteryProfiles.limitsText(Battery.active(this))), Toast.LENGTH_LONG).show()
         speaker.say(I18n.tIn(Lang.speechCode(this), "Battery {0}", Battery.spokenName(this)), false)
     }
 
@@ -2462,7 +2462,7 @@ class MainActivity : Activity() {
             }
             val problem = if (bad) tr("Enter numbers in every field") else BatteryProfiles.validate(out)
             if (problem != null) {
-                Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+                Toasts.make(this, problem, Toast.LENGTH_LONG).show()
             } else {
                 Battery.setProfiles(this, out)
                 val idx = out.indexOfFirst { it.name.equals(activeName, ignoreCase = true) }
@@ -2482,7 +2482,7 @@ class MainActivity : Activity() {
         } catch (e: ActivityNotFoundException) {
             val f = File(getExternalFilesDir(null) ?: filesDir, fileName)
             if (f.exists()) askImport(readTextLimited(f.inputStream())) else {
-                Toast.makeText(this, tr("No file picker, and no {0} to import", f.absolutePath), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("No file picker, and no {0} to import", f.absolutePath), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -2496,17 +2496,17 @@ class MainActivity : Activity() {
         if (requestCode == requestExport) {
             try {
                 contentResolver.openOutputStream(uri, "wt")?.use { it.write(exportText().toByteArray(Charsets.UTF_8)) }
-                Toast.makeText(this, tr("Sound rules saved"), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Sound rules saved"), Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
-                Toast.makeText(this, tr("Could not save the rules: {0}", e.message), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Could not save the rules: {0}", e.message), Toast.LENGTH_LONG).show()
             }
         } else if (requestCode == requestImport) {
             try {
                 val stream = contentResolver.openInputStream(uri)
-                if (stream == null) Toast.makeText(this, tr("Could not open the file"), Toast.LENGTH_LONG).show()
+                if (stream == null) Toasts.make(this, tr("Could not open the file"), Toast.LENGTH_LONG).show()
                 else askImport(readTextLimited(stream))
             } catch (e: Exception) {
-                Toast.makeText(this, tr("Could not read the file: {0}", e.message), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Could not read the file: {0}", e.message), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -2539,7 +2539,7 @@ class MainActivity : Activity() {
                 Prefs.setRulesBackup(this, Prefs.rules(this))
                 Prefs.setRules(this, text)
                 reloadRules()
-                Toast.makeText(this, tr("Imported {0} rules", summary.rules), Toast.LENGTH_LONG).show()
+                Toasts.make(this, tr("Imported {0} rules", summary.rules), Toast.LENGTH_LONG).show()
                 settingsPanel.refresh()
             }
             .setNegativeButton(tr("Cancel"), null)

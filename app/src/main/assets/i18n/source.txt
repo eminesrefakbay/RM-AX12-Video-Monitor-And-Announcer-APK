@@ -66,6 +66,7 @@ The C++ runtime of the Android NDK, needed by the SDK.
 The standard library of the Kotlin language, which the app is written in.
 The typeface of the menus, settings and all running text, in four weights (trimmed to the letters the app needs).
 The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs).
+The font of the Chinese texts, cut down to the characters the app's Chinese texts use. It is used only when the language is Chinese, so that Chinese shows on radios that have no Chinese font.
 Horizon
 Compass
 Flight statistics
@@ -660,7 +661,9 @@ Chamfer, four corners
 Corner brackets
 Soft corners
 Plain rectangles
-AX-HUD  version {0}  (build {1})
+Video monitor
+HUD  ·  voice announcer
+Version {0}  ·  Build {1}
 Use {variable} for a live value, for example {vbat/6:2}.
 A divisor in { } cannot be 0.
 Canceled

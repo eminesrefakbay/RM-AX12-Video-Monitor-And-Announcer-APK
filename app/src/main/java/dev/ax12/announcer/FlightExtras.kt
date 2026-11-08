@@ -265,7 +265,7 @@ class FlightExtras(
     private fun copy(text: String) {
         val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(ClipData.newPlainText("position", text))
-        Toast.makeText(activity, tr("Copied: {0}", text), Toast.LENGTH_SHORT).show()
+        Toasts.make(activity, tr("Copied: {0}", text), Toast.LENGTH_SHORT).show()
     }
 
     private fun f1(v: Double): String = String.format(Locale.US, "%.1f", v)
@@ -359,7 +359,7 @@ class FlightExtras(
                     val q = coords.replace(" ", "")
                     activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + q + "?q=" + q + "(AX-HUD)")))
                 } catch (e: Exception) {
-                    Toast.makeText(activity, tr("No maps app on this radio. Copy the position instead."), Toast.LENGTH_LONG).show()
+                    Toasts.make(activity, tr("No maps app on this radio. Copy the position instead."), Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -58,5 +58,11 @@ names and trademarks belong to their owners.
   SIL Open Font License, Version 1.1; the text is in the app (About) and in `app/src/main/assets/licenses/Teko-OFL.txt`. Two weights,
   made from the variable font and trimmed to the letters the app needs.
 
+- **Noto Sans SC (the font of Chinese text)**, used only when the language is Chinese. Copyright 2014-2021 Adobe
+  (<http://www.adobe.com/>), with Reserved Font Name "Source"; published by Google as Noto Sans SC
+  (<https://github.com/notofonts/noto-cjk>). SIL Open Font License, Version 1.1; the text is in the app (About) and in
+  `app/src/main/assets/licenses/NotoSansSC-OFL.txt`. Two weights, cut from the variable font and trimmed to the characters of the app's
+  Chinese texts. The modified files are named "Noto Sans SC AX Subset", which does not use the reserved name.
+
 The fonts are modified (weights cut from the variable fonts, letters removed); the license allows this, and the modified files keep their
 names' family but carry no reserved font name.

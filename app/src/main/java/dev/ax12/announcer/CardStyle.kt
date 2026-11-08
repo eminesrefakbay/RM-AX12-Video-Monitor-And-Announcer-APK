@@ -111,6 +111,19 @@ object CardStyle {
         if (path != null) canvas.clipPath(path) else canvas.clipRect(rect)
     }
 
+    /** The background of a button or a tappable row: the frame of a tile, lighter when pressed and faded when it is switched off. */
+    fun buttonBackground(density: Float): StateListDrawable {
+        val line = maxOf(1f, density)
+        val accent = Sunlight.c(ACCENT)
+        val fill = Sunlight.c(0xE6232C36.toInt())
+        val edge = Sunlight.c(0xFF546E7A.toInt())
+        val s = StateListDrawable()
+        s.addState(intArrayOf(-android.R.attr.state_enabled), FrameDrawable((fill and 0x00FFFFFF) or 0x66000000, (edge and 0x00FFFFFF) or 0x66000000, line, density, accent))
+        s.addState(intArrayOf(android.R.attr.state_pressed), FrameDrawable(Sunlight.c(0xF24F6272.toInt()), accent, line, density, accent))
+        s.addState(intArrayOf(), FrameDrawable(fill, edge, line, density, accent))
+        return s
+    }
+
     /** The background of a panel or row: [color] with an edge that is light on a light panel and dark on a dark one. */
     fun panelBackground(density: Float, color: Int = PANEL, accent: Int = Sunlight.c(ACCENT), solid: Boolean = false): Drawable {
         val lightFill = SunlightPalette.luminance(SunlightPalette.over(color, 0xFF808080.toInt())) > 0.5      // a light panel gets a light edge
@@ -128,7 +141,7 @@ object CardStyle {
 
     /** The numbers of the HUD: a condensed bold font and digits of equal width, so values do not jitter and take less room. */
     fun styleNumbers(p: Paint) {
-        p.typeface = Fonts.display(true, numberFont)
+        p.typeface = Fonts.numbers(numberFont)
         p.fontFeatureSettings = "tnum"
     }
 

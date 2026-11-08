@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.0
+
+A new animated splash screen (the split design). Chinese can be chosen on every radio: the app carries its own small Chinese font. Buttons
+and tappable rows follow the shape style (no more plain squares in Settings and the rules). Toasts use the app's fonts.
+
 ## 1.7.0
 
 Shapes: cards, tiles, rows and the warning bar can have two cut corners (the new default), four cut corners, corner brackets, soft corners or

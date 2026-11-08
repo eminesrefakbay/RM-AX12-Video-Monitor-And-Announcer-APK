@@ -155,7 +155,7 @@ class RulesPanel(
     }
 
     private fun testSpeak(text: String, urgent: Boolean) {
-        if (speaker.muted) Toast.makeText(activity, tr("Speech is muted (MENU, Speech)"), Toast.LENGTH_SHORT).show()
+        if (speaker.muted) Toasts.make(activity, tr("Speech is muted (MENU, Speech)"), Toast.LENGTH_SHORT).show()
         else speaker.say(text, urgent)
     }
 
@@ -185,7 +185,7 @@ class RulesPanel(
 
     private fun refresh() {
         refreshRows()
-        Fonts.apply(root)
+        Look.apply(root)
     }
 
     private fun refreshRows() {
@@ -312,7 +312,7 @@ class RulesPanel(
             val v = vhys.text.toString().trim().toDoubleOrNull()
             val ms = hold.text.toString().trim().toLongOrNull()
             if (h == null || h < 0 || v == null || v < 0 || ms == null || ms < 0) {
-                Toast.makeText(activity, tr("Enter numbers (0 or more)"), Toast.LENGTH_SHORT).show()
+                Toasts.make(activity, tr("Enter numbers (0 or more)"), Toast.LENGTH_SHORT).show()
             } else {
                 RuleText.setSetting(items, "hysteresis", RuleText.fmt(h))
                 RuleText.setSetting(items, "var_hysteresis", RuleText.fmt(v))
@@ -746,7 +746,7 @@ class RulesPanel(
                 if (sayField.text.isNotBlank()) {
                     if (check) {
                         val shown = TextTemplate.expand(sayField.text.toString().trim(), live.numbers(), live.texts())
-                        Toast.makeText(activity, tr("Label now: {0}", shown), Toast.LENGTH_SHORT).show()
+                        Toasts.make(activity, tr("Label now: {0}", shown), Toast.LENGTH_SHORT).show()
                     } else if (warning) {
                         val shown = TextTemplate.expand(sayField.text.toString().trim(), live.numbers(), live.texts())
                         testWarning?.invoke(shown, severity)

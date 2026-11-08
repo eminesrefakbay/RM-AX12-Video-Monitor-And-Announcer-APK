@@ -66,7 +66,7 @@ public class AboutTests {
 
         // ---------- the credits ----------
         List<Credits.Entry> list = Credits.entries();
-        check(list.size() == 7 && list.get(0).name.equals("AX-HUD") && list.get(0).license.startsWith("GNU GPL v3 or later"), "seven entries (the app, the SDK, its libraries and two fonts), the app first, under the GPL v3 or later");
+        check(list.size() == 8 && list.get(0).name.equals("AX-HUD") && list.get(0).license.startsWith("GNU GPL v3 or later"), "eight entries (the app, the SDK, its libraries and three fonts), the app first, under the GPL v3 or later");
         Set<String> names = new HashSet<String>();
         int bad = 0, texts = 0;
         for (Credits.Entry e : list) {

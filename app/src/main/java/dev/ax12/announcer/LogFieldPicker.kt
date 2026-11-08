@@ -141,7 +141,7 @@ object LogFieldPicker {
         Immersive.show(dlg)
         dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             if (selected.isEmpty()) {
-                Toast.makeText(activity, tr("Tick at least one value."), Toast.LENGTH_SHORT).show()
+                Toasts.make(activity, tr("Tick at least one value."), Toast.LENGTH_SHORT).show()
             } else {
                 onDone(ArrayList(selected))
                 dlg.dismiss()

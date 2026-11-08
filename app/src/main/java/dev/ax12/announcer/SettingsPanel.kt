@@ -262,7 +262,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         row.gravity = Gravity.CENTER_VERTICAL
         row.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
         row.setPadding(dp(if (indent) 24 else 16), dp(8), dp(16), dp(8))
-        row.background = Button(activity).background?.constantState?.newDrawable()?.mutate()
+        row.background = CardStyle.buttonBackground(activity.resources.displayMetrics.density)
         row.isClickable = true
         val l = TextView(activity)
         l.text = label
@@ -399,7 +399,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
 
     fun refresh() {
         refreshRows()
-        Fonts.apply(root)
+        Look.apply(root)
     }
 
     private fun refreshRows() {

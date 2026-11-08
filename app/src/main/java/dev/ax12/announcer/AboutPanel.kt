@@ -94,7 +94,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         skin()
         build()
         showPage()
-        Fonts.apply(root)
+        Look.apply(root)
         shown = true
         Anim.panelIn(root)
     }
@@ -134,7 +134,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         try {
             activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(activity, tr("No web browser found. The address is: {0}", url), Toast.LENGTH_LONG).show()
+            Toasts.make(activity, tr("No web browser found. The address is: {0}", url), Toast.LENGTH_LONG).show()
         }
     }
 

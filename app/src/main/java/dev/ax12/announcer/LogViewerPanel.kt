@@ -125,7 +125,7 @@ class LogViewerPanel(
 
     private fun build(list: List<LogStore.Entry>, bytes: Long) {
         buildList(list, bytes)
-        Fonts.apply(root)
+        Look.apply(root)
     }
 
     private fun buildList(list: List<LogStore.Entry>, bytes: Long) {

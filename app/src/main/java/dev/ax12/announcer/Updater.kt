@@ -69,7 +69,7 @@ class Updater(private val activity: Activity) {
 
     fun channel(): String = Prefs.updateChannel(activity)
 
-    private fun toast(text: String) = Toast.makeText(activity, text, Toast.LENGTH_LONG).show()
+    private fun toast(text: String) = Toasts.make(activity, text, Toast.LENGTH_LONG).show()
 
     private fun message(title: String, text: String) {
         Immersive.show(Sunlight.builder(activity).setTitle(title).setMessage(text).setPositiveButton("OK", null).create())

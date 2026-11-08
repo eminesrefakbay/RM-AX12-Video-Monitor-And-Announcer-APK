@@ -79,6 +79,10 @@ public final class Credits {
             "https://github.com/googlefonts/teko",
             I18n.n("The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs)."),
             new Text("SIL Open Font License 1.1 (Teko)", "licenses/Teko-OFL.txt")));
+        e.add(new Entry("Noto Sans SC (the font of Chinese text)", "Google, with Adobe (Source Han Sans)", "SIL Open Font License 1.1",
+            "https://github.com/notofonts/noto-cjk",
+            I18n.n("The font of the Chinese texts, cut down to the characters the app's Chinese texts use. It is used only when the language is Chinese, so that Chinese shows on radios that have no Chinese font."),
+            new Text("SIL Open Font License 1.1 (Noto Sans SC)", "licenses/NotoSansSC-OFL.txt")));
         ENTRIES = Collections.unmodifiableList(e);
     }
 

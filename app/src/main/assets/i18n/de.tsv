@@ -66,6 +66,7 @@ The C++ runtime of the Android NDK, needed by the SDK.	Die C++-Laufzeit des Andr
 The standard library of the Kotlin language, which the app is written in.	Die Standardbibliothek der Sprache Kotlin, in der die App geschrieben ist.
 The typeface of the menus, settings and all running text, in four weights (trimmed to the letters the app needs).	Die Schrift der Menüs, der Einstellungen und aller Fließtexte, in vier Stärken (auf die Buchstaben gekürzt, die die App braucht).
 The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs).	Die schmale Schrift der Titel und der großen Zahlen, in zwei Stärken (auf die Buchstaben gekürzt, die die App braucht).
+The font of the Chinese texts, cut down to the characters the app's Chinese texts use. It is used only when the language is Chinese, so that Chinese shows on radios that have no Chinese font.	Die Schrift der chinesischen Texte, auf die Zeichen gekürzt, die die chinesischen Texte der App verwenden. Sie wird nur verwendet, wenn die Sprache Chinesisch ist, damit Chinesisch auch auf Funkgeräten ohne chinesische Schrift angezeigt wird.
 Horizon	Horizont
 Compass	Kompass
 Flight statistics	Flugstatistik
@@ -660,7 +661,9 @@ Chamfer, four corners	Abgeschrägt, vier Ecken
 Corner brackets	Eckklammern
 Soft corners	Weiche Ecken
 Plain rectangles	Schlichte Rechtecke
-AX-HUD  version {0}  (build {1})	AX-HUD  Version {0}  (Build {1})
+Video monitor	Videomonitor
+HUD  ·  voice announcer	HUD  ·  Sprachansage
+Version {0}  ·  Build {1}	Version {0}  ·  Build {1}
 Use {variable} for a live value, for example {vbat/6:2}.	Verwende {variable} für einen Live-Wert, zum Beispiel {vbat/6:2}.
 A divisor in { } cannot be 0.	Ein Teiler in { } darf nicht 0 sein.
 Canceled	Abgebrochen

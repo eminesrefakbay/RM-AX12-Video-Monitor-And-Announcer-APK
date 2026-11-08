@@ -95,19 +95,45 @@ public class FontTests {
             check(covers(b, cmap, "\u00B0\u00B7\u2013\u2014\u2026\u00B1\u00B2\u00B5"), f + ": the degree sign, the middle dot, dashes, the ellipsis and units");
         }
 
+        // ---------- the Chinese font ----------
+        StringBuilder zh = new StringBuilder();
+        for (String line : read("app/src/main/assets/i18n/zh.tsv").split("\n")) {
+            if (line.startsWith("#") || !line.contains("\t")) continue;
+            zh.append(line.substring(line.indexOf('\t') + 1));
+        }
+        java.util.Set<Integer> zhChars = new java.util.TreeSet<Integer>();
+        for (int i = 0; i < zh.length(); i++) if (zh.charAt(i) > 0x20) zhChars.add((int) zh.charAt(i));
+        check(zhChars.size() > 500, "the Chinese texts use many characters (" + zhChars.size() + ")");
+        for (String f : new String[]{"NotoSansSCRegular", "NotoSansSCBold"}) {
+            File file = new File(ASSETS + "fonts/" + f + ".ttf");
+            check(file.exists() && file.length() > 100000 && file.length() < 600000, f + ": the file exists and is small (" + file.length() + " bytes)");
+            ByteBuffer b = ByteBuffer.wrap(Files.readAllBytes(file.toPath()));
+            int cmap = cmapOffset(b);
+            check(cmap > 0, f + ": has a character table");
+            StringBuilder missing = new StringBuilder();
+            for (int cp : zhChars) if (!hasGlyph(b, cmap, cp)) missing.append((char) cp);
+            check(missing.length() == 0, f + ": has every character of the Chinese texts" + (missing.length() > 0 ? " (missing: " + missing + ")" : ""));
+            check(covers(b, cmap, "0123456789:.,%-+/ ABCXYZabcxyz"), f + ": has digits and Latin letters too");
+        }
+        check(read(KT + "Fonts.kt").contains("fonts/NotoSansSCRegular.ttf") && read(KT + "Fonts.kt").contains("fonts/NotoSansSCBold.ttf") && read(KT + "Fonts.kt").contains("if (cjkMode) return if (weight >= 600) cjkBold else cjkRegular"), "in Chinese every text uses the bundled font");
+        check(read(KT + "Fonts.kt").contains("fun numbers(") && read(KT + "CardStyle.kt").contains("Fonts.numbers(numberFont)"), "numbers stay in Teko in every language");
+        String lang = read(KT + "Lang.kt");
+        check(lang.contains("if (Fonts.hasChinese) return true") && lang.contains("Fonts.setLanguage(code)"), "Chinese can be chosen when the app has its own font, and the font follows the language");
+        check(read(KT + "Toasts.kt").contains("Look.apply(t.view)") && !read(KT + "MainActivity.kt").contains("Toast.makeText("), "toasts get the app's fonts too");
+
         // ---------- the licences ----------
-        for (String lic : new String[]{"Manrope-OFL.txt", "Teko-OFL.txt"}) {
+        for (String lic : new String[]{"Manrope-OFL.txt", "Teko-OFL.txt", "NotoSansSC-OFL.txt"}) {
             String t = read(ASSETS + "licenses/" + lic);
             check(t.contains("SIL OPEN FONT LICENSE Version 1.1") && t.contains("Copyright") && t.length() > 3000, lic + ": the licence text is there");
         }
         int found = 0;
-        for (Credits.Entry e : Credits.entries()) if (e.name.startsWith("Manrope") || e.name.startsWith("Teko")) {
+        for (Credits.Entry e : Credits.entries()) if (e.name.startsWith("Manrope") || e.name.startsWith("Teko") || e.name.startsWith("Noto Sans SC")) {
             found++;
             check(e.license.contains("Open Font License") && e.texts.size() == 1 && new File(ASSETS + e.texts.get(0).asset).exists(), e.name + ": credited with its licence text");
         }
-        check(found == 2, "both fonts are in the credits");
+        check(found == 3, "all three fonts are in the credits");
         String notices = read("THIRD_PARTY_NOTICES.md");
-        check(notices.contains("Manrope") && notices.contains("Teko") && notices.contains("SIL Open Font License"), "the third-party notices name both fonts");
+        check(notices.contains("Manrope") && notices.contains("Teko") && notices.contains("Noto Sans SC") && notices.contains("SIL Open Font License"), "the third-party notices name both fonts");
 
         // ---------- the wiring (checked in the sources) ----------
         String fonts = read(KT + "Fonts.kt"), cs = read(KT + "CardStyle.kt");
@@ -116,12 +142,12 @@ public class FontTests {
         check(read(KT + "App.kt").indexOf("Fonts.init(this)") > read(KT + "App.kt").indexOf("Diagnostics.install(this)"), "the fonts are loaded at the start of the app, after the crash record is on");
         check(read(KT + "Immersive.kt").contains("Fonts.apply(w.decorView)"), "dialogs get the fonts");
         String act = read(KT + "MainActivity.kt");
-        check(act.indexOf("Fonts.apply(frame)") > act.indexOf("applyOverlayPrefs()\n        Fonts.apply"), "the screen gets the fonts once it is built");
+        check(act.indexOf("Look.apply(frame)") > act.indexOf("applyOverlayPrefs()\n        Look.apply"), "the screen gets the fonts and the button shapes once it is built");
         int panels = 0;
-        for (String f : new String[]{"SettingsPanel.kt", "RulesPanel.kt", "InfoPanel.kt", "MainMenu.kt", "WelcomeGuide.kt", "AboutPanel.kt", "LogViewerPanel.kt"}) if (read(KT + f).contains("Fonts.apply(root)")) panels++;
+        for (String f : new String[]{"SettingsPanel.kt", "RulesPanel.kt", "InfoPanel.kt", "MainMenu.kt", "WelcomeGuide.kt", "AboutPanel.kt", "LogViewerPanel.kt"}) if (read(KT + f).contains("Look.apply(root)")) panels++;
         check(panels == 7, "every panel gives its content the fonts each time it is drawn (" + panels + " of 7)");
         check(fonts.contains("DISPLAY_SCALE = 1.2f") && fonts.contains("Typeface.MONOSPACE") && fonts.contains("originalSize"), "titles are set bigger once, monospace text stays");
-        check(cs.contains("Fonts.display(true, numberFont)") && cs.contains("fun drawNumber(") && cs.contains("fun measureNumber(") && cs.contains("fun upper(") && cs.contains("val numberScale"), "the number font and the slot drawing are in CardStyle");
+        check(cs.contains("Fonts.numbers(numberFont)") && cs.contains("fun drawNumber(") && cs.contains("fun measureNumber(") && cs.contains("fun upper(") && cs.contains("val numberScale"), "the number font and the slot drawing are in CardStyle");
         StringBuilder left = new StringBuilder();
         for (File f : new File(KT).listFiles()) {
             String n = f.getName();

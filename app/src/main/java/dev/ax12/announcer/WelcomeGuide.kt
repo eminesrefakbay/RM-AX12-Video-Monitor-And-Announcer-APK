@@ -122,7 +122,7 @@ class WelcomeGuide(private val activity: Activity, private val onFinished: () ->
 
     private fun render() {
         renderRows()
-        Fonts.apply(root)
+        Look.apply(root)
     }
 
     private fun renderRows() {

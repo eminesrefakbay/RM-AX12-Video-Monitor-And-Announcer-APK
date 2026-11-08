@@ -286,7 +286,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
 
     private fun addOfKind(kind: String) {
         if (tiles.size >= DashLayout.MAX_TILES) {
-            Toast.makeText(activity, tr("The dashboard has the most cards it can hold."), Toast.LENGTH_SHORT).show()
+            Toasts.make(activity, tr("The dashboard has the most cards it can hold."), Toast.LENGTH_SHORT).show()
             return
         }
         if (kind == "value") {
@@ -323,7 +323,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
     private fun editValueCard() {
         val values = tiles.filter { it.kind == "value" }
         if (values.isEmpty()) {
-            Toast.makeText(activity, tr("There is no value card to edit."), Toast.LENGTH_SHORT).show()
+            Toasts.make(activity, tr("There is no value card to edit."), Toast.LENGTH_SHORT).show()
             return
         }
         val dlg = Sunlight.builder(activity)

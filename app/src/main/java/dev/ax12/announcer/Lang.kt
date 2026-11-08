@@ -33,6 +33,7 @@ object Lang {
      * Chinese text is a row of empty boxes. A sample of common characters is asked of the system font.
      */
     fun hasChineseFont(): Boolean {
+        if (Fonts.hasChinese) return true                    // the app brings its own Chinese font
         val paint = Paint()
         return paint.hasGlyph("\u4E2D\u6587") && paint.hasGlyph("\u8BED") && paint.hasGlyph("\u8BBE\u7F6E")
     }
@@ -42,6 +43,7 @@ object Lang {
         val app = c.applicationContext
         var code = I18n.resolve(Prefs.language(app), Locale.getDefault().language)
         if (code == "zh" && !hasChineseFont()) code = "en"       // never show a screen of empty boxes
+        Fonts.setLanguage(code)
         I18n.load(I18n.Source { path -> app.assets.open(path) }, code)
     }
 
