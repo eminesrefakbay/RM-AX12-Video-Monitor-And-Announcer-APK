@@ -145,11 +145,19 @@ public class DashboardTests {
         // the video page
         String dispatch = act.substring(act.indexOf("override fun dispatchTouchEvent"), act.indexOf("private fun anyOverlayOpen()"));
         check(dispatch.contains("HoldGesture.HOLD_MS") && dispatch.contains("HoldGesture.moved") && dispatch.contains("ACTION_MOVE") && dispatch.contains("ACTION_UP") && dispatch.contains("ACTION_CANCEL") && dispatch.contains("ACTION_POINTER_DOWN") && dispatch.contains("onMenuButton"), "the video page watches the hold and cancels it on movement, a second finger and letting go, and ignores the MENU button");
+        int menuHide = act.indexOf("private val hideMenuRunnable");
+        int showMenu = act.indexOf("private fun showMenuButton");
+        int dashboardSet = act.indexOf("private fun setDashboard");
+        int dashboardEnd = act.indexOf("\n    }", dashboardSet);
+        check(menuHide > 0 && !act.substring(menuHide, act.indexOf("private var latestNumbers", menuHide)).contains("!dashboardOn")
+              && showMenu > 0 && !act.substring(showMenu, act.indexOf("private fun applyMenuMode", showMenu)).contains("!dashboardOn")
+              && act.substring(dashboardSet, dashboardEnd).contains("showMenuButton(4000)"),
+              "the MENU button auto-hides on the dashboard too and reappears on touch");
         int menuVisibility = act.indexOf("if (anyOverlayOpen())");
-        int dashboardVisible = act.indexOf("} else if (dashboardOn) {", menuVisibility);
-        check(menuVisibility > 0 && dashboardVisible > menuVisibility
-              && act.substring(dashboardVisible, act.indexOf("} else if (overlayWasOpen)", dashboardVisible)).contains("menuButton.visibility = View.VISIBLE"),
-              "the MENU button is restored whenever the dashboard is shown without an overlay");
+        int overlayClosed = act.indexOf("} else if (overlayWasOpen) {", menuVisibility);
+        check(menuVisibility > 0 && overlayClosed > menuVisibility
+              && act.substring(overlayClosed, act.indexOf("\n            }", overlayClosed)).contains("showMenuButton(4000)"),
+              "the MENU button returns temporarily when the dashboard menu closes");
         int lookApplied = act.indexOf("Look.apply(frame)");
         int menuElevation = act.indexOf("menuButton.elevation = dp(8).toFloat()");
         check(lookApplied > 0 && menuElevation > lookApplied, "the MENU button stays above the dashboard after button styling resets elevation");

@@ -119,7 +119,7 @@ class MainActivity : Activity() {
     private lateinit var menuButton: Button
     private var overlayWasOpen = false
     private val hideMenuRunnable = Runnable {
-        if (!Prefs.menuAlways(this) && !dashboardOn && !anyOverlayOpen()) menuButton.visibility = View.GONE
+        if (!Prefs.menuAlways(this) && !anyOverlayOpen()) menuButton.visibility = View.GONE
     }
     private var latestNumbers: Map<String, Double> = HashMap()
     private var latestTexts: Map<String, String> = HashMap()
@@ -385,7 +385,7 @@ class MainActivity : Activity() {
     private fun showMenuButton(forMs: Long) {
         menuButton.visibility = View.VISIBLE
         ui.removeCallbacks(hideMenuRunnable)
-        if (!Prefs.menuAlways(this) && !dashboardOn) ui.postDelayed(hideMenuRunnable, forMs)
+        if (!Prefs.menuAlways(this)) ui.postDelayed(hideMenuRunnable, forMs)
     }
 
     private fun applyMenuMode() {
@@ -567,12 +567,9 @@ class MainActivity : Activity() {
             if (anyOverlayOpen()) {
                 menuButton.visibility = View.GONE
                 overlayWasOpen = true
-            } else if (dashboardOn) {
-                menuButton.visibility = View.VISIBLE
-                overlayWasOpen = false
             } else if (overlayWasOpen) {
                 overlayWasOpen = false
-                if (Prefs.menuAlways(this@MainActivity) || dashboardOn) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
+                if (Prefs.menuAlways(this@MainActivity)) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
             }
 
             val waitingForSdk = sdkStarting && !testVisible           // the SDK is starting in the background: no data yet, and no pretend data either
@@ -1195,11 +1192,11 @@ class MainActivity : Activity() {
         if (on) {
             dashboard.show()
             camera.stop()
-            menuButton.visibility = View.VISIBLE
         } else {
             dashboard.hide()
             if (hasCameraPermission()) camera.start()
         }
+        showMenuButton(4000)
     }
 
     /** Refresh the three cards (about five times a second). */
