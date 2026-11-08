@@ -150,6 +150,9 @@ public class DashboardTests {
         check(menuVisibility > 0 && dashboardVisible > menuVisibility
               && act.substring(dashboardVisible, act.indexOf("} else if (overlayWasOpen)", dashboardVisible)).contains("menuButton.visibility = View.VISIBLE"),
               "the MENU button is restored whenever the dashboard is shown without an overlay");
+        int lookApplied = act.indexOf("Look.apply(frame)");
+        int menuElevation = act.indexOf("menuButton.elevation = dp(8).toFloat()");
+        check(lookApplied > 0 && menuElevation > lookApplied, "the MENU button stays above the dashboard after button styling resets elevation");
         String allowed = act.substring(act.indexOf("private fun videoEditAllowed()"), act.indexOf("private fun onMenuButton"));
         check(allowed.contains("flightStats.armed()") && allowed.contains("anyOverlayOpen()") && allowed.contains("dashboardOn") && allowed.contains("editingLayout"), "the video editor is not opened when armed, over a panel, on the dashboard or while editing");
         String fire = act.substring(act.indexOf("private val holdFire"), act.indexOf("private fun videoEditAllowed()"));

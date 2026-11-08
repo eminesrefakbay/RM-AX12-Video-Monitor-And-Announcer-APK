@@ -269,7 +269,6 @@ class MainActivity : Activity() {
         // above the dashboard page (elevation 6 dp): the warnings, the connecting banner, the MENU button and the replay tag
         warningText.elevation = dp(7).toFloat()
         connectBanner.view.elevation = dp(7).toFloat()
-        menuButton.elevation = dp(8).toFloat()
         replayUi.tag.elevation = dp(16).toFloat()
         dashboardOn = Prefs.bool(this, "dashPage", false)
         if (dashboardOn) dashboard.showNow()
@@ -307,6 +306,7 @@ class MainActivity : Activity() {
         applyMenuMode()
         applyOverlayPrefs()
         Look.apply(frame)
+        menuButton.elevation = dp(8).toFloat()
         applyTiles()
         applyFlightConfig()
 
