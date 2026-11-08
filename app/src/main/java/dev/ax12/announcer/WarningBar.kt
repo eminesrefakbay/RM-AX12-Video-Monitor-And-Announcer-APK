@@ -5,6 +5,9 @@
 
 package dev.ax12.announcer
 
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 
@@ -24,6 +27,12 @@ class WarningBar(private val bar: TextView) {
     private var testUntil = 0L
     private var lastShown = ""
     private var lastLevel = -1
+    private var lastLight = false
+    private val normalTextPx = bar.textSize
+    private val normalTypeface = bar.typeface
+
+    /** Draws the bar again in the current style (the theme was switched). */
+    fun restyle() { lastLevel = -1 }
 
     /** (Re)load the warning rules. The bar starts with the current state of every rule. */
     fun load(rulesText: String, macros: Map<String, Double>) {
@@ -77,23 +86,42 @@ class WarningBar(private val bar: TextView) {
             bar.text = joined
             lastShown = joined
         }
-        if (worst != lastLevel) {
+        if (worst != lastLevel || Sunlight.on != lastLight) {
             lastLevel = worst
+            lastLight = Sunlight.on
+            val density = bar.resources.displayMetrics.density
             val background: Int
             val foreground: Int
             val shape: String
-            when (worst) {
-                2 -> { background = 0xFFC62828.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "warn_critical" }
-                1 -> { background = 0xFFFFA000.toInt(); foreground = 0xFF000000.toInt(); shape = "warn_warning" }
-                else -> { background = 0xFF1565C0.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "about" }
+            if (Sunlight.on) {                       // fully saturated colours, a thick outline, bigger bold text and thick marks
+                when (worst) {
+                    2 -> { background = SunlightPalette.BAR_CRITICAL; foreground = SunlightPalette.BAR_CRITICAL_TEXT; shape = "warn_critical" }
+                    1 -> { background = SunlightPalette.BAR_WARNING; foreground = SunlightPalette.BAR_WARNING_TEXT; shape = "warn_warning" }
+                    else -> { background = SunlightPalette.BAR_INFO; foreground = SunlightPalette.BAR_INFO_TEXT; shape = "about" }
+                }
+                val box = GradientDrawable()
+                box.setColor(background)
+                box.setStroke((SunlightPalette.BAR_OUTLINE_DP * density).toInt(), if (worst == 1) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
+                bar.background = box
+                bar.setTextSize(TypedValue.COMPLEX_UNIT_SP, SunlightPalette.BAR_TEXT_SP)
+                bar.setTypeface(null, Typeface.BOLD)
+                bar.setTextColor(foreground)
+                bar.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(bar.context, shape, foreground, SunlightPalette.BAR_ICON_DP, SunlightPalette.BAR_ICON_STROKE), null, null, null)
+            } else {
+                when (worst) {
+                    2 -> { background = 0xFFC62828.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "warn_critical" }
+                    1 -> { background = 0xFFFFA000.toInt(); foreground = 0xFF000000.toInt(); shape = "warn_warning" }
+                    else -> { background = 0xFF1565C0.toInt(); foreground = 0xFFFFFFFF.toInt(); shape = "about" }
+                }
+                bar.setBackgroundColor(background)
+                bar.setTextSize(TypedValue.COMPLEX_UNIT_PX, normalTextPx)
+                bar.typeface = normalTypeface
+                bar.setTextColor(foreground)
+                bar.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(bar.context, shape, foreground, 28), null, null, null)
             }
-            bar.setBackgroundColor(background)
-            bar.setTextColor(foreground)
-            bar.setCompoundDrawablesRelativeWithIntrinsicBounds(Icons.drawable(bar.context, shape, foreground, 28), null, null, null)
-            bar.compoundDrawablePadding = (12 * bar.resources.displayMetrics.density).toInt()
+            bar.compoundDrawablePadding = (12 * density).toInt()
         }
-        // a critical warning breathes slowly: 70 % to full and back every 1.8 seconds
-        bar.alpha = if (worst == 2) (0.85 + 0.15 * Math.cos(2 * Math.PI * (nowMs % 1800L) / 1800.0)).toFloat() else 1f
+        bar.alpha = if (worst == 2) ((if (Sunlight.on) 0.92 else 0.85) + (if (Sunlight.on) 0.08 else 0.15) * Math.cos(2 * Math.PI * (nowMs % 1800L) / 1800.0)).toFloat() else 1f
         bar.visibility = View.VISIBLE
     }
 }

@@ -35,6 +35,8 @@ class MainMenu(
     private val dashboardOn: () -> Boolean,
     private val onDashboard: () -> Unit,
     private val onLogs: () -> Unit,
+    private val sunlightOn: () -> Boolean,
+    private val onSunlight: () -> Unit,
     private val onExit: () -> Unit
 ) {
     val root = FrameLayout(activity)
@@ -55,7 +57,7 @@ class MainMenu(
 
         init {
             view.isClickable = true
-            view.background = CardStyle.stateBackground(density, 0xE6232C36.toInt(), 0xF24F6272.toInt(), 0xFF546E7A.toInt())
+            view.background = CardStyle.stateBackground(density, Sunlight.c(0xE6232C36.toInt()), Sunlight.c(0xF24F6272.toInt()), Sunlight.c(0xFF546E7A.toInt()))
             val column = LinearLayout(activity)
             column.orientation = LinearLayout.VERTICAL
             column.gravity = Gravity.CENTER_HORIZONTAL
@@ -64,12 +66,12 @@ class MainMenu(
             name.text = label
             name.textSize = 13f
             name.setTypeface(null, Typeface.BOLD)
-            name.setTextColor(Color.WHITE)
+            name.setTextColor(Sunlight.c(Color.WHITE))
             name.gravity = Gravity.CENTER
             CardStyle.fitText(name, 10, 13)
             column.addView(name, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(8) })
             state.textSize = 11f
-            state.setTextColor(CardStyle.ACCENT)
+            state.setTextColor(Sunlight.c(CardStyle.ACCENT))
             state.gravity = Gravity.CENTER
             CardStyle.fitText(state, 9, 11)
             column.addView(state, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(4) })
@@ -84,7 +86,10 @@ class MainMenu(
         }
 
         /** @param barColor the colour of the bar along the bottom (0 = none) */
-        fun set(iconName: String, stateText: String, barColor: Int, iconColor: Int = CardStyle.ICON, nameColor: Int = Color.WHITE, nameText: String? = null) {
+        fun skin() {
+            view.background = CardStyle.stateBackground(density, Sunlight.c(0xE6232C36.toInt()), Sunlight.c(0xF24F6272.toInt()), Sunlight.c(0xFF546E7A.toInt()))
+        }
+        fun set(iconName: String, stateText: String, barColor: Int, iconColor: Int = Sunlight.c(CardStyle.ICON), nameColor: Int = Sunlight.c(Color.WHITE), nameText: String? = null) {
             if (nameText != null) name.text = nameText
             icon.setImageDrawable(Icons.drawable(activity, iconName, iconColor, 32))
             name.setTextColor(nameColor)
@@ -100,8 +105,18 @@ class MainMenu(
     private val aircraftTile = Tile(tr("Aircraft"), true) { onAircraft() }
     private val dashboardTile = Tile(tr("Dashboard"), true) { onDashboard() }       // the other page: cards only, no video
     private val logsTile = Tile(tr("Flight logs"), true) { onLogs() }
+    private val sunlightTile = Tile(tr("Sunlight"), false) { onSunlight() }          // stays open, so the new look can be seen at once
     private val settingsTile = Tile(tr("Settings"), true) { onSettings() }
     private val exitTile = Tile(tr("Exit"), true) { onExit() }
+
+    private val tiles = listOf(rulesTile, speechTile, batteryTile, aircraftTile, sunlightTile, dashboardTile, logsTile, settingsTile, exitTile)
+    private var boxView: LinearLayout? = null
+
+    /** The colours of the box and the tiles, set again whenever the menu is drawn, because the theme may have changed. */
+    private fun skin() {
+        boxView?.background = CardStyle.panelBackground(density, Sunlight.c(CardStyle.MENU))
+        for (t in tiles) t.skin()
+    }
 
     init {
         root.visibility = View.GONE
@@ -110,11 +125,12 @@ class MainMenu(
         root.setOnClickListener { hide() }
 
         val box = LinearLayout(activity)
+        boxView = box
         box.orientation = LinearLayout.VERTICAL
-        box.background = CardStyle.panelBackground(density, CardStyle.MENU)     // the video shows through
+        box.background = CardStyle.panelBackground(density, Sunlight.c(CardStyle.MENU))     // the video shows through
         box.setPadding(dp(8), dp(8), dp(8), dp(8))
         box.isClickable = true
-        for (row in listOf(listOf(rulesTile, speechTile, batteryTile, aircraftTile), listOf(dashboardTile, logsTile, settingsTile, exitTile))) {
+        for (row in listOf(listOf(rulesTile, speechTile, batteryTile, aircraftTile, sunlightTile), listOf(dashboardTile, logsTile, settingsTile, exitTile))) {
             val line = LinearLayout(activity)
             line.orientation = LinearLayout.HORIZONTAL
             for (t in row) line.addView(t.view, LinearLayout.LayoutParams(dp(104), dp(112)).also { it.setMargins(dp(4), dp(4), dp(4), dp(4)) })
@@ -129,14 +145,16 @@ class MainMenu(
 
     /** Brings every tile's state up to date. */
     private fun refresh() {
+        skin()
+        sunlightTile.set("sun", if (sunlightOn()) tr("On") else tr("Off"), if (sunlightOn()) Sunlight.c(CardStyle.OK) else 0)
         rulesTile.set("rules", "", 0)
-        speechTile.set(if (speechOn()) "speaker" else "speaker_off", if (speechOn()) tr("On") else tr("Off"), if (speechOn()) CardStyle.OK else CardStyle.BAD)
-        batteryTile.set("battery", batteryName(), CardStyle.ACCENT)
-        aircraftTile.set("aircraft", aircraftName(), CardStyle.ACCENT)
+        speechTile.set(if (speechOn()) "speaker" else "speaker_off", if (speechOn()) tr("On") else tr("Off"), if (speechOn()) Sunlight.c(CardStyle.OK) else Sunlight.c(CardStyle.BAD))
+        batteryTile.set("battery", batteryName(), Sunlight.c(CardStyle.ACCENT))
+        aircraftTile.set("aircraft", aircraftName(), Sunlight.c(CardStyle.ACCENT))
         dashboardTile.set(if (dashboardOn()) "video" else "dashboard", "", 0, nameText = if (dashboardOn()) tr("Video") else tr("Dashboard"))
         logsTile.set("logs", "", 0)
         settingsTile.set("gear", "", 0)
-        exitTile.set("exit", "", 0, iconColor = 0xFFFF8A80.toInt(), nameColor = 0xFFFF8A80.toInt())          // apart from the others: a warning colour
+        exitTile.set("exit", "", 0, iconColor = Sunlight.c(0xFFFF8A80.toInt()), nameColor = Sunlight.c(0xFFFF8A80.toInt()))          // apart from the others: a warning colour
     }
 
     fun show() {

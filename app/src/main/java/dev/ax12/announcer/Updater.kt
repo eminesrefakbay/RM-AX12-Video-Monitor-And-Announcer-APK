@@ -72,7 +72,7 @@ class Updater(private val activity: Activity) {
     private fun toast(text: String) = Toast.makeText(activity, text, Toast.LENGTH_LONG).show()
 
     private fun message(title: String, text: String) {
-        Immersive.show(AlertDialog.Builder(activity).setTitle(title).setMessage(text).setPositiveButton("OK", null).create())
+        Immersive.show(Sunlight.builder(activity).setTitle(title).setMessage(text).setPositiveButton("OK", null).create())
     }
 
     // ------------------------------------------------------------------ looking for an update
@@ -123,7 +123,7 @@ class Updater(private val activity: Activity) {
         }
         val notes = if (info.notes.isEmpty()) "" else "\n\n" + info.notes
         Immersive.show(
-            AlertDialog.Builder(activity)
+            Sunlight.builder(activity)
                 .setTitle(tr("Update available"))
                 .setMessage(tr("New: version {0} (build {1}, {2} MB)\nInstalled: version {3} (build {4}){5}\n\nDo not do this during a flight.", info.versionName, info.versionCode, (info.size / 1024 / 1024), installedName(), have, notes))
                 .setPositiveButton(tr("Download and install")) { _, _ -> download(info, channel) }
@@ -150,7 +150,7 @@ class Updater(private val activity: Activity) {
         bar.max = 1000
         body.addView(label)
         body.addView(bar)
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Downloading {0}", info.versionName))
             .setView(body)
             .setCancelable(false)
@@ -192,7 +192,7 @@ class Updater(private val activity: Activity) {
     private fun install(file: File) {
         if (Build.VERSION.SDK_INT >= 26 && !activity.packageManager.canRequestPackageInstalls()) {
             Immersive.show(
-                AlertDialog.Builder(activity)
+                Sunlight.builder(activity)
                     .setTitle(tr("Allow installing"))
                     .setMessage(tr("Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice."))
                     .setPositiveButton(tr("Open the page")) { _, _ ->

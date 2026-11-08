@@ -58,7 +58,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
     init {
-        root.setBackgroundColor(0xFF0B1016.toInt())
+        root.setBackgroundColor(Sunlight.c(0xFF0B1016.toInt()))
         root.visibility = View.GONE
         root.isClickable = true                                     // a touch on the page must not reach the video page under it
         root.setOnTouchListener { _, ev ->                         // a hold on one spot for five seconds starts editing the layout; swiping does not
@@ -116,6 +116,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
         specs.clear()
         for (t in tiles) {
             val v = makeView(t)
+            skinCard(v)
             views[t.id] = v
             if (t.kind == "value") specs[t.id] = ValueSpec.parse(t.setting)
             root.addView(v, root.childCount - 1, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START))
@@ -125,6 +126,25 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
             }
         }
         root.post { applyAll() }
+    }
+
+    /** A card is drawn in the sunlight style when that is on (the horizon keeps its sky and ground, and only gets a light frame). */
+    private fun skinCard(v: View) {
+        when (v) {
+            is HorizonView -> v.applyLight(Sunlight.on)
+            is CompassView -> v.applyLight(Sunlight.on)
+            is FlightStatsView -> v.applyLight(Sunlight.on)
+            is RadarView -> v.applyLight(Sunlight.on)
+            is ChartView -> v.applyLight(Sunlight.on)
+            is SticksView -> v.applyLight(Sunlight.on)
+            is ValueTileView -> v.applyLight(Sunlight.on)
+        }
+    }
+
+    /** The theme was switched: the page and every card are drawn again. */
+    fun applyTheme() {
+        root.setBackgroundColor(Sunlight.c(0xFF0B1016.toInt()))
+        for (v in views.values) skinCard(v)
     }
 
     private fun makeView(t: DashLayout.Tile): View = when (t.kind) {
@@ -256,7 +276,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
 
     private fun addCard() {
         val kinds = DashLayout.KINDS
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Add a card"))
             .setItems(Array(kinds.size) { DashLayout.label(kinds[it]) }) { _, i -> addOfKind(kinds[i]) }
             .setNegativeButton(tr("Cancel"), null)
@@ -288,7 +308,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
     private fun removeCard() {
         if (tiles.isEmpty()) return
         val snapshot = ArrayList(tiles)
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Remove which card?"))
             .setItems(Array(snapshot.size) { describe(snapshot[it]) }) { _, i ->
                 tiles.remove(snapshot[i])
@@ -306,7 +326,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
             Toast.makeText(activity, tr("There is no value card to edit."), Toast.LENGTH_SHORT).show()
             return
         }
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Edit which value card?"))
             .setItems(Array(values.size) { describe(values[it]) }) { _, i ->
                 val t = values[i]
@@ -367,7 +387,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
         fun num(e: EditText): Double = e.text.toString().trim().toDoubleOrNull() ?: Double.NaN
         val scroll = ScrollView(activity)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Value card"))
             .setView(scroll)
             .setNegativeButton(tr("Cancel"), null)

@@ -82,10 +82,10 @@ public class LookTests {
         check(alpha(colors.get("MENU")) <= 0xD0 && alpha(colors.get("MENU")) >= 0x80, "the MENU box lets the video through");
         for (String f : new String[]{"SettingsPanel.kt", "AboutPanel.kt", "RulesPanel.kt"}) {
             String s = read(kt + f);
-            check(s.contains("setBackgroundColor(CardStyle.SEE_THROUGH)") && !s.contains("setBackgroundColor(CardStyle.PANEL)"), f + ": the panel is see-through");
+            check(s.contains("setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))") && !s.contains("setBackgroundColor(CardStyle.PANEL)") && !s.contains("setBackgroundColor(Sunlight.c(CardStyle.PANEL))"), f + ": the panel is see-through (and follows the theme)");
         }
         check(read(kt + "MainMenu.kt").contains("CardStyle.MENU"), "the menu box uses the see-through colour");
-        check(read(kt + "SettingsPanel.kt").contains("CardStyle.BLOCK") && read(kt + "AboutPanel.kt").contains("content.setBackgroundColor(CardStyle.BLOCK)"), "rows and text sit on dark blocks");
+        check(read(kt + "SettingsPanel.kt").contains("CardStyle.BLOCK") && read(kt + "AboutPanel.kt").contains("content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))"), "rows and text sit on dark blocks");
 
         // ---------- the Exit button ----------
         String menu = read(kt + "MainMenu.kt"), act = read(kt + "MainActivity.kt");

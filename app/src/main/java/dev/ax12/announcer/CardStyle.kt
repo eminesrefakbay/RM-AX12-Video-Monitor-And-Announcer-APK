@@ -40,7 +40,8 @@ object CardStyle {
         val g = GradientDrawable()
         g.setColor(color)
         g.cornerRadius = radius(density)
-        g.setStroke((1f * density).toInt().coerceAtLeast(1), 0xFF455A64.toInt())
+        val lightFill = SunlightPalette.luminance(SunlightPalette.over(color, 0xFF808080.toInt())) > 0.5      // a light panel gets a light edge
+        g.setStroke((1f * density).toInt().coerceAtLeast(1), if (lightFill) 0xFF90A4AE.toInt() else 0xFF455A64.toInt())
         return g
     }
 

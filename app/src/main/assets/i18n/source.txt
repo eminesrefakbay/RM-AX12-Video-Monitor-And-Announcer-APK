@@ -107,7 +107,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.
 Where everything is
-Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
+Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft, Sunlight, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Sunlight: dark text on light, for direct sun. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
 Packs
@@ -357,6 +357,7 @@ Sound rules
 Speech
 Battery
 Dashboard
+Sunlight
 Settings
 On
 Off
@@ -511,6 +512,8 @@ Language
 Speech language
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.
 Display
+Sunlight theme
+Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.
 Always show the MENU button
 Off: the button hides and appears when you touch the screen.
 Start-up splash screen (logo and version, 2 seconds)

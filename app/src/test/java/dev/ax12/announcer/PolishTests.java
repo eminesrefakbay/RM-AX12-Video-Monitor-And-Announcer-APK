@@ -82,7 +82,7 @@ public class PolishTests {
         int rows = 0; while (vr.find()) rows++;
         check(rows >= 15, "the cycling settings are label-and-value rows (" + rows + ")");
         check(!Pattern.compile("action\\(tr\\(\"[^\"]*\\{0\\}[^\"]*\\(tap").matcher(settings).find() && !settings.contains("(tap to change"), "no setting still says '(tap to change)' in its label");
-        check(settings.contains("v.setTextColor(CardStyle.ACCENT)") && settings.contains("Gravity.END"), "the value is on the right, in blue");
+        check(settings.contains("v.setTextColor(Sunlight.c(CardStyle.ACCENT))") && settings.contains("Gravity.END"), "the value is on the right, in blue");
 
         // ---------- 4. HUD numbers ----------
         check(card.contains("sans-serif-condensed") && card.contains("\"tnum\"") && read(kt + "FlightStatsView.kt").contains("CardStyle.styleNumbers(valuePaint)") && read(kt + "ChartView.kt").contains("CardStyle.styleNumbers(valuePaint)")

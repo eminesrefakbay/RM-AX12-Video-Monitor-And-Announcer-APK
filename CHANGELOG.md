@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0
+
+Sunlight theme: dark text on light backgrounds for the menu, the settings and the other screens, the dashboard page and the dialogs, with
+stronger warnings (saturated colours, a thick outline, bigger text, thicker marks). A Sunlight tile in the MENU is the quick switch, and
+there is a setting. The MENU now has nine tiles.
+
 ## 1.3.0
 
 Around the flight: the last known position when the link is lost (card, voice, saved note), an approval window with a time-left chip and

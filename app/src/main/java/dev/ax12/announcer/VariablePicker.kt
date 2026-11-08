@@ -58,7 +58,7 @@ object VariablePicker {
                     h.text = row.header
                     h.textSize = 13f
                     h.setTypeface(null, Typeface.BOLD)
-                    h.setTextColor(0xFF9CDCFE.toInt())
+                    h.setTextColor(Sunlight.c(0xFF9CDCFE.toInt()))
                     h.setPadding(dp(12), dp(14), dp(12), dp(4))
                     return h
                 }
@@ -70,14 +70,14 @@ object VariablePicker {
                 val line1 = TextView(activity)
                 line1.text = name + "      " + (if (shown != null) tr("Now: {0}", shown) else tr("No value now"))
                 line1.textSize = 16f
-                line1.setTextColor(Color.WHITE)
+                line1.setTextColor(Sunlight.c(Color.WHITE))
                 box.addView(line1)
                 val help = VariableCatalog.help(name)
                 if (help.isNotEmpty()) {
                     val line2 = TextView(activity)
                     line2.text = help
                     line2.textSize = 12f
-                    line2.setTextColor(0xFFBDBDBD.toInt())
+                    line2.setTextColor(Sunlight.c(0xFFBDBDBD.toInt()))
                     box.addView(line2)
                 }
                 box.alpha = if (shown != null) 1f else 0.55f
@@ -85,7 +85,7 @@ object VariablePicker {
             }
         }
         listView.adapter = adapter
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Pick a channel or value"))
             .setView(listView)
             .setNegativeButton(tr("Cancel"), null)

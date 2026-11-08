@@ -149,6 +149,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Sunlight.on = Prefs.bool(this, "sunlight", false)
         StartupState.mark(StartupTimeline.SCREEN_CREATED)
         Icons.load(this)
         setContentView(R.layout.activity_main)
@@ -291,6 +292,8 @@ class MainActivity : Activity() {
             { dashboardOn },
             { toggleDashboard() },
             { logViewer.show() },
+            { Sunlight.on },
+            { toggleSunlight() },
             { exitApp() }
         )
         frame.addView(mainMenu.root, FrameLayout.LayoutParams(full))
@@ -670,7 +673,7 @@ class MainActivity : Activity() {
         }
         val names = Array(list.size) { list[it].second }
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
                 .setTitle(tr("Choose the HDMI camera"))
                 .setItems(names) { _, which -> camera.select(list[which].first) }
                 .create()
@@ -771,6 +774,8 @@ class MainActivity : Activity() {
         override fun splashOn(): Boolean = Prefs.bool(this@MainActivity, "splashOn", true)
         override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)
+        override fun sunlightOn(): Boolean = Sunlight.on
+        override fun setSunlightOn(on: Boolean) = this@MainActivity.setSunlight(on)
         override fun setMenuAlways(on: Boolean) {
             Prefs.setMenuAlways(this@MainActivity, on)
             applyMenuMode()
@@ -1222,10 +1227,21 @@ class MainActivity : Activity() {
     }
 
     /** Which channel is the arm switch, and when it counts as armed (it also needs the cell count for volts per cell). */
+    private fun toggleSunlight() = setSunlight(!Sunlight.on)
+
+    /** The sunlight theme on or off: kept, and shown at once on the dashboard, the warning bar and the screen that is open. */
+    private fun setSunlight(on: Boolean) {
+        Sunlight.on = on
+        Prefs.setBool(this, "sunlight", on)
+        dashboard.applyTheme()
+        warningBar.restyle()
+        if (settingsPanel.isShowing) settingsPanel.skin()
+    }
+
     /** A clock dialog for one of the two times of the approval window. */
     private fun pickClock(title: String, key: String, default: Int) {
         val minutes = Prefs.int(this, key, default).coerceIn(0, 1439)
-        val dlg = TimePickerDialog(this, { _, h, m ->
+        val dlg = TimePickerDialog(this, Sunlight.dialogTheme(), { _, h, m ->
             Prefs.setInt(this, key, h * 60 + m)
             extras.reload()
             settingsPanel.refresh()
@@ -1248,7 +1264,7 @@ class MainActivity : Activity() {
         e.setText(Prefs.string(this, "winWarn", ApprovalWindow.DEFAULT_WARN))
         body.addView(e)
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
                 .setTitle(tr("Warn at (minutes left)"))
                 .setView(body)
                 .setPositiveButton(tr("OK")) { _, _ ->
@@ -1291,7 +1307,7 @@ class MainActivity : Activity() {
         body.addView(hint)
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Arm detection"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -1345,7 +1361,7 @@ class MainActivity : Activity() {
         body.addView(hint)
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Flight statistics rows"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -1469,7 +1485,7 @@ class MainActivity : Activity() {
 
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Channel bars"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -1565,7 +1581,7 @@ class MainActivity : Activity() {
 
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Stick view"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -1634,7 +1650,7 @@ class MainActivity : Activity() {
             val f = File(dir, fileName)
             f.writeText(exportText(), Charsets.UTF_8)
             Immersive.show(
-                AlertDialog.Builder(this)
+                Sunlight.builder(this)
                     .setTitle(tr("Sound rules saved"))
                     .setMessage(tr("This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.", f.absolutePath))
                     .setPositiveButton("OK", null)
@@ -1660,7 +1676,7 @@ class MainActivity : Activity() {
             val f = File(getExternalFilesDir(null) ?: filesDir, name)
             f.writeText(text, Charsets.UTF_8)
             Immersive.show(
-                AlertDialog.Builder(this)
+                Sunlight.builder(this)
                     .setTitle(title)
                     .setMessage(tr("This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.", f.absolutePath))
                     .setPositiveButton("OK", null)
@@ -1719,11 +1735,11 @@ class MainActivity : Activity() {
     private fun askImportSettings(raw: String) {
         val summary = SettingsFile.inspect(raw)
         if (!summary.usable) {
-            Immersive.show(AlertDialog.Builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
+            Immersive.show(Sunlight.builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
             return
         }
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
                 .setTitle(tr("Import all settings"))
                 .setMessage(tr("The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.", summary.message))
                 .setPositiveButton(tr("Import")) { _, _ ->
@@ -1887,7 +1903,7 @@ class MainActivity : Activity() {
         val scroll = ScrollView(this)
         scroll.addView(text)
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
                 .setTitle(tr("Start-up timings"))
                 .setView(scroll)
                 .setPositiveButton(tr("Close"), null)
@@ -1961,7 +1977,7 @@ class MainActivity : Activity() {
         body.addView(hint)
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Live charts"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -1988,7 +2004,7 @@ class MainActivity : Activity() {
         val list = store.list()
         val labels = Array(list.size) { i -> if (list[i].id == store.activeId()) tr("{0}  (in use)", list[i].name) else list[i].name }
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
                 .setTitle(tr("Choose the aircraft"))
                 .setItems(labels) { _, which -> switchAircraft(list[which].id) }
                 .setNegativeButton(tr("Cancel"), null)
@@ -2068,7 +2084,7 @@ class MainActivity : Activity() {
         body.addView(addNew)
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Aircraft"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -2153,7 +2169,7 @@ class MainActivity : Activity() {
         body.addView(hint)
         val scroll = ScrollView(this)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Packs"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -2186,7 +2202,7 @@ class MainActivity : Activity() {
     /** Closes the app for good: the radio link stops, the radio's serial port is released, and the app leaves the recent apps. */
     private fun exitApp() {
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
                 .setTitle(tr("Exit AX-HUD?"))
                 .setMessage(tr("The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again."))
                 .setPositiveButton(tr("Exit")) { _, _ -> finishAndRemoveTask() }
@@ -2270,7 +2286,7 @@ class MainActivity : Activity() {
         val scroll = ScrollView(this)
         scroll.addView(body)
         val activeName = Battery.active(this).name
-        val dlg = AlertDialog.Builder(this)
+        val dlg = Sunlight.builder(this)
             .setTitle(tr("Battery profiles"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -2356,11 +2372,11 @@ class MainActivity : Activity() {
         val text = RulesFile.normalize(raw)
         val summary = RulesFile.inspect(text)
         if (!summary.usable) {
-            Immersive.show(AlertDialog.Builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
+            Immersive.show(Sunlight.builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
             return
         }
         Immersive.show(
-            AlertDialog.Builder(this)
+            Sunlight.builder(this)
             .setTitle(tr("Import sound rules"))
             .setMessage(tr("The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.", summary.message))
             .setPositiveButton(tr("Import")) { _, _ ->

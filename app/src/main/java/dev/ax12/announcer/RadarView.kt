@@ -17,6 +17,9 @@ import android.view.View
  * farther and does not shrink again during the flight.
  */
 class RadarView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
 
     private val density = context.resources.displayMetrics.density
     private val bg = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -51,6 +54,19 @@ class RadarView(context: Context) : View(context) {
         CardStyle.styleSmallNumbers(text)
         text.textSize = 10f * density
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        bg.color = Sunlight.cIf(on, CardStyle.BG)
+        edge.color = Sunlight.cIf(on, CardStyle.EDGE)
+        ring.color = Sunlight.cIf(on, 0xFF78909C.toInt())
+        trail.color = Sunlight.cIf(on, 0xFF4FC3F7.toInt())
+        plane.color = Sunlight.cIf(on, 0xFF66BB6A.toInt())
+        homePaint.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        text.color = Sunlight.cIf(on, 0xFFCFD8DC.toInt())
+        invalidate()
+    }
+
 
     fun bind(s: FlightStats) { stats = s }
 

@@ -107,7 +107,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	首批数据约需 12 秒
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	打开应用后, 遥控器数据(摇杆、链路质量、遥测)大约 12 秒后才会出现。这段等待发生在 RadioMaster SDK 内部, 不是错误。横幅会显示已等待的秒数。视频会立即开始。
 Where everything is	各项功能在哪里
-Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到八个图块: 语音规则、语音、电池、飞行器、仪表盘、飞行日志、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
+Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft, Sunlight, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Sunlight: dark text on light, for direct sun. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到九个图块: 语音规则、语音、电池、飞行器、阳光、仪表盘、飞行日志、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“阳光”: 浅色背景深色文字。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
 An aid, not a safety system	辅助工具, 而非安全系统
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD 帮助你看到并听到飞行器的状态。请不要把它当作唯一的警告来源。始终遵守当地规定飞行。
 Packs	电池包
@@ -357,6 +357,7 @@ Sound rules	语音规则
 Speech	语音
 Battery	电池
 Dashboard	仪表盘
+Sunlight	阳光
 Settings	设置
 On	开
 Off	关
@@ -511,6 +512,8 @@ Language	语言
 Speech language	语音语言
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	屏幕和语音可以使用不同的语言。你的规则保持原有文字: “将规则重置为默认值” 会以语音的语言载入初始规则。
 Display	显示
+Sunlight theme	阳光主题
+Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	菜单、设置、其他界面和仪表盘使用浅色背景上的深色文字，并加强警告显示。在强烈日光下，这比深色背景上的浅色文字更易读。菜单中的“阳光”图块可快速切换。
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
 Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)

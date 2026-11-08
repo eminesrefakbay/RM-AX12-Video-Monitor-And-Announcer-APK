@@ -33,27 +33,38 @@ class InfoPanel(
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
+    private var barView: LinearLayout? = null
+
+    /** The colours of the frame of the screen, set again each time it opens, because the theme may have changed. */
+    private fun skin() {
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
+        barView?.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
+        content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+    }
+
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.SEE_THROUGH)
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
         root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(28).toFloat()
         val bar = LinearLayout(activity)
+        barView = bar
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
-        bar.setBackgroundColor(CardStyle.BLOCK)
+        bar.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         bar.setPadding(dp(8), 0, dp(8), 0)
         titleView.textSize = 22f
-        titleView.setTextColor(Color.WHITE)
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
         titleView.setTypeface(null, Typeface.BOLD)
         bar.addView(titleView, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         closeButton.setOnClickListener { hide() }
         bar.addView(closeButton)
         root.addView(bar)
         content.orientation = LinearLayout.VERTICAL
-        content.setBackgroundColor(CardStyle.BLOCK)
+        content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         content.setPadding(dp(16), dp(8), dp(16), dp(24))
         val page = ScrollView(activity)
         page.addView(content)
@@ -61,6 +72,7 @@ class InfoPanel(
     }
 
     fun show() {
+        skin()
         titleView.text = title()
         closeButton.text = tr("Close")
         refresh()
@@ -94,7 +106,7 @@ class InfoPanel(
         val card = LinearLayout(activity)
         card.orientation = LinearLayout.VERTICAL
         card.setPadding(dp(16), dp(8), dp(16), dp(8))
-        card.background = CardStyle.panelBackground(density, 0xE6232C36.toInt())
+        card.background = CardStyle.panelBackground(density, Sunlight.c(0xE6232C36.toInt()))
         content.addView(card, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(8) })
         return card
     }
@@ -120,7 +132,7 @@ class InfoPanel(
     }
 
     fun confirm(message: String, positive: String, onYes: () -> Unit) {
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setMessage(message)
             .setPositiveButton(positive) { _, _ -> onYes() }
             .setNegativeButton(tr("Cancel"), null)

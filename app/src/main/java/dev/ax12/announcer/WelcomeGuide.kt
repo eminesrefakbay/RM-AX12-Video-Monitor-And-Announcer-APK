@@ -40,34 +40,43 @@ class WelcomeGuide(private val activity: Activity, private val onFinished: () ->
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
+    /** The colours of the guide, set again each time it opens, because the theme may have changed. */
+    private fun skin() {
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
+        card.setBackgroundColor(Sunlight.c(CardStyle.PANEL))
+        stepView.setTextColor(Sunlight.c(CardStyle.LABEL))
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
+        bodyView.setTextColor(Sunlight.c(0xFFDDE3E8.toInt()))
+    }
+
     init {
-        root.setBackgroundColor(CardStyle.SEE_THROUGH)
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(32).toFloat()          // above every other screen
 
         card.orientation = LinearLayout.VERTICAL
-        card.setBackgroundColor(CardStyle.PANEL)
+        card.setBackgroundColor(Sunlight.c(CardStyle.PANEL))
         card.setPadding(dp(24), dp(16), dp(24), dp(16))
 
         val top = LinearLayout(activity)
         top.orientation = LinearLayout.HORIZONTAL
         top.gravity = Gravity.CENTER_VERTICAL
         stepView.textSize = 12f
-        stepView.setTextColor(CardStyle.LABEL)
+        stepView.setTextColor(Sunlight.c(CardStyle.LABEL))
         top.addView(stepView, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         skipButton.setOnClickListener { finish() }
         top.addView(skipButton, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(CardStyle.MIN_TOUCH_DP)))
         card.addView(top)
 
         titleView.textSize = 22f
-        titleView.setTextColor(Color.WHITE)
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
         titleView.setTypeface(null, Typeface.BOLD)
         titleView.setPadding(0, dp(8), 0, dp(8))
         card.addView(titleView)
 
         bodyView.textSize = 16f
-        bodyView.setTextColor(0xFFDDE3E8.toInt())
+        bodyView.setTextColor(Sunlight.c(0xFFDDE3E8.toInt()))
         bodyView.setLineSpacing(0f, 1.15f)
         val bodyScroll = ScrollView(activity)           // a language that needs more room scrolls instead of being cut
         bodyScroll.addView(bodyView)
@@ -90,6 +99,7 @@ class WelcomeGuide(private val activity: Activity, private val onFinished: () ->
     }
 
     fun show() {
+        skin()
         pages = FirstRun.pages()
         index = 0
         render()
@@ -124,7 +134,7 @@ class WelcomeGuide(private val activity: Activity, private val onFinished: () ->
         dots.removeAllViews()
         for (i in pages.indices) {
             val d = View(activity)
-            d.setBackgroundColor(if (i == index) CardStyle.ACCENT else 0x66B0BEC5)
+            d.setBackgroundColor(if (i == index) Sunlight.c(CardStyle.ACCENT) else Sunlight.c(0x66B0BEC5))
             dots.addView(d, LinearLayout.LayoutParams(dp(8), dp(8)).also { it.rightMargin = dp(8) })
         }
     }

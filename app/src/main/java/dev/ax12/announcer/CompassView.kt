@@ -19,6 +19,9 @@ import java.util.Locale
  * and a green marker that points the way home with the distance below it.
  */
 class CompassView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
     private val density = context.resources.displayMetrics.density
     private val bg = Paint(Paint.ANTI_ALIAS_FLAG)
     private val ring = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -59,6 +62,21 @@ class CompassView(context: Context) : View(context) {
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        bg.color = Sunlight.cIf(on, CardStyle.BG)
+        ring.color = Sunlight.cIf(on, 0xFF90A4AE.toInt())
+        tick.color = Sunlight.cIf(on, 0xFFB0BEC5.toInt())
+        label.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        big.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        small.color = Sunlight.cIf(on, CardStyle.LABEL)
+        nose.color = Sunlight.cIf(on, 0xFFFFC107.toInt())
+        home.color = Sunlight.cIf(on, 0xFF66BB6A.toInt())
+        edge.color = Sunlight.cIf(on, CardStyle.EDGE)
+        invalidate()
+    }
+
 
     /** headingDeg and homeBearingDeg from north; NaN where not known; homeDistanceM in metres. */
     fun set(headingDeg: Double, homeBearingDeg: Double, homeDistanceM: Double) {
@@ -100,7 +118,7 @@ class CompassView(context: Context) : View(context) {
             val rr = r - 22f * density
             val px = cx + (rr * Math.sin(a)).toFloat()
             val py = cy - (rr * Math.cos(a)).toFloat()
-            label.color = if (i == 0) 0xFFEF5350.toInt() else 0xFFFFFFFF.toInt()
+            label.color = if (i == 0) Sunlight.cIf(light, 0xFFEF5350.toInt()) else Sunlight.cIf(light, 0xFFFFFFFF.toInt())
             canvas.save()
             canvas.rotate(hd.toFloat(), px, py)            // undo the turn of the rose, so that the letter stands upright
             canvas.drawText(names[i], px - label.measureText(names[i]) / 2f, py + 5f * density, label)

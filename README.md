@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.3.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.4.0)
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -24,7 +24,7 @@
 
 ![The AX-HUD menu: large tiles over the live video, and the amber warning bar](docs/screenshots/hud-menu.jpg)
 
-*The MENU (a photo of an earlier version, with six of today's eight tiles): large tiles with their state: speech on, the pack in use and the aircraft in use. The video
+*The MENU (a photo of an earlier version, with six of today's nine tiles): large tiles with their state: speech on, the pack in use and the aircraft in use. The video
 stays visible behind it. The amber bar along the top is the warning bar; each level has its own shape, here the diamond of a warning.*
 
 ![The pre-flight check card, all items ticked and READY](docs/screenshots/hud-preflight.jpg)
@@ -58,7 +58,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,641 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,781 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -262,6 +262,22 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
 * **Voice debrief.** Four seconds after landing: *Flight time 12 minutes 14 seconds. Distance 11.8 kilometers. Used 2918 milliamp hours.
   Efficiency 21.1 watt hours per kilometer. Lowest cell 3.40 volts. Resting cell 3.81 volts. Pack Li-ion 1, flight 4.* What is not known is
   left out. It has its own switch.
+
+## Sunlight theme
+
+In direct sun the glare lifts the black of an LCD, and light text on a dark background washes out. The **Sunlight theme** turns the
+screens round: dark text on light backgrounds, nearly solid so that the video behind cannot spoil it. Switch it on with the **Sunlight
+tile of the MENU** (a quick switch that shows the new look at once) or in *Settings > Display > Sunlight theme*; the choice is kept and is
+part of the settings backup.
+
+* **What changes:** the MENU, Settings, the sound, warning and check rules, About, the flight logs, the packs and the position pages, the
+  welcome guide, the dialogs (also the clock dialog), and the **dashboard page** with all its cards (the horizon keeps its sky and ground and
+  only gets a light frame).
+* **Warnings get stronger:** in the status bar, on the video and on the dashboard, a critical warning is a saturated red, a warning a bright
+  yellow with black text, information a deep blue; the bar has a thick outline, bigger bold text and thicker marks.
+* **What does not change:** the cards over the video (statistics, radar, checklist, charts, sticks), the banners and the layout editor keep
+  their look. The colours are checked by tests for contrast (text on its background at least 6 to 12 times as bright or dark as the
+  background for the main text, at least 4.5 for the signal colours).
 
 ## Start-up time of the radio link
 

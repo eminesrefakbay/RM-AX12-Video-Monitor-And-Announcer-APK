@@ -45,12 +45,12 @@ object LogFieldPicker {
         val intro = TextView(activity)
         intro.text = tr("Tick the values to write into each flight log.")
         intro.textSize = 14f
-        intro.setTextColor(0xFFDDE3E8.toInt())
+        intro.setTextColor(Sunlight.c(0xFFDDE3E8.toInt()))
         body.addView(intro)
 
         val missing = TextView(activity)
         missing.textSize = 12f
-        missing.setTextColor(CardStyle.WARN)
+        missing.setTextColor(Sunlight.c(CardStyle.WARN))
         missing.setPadding(0, dp(4), 0, dp(4))
         body.addView(missing)
 
@@ -67,7 +67,7 @@ object LogFieldPicker {
                     h.text = row.header
                     h.textSize = 13f
                     h.setTypeface(null, Typeface.BOLD)
-                    h.setTextColor(CardStyle.TITLE)
+                    h.setTextColor(Sunlight.c(CardStyle.TITLE))
                     h.setPadding(dp(12), dp(14), dp(12), dp(4))
                     return h
                 }
@@ -86,14 +86,14 @@ object LogFieldPicker {
                 val line1 = TextView(activity)
                 line1.text = name
                 line1.textSize = 16f
-                line1.setTextColor(Color.WHITE)
+                line1.setTextColor(Sunlight.c(Color.WHITE))
                 texts.addView(line1)
                 val help = VariableCatalog.help(name)
                 if (help.isNotEmpty()) {
                     val line2 = TextView(activity)
                     line2.text = help
                     line2.textSize = 12f
-                    line2.setTextColor(0xFFBDBDBD.toInt())
+                    line2.setTextColor(Sunlight.c(0xFFBDBDBD.toInt()))
                     texts.addView(line2)
                 }
                 box.addView(texts, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
@@ -132,7 +132,7 @@ object LogFieldPicker {
         body.addView(listView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(300)))
         refreshNote()
 
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Values in the log"))
             .setView(body)
             .setNegativeButton(tr("Cancel"), null)

@@ -107,7 +107,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	İlk veri yaklaşık 12 saniye sürer
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Uygulamayı açtıktan yaklaşık 12 saniye sonra kumanda verileri (çubuklar, bağlantı kalitesi, telemetri) görünür. Bu bekleme RadioMaster SDK'sının içindedir ve bir hata değildir. Bir bant saniyeleri sayar. Video hemen başlar.
 Where everything is	Her şey nerede
-Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; sekiz kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Pano, Uçuş kayıtları, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Ayarlar'da katmanlar, yerleşim, kontroller, uçuş kayıtları, diller ve güncellemeler bulunur.
+Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft, Sunlight, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Sunlight: dark text on light, for direct sun. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Sağ üstteki MENÜ'ye dokunun; dokuz kutucuk görürsünüz: Ses kuralları, Konuşma, Batarya, Hava aracı, Güneş, Pano, Uçuş kayıtları, Ayarlar ve Çıkış. Önce hava aracınızı ve batarya paketinizi seçin, çünkü uyarılar onların limitlerine göre çalışır. Güneş: doğrudan güneş için açık zeminde koyu yazı. Ayarlar'da katmanlar, yerleşim, kontroller, uçuş kayıtları, diller ve güncellemeler bulunur.
 An aid, not a safety system	Bir yardımcı araç, güvenlik sistemi değil
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD, hava aracınızın ne yaptığını görmenize ve duymanıza yardımcı olur. Tek uyarı kaynağınız yapmayın. Her zaman yerel kurallara uygun uçun.
 Packs	Paketler
@@ -357,6 +357,7 @@ Sound rules	Ses kuralları
 Speech	Konuşma
 Battery	Batarya
 Dashboard	Pano
+Sunlight	Güneş
 Settings	Ayarlar
 On	Açık
 Off	Kapalı
@@ -511,6 +512,8 @@ Language	Dil
 Speech language	Konuşma dili
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Ekran ve ses farklı dilleri kullanabilir. Kurallarınız kendi sözcüklerini korur: "Kuralları varsayılanlara sıfırla" başlangıç kurallarını sesin diliyle yükler.
 Display	Ekran
+Sunlight theme	Güneş ışığı teması
+Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	Menü, ayarlar, diğer ekranlar ve pano için açık zemin üzerinde koyu yazı, ayrıca daha güçlü uyarılar. Doğrudan güneşte bu, koyu zeminde açık yazıdan daha iyi okunur. MENÜ'deki Güneş kutucuğu hızlı anahtardır.
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
 Start-up splash screen (logo and version, 2 seconds)	Açılış ekranı (logo ve sürüm, 2 saniye)

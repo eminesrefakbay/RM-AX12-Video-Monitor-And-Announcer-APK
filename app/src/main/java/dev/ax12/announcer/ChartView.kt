@@ -39,6 +39,9 @@ class ChartModel {
  * and the ends of the axis in small figures. Known values keep a fixed or generous scale (see ChartScale).
  */
 class ChartView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
 
     private val density = context.resources.displayMetrics.density
     private val bg = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -58,7 +61,7 @@ class ChartView(context: Context) : View(context) {
     private var shownRows = 0
     private var now = 0L
 
-    private val colors = intArrayOf(0xFF4FC3F7.toInt(), 0xFF66BB6A.toInt(), 0xFFFFB300.toInt(), 0xFFEF5350.toInt())
+    private val colors = intArrayOf(Sunlight.cIf(light, 0xFF4FC3F7.toInt()), Sunlight.cIf(light, 0xFF66BB6A.toInt()), Sunlight.cIf(light, 0xFFFFB300.toInt()), Sunlight.cIf(light, 0xFFEF5350.toInt()))
 
     init {
         bg.color = CardStyle.BG
@@ -79,6 +82,18 @@ class ChartView(context: Context) : View(context) {
         line.strokeJoin = Paint.Join.ROUND
         applyText(1)
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        bg.color = Sunlight.cIf(on, CardStyle.BG)
+        edge.color = Sunlight.cIf(on, CardStyle.EDGE)
+        label.color = Sunlight.cIf(on, 0xFFB0BEC5.toInt())
+        valuePaint.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        axis.color = Sunlight.cIf(on, 0xAA90A4AE.toInt())
+        grid.color = Sunlight.cIf(on, 0x44FFFFFF)
+        invalidate()
+    }
+
 
     fun bind(m: ChartModel) { model = m }
 
@@ -125,7 +140,7 @@ class ChartView(context: Context) : View(context) {
         val pad = 6 * density
         for ((i, name) in m.names.withIndex()) {
             val top = 3 * density + i * rowH
-            drawRow(canvas, m, name, colors[i % colors.size], pad, top, width - pad, top + rowH)
+            drawRow(canvas, m, name, Sunlight.cIf(light, colors[i % colors.size]), pad, top, width - pad, top + rowH)
         }
         label.textAlign = Paint.Align.RIGHT
         canvas.drawText(tr("Last {0} s", m.windowMs / 1000), width - pad, height - 6 * density, label)
@@ -138,7 +153,7 @@ class ChartView(context: Context) : View(context) {
         label.textAlign = Paint.Align.LEFT
         label.color = color
         canvas.drawText(VariableCatalog.chartLabel(name), left, top + textH, label)
-        label.color = 0xFFB0BEC5.toInt()
+        label.color = Sunlight.cIf(light, 0xFFB0BEC5.toInt())
         val last = s?.last() ?: Double.NaN
         canvas.drawText(ChartScale.format(name, last), right, top + textH, valuePaint)
 

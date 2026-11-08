@@ -24,20 +24,20 @@ object Icons {
     }
 
     /** @param sizeDp the size of the icon on the screen */
-    fun drawable(context: Context, name: String, color: Int = CardStyle.ICON, sizeDp: Int = 24): Drawable {
+    fun drawable(context: Context, name: String, color: Int = CardStyle.ICON, sizeDp: Int = 24, stroke: Float = 2f): Drawable {
         val px = (sizeDp * context.resources.displayMetrics.density + 0.5f).toInt()
-        return IconDrawable(set[name] ?: emptyList(), color, px)
+        return IconDrawable(set[name] ?: emptyList(), color, px, stroke)
     }
 }
 
-class IconDrawable(private val ops: List<IconSet.Op>, color: Int, private val sizePx: Int) : Drawable() {
+class IconDrawable(private val ops: List<IconSet.Op>, color: Int, private val sizePx: Int, stroke: Float = 2f) : Drawable() {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val rect = RectF()
     private val path = Path()
 
     init {
         paint.color = color
-        paint.strokeWidth = 2f
+        paint.strokeWidth = stroke
         paint.strokeCap = Paint.Cap.ROUND
         paint.strokeJoin = Paint.Join.ROUND
     }

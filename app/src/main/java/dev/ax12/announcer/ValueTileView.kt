@@ -14,6 +14,9 @@ import android.view.View
 
 /** A value card: a label, one big number (amber and red past its limits) and the unit. A text value, such as the flight mode, is shown as text. */
 class ValueTileView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
     private val density = context.resources.displayMetrics.density
     private val bg = Paint(Paint.ANTI_ALIAS_FLAG)
     private val edge = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -40,6 +43,16 @@ class ValueTileView(context: Context) : View(context) {
         unitPaint.color = CardStyle.LABEL
         unitPaint.textSize = 14f * density
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        bg.color = Sunlight.cIf(on, CardStyle.BG)
+        edge.color = Sunlight.cIf(on, CardStyle.EDGE)
+        labelPaint.color = Sunlight.cIf(on, CardStyle.LABEL)
+        unitPaint.color = Sunlight.cIf(on, CardStyle.LABEL)
+        invalidate()
+    }
+
 
     /** The number (or NaN) and the text (or null) of the value this card shows. */
     fun set(newSpec: ValueSpec, number: Double, text: String?) {
@@ -62,13 +75,13 @@ class ValueTileView(context: Context) : View(context) {
         rect.set(1f, 1f, w - 1f, h - 1f)
         canvas.drawRect(rect, bg)
         canvas.drawRect(rect, edge)
-        levelPaint.color = when (level) { 2 -> CardStyle.BAD; 1 -> CardStyle.WARN; else -> CardStyle.ACCENT }
+        levelPaint.color = when (level) { 2 -> Sunlight.cIf(light, CardStyle.BAD); 1 -> Sunlight.cIf(light, CardStyle.WARN); else -> Sunlight.cIf(light, CardStyle.ACCENT) }
         canvas.drawRect(1f, 1f, 5f * density, h - 1f, levelPaint)
         val pad = 12f * density
         var title = spec.title()
         while (title.length > 1 && labelPaint.measureText(title) > w - pad * 2) title = title.substring(0, title.length - 1)
         canvas.drawText(title, pad, 20f * density, labelPaint)
-        valuePaint.color = when (level) { 2 -> CardStyle.BAD; 1 -> CardStyle.WARN; else -> 0xFFFFFFFF.toInt() }
+        valuePaint.color = when (level) { 2 -> Sunlight.cIf(light, CardStyle.BAD); 1 -> Sunlight.cIf(light, CardStyle.WARN); else -> Sunlight.cIf(light, 0xFFFFFFFF.toInt()) }
         val unit = spec.unit
         val unitW = if (unit.isEmpty()) 0f else unitPaint.measureText(unit) + 4f * density
         var size = 38f * density

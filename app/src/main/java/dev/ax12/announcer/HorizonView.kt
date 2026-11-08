@@ -19,6 +19,9 @@ import java.util.Locale
  * INAV counts a nose down pitch as positive; the two switches in Settings turn a direction round if a flight controller does not.
  */
 class HorizonView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
     private val density = context.resources.displayMetrics.density
     private val bg = Paint(Paint.ANTI_ALIAS_FLAG)
     private val sky = Paint()
@@ -56,6 +59,14 @@ class HorizonView(context: Context) : View(context) {
         edge.style = Paint.Style.STROKE
         edge.strokeWidth = 1.2f * density
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        bg.color = Sunlight.cIf(on, CardStyle.BG)
+        edge.color = Sunlight.cIf(on, CardStyle.EDGE)
+        invalidate()
+    }
+
 
     fun configure(invertPitch: Boolean, invertRoll: Boolean) {
         this.invertPitch = invertPitch

@@ -16,6 +16,9 @@ import android.view.View
  * (the current) with a marker for the highest value reached and a line for a limit.
  */
 class FlightStatsView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
 
     class Line(
         val label: String,
@@ -57,6 +60,19 @@ class FlightStatsView(context: Context) : View(context) {
         mark.strokeWidth = 2f * density
         applyTextSize()
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        bg.color = Sunlight.cIf(on, CardStyle.BG)
+        edge.color = Sunlight.cIf(on, CardStyle.EDGE)
+        labelPaint.color = Sunlight.cIf(on, 0xFFB0BEC5.toInt())
+        valuePaint.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        titlePaint.color = Sunlight.cIf(on, CardStyle.TITLE)
+        barBg.color = Sunlight.cIf(on, 0xFF37474F.toInt())
+        barFill.color = Sunlight.cIf(on, 0xFF66BB6A.toInt())
+        invalidate()
+    }
+
 
     fun setTextSp(sp: Float) {
         textPx = sp * density
@@ -113,19 +129,19 @@ class FlightStatsView(context: Context) : View(context) {
                 canvas.drawRect(rect, barBg)
                 val f = l.bar.coerceIn(0.0, 1.0).toFloat()
                 val over = !l.limit.isNaN() && l.bar > l.limit
-                barFill.color = if (over) 0xFFEF5350.toInt() else 0xFF66BB6A.toInt()
+                barFill.color = if (over) Sunlight.cIf(light, 0xFFEF5350.toInt()) else Sunlight.cIf(light, 0xFF66BB6A.toInt())
                 if (f > 0f) {
                     rect.set(left, top, left + (right - left) * f, top + barH())
                     canvas.drawRect(rect, barFill)
                 }
                 if (!l.peak.isNaN()) {
                     val px = left + (right - left) * l.peak.coerceIn(0.0, 1.0).toFloat()
-                    mark.color = 0xFFFFFFFF.toInt()
+                    mark.color = Sunlight.cIf(light, 0xFFFFFFFF.toInt())
                     canvas.drawLine(px, top - 2 * density, px, top + barH() + 2 * density, mark)
                 }
                 if (!l.limit.isNaN()) {
                     val lx = left + (right - left) * l.limit.coerceIn(0.0, 1.0).toFloat()
-                    mark.color = 0xFFFFB300.toInt()
+                    mark.color = Sunlight.cIf(light, 0xFFFFB300.toInt())
                     canvas.drawLine(lx, top - 3 * density, lx, top + barH() + 3 * density, mark)
                 }
                 y += barH() + textPx * 0.25f

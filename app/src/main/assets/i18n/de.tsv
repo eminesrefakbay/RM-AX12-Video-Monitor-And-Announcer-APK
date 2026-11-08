@@ -107,7 +107,7 @@ The HDMI input reaches Android as a camera, so AX-HUD needs the camera permissio
 The first data takes about 12 seconds	Die ersten Daten brauchen etwa 12 Sekunden
 After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	Nach dem Öffnen der App erscheinen die Daten der Fernsteuerung (Knüppel, Verbindungsqualität, Telemetrie) nach etwa 12 Sekunden. Diese Wartezeit liegt im RadioMaster-SDK und ist kein Fehler. Ein Banner zählt die Sekunden. Das Video startet sofort.
 Where everything is	Wo was zu finden ist
-Tap MENU at the top right for eight tiles: Sound rules, Speech, Battery, Aircraft, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Tippe oben rechts auf MENÜ für acht Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Dashboard, Flugprotokolle, Einstellungen und Beenden. Wähle zuerst dein Fluggerät und deinen Akku, denn deren Grenzen steuern die Warnungen. Die Einstellungen enthalten die Einblendungen, das Layout, die Prüfungen, die Flugprotokolle, die Sprachen und die Updates.
+Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft, Sunlight, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Sunlight: dark text on light, for direct sun. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	Tippe oben rechts auf MENÜ für neun Kacheln: Sprachregeln, Sprachausgabe, Akku, Fluggerät, Sonnenlicht, Dashboard, Flugprotokolle, Einstellungen und Beenden. Wähle zuerst Fluggerät und Akku, denn deren Grenzen steuern die Warnungen. Sonnenlicht: dunkle Schrift auf hellem Grund. Die Einstellungen enthalten Einblendungen, Layout, Prüfungen, Flugprotokolle, Sprachen und Updates.
 An aid, not a safety system	Eine Hilfe, kein Sicherheitssystem
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD hilft dir zu sehen und zu hören, was dein Fluggerät gerade tut. Verlasse dich nicht allein darauf. Fliege immer nach den örtlichen Regeln.
 Packs	Akkus
@@ -357,6 +357,7 @@ Sound rules	Sprachregeln
 Speech	Sprachausgabe
 Battery	Akku
 Dashboard	Dashboard
+Sunlight	Sonnenlicht
 Settings	Einstellungen
 On	An
 Off	Aus
@@ -511,6 +512,8 @@ Language	Sprache
 Speech language	Sprache der Ansagen
 The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	Anzeige und Stimme können verschiedene Sprachen nutzen. Deine Regeln behalten ihren Wortlaut: „Regeln auf Standard zurücksetzen“ lädt die Startregeln in der Sprache der Stimme.
 Display	Anzeige
+Sunlight theme	Sonnenlicht-Design
+Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	Dunkle Schrift auf hellem Grund für das Menü, die Einstellungen, die anderen Bildschirme und das Dashboard, dazu kräftigere Warnungen. In direkter Sonne ist das besser lesbar als helle Schrift auf dunklem Grund. Das MENÜ hat eine Kachel Sonnenlicht als Schnellschalter.
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
 Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)

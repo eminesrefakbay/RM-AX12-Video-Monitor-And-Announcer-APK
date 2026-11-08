@@ -40,6 +40,8 @@ interface SettingsHost {
     fun splashOn(): Boolean
     fun setSplashOn(on: Boolean)
     fun menuAlways(): Boolean
+    fun sunlightOn(): Boolean
+    fun setSunlightOn(on: Boolean)
     fun setMenuAlways(on: Boolean)
     fun variablesOn(): Boolean
     fun setVariablesOn(on: Boolean)
@@ -164,6 +166,8 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
     val root = LinearLayout(activity)
     private val list = LinearLayout(activity)
     private var target: LinearLayout = list          // where building blocks add their rows: the list, or the open group
+    private var barView: LinearLayout? = null
+    private var titleView: TextView? = null
     private var openGroup = ""                      // which group is open (one at a time); kept while the app runs
 
     private var shown = false
@@ -173,21 +177,23 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
 
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.SEE_THROUGH)     // the video stays visible behind the settings, so you can see it is there
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))     // the video stays visible behind the settings, so you can see it is there
         root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(24).toFloat()          // above the MENU button and every other view
 
         val bar = LinearLayout(activity)
+        barView = bar
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
-        bar.setBackgroundColor(CardStyle.BLOCK)
+        bar.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         bar.setPadding(dp(8), dp(0), dp(8), dp(0))
         val title = TextView(activity)
+        titleView = title
         title.text = tr("Settings")
         title.textSize = 22f
-        title.setTextColor(Color.WHITE)
+        title.setTextColor(Sunlight.c(Color.WHITE))
         title.setTypeface(null, Typeface.BOLD)
         bar.addView(title, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         val close = Button(activity)
@@ -202,7 +208,15 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         root.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
     }
 
+    /** The colours of the frame of the screen, set again each time it opens, because the theme may have changed. */
+    fun skin() {
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
+        barView?.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        titleView?.setTextColor(Sunlight.c(Color.WHITE))
+    }
+
     fun show() {
+        skin()
         refresh()
         shown = true
         Anim.panelIn(root)
@@ -220,7 +234,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         t.text = title
         t.textSize = 14f
         t.setTypeface(null, Typeface.BOLD)
-        t.setTextColor(0xFF9CDCFE.toInt())
+        t.setTextColor(Sunlight.c(0xFF9CDCFE.toInt()))
         t.setPadding(0, dp(16), 0, dp(8))
         target.addView(t)
     }
@@ -250,11 +264,11 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         val l = TextView(activity)
         l.text = label
         l.textSize = 15f
-        l.setTextColor(Color.WHITE)
+        l.setTextColor(Sunlight.c(Color.WHITE))
         val v = TextView(activity)
         v.text = value
         v.textSize = 15f
-        v.setTextColor(CardStyle.ACCENT)
+        v.setTextColor(Sunlight.c(CardStyle.ACCENT))
         v.setTypeface(null, Typeface.BOLD)
         v.gravity = Gravity.END
         v.maxLines = 2
@@ -267,7 +281,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
     private fun toggle(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
         val sw = Switch(activity)
         sw.text = label
-        sw.setTextColor(Color.WHITE)
+        sw.setTextColor(Sunlight.c(Color.WHITE))
         sw.textSize = 15f
         sw.isChecked = checked
         sw.setPadding(dp(8), dp(8), dp(8), dp(8))
@@ -288,11 +302,11 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             return g
         }
         val thumb = StateListDrawable()
-        thumb.addState(intArrayOf(android.R.attr.state_checked), box(CardStyle.ACCENT, 0xFFFFFFFF.toInt(), 22f, 22f))
-        thumb.addState(intArrayOf(), box(0xFFB0BEC5.toInt(), 0xFF78909C.toInt(), 22f, 22f))
+        thumb.addState(intArrayOf(android.R.attr.state_checked), box(Sunlight.c(CardStyle.ACCENT), Sunlight.c(0xFFFFFFFF.toInt()), 22f, 22f))
+        thumb.addState(intArrayOf(), box(Sunlight.c(0xFFB0BEC5.toInt()), Sunlight.c(0xFF78909C.toInt()), 22f, 22f))
         val track = StateListDrawable()
-        track.addState(intArrayOf(android.R.attr.state_checked), box(0x884FC3F7.toInt(), CardStyle.ACCENT, 46f, 26f))
-        track.addState(intArrayOf(), box(0x66263238, 0xFF546E7A.toInt(), 46f, 26f))
+        track.addState(intArrayOf(android.R.attr.state_checked), box(Sunlight.c(0x884FC3F7.toInt()), Sunlight.c(CardStyle.ACCENT), 46f, 26f))
+        track.addState(intArrayOf(), box(Sunlight.c(0x66263238), Sunlight.c(0xFF546E7A.toInt()), 46f, 26f))
         sw.thumbDrawable = thumb
         sw.trackDrawable = track
     }
@@ -324,14 +338,14 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         val t = TextView(activity)
         t.text = text
         t.textSize = 12f
-        t.setTextColor(0xFFBDBDBD.toInt())
+        t.setTextColor(Sunlight.c(0xFFBDBDBD.toInt()))
         t.setPadding(dp(8), dp(4), dp(8), dp(4))
         target.addView(t)
     }
 
     private fun confirm(message: String, positive: String, onYes: () -> Unit) {
         Immersive.show(
-            AlertDialog.Builder(activity)
+            Sunlight.builder(activity)
                 .setMessage(message)
                 .setPositiveButton(positive) { _, _ -> onYes() }
                 .setNegativeButton(tr("Cancel"), null)
@@ -347,16 +361,16 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         header.text = title
         header.textSize = 17f
         header.setTypeface(null, Typeface.BOLD)
-        header.setTextColor(Color.WHITE)
+        header.setTextColor(Sunlight.c(Color.WHITE))
         header.gravity = Gravity.CENTER_VERTICAL
         header.minHeight = dp(56)
         header.setPadding(dp(16), dp(8), dp(16), dp(8))
         header.compoundDrawablePadding = dp(16)
         header.setCompoundDrawablesRelativeWithIntrinsicBounds(
-            Icons.drawable(activity, icon, if (open) CardStyle.ACCENT else CardStyle.ICON, 26), null,
-            Icons.drawable(activity, if (open) "chevron_down" else "chevron_right", CardStyle.LABEL, 22), null
+            Icons.drawable(activity, icon, if (open) Sunlight.c(CardStyle.ACCENT) else Sunlight.c(CardStyle.ICON), 26), null,
+            Icons.drawable(activity, if (open) "chevron_down" else "chevron_right", Sunlight.c(CardStyle.LABEL), 22), null
         )
-        header.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, if (open) 0xF22C3844.toInt() else 0xE6232C36.toInt())
+        header.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, if (open) Sunlight.c(0xF22C3844.toInt()) else Sunlight.c(0xE6232C36.toInt()))
         CardStyle.fitText(header, 13, 17)
         header.isClickable = true
         header.setOnClickListener {
@@ -369,7 +383,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         if (open) {
             val box = LinearLayout(activity)
             box.orientation = LinearLayout.VERTICAL
-            box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, CardStyle.BLOCK)     // rows and notes stay readable over moving video
+            box.background = CardStyle.panelBackground(activity.resources.displayMetrics.density, Sunlight.c(CardStyle.BLOCK))     // rows and notes stay readable over moving video
             box.setPadding(dp(8), dp(8), dp(8), dp(8))
             list.addView(box, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             target = box
@@ -393,6 +407,11 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             note(tr("The screen and the voice can use different languages. Your rules keep their own words: \"Reset the rules to the defaults\" loads the starting rules in the voice's language."))
 
             section(tr("Display"))
+            toggle(tr("Sunlight theme"), host.sunlightOn()) {
+                host.setSunlightOn(it)
+                refresh()
+            }
+            note(tr("Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch."))
             toggle(tr("Always show the MENU button"), host.menuAlways()) { host.setMenuAlways(it) }
             note(tr("Off: the button hides and appears when you touch the screen."))
             toggle(tr("Start-up splash screen (logo and version, 2 seconds)"), host.splashOn()) { host.setSplashOn(it) }

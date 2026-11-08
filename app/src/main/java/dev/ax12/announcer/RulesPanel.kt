@@ -67,20 +67,34 @@ class RulesPanel(
 
     private fun dp(v: Int): Int = (v * activity.resources.displayMetrics.density + 0.5f).toInt()
 
+    private var titleLabel: TextView? = null
+    private var tipView: TextView? = null
+
+    /** The colours of the frame of the screen, set again each time it opens, because the theme may have changed. */
+    private fun skin() {
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
+        titleLabel?.setTextColor(Sunlight.c(Color.WHITE))
+        titleLabel?.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        list.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        tipView?.setTextColor(Sunlight.c(0xFFBDBDBD.toInt()))
+        tipView?.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+    }
+
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.SEE_THROUGH)         // the video stays visible behind the rules
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))         // the video stays visible behind the rules
         root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true                       // swallow touches so the video behind is not used
         root.elevation = dp(24).toFloat()             // above the MENU button and every other view
 
         val title = TextView(activity)
+        titleLabel = title
         title.text = titleText
         title.textSize = 22f
-        title.setTextColor(Color.WHITE)
+        title.setTextColor(Sunlight.c(Color.WHITE))
         title.setTypeface(null, Typeface.BOLD)
-        title.setBackgroundColor(CardStyle.BLOCK)
+        title.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         title.setPadding(dp(8), dp(8), dp(8), dp(8))
         root.addView(title)
 
@@ -94,11 +108,12 @@ class RulesPanel(
 
         val scroll = ScrollView(activity)
         list.orientation = LinearLayout.VERTICAL
-        list.setBackgroundColor(CardStyle.BLOCK)
+        list.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         scroll.addView(list)
         root.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
         val tip = TextView(activity)
+        tipView = tip
         tip.text = if (check)
             tr("Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.")
         else if (warning)
@@ -106,13 +121,14 @@ class RulesPanel(
         else
             tr("A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.")
         tip.textSize = 12f
-        tip.setTextColor(0xFFBDBDBD.toInt())
-        tip.setBackgroundColor(CardStyle.BLOCK)
+        tip.setTextColor(Sunlight.c(0xFFBDBDBD.toInt()))
+        tip.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         tip.setPadding(dp(8), dp(8), dp(8), dp(8))
         root.addView(tip)
     }
 
     fun show() {
+        skin()
         items = RuleText.parse(loadText()).toMutableList()
         refresh()
         shown = true
@@ -151,7 +167,7 @@ class RulesPanel(
             tr("\$crit  - critical limit"),
             tr("\$full  - limit for a full pack")
         )
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Battery limit"))
             .setItems(labels) { _, which -> onPicked(names[which]) }
             .setNegativeButton(tr("Cancel"), null)
@@ -178,7 +194,7 @@ class RulesPanel(
         if (count == 0) {
             val empty = TextView(activity)
             empty.text = tr("No rules yet. Tap + Add rule.")
-            empty.setTextColor(Color.WHITE)
+            empty.setTextColor(Sunlight.c(Color.WHITE))
             empty.setPadding(0, dp(16), 0, 0)
             list.addView(empty)
         }
@@ -195,7 +211,7 @@ class RulesPanel(
         summary.text = if (spec != null) (if (check) RuleText.describeCheck(spec) else if (warning) RuleText.describeWarning(spec) else RuleText.describe(spec))
         else tr("Advanced rule (open the text editor): {0}", item.raw.removePrefix("#off").trim())
         summary.textSize = 15f
-        summary.setTextColor(Color.WHITE)
+        summary.setTextColor(Sunlight.c(Color.WHITE))
         summary.alpha = if (item.kind == RuleText.Kind.RULE) 1f else 0.4f
 
         val sw = Switch(activity)
@@ -220,7 +236,7 @@ class RulesPanel(
         })
         r.addView(button("X") {
             Immersive.show(
-                AlertDialog.Builder(activity)
+                Sunlight.builder(activity)
                     .setMessage(tr("Delete this rule?"))
                     .setPositiveButton(tr("Delete")) { _, _ ->
                         items.remove(item)
@@ -279,7 +295,7 @@ class RulesPanel(
 
         val scroll = ScrollView(activity)
         scroll.addView(body)
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setTitle(tr("Rule settings"))
             .setView(scroll)
             .setPositiveButton(tr("Save"), null)
@@ -430,7 +446,7 @@ class RulesPanel(
                 view.addView(lineB)
 
                 nowText.textSize = 12f
-                nowText.setTextColor(0xFF9CDCFE.toInt())
+                nowText.setTextColor(Sunlight.c(0xFF9CDCFE.toInt()))
                 view.addView(nowText)
 
                 updateKeyboard()
@@ -640,7 +656,7 @@ class RulesPanel(
             tools.addView(detect)
             detectInfo = TextView(activity)
             detectInfo.textSize = 12f
-            detectInfo.setTextColor(0xFF9CDCFE.toInt())
+            detectInfo.setTextColor(Sunlight.c(0xFF9CDCFE.toInt()))
             tools.addView(detectInfo)
             body.addView(tools)
 
@@ -655,7 +671,7 @@ class RulesPanel(
             val tipLive = TextView(activity)
             tipLive.text = tr("Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}")
             tipLive.textSize = 11f
-            tipLive.setTextColor(0xFFBDBDBD.toInt())
+            tipLive.setTextColor(Sunlight.c(0xFFBDBDBD.toInt()))
             body.addView(tipLive)
             urgent = CheckBox(activity)
             urgent.text = tr("Urgent (interrupts what is being said)")
@@ -706,12 +722,12 @@ class RulesPanel(
             preview.textSize = 13f
             body.addView(preview)
             errorView = TextView(activity)
-            errorView.setTextColor(0xFFFF8A80.toInt())
+            errorView.setTextColor(Sunlight.c(0xFFFF8A80.toInt()))
             body.addView(errorView)
 
             val scroll = ScrollView(activity)
             scroll.addView(body)
-            val dlg = AlertDialog.Builder(activity)
+            val dlg = Sunlight.builder(activity)
                 .setTitle(if (check) (if (existing == null) tr("New check") else tr("Edit check")) else if (warning) (if (existing == null) tr("New warning") else tr("Edit warning")) else (if (existing == null) tr("New rule") else tr("Edit rule")))
                 .setView(scroll)
                 .setPositiveButton(tr("Save"), null)

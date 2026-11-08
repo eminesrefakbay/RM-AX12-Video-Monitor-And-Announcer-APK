@@ -20,6 +20,9 @@ import android.view.View
  * low = grey-blue, middle = amber, high = green. Its name is written along the bar.
  */
 class SticksView(context: Context) : View(context) {
+    /** Whether the card is drawn in the sunlight style (dark on light); set by the dashboard page. */
+    var light = false
+
 
     private val density = context.resources.displayMetrics.density
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -78,6 +81,18 @@ class SticksView(context: Context) : View(context) {
             true
         }
     }
+    /** The sunlight look: dark text on a light card (and back). */
+    fun applyLight(on: Boolean) {
+        light = on
+        fill.color = Sunlight.cIf(on, CardStyle.BG)
+        line.color = Sunlight.cIf(on, CardStyle.EDGE)
+        dot.color = Sunlight.cIf(on, 0xFF66BB6A.toInt())
+        text.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        nameFill.color = Sunlight.cIf(on, 0xFFFFFFFF.toInt())
+        nameOutline.color = Sunlight.cIf(on, 0xE0000000.toInt())
+        invalidate()
+    }
+
 
     /** @param boxDp the side of one stick box; the bars scale with it */
     fun configure(layout: StickLayout, invertMask: Int, axisNames: Array<String>, boxDp: Int) {
@@ -169,9 +184,9 @@ class SticksView(context: Context) : View(context) {
         if (!frac.isNaN() && frac <= 1.0) {
             val h = (rect.height() * frac).toFloat().coerceAtLeast(5f * density)      // a low switch still shows a stub
             barFill.color = when (AuxBars.level(frac)) {
-                0 -> 0xFF607D8B.toInt()
-                1 -> 0xFFFFB300.toInt()
-                else -> 0xFF66BB6A.toInt()
+                0 -> Sunlight.cIf(light, 0xFF607D8B.toInt())
+                1 -> Sunlight.cIf(light, 0xFFFFB300.toInt())
+                else -> Sunlight.cIf(light, 0xFF66BB6A.toInt())
             }
             level.set(rect.left + 2 * density, rect.bottom - h, rect.right - 2 * density, rect.bottom - 2 * density)
             canvas.drawRect(level, barFill)

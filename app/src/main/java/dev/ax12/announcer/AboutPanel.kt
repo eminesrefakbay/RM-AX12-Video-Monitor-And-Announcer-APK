@@ -40,21 +40,34 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
+    private var barView: LinearLayout? = null
+
+    /** The colours of the frame of the screen, set again each time it opens, because the theme may have changed. */
+    private fun skin() {
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
+        barView?.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
+        content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        viewerText.setTextColor(Sunlight.c(0xFFDDE3E8.toInt()))
+        viewerText.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+    }
+
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.SEE_THROUGH)         // the video stays visible behind the page
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))         // the video stays visible behind the page
         root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(28).toFloat()          // above the Settings screen
 
         val bar = LinearLayout(activity)
+        barView = bar
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
-        bar.setBackgroundColor(CardStyle.BLOCK)
+        bar.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         bar.setPadding(dp(8), dp(0), dp(8), dp(0))
         titleView.textSize = 22f
-        titleView.setTextColor(Color.WHITE)
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
         titleView.setTypeface(null, Typeface.BOLD)
         bar.addView(titleView, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         backButton.setOnClickListener { back() }
@@ -62,15 +75,15 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         root.addView(bar)
 
         content.orientation = LinearLayout.VERTICAL
-        content.setBackgroundColor(CardStyle.BLOCK)
+        content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         content.setPadding(dp(16), dp(8), dp(16), dp(24))
         page.addView(content)
         root.addView(page, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
         viewerText.typeface = Typeface.MONOSPACE
         viewerText.textSize = 12f
-        viewerText.setTextColor(0xFFDDE3E8.toInt())
-        viewerText.setBackgroundColor(CardStyle.BLOCK)
+        viewerText.setTextColor(Sunlight.c(0xFFDDE3E8.toInt()))
+        viewerText.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         viewerText.setPadding(dp(16), dp(8), dp(16), dp(24))
         viewer.addView(viewerText)
         viewer.visibility = View.GONE
@@ -78,6 +91,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
     }
 
     fun show() {
+        skin()
         build()
         showPage()
         shown = true
@@ -136,7 +150,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
     }
 
     private fun heading(s: String) {
-        content.addView(text(s, 14f, CardStyle.TITLE, bold = true, topDp = 24))
+        content.addView(text(s, 14f, Sunlight.c(CardStyle.TITLE), bold = true, topDp = 24))
     }
 
     private fun button(label: String, onClick: () -> Unit): Button {
@@ -155,34 +169,34 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
         logo.setImageResource(R.drawable.splash_logo)
         logo.adjustViewBounds = true
         content.addView(logo, LinearLayout.LayoutParams(dp(160), dp(160)).also { it.gravity = Gravity.CENTER_HORIZONTAL })
-        val name = text(Credits.PROJECT_NAME, 26f, Color.WHITE, bold = true, topDp = 6)
+        val name = text(Credits.PROJECT_NAME, 26f, Sunlight.c(Color.WHITE), bold = true, topDp = 6)
         name.gravity = Gravity.CENTER_HORIZONTAL
         content.addView(name, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        val tag = text(tr("Video monitor, HUD and voice announcer for the RadioMaster AX12."), 14f, CardStyle.LABEL, topDp = 4)
+        val tag = text(tr("Video monitor, HUD and voice announcer for the RadioMaster AX12."), 14f, Sunlight.c(CardStyle.LABEL), topDp = 4)
         tag.gravity = Gravity.CENTER_HORIZONTAL
         content.addView(tag, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        content.addView(text(versionText(), 12f, CardStyle.LABEL, topDp = 10))
+        content.addView(text(versionText(), 12f, Sunlight.c(CardStyle.LABEL), topDp = 10))
 
         // the license of the app
         val app = Credits.entries()[0]
         heading(tr("License"))
-        content.addView(text(tr("AX-HUD is free software under the GNU General Public License, version 3 or later, with an additional permission that allows it to be combined with the RadioMaster AX SDK. You may use, change and share it; if you share a changed version, you must share its source code under the same license. It comes without any warranty."), 14f, Color.WHITE, topDp = 2))
+        content.addView(text(tr("AX-HUD is free software under the GNU General Public License, version 3 or later, with an additional permission that allows it to be combined with the RadioMaster AX SDK. You may use, change and share it; if you share a changed version, you must share its source code under the same license. It comes without any warranty."), 14f, Sunlight.c(Color.WHITE), topDp = 2))
         for (t in app.texts) content.addView(button(tr("Read the {0}", t.label)) { showText(t.label, t.asset) })
-        content.addView(text(tr("Project page and source code: {0}", app.url), 12f, CardStyle.LABEL, topDp = 6))
+        content.addView(text(tr("Project page and source code: {0}", app.url), 12f, Sunlight.c(CardStyle.LABEL), topDp = 6))
         content.addView(button(tr("Open the project page")) { openUrl(app.url) })
 
         // everything inside the app
         heading(tr("Open-source libraries and SDKs"))
-        content.addView(text(tr("These parts are inside the app. Each keeps its own license; tap to read it."), 12f, CardStyle.LABEL, topDp = 2))
+        content.addView(text(tr("These parts are inside the app. Each keeps its own license; tap to read it."), 12f, Sunlight.c(CardStyle.LABEL), topDp = 2))
         for (e in Credits.entries().drop(1)) {
             val card = LinearLayout(activity)
             card.orientation = LinearLayout.VERTICAL
             card.setPadding(dp(16), dp(8), dp(16), dp(8))
-            card.background = CardStyle.panelBackground(density, 0xE6232C36.toInt())
-            card.addView(text(e.name, 16f, Color.WHITE, bold = true))
-            card.addView(text(e.holder + "  \u00B7  " + e.license, 12f, CardStyle.ACCENT, topDp = 2))
-            card.addView(text(tr(e.description), 13f, 0xFFDDE3E8.toInt(), topDp = 4))
-            card.addView(text(e.url, 12f, CardStyle.LABEL, topDp = 4))
+            card.background = CardStyle.panelBackground(density, Sunlight.c(0xE6232C36.toInt()))
+            card.addView(text(e.name, 16f, Sunlight.c(Color.WHITE), bold = true))
+            card.addView(text(e.holder + "  \u00B7  " + e.license, 12f, Sunlight.c(CardStyle.ACCENT), topDp = 2))
+            card.addView(text(tr(e.description), 13f, Sunlight.c(0xFFDDE3E8.toInt()), topDp = 4))
+            card.addView(text(e.url, 12f, Sunlight.c(CardStyle.LABEL), topDp = 4))
             for (t in e.texts) card.addView(button(tr("Read: {0}", t.label)) { showText(t.label, t.asset) })
             card.addView(button(tr("Open the page")) { openUrl(e.url) })
             val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -192,7 +206,7 @@ class AboutPanel(private val activity: Activity, private val versionText: () -> 
 
         // thanks and independence
         heading(tr("Thanks"))
-        content.addView(text(tr("Thank you, RadioMaster, for publishing the AX SDK that makes this app possible."), 14f, Color.WHITE, topDp = 2))
-        content.addView(text(tr("AX-HUD is an independent project. It is not affiliated with, endorsed by or supported by RadioMaster. RadioMaster and AX12 are names of their owners."), 12f, CardStyle.LABEL, topDp = 6))
+        content.addView(text(tr("Thank you, RadioMaster, for publishing the AX SDK that makes this app possible."), 14f, Sunlight.c(Color.WHITE), topDp = 2))
+        content.addView(text(tr("AX-HUD is an independent project. It is not affiliated with, endorsed by or supported by RadioMaster. RadioMaster and AX12 are names of their owners."), 12f, Sunlight.c(CardStyle.LABEL), topDp = 6))
     }
 }

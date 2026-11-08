@@ -40,21 +40,32 @@ class LogViewerPanel(
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
 
+    private var barView: LinearLayout? = null
+
+    /** The colours of the frame of the screen, set again each time it opens, because the theme may have changed. */
+    private fun skin() {
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
+        barView?.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
+        content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
+    }
+
     init {
         root.orientation = LinearLayout.VERTICAL
-        root.setBackgroundColor(CardStyle.SEE_THROUGH)
+        root.setBackgroundColor(Sunlight.c(CardStyle.SEE_THROUGH))
         root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.visibility = View.GONE
         root.isClickable = true
         root.elevation = dp(28).toFloat()
 
         val bar = LinearLayout(activity)
+        barView = bar
         bar.orientation = LinearLayout.HORIZONTAL
         bar.gravity = Gravity.CENTER_VERTICAL
-        bar.setBackgroundColor(CardStyle.BLOCK)
+        bar.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         bar.setPadding(dp(8), 0, dp(8), 0)
         titleView.textSize = 22f
-        titleView.setTextColor(Color.WHITE)
+        titleView.setTextColor(Sunlight.c(Color.WHITE))
         titleView.setTypeface(null, Typeface.BOLD)
         bar.addView(titleView, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         closeButton.setOnClickListener { hide() }
@@ -62,17 +73,18 @@ class LogViewerPanel(
         root.addView(bar)
 
         content.orientation = LinearLayout.VERTICAL
-        content.setBackgroundColor(CardStyle.BLOCK)
+        content.setBackgroundColor(Sunlight.c(CardStyle.BLOCK))
         content.setPadding(dp(16), dp(8), dp(16), dp(24))
         page.addView(content)
         root.addView(page, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
     }
 
     fun show() {
+        skin()
         titleView.text = tr("Flight logs")
         closeButton.text = tr("Close")
         content.removeAllViews()
-        content.addView(text(tr("Loading the log..."), 14f, CardStyle.LABEL))
+        content.addView(text(tr("Loading the log..."), 14f, Sunlight.c(CardStyle.LABEL)))
         shown = true
         Anim.panelIn(root)
         load()
@@ -103,7 +115,7 @@ class LogViewerPanel(
     }
 
     private fun confirm(message: String, positive: String, onYes: () -> Unit) {
-        val dlg = AlertDialog.Builder(activity)
+        val dlg = Sunlight.builder(activity)
             .setMessage(message)
             .setPositiveButton(positive) { _, _ -> onYes() }
             .setNegativeButton(tr("Cancel"), null)
@@ -114,12 +126,12 @@ class LogViewerPanel(
     private fun build(list: List<LogStore.Entry>, bytes: Long) {
         content.removeAllViews()
         if (list.isEmpty()) {
-            content.addView(text(tr("No flight logs yet. Switch on logging in Settings, then arm to start one."), 14f, Color.WHITE, topDp = 8))
+            content.addView(text(tr("No flight logs yet. Switch on logging in Settings, then arm to start one."), 14f, Sunlight.c(Color.WHITE), topDp = 8))
         }
         val active = activeFile()
         for (e in list) content.addView(card(e, active != null && active == e.file), cardParams())
         if (list.isNotEmpty()) {
-            content.addView(text(LogText.footer(list.size, bytes), 12f, CardStyle.LABEL, topDp = 16))
+            content.addView(text(LogText.footer(list.size, bytes), 12f, Sunlight.c(CardStyle.LABEL), topDp = 16))
             val all = Button(activity)
             all.text = tr("Delete all the logs...")
             all.setOnClickListener {
@@ -132,7 +144,7 @@ class LogViewerPanel(
             }
             content.addView(all)
         }
-        content.addView(text(tr("The logs hold GPS positions and stay on this radio, in the folder {0}", folder().absolutePath), 12f, CardStyle.LABEL, topDp = 12))
+        content.addView(text(tr("The logs hold GPS positions and stay on this radio, in the folder {0}", folder().absolutePath), 12f, Sunlight.c(CardStyle.LABEL), topDp = 12))
     }
 
     private fun cardParams(): LinearLayout.LayoutParams {
@@ -145,14 +157,14 @@ class LogViewerPanel(
         val card = LinearLayout(activity)
         card.orientation = LinearLayout.VERTICAL
         card.setPadding(dp(16), dp(8), dp(16), dp(8))
-        card.background = CardStyle.panelBackground(density, 0xE6232C36.toInt())
-        card.addView(text(LogText.title(e), 16f, Color.WHITE, bold = true))
-        card.addView(text(LogText.lengthAndPack(e), 13f, CardStyle.ACCENT, topDp = 2))
+        card.background = CardStyle.panelBackground(density, Sunlight.c(0xE6232C36.toInt()))
+        card.addView(text(LogText.title(e), 16f, Sunlight.c(Color.WHITE), bold = true))
+        card.addView(text(LogText.lengthAndPack(e), 13f, Sunlight.c(CardStyle.ACCENT), topDp = 2))
         val summary = LogText.summary(e)
-        if (summary.isNotEmpty()) card.addView(text(summary, 13f, 0xFFDDE3E8.toInt(), topDp = 4))
-        card.addView(text(e.name + "  \u00B7  " + LogText.size(e.size), 11f, CardStyle.LABEL, topDp = 4))
+        if (summary.isNotEmpty()) card.addView(text(summary, 13f, Sunlight.c(0xFFDDE3E8.toInt()), topDp = 4))
+        card.addView(text(e.name + "  \u00B7  " + LogText.size(e.size), 11f, Sunlight.c(CardStyle.LABEL), topDp = 4))
         if (recording) {
-            card.addView(text(tr("Recording now"), 13f, CardStyle.WARN, bold = true, topDp = 6))
+            card.addView(text(tr("Recording now"), 13f, Sunlight.c(CardStyle.WARN), bold = true, topDp = 6))
         } else {
             val row = LinearLayout(activity)
             row.orientation = LinearLayout.HORIZONTAL
