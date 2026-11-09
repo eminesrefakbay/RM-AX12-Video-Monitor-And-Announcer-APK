@@ -13,6 +13,7 @@ import android.graphics.RectF
 import android.os.SystemClock
 import android.view.View
 import java.util.Locale
+import kotlin.math.abs
 
 /**
  * A compass rose that turns with the heading of the aircraft (the nose is always at the top), the heading in degrees in the middle,
@@ -39,6 +40,9 @@ class CompassView(context: Context) : View(context) {
     private var homeBearing = Double.NaN
     private var homeDistance = Double.NaN
     private var lastMs = 0L
+    private var drawnHeading = Double.NaN
+    private var drawnHomeBearing = Double.NaN
+    private var drawnHomeDistance = Double.NaN
     private val sizePx = (168 * density).toInt()
 
     init {
@@ -87,8 +91,23 @@ class CompassView(context: Context) : View(context) {
         heading = Attitude.smoothAngle(heading, headingDeg, dt, 110.0)
         homeBearing = homeBearingDeg
         homeDistance = homeDistanceM
-        invalidate()
+        val shownDistance = if (!homeBearing.isNaN() && !homeDistance.isNaN()) Math.round(homeDistance).toDouble() else Double.NaN
+        if (angleChanged(heading, drawnHeading) ||
+            angleChanged(homeBearing, drawnHomeBearing) ||
+            different(shownDistance, drawnHomeDistance)) {
+            drawnHeading = heading
+            drawnHomeBearing = homeBearing
+            drawnHomeDistance = shownDistance
+            invalidate()
+        }
     }
+
+    private fun angleChanged(current: Double, drawn: Double): Boolean =
+        if (current.isNaN() || drawn.isNaN()) current.isNaN() != drawn.isNaN()
+        else abs(Attitude.wrap180(current - drawn)) >= 0.1
+
+    private fun different(current: Double, drawn: Double): Boolean =
+        if (current.isNaN() || drawn.isNaN()) current.isNaN() != drawn.isNaN() else current != drawn
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(sizePx, sizePx)

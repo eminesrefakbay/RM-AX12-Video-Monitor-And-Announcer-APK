@@ -48,6 +48,8 @@ object Prefs {
     /** The cards of the dashboard page, one per line; empty means the first dashboard. */
     fun dashTiles(c: Context): String = p(c).getString("dashTiles", null) ?: ""
     fun setDashTiles(c: Context, text: String) { p(c).edit().putString("dashTiles", text).apply() }
+    fun savedDashLayouts(c: Context): String = p(c).getString("dashLayouts", null) ?: ""
+    fun setSavedDashLayouts(c: Context, text: String) { p(c).edit().putString("dashLayouts", text).apply() }
 
     // ---- flight logs
     fun logOn(c: Context): Boolean = p(c).getBoolean("logOn", false)

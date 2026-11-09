@@ -7,6 +7,7 @@ package dev.ax12.announcer
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.text.InputFilter
 import android.text.InputType
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
@@ -221,7 +222,7 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
         for (v in views.values) {
             when (v) {
                 is FlightStatsView -> { val c = host.statsContent(fs, now); v.setContent(c.first, c.second) }
-                is RadarView -> { v.bind(fs); v.invalidate() }
+                is RadarView -> v.refresh(fs)
                 is ChartView -> { v.bind(host.chart()); v.refresh(now) }
                 else -> {}
             }
@@ -272,6 +273,119 @@ class DashboardPage(private val activity: Activity, private val host: Host) {
         tiles = DashLayout.defaults().toMutableList()
         save()
         rebuild()
+    }
+
+    fun saveLayoutDialog() {
+        val input = EditText(activity)
+        input.hint = tr("Layout name")
+        input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        input.filters = arrayOf(InputFilter.LengthFilter(SavedDashLayouts.MAX_NAME_CHARS))
+        val dialog = Sunlight.builder(activity)
+            .setTitle(tr("Save current dashboard layout"))
+            .setView(input)
+            .setNegativeButton(tr("Cancel"), null)
+            .setPositiveButton(tr("Save")) { _, _ -> }
+            .create()
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val name = SavedDashLayouts.cleanName(input.text.toString())
+                if (name.isEmpty()) {
+                    Toasts.make(activity, tr("Enter a name for this layout."), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                val entries = SavedDashLayouts.parse(Prefs.savedDashLayouts(activity))
+                val exists = entries.any { it.name.equals(name, ignoreCase = true) }
+                val save = {
+                    val stored = SavedDashLayouts.save(Prefs.savedDashLayouts(activity), name, DashLayout.serialize(tiles))
+                    if (stored == null) {
+                        Toasts.make(activity, tr("You can save up to {0} dashboard layouts.", SavedDashLayouts.MAX_SAVED), Toast.LENGTH_LONG).show()
+                    } else {
+                        Prefs.setSavedDashLayouts(activity, stored)
+                        Toasts.make(activity, tr("Dashboard layout saved: {0}", name), Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                }
+                if (exists) {
+                    Sunlight.builder(activity)
+                        .setMessage(tr("A saved layout named {0} already exists. Replace it?", name))
+                        .setNegativeButton(tr("Cancel"), null)
+                        .setPositiveButton(tr("Replace")) { _, _ -> save() }
+                        .show()
+                } else {
+                    save()
+                }
+            }
+        }
+        Immersive.show(dialog)
+    }
+
+    fun loadSavedLayoutDialog() {
+        val entries = SavedDashLayouts.parse(Prefs.savedDashLayouts(activity))
+        if (entries.isEmpty()) {
+            Toasts.make(activity, tr("There are no saved dashboard layouts."), Toast.LENGTH_SHORT).show()
+            return
+        }
+        Sunlight.builder(activity)
+            .setTitle(tr("Load a saved dashboard layout"))
+            .setItems(Array(entries.size) { entries[it].name }) { _, index ->
+                val entry = entries[index]
+                confirmLayoutReplacement(entry.layout, tr("Load saved layout: {0}", entry.name), tr("Load"))
+            }
+            .setNegativeButton(tr("Cancel"), null)
+            .show()
+    }
+
+    fun deleteSavedLayoutDialog() {
+        val entries = SavedDashLayouts.parse(Prefs.savedDashLayouts(activity))
+        if (entries.isEmpty()) {
+            Toasts.make(activity, tr("There are no saved dashboard layouts."), Toast.LENGTH_SHORT).show()
+            return
+        }
+        Sunlight.builder(activity)
+            .setTitle(tr("Delete a saved dashboard layout"))
+            .setItems(Array(entries.size) { entries[it].name }) { _, index ->
+                val entry = entries[index]
+                Sunlight.builder(activity)
+                    .setMessage(tr("Delete saved layout: {0}?", entry.name))
+                    .setNegativeButton(tr("Cancel"), null)
+                    .setPositiveButton(tr("Delete")) { _, _ ->
+                        Prefs.setSavedDashLayouts(activity, SavedDashLayouts.remove(Prefs.savedDashLayouts(activity), entry.name))
+                        Toasts.make(activity, tr("Saved layout deleted: {0}", entry.name), Toast.LENGTH_SHORT).show()
+                    }
+                    .show()
+            }
+            .setNegativeButton(tr("Cancel"), null)
+            .show()
+    }
+
+    fun presetDialog() {
+        val presets = arrayOf(
+            Pair("flight", tr("Full flight")),
+            Pair("minimal", tr("Minimal flight")),
+            Pair("bench", tr("Channel bench"))
+        )
+        Sunlight.builder(activity)
+            .setTitle(tr("Choose a dashboard preset"))
+            .setItems(Array(presets.size) { presets[it].second }) { _, index ->
+                val preset = presets[index]
+                val layout = DashLayout.serialize(DashLayout.preset(preset.first))
+                confirmLayoutReplacement(layout, tr("Use the {0} preset and replace the current layout?", preset.second), tr("Apply"))
+            }
+            .setNegativeButton(tr("Cancel"), null)
+            .show()
+    }
+
+    private fun confirmLayoutReplacement(layout: String, message: String, action: String) {
+        Sunlight.builder(activity)
+            .setMessage(message)
+            .setNegativeButton(tr("Cancel"), null)
+            .setPositiveButton(action) { _, _ ->
+                tiles = DashLayout.parse(layout).toMutableList()
+                save()
+                rebuild()
+                Toasts.make(activity, tr("Dashboard layout updated."), Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun addCard() {

@@ -790,3 +790,25 @@ Pick a channel or value	选择通道或数值
 Step {0} of {1}	第 {0} 步, 共 {1} 步
 Skip	跳过
 Next	下一步
+Layout name	布局名称
+Save current dashboard layout	保存当前仪表盘布局
+Enter a name for this layout.	请输入此布局的名称。
+You can save up to {0} dashboard layouts.	最多可保存 {0} 个仪表盘布局。
+Dashboard layout saved: {0}	已保存仪表盘布局：{0}
+A saved layout named {0} already exists. Replace it?	名为“{0}”的已保存布局已存在。要替换吗？
+Replace	替换
+There are no saved dashboard layouts.	没有已保存的仪表盘布局。
+Load a saved dashboard layout	加载已保存的仪表盘布局
+Load saved layout: {0}	加载已保存的布局：{0}
+Load	加载
+Delete a saved dashboard layout	删除已保存的仪表盘布局
+Delete saved layout: {0}?	要删除已保存的布局“{0}”吗？
+Saved layout deleted: {0}	已删除布局：{0}
+Full flight	完整飞行
+Minimal flight	简约飞行
+Channel bench	通道调试
+Choose a dashboard preset	选择仪表盘预设
+Use the {0} preset and replace the current layout?	使用“{0}”预设并替换当前布局吗？
+Apply	应用
+Dashboard layout updated.	仪表盘布局已更新。
+Choose a dashboard preset...	选择仪表盘预设...

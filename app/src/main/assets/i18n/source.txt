@@ -77,8 +77,31 @@ Value
 Add a card...
 Remove a card...
 Edit a value card...
-Add a card
+Layout name
+Save current dashboard layout
 Cancel
+Save
+Enter a name for this layout.
+You can save up to {0} dashboard layouts.
+Dashboard layout saved: {0}
+A saved layout named {0} already exists. Replace it?
+Replace
+There are no saved dashboard layouts.
+Load a saved dashboard layout
+Load saved layout: {0}
+Load
+Delete a saved dashboard layout
+Delete saved layout: {0}?
+Delete
+Saved layout deleted: {0}
+Full flight
+Minimal flight
+Channel bench
+Choose a dashboard preset
+Use the {0} preset and replace the current layout?
+Apply
+Dashboard layout updated.
+Add a card
 The dashboard has the most cards it can hold.
 Remove which card?
 There is no value card to edit.
@@ -150,7 +173,6 @@ Open in a maps app
 No maps app on this radio. Copy the position instead.
 Delete this note...
 Delete the saved position? It cannot be brought back.
-Delete
 The file is {0}
 Logging stopped: {0}
 The log folder cannot be made
@@ -291,7 +313,6 @@ Counts as armed at or above (microseconds)
 Counts as disarmed below (microseconds)
 The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.
 Arm detection
-Save
 The channel is 1 to 16
 Use microseconds, with the disarmed value not above the armed one
 Speed (now / maximum)
@@ -603,6 +624,7 @@ Speech on
 Speak a test sentence
 A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU.
 Edit the dashboard layout...
+Choose a dashboard preset...
 Reset the dashboard layout
 Replace the dashboard layout with the first one?
 Horizon: invert pitch

@@ -34,6 +34,7 @@ class RadarView(context: Context) : View(context) {
 
     private val frame = android.graphics.RectF()
     private var stats: FlightStats? = null
+    private var lastFrame = LongArray(0)
     private var sizePx = (150 * density).toInt()
 
     init {
@@ -70,6 +71,30 @@ class RadarView(context: Context) : View(context) {
 
 
     fun bind(s: FlightStats) { stats = s }
+
+    fun refresh(s: FlightStats) {
+        val nextFrame = renderFrame(s)
+        val changed = !nextFrame.contentEquals(lastFrame)
+        stats = s
+        lastFrame = nextFrame
+        if (changed) invalidate()
+    }
+
+    private fun renderFrame(s: FlightStats): LongArray {
+        val trailSize = s.trailSize()
+        val values = LongArray(6 + trailSize * 2)
+        values[0] = s.radarRadiusM().toBits()
+        values[1] = if (s.hasHome()) 1L else 0L
+        values[2] = s.eastM().toBits()
+        values[3] = s.northM().toBits()
+        values[4] = s.headingDeg().toBits()
+        values[5] = trailSize.toLong()
+        for (i in 0 until trailSize) {
+            values[6 + i * 2] = s.trailEast(i).toBits()
+            values[7 + i * 2] = s.trailNorth(i).toBits()
+        }
+        return values
+    }
 
     fun setSizeDp(dp: Int) {
         sizePx = (dp * density).toInt()

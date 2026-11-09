@@ -192,7 +192,7 @@ public class PackTests {
         String act = new String(Files.readAllBytes(new File(kt + "MainActivity.kt").toPath()), "UTF-8");
         String ex = new String(Files.readAllBytes(new File(kt + "FlightExtras.kt").toPath()), "UTF-8");
         String sp = new String(Files.readAllBytes(new File(kt + "SettingsPanel.kt").toPath()), "UTF-8");
-        int stat = act.indexOf("flightStats.update(numbers, now)"), tick = act.indexOf("extras.tick(now, numbers)"), logu = act.indexOf("flightLogger.update(now"), rules = act.indexOf("engine?.update(numbers");
+        int stat = act.indexOf("flightStats.update(numbers, sampleNow)"), tick = act.indexOf("extras.tick(sampleNow, numbers)"), logu = act.indexOf("flightLogger.update(sampleNow"), rules = act.indexOf("engine?.update(numbers");
         check(stat > 0 && tick > stat && tick < logu && tick < rules && act.indexOf("latestNumbers = numbers") > tick, "the extras see the numbers after the flight statistics, and before the logger, the rules and the cards");
         check(act.contains("extras.clock(now)") && act.contains("extras.onPause()") && act.contains("extras = FlightExtras(this, frame, speaker, flightStats)"), "the clock runs every tick, a pause counts the landing, and the extras exist from the start");
         int rl = act.indexOf("private fun reloadLogConfig()");

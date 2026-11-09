@@ -790,3 +790,25 @@ Pick a channel or value	Bir kanal veya değer seçin
 Step {0} of {1}	Adım {0} / {1}
 Skip	Atla
 Next	İleri
+Layout name	Yerleşim adı
+Save current dashboard layout	Geçerli pano yerleşimini kaydet
+Enter a name for this layout.	Bu yerleşim için bir ad girin.
+You can save up to {0} dashboard layouts.	En fazla {0} pano yerleşimi kaydedebilirsiniz.
+Dashboard layout saved: {0}	Pano yerleşimi kaydedildi: {0}
+A saved layout named {0} already exists. Replace it?	{0} adlı kayıtlı bir yerleşim zaten var. Değiştirilsin mi?
+Replace	Değiştir
+There are no saved dashboard layouts.	Kayıtlı pano yerleşimi yok.
+Load a saved dashboard layout	Kayıtlı pano yerleşimini yükle
+Load saved layout: {0}	Kayıtlı yerleşimi yükle: {0}
+Load	Yükle
+Delete a saved dashboard layout	Kayıtlı pano yerleşimini sil
+Delete saved layout: {0}?	Kayıtlı yerleşim silinsin mi: {0}?
+Saved layout deleted: {0}	Kayıtlı yerleşim silindi: {0}
+Full flight	Tam uçuş
+Minimal flight	Minimal uçuş
+Channel bench	Kanal tezgâhı
+Choose a dashboard preset	Pano ön ayarını seçin
+Use the {0} preset and replace the current layout?	{0} ön ayarı kullanılsın ve geçerli yerleşimin yerini alsın mı?
+Apply	Uygula
+Dashboard layout updated.	Pano yerleşimi güncellendi.
+Choose a dashboard preset...	Bir pano ön ayarı seçin...

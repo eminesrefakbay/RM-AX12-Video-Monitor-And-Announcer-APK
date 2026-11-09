@@ -101,6 +101,27 @@ public final class DashLayout {
         return l;
     }
 
+    /** A built-in dashboard layout. Preset identifiers are stable and never translated. */
+    public static List<Tile> preset(String id) {
+        if ("flight".equals(id)) return defaults();
+        List<Tile> l = new ArrayList<Tile>();
+        if ("minimal".equals(id)) {
+            l.add(new Tile("horizon1", "horizon", 0, 0, 100, ""));
+            l.add(new Tile("compass1", "compass", 1000, 0, 100, ""));
+            l.add(new Tile("value1", "value", 0, 1000, 100, new ValueSpec("cell", "", "V", 2, 3.5, 3.3, "<").serialize()));
+            l.add(new Tile("value2", "value", 1000, 1000, 100, new ValueSpec("up_lq", "", "%", 0, 80, 50, "<").serialize()));
+            return l;
+        }
+        if ("bench".equals(id)) {
+            for (int i = 0; i < 8; i++) {
+                l.add(new Tile("channel" + (i + 1), "value", (i % 2) * 1000, (i / 2) * 333, 100,
+                    new ValueSpec("ch" + (i + 1), "CH" + (i + 1), "", 0, Double.NaN, Double.NaN, "-").serialize()));
+            }
+            return l;
+        }
+        return new ArrayList<Tile>();
+    }
+
     /** The stored cards, or the first dashboard when nothing usable is stored. */
     public static List<Tile> selection(String stored) {
         List<Tile> l = parse(stored);

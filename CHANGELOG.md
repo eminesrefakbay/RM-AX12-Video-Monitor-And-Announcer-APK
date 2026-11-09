@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.0
+
+Dashboard layouts can now be saved, loaded and deleted by name, with Full flight, Minimal flight and Channel bench presets. Saved layouts are included in settings backup and restore, and the new controls are translated into Turkish, German and Chinese. Radio polling and parsing now run off the UI thread, and dashboard instruments avoid redraws when their visible data has not changed.
+
 ## 1.8.0
 
 A new animated splash screen (the split design). Chinese can be chosen on every radio: the app carries its own small Chinese font. Buttons

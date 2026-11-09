@@ -12,6 +12,7 @@ import android.graphics.RectF
 import android.os.SystemClock
 import android.view.View
 import java.util.Locale
+import kotlin.math.abs
 
 /**
  * An artificial horizon: sky above, ground below, a ladder every 10 degrees, and a fixed aircraft symbol. The picture follows the
@@ -39,7 +40,24 @@ class HorizonView(context: Context) : View(context) {
     private var lastValidMs = 0L
     private var invertPitch = false
     private var invertRoll = false
+    private var drawnPitch = Double.NaN
+    private var drawnRoll = Double.NaN
+    private var drawnDataAvailable = false
+    private var expiryScheduled = false
     private val sizePx = (168 * density).toInt()
+    private val dataExpiry = object : Runnable {
+        override fun run() {
+            expiryScheduled = false
+            val remaining = lastValidMs + 2000L - SystemClock.uptimeMillis()
+            if (remaining >= 0) {
+                expiryScheduled = true
+                postDelayed(this, remaining + 1L)
+            } else if (drawnDataAvailable) {
+                drawnDataAvailable = false
+                invalidate()
+            }
+        }
+    }
 
     init {
         bg.color = CardStyle.BG
@@ -80,11 +98,27 @@ class HorizonView(context: Context) : View(context) {
         val now = SystemClock.uptimeMillis()
         val dt = if (lastMs == 0L) 0.0 else (now - lastMs).toDouble()
         lastMs = now
-        if (!pitchDeg.isNaN() || !rollDeg.isNaN()) lastValidMs = now
+        if (!pitchDeg.isNaN() || !rollDeg.isNaN()) {
+            lastValidMs = now
+            if (!expiryScheduled) {
+                expiryScheduled = true
+                postDelayed(dataExpiry, 2001L)
+            }
+        }
         pitch = Attitude.smooth(pitch, pitchDeg, dt, 90.0)
         roll = Attitude.wrap180(Attitude.smoothAngle(if (roll.isNaN()) Double.NaN else Attitude.wrap360(roll), if (rollDeg.isNaN()) Double.NaN else Attitude.wrap360(rollDeg), dt, 90.0))
-        invalidate()
+        val hasData = hasDrawableData(now)
+        if (hasData != drawnDataAvailable ||
+            (hasData && (abs(pitch - drawnPitch) >= 0.1 || abs(Attitude.wrap180(roll - drawnRoll)) >= 0.1))) {
+            drawnDataAvailable = hasData
+            drawnPitch = pitch
+            drawnRoll = roll
+            invalidate()
+        }
     }
+
+    private fun hasDrawableData(now: Long): Boolean =
+        !pitch.isNaN() && !roll.isNaN() && now - lastValidMs <= 2000L
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(sizePx, sizePx)
@@ -95,7 +129,7 @@ class HorizonView(context: Context) : View(context) {
         val h = height.toFloat()
         rect.set(1f, 1f, w - 1f, h - 1f)
         CardStyle.drawFill(canvas, rect, bg, density)
-        val noData = pitch.isNaN() || roll.isNaN() || SystemClock.uptimeMillis() - lastValidMs > 2000
+        val noData = !hasDrawableData(SystemClock.uptimeMillis())
         val cx = w / 2f
         val cy = h / 2f
         if (!noData) {

@@ -48,7 +48,7 @@ under *Settings > Updates > Check at start-up*.
 | | **Nightly** | **Stable** |
 | --- | --- | --- |
 | What it is | the newest build: every push to `main` replaces it | a release you made on purpose |
-| Version name | `0.7.1-nightly.45` (the number counts builds) | `0.7.1` |
+| Version name | `1.10.0-nightly.45` (the number counts builds) | `1.10.0` |
 | When | within minutes of a push | when you decide |
 | Use it for | trying the latest changes | the version you fly with |
 
@@ -56,12 +56,12 @@ Choose the channel under *Settings > Updates*. Each channel only offers builds *
 the build number), so switching from Nightly to a Stable release that was built earlier says "you have the latest": it will not
 step backwards. (Going back to an older build means uninstalling once.)
 
-**Making a stable release.** First set `baseVersion` in `app/build.gradle.kts` to the number you want (for example `0.7.1`)
+**Making a stable release.** First set `baseVersion` in `app/build.gradle.kts` to the number you want (for example `1.10.0`)
 and push it. Then either:
 
-- **On GitHub (easiest):** *Actions* tab > *build* > **Run workflow** > type the tag in the box (`v0.7.1`) > *Run workflow*.
+- **On GitHub (easiest):** *Actions* tab > *build* > **Run workflow** > type the tag in the box (`v1.10.0`) > *Run workflow*.
   It builds, signs, creates the tag and publishes the release (the notes are written from your commits).
-- **Or from a terminal:** `git tag v0.7.1 && git push origin v0.7.1`.
+- **Or from a terminal:** `git tag v1.10.0 && git push origin v1.10.0`.
 - **Or** create a release by hand on GitHub with a new tag that starts with `v`: the build attaches the APK to it.
 
 A tag that already exists is never moved: use a new tag for each release.
@@ -84,4 +84,3 @@ A tag that already exists is never moved: use a new tag for each release.
 | Installation stopped: ... DOWNGRADE | The build on GitHub is older than the one installed (version code). |
 | The checksum does not match | The download was damaged or is not the published file: nothing was installed. Try again. |
 | Warning in the Actions log: *No signing secrets found* | Step 2 was not done (or the names are misspelled). The APK is built but cannot update an installed app. |
-

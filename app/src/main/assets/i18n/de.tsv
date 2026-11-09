@@ -790,3 +790,25 @@ Pick a channel or value	Kanal oder Wert wählen
 Step {0} of {1}	Schritt {0} von {1}
 Skip	Überspringen
 Next	Weiter
+Layout name	Layoutname
+Save current dashboard layout	Aktuelles Dashboard-Layout speichern
+Enter a name for this layout.	Gib einen Namen für dieses Layout ein.
+You can save up to {0} dashboard layouts.	Du kannst bis zu {0} Dashboard-Layouts speichern.
+Dashboard layout saved: {0}	Dashboard-Layout gespeichert: {0}
+A saved layout named {0} already exists. Replace it?	Ein gespeichertes Layout namens {0} ist bereits vorhanden. Ersetzen?
+Replace	Ersetzen
+There are no saved dashboard layouts.	Es sind keine Dashboard-Layouts gespeichert.
+Load a saved dashboard layout	Gespeichertes Dashboard-Layout laden
+Load saved layout: {0}	Gespeichertes Layout laden: {0}
+Load	Laden
+Delete a saved dashboard layout	Gespeichertes Dashboard-Layout löschen
+Delete saved layout: {0}?	Gespeichertes Layout {0} löschen?
+Saved layout deleted: {0}	Gespeichertes Layout gelöscht: {0}
+Full flight	Vollständiger Flug
+Minimal flight	Minimaler Flug
+Channel bench	Kanaltest
+Choose a dashboard preset	Dashboard-Voreinstellung wählen
+Use the {0} preset and replace the current layout?	Voreinstellung {0} verwenden und das aktuelle Layout ersetzen?
+Apply	Anwenden
+Dashboard layout updated.	Dashboard-Layout aktualisiert.
+Choose a dashboard preset...	Dashboard-Voreinstellung auswählen...

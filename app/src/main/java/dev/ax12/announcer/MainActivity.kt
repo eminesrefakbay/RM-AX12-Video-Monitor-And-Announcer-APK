@@ -19,6 +19,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.os.SystemClock
 import android.view.Gravity
@@ -41,6 +42,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TreeMap
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Full-screen video; grey "NO VIDEO" panel when no frames arrive; spoken announcements from the
@@ -139,19 +142,36 @@ class MainActivity : Activity() {
     /** The link if it exists already; never waits for the native libraries to load (the panels use this while the SDK starts). */
     private val sdkLinkIfReady: AxSdkRadioLink? get() = if (sdkLinkHolder.isInitialized()) sdkLinkHolder.value else null
     private var sdkError: String? = null
-    private var sdkRunning = false
+    @Volatile private var sdkRunning = false
     @Volatile private var sdkStarting = false       // the SDK is being started on its own thread (start-up method "like RadioMaster's demo")
     private var sdkGeneration = 0                    // tells a late answer of an old start from the current one
 
-    private var testVisible = false
+    @Volatile private var testVisible = false
     private var varsVisible = false
     private var lastVarsUpdate = 0L
     private val ui = Handler(Looper.getMainLooper())
+    private lateinit var pollThread: HandlerThread
+    private lateinit var pollHandler: Handler
+    private val pollLock = Any()
+    @Volatile private var pollEnabled = false
+    private var pollGeneration = 0L
+    private data class PollFrame(
+        val link: RadioLink,
+        val sample: RadioSample?,
+        val waitingForSdk: Boolean,
+        val useFake: Boolean,
+        val polledAt: Long
+    )
+    private val latestPoll = AtomicReference<PollFrame?>(null)
+    private val pendingSamples = ConcurrentLinkedQueue<PollFrame>()
+    private var lastProcessedPoll: PollFrame? = null
     private val uiTiming = TimingStats(5000)
     private var lastTickAt = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        pollThread = HandlerThread("radio-poll").also { it.start() }
+        pollHandler = Handler(pollThread.looper)
         Sunlight.on = Prefs.bool(this, "sunlight", false)
         Shapes.style = ShapeGeometry.clampStyle(Prefs.int(this, "shape", 0))
         StartupState.mark(StartupTimeline.SCREEN_CREATED)
@@ -402,6 +422,11 @@ class MainActivity : Activity() {
         reloadChecks()
         reloadLogConfig()
         startSdk()
+        synchronized(pollLock) {
+            pollGeneration++
+            pollEnabled = true
+            pollHandler.post(radioPoll)
+        }
         if (hasCameraPermission()) { if (!dashboardOn) camera.start() } else {
             holdLink(HOLD_REBUILD_MS)                    // the permission dialog pauses the screen for a moment
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
@@ -412,6 +437,13 @@ class MainActivity : Activity() {
     }
 
     override fun onPause() {
+        synchronized(pollLock) {
+            pollGeneration++
+            pollEnabled = false
+            pollHandler.removeCallbacks(radioPoll)
+            pendingSamples.clear()
+            latestPoll.set(null)
+        }
         ui.removeCallbacks(tick)
         ui.removeCallbacks(guideCheck)
         ui.removeCallbacks(holdFire)
@@ -424,6 +456,14 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
+        synchronized(pollLock) {
+            pollGeneration++
+            pollEnabled = false
+            pollHandler.removeCallbacks(radioPoll)
+            pendingSamples.clear()
+            latestPoll.set(null)
+        }
+        pollThread.quitSafely()
         ui.removeCallbacks(splashHide)
         ui.removeCallbacks(autoCheck)
         flightLogger.close()
@@ -550,6 +590,29 @@ class MainActivity : Activity() {
     }
 
     /** 20 times a second: NO VIDEO panel, read the radio, run the rules, refresh the debug panels. */
+    private val radioPoll = object : Runnable {
+        override fun run() {
+            val generation = synchronized(pollLock) {
+                if (!pollEnabled) return
+                pollGeneration
+            }
+            val waitingForSdk = sdkStarting && !testVisible
+            val availableSdk = if (waitingForSdk) sdkLinkIfReady else sdkLink
+            val useFake = testVisible || (!waitingForSdk && (availableSdk == null || !sdkRunning))
+            val link: RadioLink = if (useFake || waitingForSdk) fakeLink else availableSdk!!
+            val sample = if (waitingForSdk) null else link.poll()
+            synchronized(pollLock) {
+                if (pollEnabled && generation == pollGeneration) {
+                    val frame = PollFrame(link, sample, waitingForSdk, useFake, SystemClock.elapsedRealtime())
+                    latestPoll.set(frame)
+                    if (sample != null) pendingSamples.add(frame)
+                    pollHandler.postDelayed(this, 50)
+                }
+            }
+        }
+    }
+
+    /** 20 times a second: update the UI, rules and debug panels from the newest radio reading. */
     private val tick = object : Runnable {
         override fun run() {
             val now = SystemClock.elapsedRealtime()
@@ -572,12 +635,17 @@ class MainActivity : Activity() {
                 if (Prefs.menuAlways(this@MainActivity)) menuButton.visibility = View.VISIBLE else showMenuButton(4000)
             }
 
-            val waitingForSdk = sdkStarting && !testVisible           // the SDK is starting in the background: no data yet, and no pretend data either
-            val useFake = testVisible || (!waitingForSdk && (sdkLink == null || !sdkRunning))
-            val link: RadioLink = if (useFake || waitingForSdk) fakeLink else sdkLink!!
-            val scaler = if (useFake || waitingForSdk) fakeScaler else sdkScaler
-            val sample = if (waitingForSdk) null else link.poll()
-            if (sample != null) {
+            val poll = latestPoll.get()
+            val waitingForSdk = poll?.waitingForSdk ?: (sdkStarting && !testVisible)
+            var liveSampleUpdated = false
+            while (true) {
+                val frame = pendingSamples.poll() ?: break
+                val sample = frame.sample ?: continue
+                val sampleNow = frame.polledAt
+                val link = frame.link
+                val scaler = if (frame.useFake || frame.waitingForSdk) fakeScaler else sdkScaler
+                lastProcessedPoll = frame
+                liveSampleUpdated = true
                 if (scaler.observe(sample.raw)) {                    // the radio's unit became clear: start again
                     engine?.reset()
                     reloadWarnings()
@@ -590,26 +658,24 @@ class MainActivity : Activity() {
                     StartupState.logLaunch(this@MainActivity, sdkLink)
                 }
                 val numbers = Variables.numbers(sample, scaler, batteryCells)
-                flightStats.update(numbers, now)
+                flightStats.update(numbers, sampleNow)
                 if (flightStats.armed()) {                      // height and distance exist only in flight, and rules can use them
                     if (!flightStats.heightNow().isNaN()) numbers["height"] = flightStats.heightNow()
                     if (!flightStats.distanceNow().isNaN()) numbers["dist"] = flightStats.distanceNow()
                 }
-                extras.tick(now, numbers)                       // distance, energy, link loss, landing and the pack book
+                extras.tick(sampleNow, numbers)                  // distance, energy, link loss, landing and the pack book
                 latestNumbers = numbers
                 latestTexts = sample.texts
-                flightLogger.update(now, flightStats.armed(), numbers, sample.texts)       // a log from arming to disarming, when it is switched on
+                flightLogger.update(sampleNow, flightStats.armed(), numbers, sample.texts)  // a log from arming to disarming, when it is switched on
                 if (replay != null && flightStats.armed()) stopReplay()                  // an armed aircraft: the live screen comes first
                 if (replay == null) {
-                    engine?.update(numbers, sample.texts, now)
-                    warningBar.update(numbers, sample.texts, now)
-                    checkEngine?.update(numbers, sample.texts, now)
-                    if (now - lastTileUpdate >= 200) {
-                        lastTileUpdate = now
-                        updateTiles(numbers, sample.texts, now)
+                    engine?.update(numbers, sample.texts, sampleNow)
+                    warningBar.update(numbers, sample.texts, sampleNow)
+                    checkEngine?.update(numbers, sample.texts, sampleNow)
+                    if (sampleNow - lastTileUpdate >= 200) {
+                        lastTileUpdate = sampleNow
+                        updateTiles(numbers, sample.texts, sampleNow)
                     }
-                    if (sticksEnabled) sticksView.update(numbers)
-                    dashboard.updateFast(numbers, sample.texts)
                 }
                 if (testVisible) {
                     val sb = StringBuilder()
@@ -617,13 +683,20 @@ class MainActivity : Activity() {
                         .append(if (i % 4 == 3) "\n" else "  ")
                     status.text = sb.toString().trim() + "\n" + link.name + ": " + sample.info + "\n" + camera.statusLine() + "\n" + camera.videoStats()
                 }
-                if (varsVisible && now - lastVarsUpdate > 250) {
-                    lastVarsUpdate = now
-                    varsText.text = describe(link, sample, numbers, scaler)
-                }
-            } else if (varsVisible && now - lastVarsUpdate > 250) {
+            }
+            if (liveSampleUpdated && replay == null) {
+                if (sticksEnabled) sticksView.update(latestNumbers)
+                dashboard.updateFast(latestNumbers, latestTexts)
+            }
+            if (varsVisible && now - lastVarsUpdate > 250) {
                 lastVarsUpdate = now
-                varsText.text = (if (waitingForSdk) tr("The SDK is starting in the background...") else tr("No data from the radio yet...")) + "\n\n" + StartupState.text(sdkLinkIfReady)
+                val displayPoll = lastProcessedPoll
+                if (poll?.sample != null && displayPoll?.sample != null) {
+                    val scaler = if (displayPoll.useFake || displayPoll.waitingForSdk) fakeScaler else sdkScaler
+                    varsText.text = describe(displayPoll.link, displayPoll.sample, latestNumbers, scaler)
+                } else {
+                    varsText.text = (if (waitingForSdk) tr("The SDK is starting in the background...") else tr("No data from the radio yet...")) + "\n\n" + StartupState.text(sdkLinkIfReady)
+                }
             }
             // while the radio link comes up (about 12 s): say so, count the seconds, and say what to check if it takes long
             if (replay != null) replayStep(now)
@@ -631,7 +704,7 @@ class MainActivity : Activity() {
             val connecting = (sdkStarting || sdkRunning) && !StartupState.connected && !testVisible && sdkError == null && replay == null
             fader.set(connectBanner.view, connecting)
             if (connecting) connectBanner.update(StartupState.secondsSinceLinkStart(now))
-            if (sample == null && editingLayout && now - lastTileUpdate >= 200) {
+            if (poll?.sample == null && editingLayout && now - lastTileUpdate >= 200) {
                 lastTileUpdate = now
                 updateTiles(latestNumbers, latestTexts, now)
             }
@@ -825,6 +898,10 @@ class MainActivity : Activity() {
             dashboard.startEdit()
         }
         override fun resetDashboard() = dashboard.resetLayout()
+        override fun saveDashboardLayout() = dashboard.saveLayoutDialog()
+        override fun loadDashboardLayout() = dashboard.loadSavedLayoutDialog()
+        override fun deleteDashboardLayout() = dashboard.deleteSavedLayoutDialog()
+        override fun chooseDashboardPreset() = dashboard.presetDialog()
         override fun horizonInvertPitch(): Boolean = Prefs.bool(this@MainActivity, "horizonInvPitch", false)
         override fun setHorizonInvertPitch(on: Boolean) { Prefs.setBool(this@MainActivity, "horizonInvPitch", on); dashboard.rebuild() }
         override fun horizonInvertRoll(): Boolean = Prefs.bool(this@MainActivity, "horizonInvRoll", false)
@@ -1218,7 +1295,7 @@ class MainActivity : Activity() {
         dashboard.update(now)
         val showRadar = radarOn && (fs.hasHome() || editingLayout)
         fader.set(radarView, showRadar)
-        if (showRadar) radarView.invalidate()
+        if (showRadar) radarView.refresh(fs)
 
         val cm = checkModel
         checkCard.update(flightStats.armed())               // an armed aircraft ends the pre-flight period: the card is back for the next one

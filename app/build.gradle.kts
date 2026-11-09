@@ -24,7 +24,7 @@ val keystorePassword: String? = System.getenv("SIGNING_PASSWORD")
 val ciRun: Int? = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
 // The version people read. Nightly builds get a suffix from CI ("-nightly.45"), stable builds do not.
 // Change baseVersion before you make a stable release.
-val baseVersion = "1.8.0"
+val baseVersion = "1.10.0"
 val versionSuffix: String = System.getenv("VERSION_SUFFIX") ?: ""
 
 android {
@@ -35,7 +35,7 @@ android {
         applicationId = "dev.ax12.announcer"
         minSdk = 24
         targetSdk = 28          // the AX12 runs Android 9
-        versionCode = if (ciRun != null) 1000 + ciRun else 16
+        versionCode = if (ciRun != null) 1000 + ciRun else 17
         versionName = baseVersion + versionSuffix
 
         if (withSdk) {

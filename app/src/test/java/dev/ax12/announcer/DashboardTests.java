@@ -59,6 +59,37 @@ public class DashboardTests {
         List<DashLayout.Tile> c = DashLayout.copy(d);
         c.get(0).x = 999;
         check(d.get(0).x != 999, "a copy is a copy");
+        for (String preset : new String[]{"flight", "minimal", "bench"}) {
+            List<DashLayout.Tile> presetTiles = DashLayout.preset(preset);
+            check(!presetTiles.isEmpty() && presetTiles.size() <= DashLayout.MAX_TILES &&
+                  DashLayout.valid(DashLayout.serialize(presetTiles)), "the " + preset + " preset is a valid dashboard");
+        }
+        check(DashLayout.preset("flight").size() == DashLayout.defaults().size() &&
+              DashLayout.preset("minimal").size() == 4 && DashLayout.preset("bench").size() == 8 &&
+              DashLayout.preset("unknown").isEmpty(), "presets provide full-flight, minimal and eight-channel bench layouts");
+        String saved = SavedDashLayouts.save("", "  Field setup  ", DashLayout.serialize(DashLayout.preset("bench")));
+        check(saved != null && SavedDashLayouts.valid(saved) && SavedDashLayouts.parse(saved).size() == 1 &&
+              SavedDashLayouts.parse(saved).get(0).name.equals("Field setup"), "a named layout is saved with a cleaned name");
+        saved = SavedDashLayouts.save(saved, "field setup", DashLayout.serialize(DashLayout.preset("minimal")));
+        check(saved != null && SavedDashLayouts.parse(saved).size() == 1 &&
+              SavedDashLayouts.parse(saved).get(0).layout.equals(DashLayout.serialize(DashLayout.preset("minimal"))),
+              "saving the same name replaces that saved layout without duplicating it");
+        saved = SavedDashLayouts.save(saved, "中文 flight", DashLayout.serialize(DashLayout.preset("flight")));
+        check(saved != null && SavedDashLayouts.parse(saved).size() == 2 &&
+              SavedDashLayouts.parse(saved).get(1).name.equals("中文 flight"), "saved layout names support Unicode");
+        check(SavedDashLayouts.parse(SavedDashLayouts.remove(saved, "中文 flight")).size() == 1 &&
+              SavedDashLayouts.valid("") && !SavedDashLayouts.valid("broken"),
+              "a saved layout can be deleted and damaged storage is rejected");
+        String full = "";
+        for (int i = 0; i < SavedDashLayouts.MAX_SAVED; i++) {
+            full = SavedDashLayouts.save(full, "layout" + i, DashLayout.serialize(DashLayout.preset("minimal")));
+        }
+        check(full != null && SavedDashLayouts.parse(full).size() == SavedDashLayouts.MAX_SAVED &&
+              SavedDashLayouts.save(full, "another", DashLayout.serialize(DashLayout.preset("flight"))) == null,
+              "the number of named layouts is capped");
+        check(SavedDashLayouts.save("", "", DashLayout.serialize(d)) == null &&
+              SavedDashLayouts.save("", "invalid", "not a layout") == null,
+              "empty names and invalid layouts cannot be saved");
         for (String k : DashLayout.KINDS) check(DashLayout.validKind(k) && !DashLayout.label(k).isEmpty(), "kind " + k + " has a label");
         check(!DashLayout.validKind("clock") && !DashLayout.validKind(""), "unknown kinds");
         for (String lang : new String[]{"tr", "de", "zh"}) {
@@ -133,6 +164,45 @@ public class DashboardTests {
         String kt = "app/src/main/java/dev/ax12/announcer/";
         String page = new String(Files.readAllBytes(new File(kt + "DashboardPage.kt").toPath()), StandardCharsets.UTF_8);
         String act = new String(Files.readAllBytes(new File(kt + "MainActivity.kt").toPath()), StandardCharsets.UTF_8);
+        String settings = new String(Files.readAllBytes(new File(kt + "SettingsPanel.kt").toPath()), StandardCharsets.UTF_8);
+        String horizonSource = new String(Files.readAllBytes(new File(kt + "HorizonView.kt").toPath()), StandardCharsets.UTF_8);
+        String compassSource = new String(Files.readAllBytes(new File(kt + "CompassView.kt").toPath()), StandardCharsets.UTF_8);
+        String radarSource = new String(Files.readAllBytes(new File(kt + "RadarView.kt").toPath()), StandardCharsets.UTF_8);
+        int horizonSet = horizonSource.indexOf("fun set(pitchDeg");
+        int horizonDraw = horizonSource.indexOf("override fun onMeasure", horizonSet);
+        String horizonUpdate = horizonSource.substring(horizonSet, horizonDraw);
+        check(horizonUpdate.contains("abs(pitch - drawnPitch)") && horizonUpdate.contains("abs(Attitude.wrap180(roll - drawnRoll))") &&
+              horizonUpdate.contains("if (hasData != drawnDataAvailable") && horizonSource.contains("postDelayed(this, remaining + 1L)"),
+              "the horizon redraws for meaningful movement and when its data expires");
+        int compassSet = compassSource.indexOf("fun set(headingDeg");
+        int compassDraw = compassSource.indexOf("override fun onMeasure", compassSet);
+        String compassUpdate = compassSource.substring(compassSet, compassDraw);
+        check(compassUpdate.contains("angleChanged(heading, drawnHeading)") &&
+              compassUpdate.contains("angleChanged(homeBearing, drawnHomeBearing)") &&
+              compassUpdate.contains("different(shownDistance, drawnHomeDistance)"),
+              "the compass redraws only when its visible angles or distance change");
+        check(radarSource.contains("fun refresh(s: FlightStats)") && radarSource.contains("nextFrame.contentEquals(lastFrame)") &&
+              page.contains("is RadarView -> v.refresh(fs)") && act.contains("if (showRadar) radarView.refresh(fs)"),
+              "the radar redraws only when its displayed flight path or position changes");
+        int pollStart = act.indexOf("private val radioPoll");
+        int tickStart = act.indexOf("private val tick", pollStart);
+        int describeStart = act.indexOf("private fun describe", tickStart);
+        String pollLoop = act.substring(pollStart, tickStart);
+        String uiTick = act.substring(tickStart, describeStart);
+        check(pollLoop.contains("link.poll()") && pollLoop.contains("latestPoll.set") && pollLoop.contains("pendingSamples.add(frame)") &&
+              pollLoop.contains("postDelayed(this, 50)") && uiTick.contains("pendingSamples.poll()") &&
+              uiTick.contains("while (true)") && !uiTick.contains("link.poll()"),
+              "radio polling and CRSF parsing run off the UI thread, which processes queued samples in order");
+        check(act.contains("pollHandler.post(radioPoll)") && act.contains("pollHandler.removeCallbacks(radioPoll)") &&
+              act.contains("pollThread.quitSafely()") && act.contains("@Volatile private var sdkRunning") &&
+              act.contains("@Volatile private var testVisible"),
+              "the polling worker follows the screen lifecycle and reads shared state safely");
+        check(page.contains("fun saveLayoutDialog()") && page.contains("fun loadSavedLayoutDialog()") &&
+              page.contains("fun deleteSavedLayoutDialog()") && page.contains("fun presetDialog()") &&
+              page.contains("confirmLayoutReplacement") && settings.contains("host.saveDashboardLayout()") &&
+              settings.contains("host.loadDashboardLayout()") && settings.contains("host.deleteDashboardLayout()") &&
+              settings.contains("host.chooseDashboardPreset()"),
+              "dashboard settings expose save, load, delete and confirmed preset actions");
         check(!page.contains("setOnLongClickListener") && !page.contains("isLongClickable") && !act.contains("GestureDetector"), "the quick Android long press does not open the layout editor");
         check(act.split("onLongPress", -1).length - 1 == 1 && act.contains("sticksView.onLongPress = { editChannelBars() }"), "the only other long press is the one of the stick view, which edits the channel bars");
         String touch = page.substring(page.indexOf("root.setOnTouchListener"), page.indexOf("root.elevation"));

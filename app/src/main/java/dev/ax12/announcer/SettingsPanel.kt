@@ -93,6 +93,10 @@ interface SettingsHost {
     // dashboard
     fun editDashboard()
     fun resetDashboard()
+    fun saveDashboardLayout()
+    fun loadDashboardLayout()
+    fun deleteDashboardLayout()
+    fun chooseDashboardPreset()
     fun horizonInvertPitch(): Boolean
     fun setHorizonInvertPitch(on: Boolean)
     fun horizonInvertRoll(): Boolean
@@ -527,6 +531,10 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         group("dashboard", tr("Dashboard"), "dashboard") {
             note(tr("A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU."))
             action(tr("Edit the dashboard layout...")) { host.editDashboard() }
+            action(tr("Save current dashboard layout")) { host.saveDashboardLayout() }
+            action(tr("Load a saved dashboard layout")) { host.loadDashboardLayout() }
+            action(tr("Delete a saved dashboard layout")) { host.deleteDashboardLayout() }
+            action(tr("Choose a dashboard preset...")) { host.chooseDashboardPreset() }
             action(tr("Reset the dashboard layout")) {
                 confirm(tr("Replace the dashboard layout with the first one?"), tr("Reset")) { host.resetDashboard() }
             }

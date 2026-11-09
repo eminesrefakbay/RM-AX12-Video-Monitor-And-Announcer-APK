@@ -31,6 +31,7 @@ public class SettingsFileTests {
         m.put("sticksOn", true); m.put("sticksSize", 2); m.put("sticksPos", 3); m.put("stickMode", 2); m.put("stickInvert", 5);
         m.put("armCh", 5); m.put("armHigh", 1750); m.put("armLow", 1650); m.put("currentLimit", 50); m.put("statsRows", 7);
         m.put("batActive", 1);
+        m.put("dashLayouts", SavedDashLayouts.save("", "Pilot", DashLayout.serialize(DashLayout.preset("minimal"))));
         return m;
     }
 
@@ -112,6 +113,7 @@ public class SettingsFileTests {
         }
         for (String tile : new String[]{"stats", "radar", "check", "chart"}) for (String suffix : new String[]{"On", "Size", "Pos", "Opacity"}) used.add(tile + suffix);
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) for (String suffix : new String[]{"X", "Y", "Scale"}) used.add(tile + suffix);
+        used.add("dashLayouts");
         Set<String> notExported = new HashSet<String>();
         notExported.add("rulesBackup"); notExported.add("settingsBackup");
         notExported.add("guideSeen");               // which welcome guide this device has shown: device state, not a setting to back up
@@ -129,6 +131,9 @@ public class SettingsFileTests {
         check(SettingsFile.parseValue("I", "logRate", "4") != null && SettingsFile.parseValue("I", "logRate", "9") == null && SettingsFile.parseValue("I", "logKeep", "-1") == null, "the rate and the number to keep stay in range");
         check("ch1,vbat,fm".equals(SettingsFile.parseValue("S", "logFields", "ch1, vbat ,fm,bad name")), "a field list is cleaned: " + SettingsFile.parseValue("S", "logFields", "ch1, vbat ,fm,bad name"));
         check("".equals(SettingsFile.parseValue("S", "logFields", "")) && SettingsFile.parseValue("S", "logFields", "!!!,??") == null, "an empty list is allowed (the replay set), a list of nothing valid is refused");
+        String savedLayouts = SavedDashLayouts.save("", "Pilot", DashLayout.serialize(DashLayout.preset("minimal")));
+        check(savedLayouts != null && savedLayouts.equals(SettingsFile.parseValue("S", "dashLayouts", savedLayouts)) &&
+              SettingsFile.parseValue("S", "dashLayouts", "broken") == null, "named dashboard layouts are safely included in settings backups");
 
         System.out.println(checks + " checks, " + failures + " failures");
         System.exit(failures == 0 ? 0 : 1);

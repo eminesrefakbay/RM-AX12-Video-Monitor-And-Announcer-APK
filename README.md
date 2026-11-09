@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.9.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.10.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
@@ -544,8 +544,8 @@ GPS coordinates are shown on screen. When a GPS fix is available, the app also s
 ## Updates from GitHub
 
 **Settings > Updates > Check for updates now** looks on GitHub for a newer build, downloads it, checks its SHA-256, and
-hands it to Android's installer, which asks you to confirm. Two channels: **Nightly** (the newest build, published by CI on every push to `main`, versions like `0.7.1-nightly.45`) and
-**Stable**, the default (the latest GitHub release, made with one click from the Actions tab or by pushing a tag such as `v1.0.0`). The app can
+hands it to Android's installer, which asks you to confirm. Two channels: **Nightly** (the newest build, published by CI on every push to `main`, versions like `1.10.0-nightly.45`) and
+**Stable**, the default (the latest GitHub release, made with one click from the Actions tab or by pushing a tag such as `v1.10.0`). The app can
 also look for news a few seconds after it starts (switchable). Every build is signed with **one permanent key** kept in GitHub
 secrets, which is what lets each build install over the last one without uninstalling. The one-time setup, the daily routine and
 the error messages are in **[UPDATES.md](UPDATES.md)**. The only network use is fetching two files from github.com; the app has
