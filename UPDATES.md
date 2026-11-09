@@ -48,7 +48,7 @@ under *Settings > Updates > Check at start-up*.
 | | **Nightly** | **Stable** |
 | --- | --- | --- |
 | What it is | the newest build: every push to `main` replaces it | a release you made on purpose |
-| Version name | `1.10.0-nightly.45` (the number counts builds) | `1.10.0` |
+| Version name | `1.10.1-nightly.45` (the number counts builds) | `1.10.1` |
 | When | within minutes of a push | when you decide |
 | Use it for | trying the latest changes | the version you fly with |
 
@@ -56,12 +56,12 @@ Choose the channel under *Settings > Updates*. Each channel only offers builds *
 the build number), so switching from Nightly to a Stable release that was built earlier says "you have the latest": it will not
 step backwards. (Going back to an older build means uninstalling once.)
 
-**Making a stable release.** First set `baseVersion` in `app/build.gradle.kts` to the number you want (for example `1.10.0`)
+**Making a stable release.** First set `baseVersion` in `app/build.gradle.kts` to the number you want (for example `1.10.1`)
 and push it. Then either:
 
-- **On GitHub (easiest):** *Actions* tab > *build* > **Run workflow** > type the tag in the box (`v1.10.0`) > *Run workflow*.
+- **On GitHub (easiest):** *Actions* tab > *build* > **Run workflow** > type the tag in the box (`v1.10.1`) > *Run workflow*.
   It builds, signs, creates the tag and publishes the release (the notes are written from your commits).
-- **Or from a terminal:** `git tag v1.10.0 && git push origin v1.10.0`.
+- **Or from a terminal:** `git tag v1.10.1 && git push origin v1.10.1`.
 - **Or** create a release by hand on GitHub with a new tag that starts with `v`: the build attaches the APK to it.
 
 A tag that already exists is never moved: use a new tag for each release.

@@ -5,7 +5,7 @@
 # With the additional permission for the RadioMaster AX SDK described in the LICENSE file.
 
 # Writes update.json and SHA256SUMS next to the APK, for the app's updater.
-#   usage:  CHANNEL=nightly RUN_NUMBER=42 VERSION_NAME=1.10.0-nightly.42 NOTES="what changed" tools/package-update.sh dist/ax-hud.apk
+#   usage:  CHANNEL=nightly RUN_NUMBER=42 VERSION_NAME=1.10.1-nightly.42 NOTES="what changed" tools/package-update.sh dist/ax-hud.apk
 # The version code is 1000 + the CI run number (the same rule as app/build.gradle.kts).
 set -euo pipefail
 APK="${1:?usage: package-update.sh path/to/ax-hud.apk}"

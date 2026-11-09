@@ -40,7 +40,7 @@ Bu uygulama deneyseldir ve **yedek bir bilgi kaynağı** olarak kullanılmalıd�
 
 ## Gizlilik
 
-Uygulama güncellemeleri almak için github.com'a bağlanır; başka bir yere veri göndermez. GPS konumu bulunduğunda, uçuş sırasında ve bağlantı kaybında da son bilinen konum kumandanın uygulama klasöründeki `last_position.txt` dosyasına kaydedilir; bu, uçuş kayıtlarından bağımsızdır. Uçuş kayıtlarını açarsanız (varsayılan olarak kapalı), CSV dosyaları da GPS konumu içerebilir. Bu dosyalar siz başka yere kopyalamadıkça kumandada kalır. Uçtuğunuz yeri gösteren kayıtları veya ekran görüntülerini yayımlamayın.
+Uygulama güncellemeleri almak için github.com'a bağlanır; başka bir yere veri göndermez. GPS konumu bulunduğunda, uçuş sırasında ve bağlantı kaybında da son bilinen konum kumandanın uygulama klasöründeki `last_position.txt` dosyasına kaydedilir; bu, uçuş kayıtlarından bağımsızdır. Uçuş kayıtlarını açarsanız (varsayılan olarak kapalı), CSV dosyaları da GPS konumu içerebilir. MENU düğmesinden uzakta, ekranın üst kenarına üç kez dokunmak, görünen koordinatlar dâhil tam ekran bir PNG'yi `Pictures/AX-HUD` klasörüne kaydeder. Bu dosyalar başka yere kopyalamadıkça kumandada kalır. Uçtuğunuz yeri gösteren kayıtları veya ekran görüntülerini yayımlamayın.
 
 ## Teşekkür
 

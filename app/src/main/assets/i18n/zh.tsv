@@ -812,3 +812,7 @@ Use the {0} preset and replace the current layout?	使用“{0}”预设并替�
 Apply	应用
 Dashboard layout updated.	仪表盘布局已更新。
 Choose a dashboard preset...	选择仪表盘预设...
+Screenshot saved to Pictures/AX-HUD.	屏幕截图已保存到 Pictures/AX-HUD。
+Couldn't save the screenshot. Check storage permission and available space.	无法保存屏幕截图。请检查存储权限和可用空间。
+Storage permission was denied; the screenshot was not saved.	存储权限被拒绝；未保存屏幕截图。
+Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	避开 MENU 按钮，在屏幕顶部轻点三次，即可将屏幕截图保存到 Pictures/AX-HUD。

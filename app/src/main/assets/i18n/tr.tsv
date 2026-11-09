@@ -812,3 +812,7 @@ Use the {0} preset and replace the current layout?	{0} ön ayarı kullanılsın 
 Apply	Uygula
 Dashboard layout updated.	Pano yerleşimi güncellendi.
 Choose a dashboard preset...	Bir pano ön ayarı seçin...
+Screenshot saved to Pictures/AX-HUD.	Ekran görüntüsü Pictures/AX-HUD klasörüne kaydedildi.
+Couldn't save the screenshot. Check storage permission and available space.	Ekran görüntüsü kaydedilemedi. Depolama iznini ve boş alanı kontrol edin.
+Storage permission was denied; the screenshot was not saved.	Depolama izni reddedildi; ekran görüntüsü kaydedilmedi.
+Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	Ekran görüntüsünü Pictures/AX-HUD klasörüne kaydetmek için MENU düğmesinden uzakta, ekranın üst kenarına üç kez dokunun.

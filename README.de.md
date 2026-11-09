@@ -40,7 +40,7 @@ Die App ist experimentell und nur als **zweite Informationsquelle** gedacht; sie
 
 ## Datenschutz
 
-Die App verbindet sich für Updates mit github.com und sendet keine Daten an andere Stellen. Wenn ein GPS-Fix vorliegt, speichert sie die letzte bekannte Position auch während des Fluges und bei einem Verbindungsverlust in `last_position.txt` im App-Ordner auf der Fernsteuerung; das ist unabhängig von den Flugprotokollen. Wenn du Flugprotokolle aktivierst (standardmäßig aus), können auch die CSV-Dateien GPS-Positionen enthalten. Diese Dateien bleiben auf der Fernsteuerung, sofern du sie nicht kopierst. Veröffentliche keine Protokolle oder Screenshots, die zeigen, wo du fliegst.
+Die App verbindet sich für Updates mit github.com und sendet keine Daten an andere Stellen. Wenn ein GPS-Fix vorliegt, speichert sie die letzte bekannte Position auch während des Fluges und bei einem Verbindungsverlust in `last_position.txt` im App-Ordner auf der Fernsteuerung; das ist unabhängig von den Flugprotokollen. Wenn du Flugprotokolle aktivierst (standardmäßig aus), können auch die CSV-Dateien GPS-Positionen enthalten. Drei schnelle Berührungen oben am Bildschirm, nicht auf MENU, speichern einen PNG-Screenshot des ganzen Bildschirms einschließlich sichtbarer Koordinaten in `Pictures/AX-HUD`. Diese Dateien bleiben auf der Fernsteuerung, sofern du sie nicht kopierst. Veröffentliche keine Protokolle oder Screenshots, die zeigen, wo du fliegst.
 
 ## Dank
 

@@ -251,9 +251,14 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         b.text = label
         b.isAllCaps = false
         b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+        b.setPaddingRelative(dp(16), dp(8), dp(16), dp(8))
+        b.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)
         b.isEnabled = enabled
         b.setOnClickListener { onClick() }
-        target.addView(b, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        target.addView(b, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also {
+            it.topMargin = dp(4)
+            it.bottomMargin = dp(4)
+        })
     }
 
     /**
@@ -432,6 +437,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             toggle(tr("Always show the MENU button"), host.menuAlways()) { host.setMenuAlways(it) }
             note(tr("Off: the button hides and appears when you touch the screen."))
             toggle(tr("Start-up splash screen (logo and version, 2 seconds)"), host.splashOn()) { host.setSplashOn(it) }
+            note(tr("Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD."))
 
         }
         group("aircraft", tr("Aircraft and battery"), "aircraft") {

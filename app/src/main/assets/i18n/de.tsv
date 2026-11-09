@@ -812,3 +812,7 @@ Use the {0} preset and replace the current layout?	Voreinstellung {0} verwenden 
 Apply	Anwenden
 Dashboard layout updated.	Dashboard-Layout aktualisiert.
 Choose a dashboard preset...	Dashboard-Voreinstellung auswählen...
+Screenshot saved to Pictures/AX-HUD.	Screenshot in Pictures/AX-HUD gespeichert.
+Couldn't save the screenshot. Check storage permission and available space.	Screenshot konnte nicht gespeichert werden. Prüfe die Speicherberechtigung und den verfügbaren Speicherplatz.
+Storage permission was denied; the screenshot was not saved.	Speicherberechtigung verweigert; der Screenshot wurde nicht gespeichert.
+Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	Tippe dreimal oben auf den Bildschirm, nicht auf MENU, um einen Screenshot in Pictures/AX-HUD zu speichern.

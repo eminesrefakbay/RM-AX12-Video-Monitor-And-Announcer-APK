@@ -120,6 +120,13 @@ class MainActivity : Activity() {
     private lateinit var warningBar: WarningBar
     private var sticksEnabled = false
     private lateinit var menuButton: Button
+    private var topTapCandidate = false
+    private var topTapDownX = 0f
+    private var topTapDownY = 0f
+    private var topTapDownAt = 0L
+    private var topTapCount = 0
+    private var lastTopTapAt = 0L
+    private var screenshotPending = false
     private var overlayWasOpen = false
     private val hideMenuRunnable = Runnable {
         if (!Prefs.menuAlways(this) && !anyOverlayOpen()) menuButton.visibility = View.GONE
@@ -135,6 +142,7 @@ class MainActivity : Activity() {
     private companion object {
         const val HOLD_REBUILD_MS = 10_000L     // a rebuild or a permission dialog: the screen is back within seconds
         const val HOLD_OPENED_MS = 40_000L      // a file picker, the rules editor, the browser: a little longer, but never for ever
+        const val SCREENSHOT_PERMISSION_REQUEST = 2
     }
 
     private val sdkLinkHolder = lazy { if (AxSdkJni.loaded) AxSdkRadioLink(applicationContext) else null }
@@ -392,12 +400,75 @@ class MainActivity : Activity() {
                 holdX = ev.rawX
                 holdY = ev.rawY
                 if (videoEditAllowed() && !onMenuButton(ev.rawX, ev.rawY)) ui.postDelayed(holdFire, HoldGesture.HOLD_MS)
+                val bandHeight = if (menuButton.height > 0) menuButton.height.toFloat() else dp(48).toFloat()
+                topTapCandidate = ev.pointerCount == 1 && ev.y in 0f..bandHeight &&
+                    !anyOverlayOpen() && splash?.isShowing != true && !onMenuButton(ev.rawX, ev.rawY)
+                if (topTapCandidate) {
+                    topTapDownX = ev.x
+                    topTapDownY = ev.y
+                    topTapDownAt = SystemClock.elapsedRealtime()
+                } else {
+                    topTapCount = 0
+                }
             }
-            MotionEvent.ACTION_MOVE ->
+            MotionEvent.ACTION_MOVE -> {
                 if (HoldGesture.moved((ev.rawX - holdX).toDouble(), (ev.rawY - holdY).toDouble(), HoldGesture.SLOP_DP * resources.displayMetrics.density.toDouble())) ui.removeCallbacks(holdFire)
-            MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> ui.removeCallbacks(holdFire)
+                if (topTapCandidate && HoldGesture.moved(
+                        (ev.x - topTapDownX).toDouble(),
+                        (ev.y - topTapDownY).toDouble(),
+                        HoldGesture.SLOP_DP * resources.displayMetrics.density.toDouble()
+                    )) topTapCandidate = false
+            }
+            MotionEvent.ACTION_UP -> {
+                ui.removeCallbacks(holdFire)
+                if (topTapCandidate && SystemClock.elapsedRealtime() - topTapDownAt <= 350L &&
+                    ev.y in 0f..(if (menuButton.height > 0) menuButton.height.toFloat() else dp(48).toFloat()) &&
+                    !anyOverlayOpen() && !onMenuButton(ev.rawX, ev.rawY)) {
+                    val now = SystemClock.elapsedRealtime()
+                    if (now - lastTopTapAt > 700L) topTapCount = 0
+                    lastTopTapAt = now
+                    topTapCount++
+                    if (topTapCount == 3 && !screenshotPending) {
+                        topTapCount = 0
+                        requestScreenshot()
+                    }
+                } else {
+                    topTapCount = 0
+                }
+                topTapCandidate = false
+            }
+            MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_CANCEL -> {
+                ui.removeCallbacks(holdFire)
+                topTapCandidate = false
+                topTapCount = 0
+            }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun requestScreenshot() {
+        if (screenshotPending) return
+        if (Build.VERSION.SDK_INT < 29 &&
+            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), SCREENSHOT_PERMISSION_REQUEST)
+            return
+        }
+        captureScreenshot()
+    }
+
+    private fun captureScreenshot() {
+        screenshotPending = true
+        ScreenCapture.captureAndSave(
+            this,
+            onSaved = {
+                screenshotPending = false
+                Toasts.make(this, tr("Screenshot saved to Pictures/AX-HUD."), Toast.LENGTH_LONG).show()
+            },
+            onFailure = {
+                screenshotPending = false
+                Toasts.make(this, tr("Couldn't save the screenshot. Check storage permission and available space."), Toast.LENGTH_LONG).show()
+            }
+        )
     }
 
     private fun anyOverlayOpen(): Boolean = mainMenu.isShowing || rulesPanel.isShowing || warnPanel.isShowing || checkPanel.isShowing || settingsPanel.isShowing || aboutPanel.isShowing || welcomeGuide.isShowing || logViewer.isShowing || extras.packPanel.isShowing || extras.positionPanel.isShowing || diagPanel.isShowing || replay != null || dashboard.isEditing || editingLayout
@@ -479,6 +550,11 @@ class MainActivity : Activity() {
 
     override fun onRequestPermissionsResult(code: Int, permissions: Array<out String>, results: IntArray) {
         super.onRequestPermissionsResult(code, permissions, results)
+        if (code == SCREENSHOT_PERMISSION_REQUEST) {
+            if (results.firstOrNull() == PackageManager.PERMISSION_GRANTED) captureScreenshot()
+            else Toasts.make(this, tr("Storage permission was denied; the screenshot was not saved."), Toast.LENGTH_LONG).show()
+            return
+        }
         if (results.isNotEmpty() && results[0] == PackageManager.PERMISSION_GRANTED && !dashboardOn) camera.start()
     }
 

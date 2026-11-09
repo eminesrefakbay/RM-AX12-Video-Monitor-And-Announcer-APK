@@ -220,6 +220,9 @@ MENU
 Diagnostics
 Warning rules
 Pre-flight checks
+Screenshot saved to Pictures/AX-HUD.
+Couldn't save the screenshot. Check storage permission and available space.
+Storage permission was denied; the screenshot was not saved.
 SDK start failed ({0})
 Sound rules: {0} error(s). Open the rules editor.
 Pre-flight checks: {0} error(s). Open Settings, then the checks.
@@ -572,6 +575,7 @@ Dark text on light backgrounds for the menu, the settings, the other screens and
 Always show the MENU button
 Off: the button hides and appears when you touch the screen.
 Start-up splash screen (logo and version, 2 seconds)
+Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.
 Aircraft and battery
 Active aircraft
 Manage the aircraft (add, rename, delete)...
