@@ -3,6 +3,7 @@
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
 # AX-HUD: AX12 video monitor, HUD and announcer (v1.8.0)
+> **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -502,20 +503,15 @@ Without those files the app still builds and runs on the test sliders.
 
 Locally: JDK 17, Android SDK + NDK, `gradle :app:assembleDebug` (copy the SDK files in first, same folders).
 
-## Serial lock (open question)
+## Serial lock workaround
 
-The SDK talks to the radio over a serial link that Qt's `QSerialPort` opens only after creating a lock file.
-An Android app has no writable lock directory, so the link may never open: then the Show variables panel says
-`radio config: NOT loaded yet` and `mixout msgs` stays 0.
+The SDK talks to the radio over a serial link that Qt's `QSerialPort` opens only after creating a lock file. An Android app has no writable lock directory, so the link may never open: then the Show variables panel says `radio config: NOT loaded yet` and `mixout msgs` stays 0.
 
 * The app always points Qt's temp folder (`TMPDIR`) at its own data folder before the SDK starts (as RadioMaster's demo does).
-* RadioMaster's demo also patches two instructions of the bundled Qt serial library at run time. That is the
-  **second APK** the CI builds, `ax12-announcer-debug-lockpatch.apk` (Gradle flag `-PaxLockPatch=true`).
-  It checks both instructions are exactly the expected ones before changing anything. Off in the plain APK.
+* To bypass the QSerialPort lock file requirement on Android, the app applies a memory patch similar to the official demo. That is the **second APK** the CI builds, `ax12-announcer-debug-lockpatch.apk` (Gradle flag `-PaxLockPatch=true`). It checks both instructions are exactly the expected ones before changing anything. Off in the plain APK.
 * Close RadioMaster's own AX app first: two programs must not read the same serial port.
 * Look for the cause in `adb logcat`: lines with `qt`, `serial`, `lock` or `ax12bridge` ("Failed to create a lock file").
 * The proper fix is an official way from RadioMaster to open the link; please ask them.
-
 ## Try it without the radio
 
 Settings > Diagnostics > Test channels shows 16 sliders (1000..2000 us). Move ch5 above 1500 and listen.
