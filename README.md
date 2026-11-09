@@ -389,7 +389,7 @@ screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| 
 * **Settings rows: label and value.** A setting that cycles through values is one row: the label on the left, the value on the right
   in blue ("Size ... Medium"), instead of "Size: Medium (tap to change)". Rows are at least 48 dp tall, and long labels wrap, so German
   and Turkish fit.
-* **The MENU is a grid of eight large square tiles** (two rows of four: Sound rules, Speech, Battery, Aircraft, Dashboard or Video, Flight logs, Settings, Exit), each
+* **The MENU is a grid of nine large square tiles** (two rows: Sound rules, Speech, Battery, Aircraft and Sunlight in the first; Dashboard or Video, Flight logs, Settings and Exit in the second), each
   with an icon, a name and, where there is something to show, its state: Speech shows On or Off, Battery the pack in use, Aircraft the
   aircraft in use, in words and in a coloured bar along the bottom (green On, red Off, blue for the pack and aircraft). Speech and
   Battery keep the menu open when tapped, so the new state can be seen at once.
@@ -521,14 +521,16 @@ Settings > Diagnostics > Test channels shows 16 sliders (1000..2000 us). Move ch
 ```
 mkdir -p out
 javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
-java -cp out dev.ax12.announcer.RuleEngineTest && java -cp out dev.ax12.announcer.ExtraTests
+for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests FirstRunTests LanguageFitTests CheckCardTests LogFormatTests FlightLoggerTests LogStoreTests ReplayTests LogTextTests DashboardTests PositionTests WindowTests PackTests SunlightTests DiagTests FontTests ShapeTests SplashTests I18nTests; do
+  java -cp out dev.ax12.announcer.$t
+done
 # native core (needs the SDK headers in sdk-src/include/rmAxSdk1):
 g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/test/cpp/bridge_core_test.cpp app/src/main/cpp/bridge_core.cpp -o bridge_test && ./bridge_test
 ```
 
 ## Privacy
 
-GPS coordinates are shown on screen. They are also written to a file **only if you switch on flight logs** (Settings > Flight logs, off by default), and that file stays on the radio. Do not commit flight logs or screenshots that show where you fly.
+GPS coordinates are shown on screen. When a GPS fix is available, the app also saves the last known position to `last_position.txt` in its app folder, including during flight and when the link is lost; this is independent of flight logging. If you enable flight logs (off by default), those CSV files can also contain GPS positions. These files stay on the radio unless you copy them elsewhere. Do not commit flight logs or screenshots that show where you fly.
 
 ## Updates from GitHub
 
