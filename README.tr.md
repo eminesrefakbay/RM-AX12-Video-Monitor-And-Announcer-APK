@@ -4,6 +4,8 @@
 
 # AX-HUD: AX12 video monitörü, HUD ve sesli uyarı
 
+> **Sorumluluk reddi:** AX-HUD bağımsız, açık kaynaklı bir projedir; RadioMaster ile resmî bir bağlantısı yoktur ve RadioMaster tarafından onaylanmaz veya desteklenmez. Kullanım kendi sorumluluğunuzdadır. Uygulama telemetri verilerini yalnızca okur, kumanda ayarlarına yazmaz; ancak ekipmanınız, yapılandırmanız ve uçuş güvenliğinizden yalnızca siz sorumlusunuz.
+
 **AX-HUD**, RadioMaster AX12 için bir Android uygulamasıdır. Kumandadan yalnızca **okur**, hiçbir ayar yazmaz.
 
 ## Ne yapar?
@@ -12,6 +14,7 @@
 * Yazdığınız kurallarla **sesli uyarı** verir. Örnek: `ch5 >= 1500 -> motorlar aktif`. Kurallar uygulama içinden düzenlenir: eşikler, `and`/`or` mantığı, anahtar algılama, `{vbat/6:2}` gibi canlı değerler.
 * Kurallarla aynı mantıkta çalışan bir **uyarı durum çubuğu** gösterir (kritik = kırmızı ve yanıp söner, uyarı = sarı, bilgi = mavi; istenirse N saniye sonra gizlenir).
 * **Ekran katmanları:** stick görünümü ve aux anahtar çubukları (adları değiştirilebilir, ters çevrilebilir), uçuş istatistikleri (en yüksek hız, en yüksek irtifa, tepe akım), radar ve uçuş öncesi kontrol listesi.
+* **Menü:** Ses kuralları, Konuşma, Pil, Hava aracı ve Güneş ışığı ilk sırada; Pano/Video, Uçuş kayıtları, Ayarlar ve Çıkış ikinci sırada olmak üzere dokuz kutucuk.
 * **GitHub'dan güncelleme:** Ayarlar > Güncellemeler. İki kanal: Nightly (her push) ve Stable (sürümler). Ayrıntılar: [UPDATES.md](UPDATES.md).
 * **Dil:** İngilizce, Türkçe, Almanca, Çince. Ayarlar > Dil. Ses, ekrandan farklı bir dilde konuşabilir.
 
@@ -21,13 +24,23 @@
 * **Releases** sayfasından `ax-hud.apk` dosyasını indirin (seri kilit yamalı olan; AX12'de çalışan budur) ve kurun.
 * AX12'nin kendi RadioMasterAX uygulamasını **kapatın**: seri portu aynı anda yalnızca bir uygulama kullanabilir. AX-HUD kapanınca port geri verilir.
 
+## Seri port kilidi geçici çözümü
+
+SDK, Qt'nin `QSerialPort` bileşeni üzerinden seri porta erişirken bir kilit dosyası oluşturmak ister. Android uygulamasının yazma izni olan bir kilit dizini bulunmadığında bağlantı açılamayabilir; Değişkenleri göster panelinde `radio config: NOT loaded yet` görünür ve `mixout msgs` değeri 0 kalır.
+
+* SDK başlamadan önce uygulama, Qt'nin geçici dosya dizinini (`TMPDIR`) kendi veri klasörüne ayarlar.
+* Android'de `QSerialPort` kilit dosyası gereksinimini aşmak için uygulama, resmî demodakine benzer bir bellek yaması kullanır. CI ayrıca `-PaxLockPatch=true` ile `ax12-announcer-debug-lockpatch.apk` dosyasını oluşturur. Yama yalnızca beklenen iki makine talimatı doğrulandığında uygulanır; normal APK'da kapalıdır.
+* AX12'nin RadioMaster uygulamasını kapatın; seri portu aynı anda iki uygulama kullanmamalıdır.
+* Sorunu araştırmak için `adb logcat` çıktısında `qt`, `serial`, `lock` veya `ax12bridge` ifadelerini ve `Failed to create a lock file` iletisini arayın.
+* Kalıcı çözüm, RadioMaster'ın seri bağlantıyı açmak için resmî bir yöntem sunmasıdır; bu desteği RadioMaster'dan isteyin.
+
 ## Güvenlik
 
 Bu uygulama deneyseldir ve **yedek bir bilgi kaynağı** olarak kullanılmalıdır; uçuş kontrolcünüzün OSD'sinin yerini tutmaz. Kullanım kendi sorumluluğunuzdadır. Bulunduğunuz yerin kurallarına uygun uçun. Uçuş sırasında güncelleme yapmayın.
 
 ## Gizlilik
 
-Uygulamanın internet izni yalnızca github.com'dan güncelleme bilgisini ve APK'yı almak içindir. Hiçbir veri gönderilmez. Ayarlar > Uçuş kayıtları (varsayılan olarak kapalı) açılırsa GPS konumları da kumandadaki bir dosyaya yazılır; dosya kumandada kalır. Böyle bir kaydı, uçtuğunuz yeri gösteriyorsa yayımlamayın.
+Uygulama güncellemeleri almak için github.com'a bağlanır; başka bir yere veri göndermez. GPS konumu bulunduğunda, uçuş sırasında ve bağlantı kaybında da son bilinen konum kumandanın uygulama klasöründeki `last_position.txt` dosyasına kaydedilir; bu, uçuş kayıtlarından bağımsızdır. Uçuş kayıtlarını açarsanız (varsayılan olarak kapalı), CSV dosyaları da GPS konumu içerebilir. Bu dosyalar siz başka yere kopyalamadıkça kumandada kalır. Uçtuğunuz yeri gösteren kayıtları veya ekran görüntülerini yayımlamayın.
 
 ## Teşekkür
 
