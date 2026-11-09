@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.8.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.9.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
@@ -14,28 +14,6 @@
 * has a second page, the **dashboard**: cards only and no video, with an artificial horizon, a compass, value cards, radar, charts and sticks, for goggles or a second pair of eyes;
 * can **record every flight** to a CSV file (off by default) and **replay** it on the radio: radar, sticks, channel bars and charts;
 * only **reads** from the radio. It never writes a setting.
-
-## Screenshots
-
-![AX-HUD in flight on the RadioMaster AX12: live charts, radar map, flight statistics and stick view over the video](docs/screenshots/hud-flight-annotated.jpg)
-
-*In flight on the AX12 (the video and the OSD are the flight controller's; the cards on top are AX-HUD):*
-**1** live charts of link quality, cell volts and current, **2** radar map with home, your track and range rings, **3** flight statistics,
-**4** stick view with the aux channel bars, **5** the MENU button.
-
-![The AX-HUD menu: large tiles over the live video, and the amber warning bar](docs/screenshots/hud-menu.jpg)
-
-*The MENU (a photo of an earlier version, with six of today's nine tiles): large tiles with their state: speech on, the pack in use and the aircraft in use. The video
-stays visible behind it. The amber bar along the top is the warning bar; each level has its own shape, here the diamond of a warning.*
-
-![The pre-flight check card, all items ticked and READY](docs/screenshots/hud-preflight.jpg)
-
-*The pre-flight check (a photo of the radio's screen): the aircraft and the pack are named under the title, and every item must be ticked
-before it says READY.*
-
-![AX-HUD on the ground, waiting for a GPS fix](docs/screenshots/hud-ground.jpg)
-
-*On the ground: the same screen before take-off, waiting for a GPS fix.*
 
 ## Install and first start
 
@@ -70,6 +48,35 @@ different language than the screen. German and Chinese have not been checked by 
 **[TRANSLATING.md](TRANSLATING.md)** to improve a text. A test estimates whether the translated texts fit their places (menu tiles,
 the welcome guide, buttons); it is a safety net, not a measurement on the radio. If a device has no Chinese font, the Chinese screen
 language is skipped, because every text would show as empty boxes; if there is no voice for a speech language, Settings says so.
+
+## Quick navigation
+
+In a hurry? Start with [installation](#install-and-first-start), then see the [flight screen](#flight-overlays-statistics-radar-and-pre-flight-checklist),
+[menu and settings](#menu-and-settings), or [dashboard](#dashboard-a-second-page-with-cards-only). For deeper details, jump to
+[flight logs and replay](#flight-logs-and-replay), [rules](#rules), [diagnostics](#diagnostics-and-bug-report),
+[serial lock troubleshooting](#serial-lock-workaround), [build instructions](#build), or [privacy](#privacy).
+
+## Screenshots
+
+![AX-HUD in flight on the RadioMaster AX12: live charts, radar map, flight statistics and stick view over the video](docs/screenshots/hud-flight-annotated.jpg)
+
+*In flight on the AX12 (the video and the OSD are the flight controller's; the cards on top are AX-HUD):*
+**1** live charts of link quality, cell volts and current, **2** radar map with home, your track and range rings, **3** flight statistics,
+**4** stick view with the aux channel bars, **5** the MENU button.
+
+![The AX-HUD menu: large tiles over the live video, and the amber warning bar](docs/screenshots/hud-menu.jpg)
+
+*The MENU (a photo of an earlier version, with six of today's nine tiles): large tiles with their state: speech on, the pack in use and the aircraft in use. The video
+stays visible behind it. The amber bar along the top is the warning bar; each level has its own shape, here the diamond of a warning.*
+
+![The pre-flight check card, all items ticked and READY](docs/screenshots/hud-preflight.jpg)
+
+*The pre-flight check (a photo of the radio's screen): the aircraft and the pack are named under the title, and every item must be ticked
+before it says READY.*
+
+![AX-HUD on the ground, waiting for a GPS fix](docs/screenshots/hud-ground.jpg)
+
+*On the ground: the same screen before take-off, waiting for a GPS fix.*
 
 ## Flight overlays: statistics, radar and pre-flight checklist
 
@@ -214,8 +221,10 @@ runs on it too.
   handle to resize it, and use *Add a card*, *Remove a card* and *Edit a value card* in the bar. *Reset the dashboard layout* brings back the
   first dashboard. The layout is part of the settings backup.
 
-  <img width="750" height="1000" alt="10011a62-f9d3-4c3b-ba29-bdc846283e67" src="https://github.com/user-attachments/assets/b166e994-a24f-42f5-8d2a-b7b36cb59e1a" />
-An example dashboard design for fixed wing setup. it can also be used for educating purposes using field monitor by video feed from hdmi out port.
+  <img width="750" height="1000" alt="Example dashboard layout for fixed-wing flying" src="https://github.com/user-attachments/assets/b166e994-a24f-42f5-8d2a-b7b36cb59e1a" />
+
+*Example dashboard layout for a fixed-wing aircraft. It can also support instruction when a field monitor displays the HDMI video feed.*
+
 ## Flight logs and replay
 
 **Settings > Flight logs** (off by default) writes a log of every flight, from arming to disarming (the arm switch you set under
