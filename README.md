@@ -213,6 +213,8 @@ runs on it too.
   handle to resize it, and use *Add a card*, *Remove a card* and *Edit a value card* in the bar. *Reset the dashboard layout* brings back the
   first dashboard. The layout is part of the settings backup.
 
+  <img width="750" height="1000" alt="10011a62-f9d3-4c3b-ba29-bdc846283e67" src="https://github.com/user-attachments/assets/b166e994-a24f-42f5-8d2a-b7b36cb59e1a" />
+An example dashboard design for fixed wing setup. it can also be used for educating purposes using field monitor by video feed from hdmi out port.
 ## Flight logs and replay
 
 **Settings > Flight logs** (off by default) writes a log of every flight, from arming to disarming (the arm switch you set under
