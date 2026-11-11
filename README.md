@@ -37,7 +37,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,049 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,055 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -543,6 +543,11 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 ```
 
 ## Privacy
+
+Permissions: the **camera** (the HDMI input reaches Android as a camera), **internet** and **install packages** (only for the update check and
+the update you ask for), and, on Android 9 and older, **storage read and write**, used only to save a screenshot (triple tap on the top edge)
+to `Pictures/AX-HUD`; Android 9 lists them as two switches and the app asks for both. If a screenshot cannot be saved, *Settings > Diagnostics*
+shows why in the events.
 
 GPS coordinates are shown on screen. When a GPS fix is available, the app also saves the last known position to `last_position.txt` in its app folder, including during flight and when the link is lost; this is independent of flight logging. If you enable flight logs (off by default), those CSV files can also contain GPS positions. Three taps on the top edge (away from MENU) save a full-screen PNG, including any visible coordinates, to `Pictures/AX-HUD`. These files stay on the radio unless you copy them elsewhere. Do not commit flight logs or screenshots that show where you fly.
 

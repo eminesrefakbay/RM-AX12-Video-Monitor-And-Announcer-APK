@@ -58,9 +58,8 @@ object ScreenCapture {
             try {
                 save(context, bitmap)
                 Handler(Looper.getMainLooper()).post(onSaved)
-            } catch (e: IOException) {
-                Handler(Looper.getMainLooper()).post(onFailure)
-            } catch (e: SecurityException) {
+            } catch (e: Exception) {
+                Diagnostics.event("screenshot", "could not save a screenshot: " + e.javaClass.simpleName + ": " + (e.message ?: ""), "warn")
                 Handler(Looper.getMainLooper()).post(onFailure)
             } finally {
                 bitmap.recycle()
@@ -108,8 +107,10 @@ object ScreenCapture {
 
     @Throws(IOException::class)
     private fun saveToPictures(context: Context, bitmap: Bitmap, fileName: String) {
+        if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) throw IOException("The storage is not available")
         val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "AX-HUD")
-        if (!directory.exists() && !directory.mkdirs()) throw IOException("Could not create screenshot folder")
+        // isDirectory, not exists: without the read permission a folder that is there can look missing, and mkdirs then reports a failure
+        if (!directory.isDirectory && !directory.mkdirs() && !directory.isDirectory) throw IOException("Could not create screenshot folder")
         val file = File(directory, fileName)
         FileOutputStream(file).use {
             if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)) throw IOException("Could not encode screenshot")

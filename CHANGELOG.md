@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.3
+
+Screenshots now work on the AX12's Android 9: the app declares and asks for both storage permissions (the radio lists read and write as two
+switches, and granting write alone left the save failing), the folder check no longer depends on read access, and any failure is caught and
+written to the diagnostics events.
+
 ## 1.10.2
 
 A fix release. The first screenshot no longer pauses the radio link (its storage permission dialog is now protected like the camera's, and is

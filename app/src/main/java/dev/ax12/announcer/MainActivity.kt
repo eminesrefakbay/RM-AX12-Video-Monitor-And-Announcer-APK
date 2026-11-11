@@ -448,18 +448,23 @@ class MainActivity : Activity() {
 
     private fun requestScreenshot() {
         if (screenshotPending) return
-        if (Build.VERSION.SDK_INT < 29 &&
-            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (!storageGranted()) {
             if (flightStats.armed()) {                   // a permission dialog pauses the screen: never ask in flight
                 Toasts.make(this, tr("The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed."), Toast.LENGTH_LONG).show()
                 return
             }
             holdLink(HOLD_REBUILD_MS)                    // the dialog pauses the screen for a moment: keep the radio link, as for the camera
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), SCREENSHOT_PERMISSION_REQUEST)
+            requestPermissions(screenshotPermissions, SCREENSHOT_PERMISSION_REQUEST)
             return
         }
         captureScreenshot()
     }
+
+    /** The public Pictures folder needs both storage permissions on Android 9 and older (this radio lists them as two switches); Android 10 and newer need none. */
+    private val screenshotPermissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    private fun storageGranted(): Boolean =
+        Build.VERSION.SDK_INT >= 29 || screenshotPermissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 
     private fun captureScreenshot() {
         screenshotPending = true
@@ -556,7 +561,8 @@ class MainActivity : Activity() {
     override fun onRequestPermissionsResult(code: Int, permissions: Array<out String>, results: IntArray) {
         super.onRequestPermissionsResult(code, permissions, results)
         if (code == SCREENSHOT_PERMISSION_REQUEST) {
-            if (results.firstOrNull() == PackageManager.PERMISSION_GRANTED) captureScreenshot()
+            val write = permissions.indexOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (write >= 0 && results.getOrNull(write) == PackageManager.PERMISSION_GRANTED) captureScreenshot()     // try it even if the read switch stayed off; a failure is said and logged
             else Toasts.make(this, tr("Storage permission was denied; the screenshot was not saved."), Toast.LENGTH_LONG).show()
             return
         }
