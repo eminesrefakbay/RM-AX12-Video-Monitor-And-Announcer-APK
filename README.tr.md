@@ -29,7 +29,7 @@
 SDK, Qt'nin `QSerialPort` bileşeni üzerinden seri porta erişirken bir kilit dosyası oluşturmak ister. Android uygulamasının yazma izni olan bir kilit dizini bulunmadığında bağlantı açılamayabilir; Değişkenleri göster panelinde `radio config: NOT loaded yet` görünür ve `mixout msgs` değeri 0 kalır.
 
 * SDK başlamadan önce uygulama, Qt'nin geçici dosya dizinini (`TMPDIR`) kendi veri klasörüne ayarlar.
-* Android'de `QSerialPort` kilit dosyası gereksinimini aşmak için uygulama, resmî demodakine benzer bir bellek yaması kullanır. CI ayrıca `-PaxLockPatch=true` ile `ax12-announcer-debug-lockpatch.apk` dosyasını oluşturur. Yama yalnızca beklenen iki makine talimatı doğrulandığında uygulanır; normal APK'da kapalıdır.
+* Android'de `QSerialPort` kilit dosyası gereksinimini aşmak için uygulama, resmî demodakine benzer bir bellek yaması kullanır. Yama `ax-hud.apk` içindedir (CI bunu `-PaxLockPatch=true` ile derler); `ax-hud-plain.apk` aynı uygulamadır ama yamasızdır. Yama yalnızca beklenen iki makine talimatı doğrulandığında uygulanır.
 * AX12'nin RadioMaster uygulamasını kapatın; seri portu aynı anda iki uygulama kullanmamalıdır.
 * Sorunu araştırmak için `adb logcat` çıktısında `qt`, `serial`, `lock` veya `ax12bridge` ifadelerini ve `Failed to create a lock file` iletisini arayın.
 * Kalıcı çözüm, RadioMaster'ın seri bağlantıyı açmak için resmî bir yöntem sunmasıdır; bu desteği RadioMaster'dan isteyin.

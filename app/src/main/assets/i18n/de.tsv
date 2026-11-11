@@ -550,7 +550,7 @@ The shape of cards, tiles and rows: two cut corners (the default), four cut corn
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	Dunkle Schrift auf hellem Grund für das Menü, die Einstellungen, die anderen Bildschirme und das Dashboard, dazu kräftigere Warnungen. In direkter Sonne ist das besser lesbar als helle Schrift auf dunklem Grund. Das MENÜ hat eine Kachel Sonnenlicht als Schnellschalter.
 Always show the MENU button	MENÜ-Taste immer anzeigen
 Off: the button hides and appears when you touch the screen.	Aus: Die Taste verschwindet und erscheint bei Berührung des Bildschirms.
-Start-up splash screen (logo and version, 2 seconds)	Startbildschirm (Logo und Version, 2 Sekunden)
+Start-up splash screen (animated, about 3 seconds)	Startbildschirm (animiert, etwa 3 Sekunden)
 Aircraft and battery	Fluggerät und Akku
 Active aircraft	Aktives Fluggerät
 Manage the aircraft (add, rename, delete)...	Fluggeräte verwalten (hinzufügen, umbenennen, löschen)...
@@ -816,3 +816,4 @@ Screenshot saved to Pictures/AX-HUD.	Screenshot in Pictures/AX-HUD gespeichert.
 Couldn't save the screenshot. Check storage permission and available space.	Screenshot konnte nicht gespeichert werden. Prüfe die Speicherberechtigung und den verfügbaren Speicherplatz.
 Storage permission was denied; the screenshot was not saved.	Speicherberechtigung verweigert; der Screenshot wurde nicht gespeichert.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	Tippe dreimal oben auf den Bildschirm, nicht auf MENU, um einen Screenshot in Pictures/AX-HUD zu speichern.
+The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.	Der erste Screenshot fragt nach Speicherzugriff: bitte am Boden, bei entwaffnetem Fluggerät.

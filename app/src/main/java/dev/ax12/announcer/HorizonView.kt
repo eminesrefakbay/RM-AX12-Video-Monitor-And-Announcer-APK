@@ -120,6 +120,12 @@ class HorizonView(context: Context) : View(context) {
     private fun hasDrawableData(now: Long): Boolean =
         !pitch.isNaN() && !roll.isNaN() && now - lastValidMs <= 2000L
 
+    override fun onDetachedFromWindow() {
+        removeCallbacks(dataExpiry)
+        expiryScheduled = false
+        super.onDetachedFromWindow()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(sizePx, sizePx)
     }

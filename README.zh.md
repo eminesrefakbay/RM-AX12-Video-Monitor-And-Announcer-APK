@@ -29,7 +29,7 @@
 SDK 通过 Qt 的 `QSerialPort` 使用串口时, 会先创建锁文件。Android 应用没有可写入的锁文件目录, 因此串口可能无法打开; 此时“显示变量”面板会显示 `radio config: NOT loaded yet`, 且 `mixout msgs` 保持为 0。
 
 * SDK 启动前, 应用会将 Qt 的临时目录 (`TMPDIR`) 指向自己的数据目录。
-* 为绕过 Android 上 `QSerialPort` 对锁文件的要求, 应用使用了类似官方示例的内存补丁。CI 还会通过 `-PaxLockPatch=true` 构建第二个 APK: `ax12-announcer-debug-lockpatch.apk`。只有在确认两条机器指令与预期完全一致后才会应用补丁; 普通 APK 中不启用该补丁。
+* 为绕过 Android 上 `QSerialPort` 对锁文件的要求, 应用使用了类似官方示例的内存补丁。该补丁包含在 `ax-hud.apk` 中 (CI 使用 `-PaxLockPatch=true` 构建); `ax-hud-plain.apk` 是不含补丁的同一应用。只有在确认两条机器指令与预期完全一致后才会应用补丁。
 * 请先关闭 AX12 自带的 RadioMasterAX 应用; 两个程序不能同时读取同一个串口。
 * 可在 `adb logcat` 中搜索 `qt`、`serial`、`lock`、`ax12bridge` 或 `Failed to create a lock file` 来排查原因。
 * 长期解决方案是由 RadioMaster 官方提供打开该连接的方法; 请向 RadioMaster 提出请求。

@@ -28,3 +28,7 @@ sdk/
 sdk-src/
 app/src/main/cpp/sdk-include/
 app/src/main/jniLibs/
+
+# Python caches and the scratch folder of tools/make_fonts.py
+__pycache__/
+tools/_fonts_tmp/

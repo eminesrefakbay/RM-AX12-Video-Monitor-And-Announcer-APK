@@ -450,6 +450,11 @@ class MainActivity : Activity() {
         if (screenshotPending) return
         if (Build.VERSION.SDK_INT < 29 &&
             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (flightStats.armed()) {                   // a permission dialog pauses the screen: never ask in flight
+                Toasts.make(this, tr("The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed."), Toast.LENGTH_LONG).show()
+                return
+            }
+            holdLink(HOLD_REBUILD_MS)                    // the dialog pauses the screen for a moment: keep the radio link, as for the camera
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), SCREENSHOT_PERMISSION_REQUEST)
             return
         }
@@ -665,7 +670,7 @@ class MainActivity : Activity() {
         }
     }
 
-    /** 20 times a second: NO VIDEO panel, read the radio, run the rules, refresh the debug panels. */
+    /** 20 times a second, on its own thread: read the radio. The UI thread takes the samples from a queue, in order. */
     private val radioPoll = object : Runnable {
         override fun run() {
             val generation = synchronized(pollLock) {
@@ -688,7 +693,7 @@ class MainActivity : Activity() {
         }
     }
 
-    /** 20 times a second: update the UI, rules and debug panels from the newest radio reading. */
+    /** 20 times a second: NO VIDEO panel, then the rules, statistics, logs and debug panels from the samples the radio thread queued. */
     private val tick = object : Runnable {
         override fun run() {
             val now = SystemClock.elapsedRealtime()

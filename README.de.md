@@ -29,7 +29,7 @@
 Das SDK greift über Qt's `QSerialPort` auf die serielle Verbindung zu und erstellt dabei eine Sperrdatei. Da eine Android-App kein beschreibbares Sperrverzeichnis hat, kann die Verbindung möglicherweise nicht geöffnet werden. Dann zeigt „Variablen anzeigen“ `radio config: NOT loaded yet` und `mixout msgs` bleibt auf 0.
 
 * Vor dem SDK-Start setzt die App Qt's temporäres Verzeichnis (`TMPDIR`) auf ihren eigenen Datenordner.
-* Um die erforderliche `QSerialPort`-Sperrdatei unter Android zu umgehen, verwendet die App einen Speicher-Patch ähnlich dem der offiziellen Demo. Die CI erstellt zusätzlich `ax12-announcer-debug-lockpatch.apk` mit `-PaxLockPatch=true`. Der Patch wird nur angewendet, wenn beide Maschinenbefehle exakt den erwarteten Werten entsprechen; in der normalen APK ist er deaktiviert.
+* Um die erforderliche `QSerialPort`-Sperrdatei unter Android zu umgehen, verwendet die App einen Speicher-Patch ähnlich dem der offiziellen Demo. Der Patch ist in `ax-hud.apk` enthalten (die CI baut sie mit `-PaxLockPatch=true`); `ax-hud-plain.apk` ist dieselbe App ohne ihn. Der Patch wird nur angewendet, wenn beide Maschinenbefehle exakt den erwarteten Werten entsprechen.
 * Schließe zuerst die RadioMasterAX-App der AX12: Zwei Programme dürfen den seriellen Port nicht gleichzeitig verwenden.
 * Suche in `adb logcat` nach `qt`, `serial`, `lock` oder `ax12bridge` sowie nach `Failed to create a lock file`.
 * Die dauerhafte Lösung wäre eine offizielle Möglichkeit von RadioMaster, die Verbindung zu öffnen. Bitte RadioMaster darum.

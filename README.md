@@ -37,7 +37,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 1,994 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,049 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -46,8 +46,9 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 English, Turkish, German and Simplified Chinese: *Settings > Language* (Automatic follows Android). The voice can speak a
 different language than the screen. German and Chinese have not been checked by native speakers yet; see
 **[TRANSLATING.md](TRANSLATING.md)** to improve a text. A test estimates whether the translated texts fit their places (menu tiles,
-the welcome guide, buttons); it is a safety net, not a measurement on the radio. If a device has no Chinese font, the Chinese screen
-language is skipped, because every text would show as empty boxes; if there is no voice for a speech language, Settings says so.
+the welcome guide, buttons); it is a safety net, not a measurement on the radio. Chinese uses a font that comes with the app (see "Chinese"), so it shows on every radio, even one with no Chinese system font (only if that
+font cannot be loaded is the Chinese screen language skipped, because every text would show as empty boxes); if there is no voice for a
+speech language, Settings says so.
 
 ## Quick navigation
 
@@ -349,7 +350,8 @@ The start-up splash is drawn and animated in one view (about 2.9 seconds; a tap 
 frame around the logo draws itself along its cut-corner outline, two corner brackets close it, the logo grows in under a passing light, a
 tag slides in, the title **AX-HUD** appears letter by letter in Teko and catches a light that runs across the letters only, a line draws
 under it, the tagline follows, and the version chip draws itself last. The timing is plain Java with tests (`SplashTimeline`); the
-animation reads nothing from the radio and the app starts up behind it, so it costs no waiting.
+animation reads nothing from the radio and the app starts up behind it, so it costs no waiting. Android's own start-up screen already
+shows the same navy, so there is no white flash before it.
 
 ## Chinese
 
@@ -357,7 +359,8 @@ Some radios, the AX12 among them, ship without a Chinese system font, and every 
 carries **Noto Sans SC** (SIL OFL), cut down to the 733 characters its Chinese texts use plus the usual punctuation (two weights, 207 KB
 each), and uses it for all text when the language is Chinese. Chinese can now be chosen on every radio, in *Settings > Language* (it comes
 after German). Numbers stay in Teko. A test checks that every character of the Chinese texts is in the font, so a text added later cannot
-silently show as a box; `tools/make_fonts.py` rebuilds the font files.
+silently show as a box. When you add a Chinese text, run `python3 tools/make_fonts.py` (it needs `pip install fonttools brotli`) and the
+font files are rebuilt with every character of the Chinese texts; then run the tests.
 
 ## Start-up time of the radio link
 
@@ -390,11 +393,12 @@ sample in the app that can move the sticks. The same lines go to logcat under th
 (`start | call took | init done | mixout | config | requests | graph`); `graph` is the time until the first stick value reached the
 screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| Out-File -Encoding utf8` to get UTF-8.
 
-## Looks: one style, plain rectangles, see-through panels, icons
+## Looks: shapes, fonts, see-through panels, icons
 
-* **Plain rectangles.** Nothing in the app has rounded corners: the cards, the MENU, the panels, the buttons, the dialogs, the switches
-  (a square thumb in a square track), the layout editor's frames and handles, the icons' rectangles. The radar is a square card; only
-  its range rings stay round.
+* **Shapes.** Cards, tiles, rows, buttons and the warning bar take the shape style chosen in *Settings > Display > Shape* (see "Shapes"):
+  two cut corners by default, or four cut corners, corner brackets, soft corners or plain rectangles. The stick boxes, the switches (a
+  square thumb in a square track), the layout editor's frames and the big text pages stay plain rectangles. The radar is a square card;
+  only its range rings stay round.
 * **Settings rows: label and value.** A setting that cycles through values is one row: the label on the left, the value on the right
   in blue ("Size ... Medium"), instead of "Size: Medium (tap to change)". Rows are at least 48 dp tall, and long labels wrap, so German
   and Turkish fit.
@@ -405,7 +409,8 @@ screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| 
 * **Connecting banner.** While the radio link comes up (the SDK needs about 12 s) a card at the top says "Connecting to the radio...
   7 s" and shows a strip that fills towards 12 s; after 20 s it says what to check (close the RadioMaster app, check that the radio is
   on). It goes when the radio answers.
-* **HUD numbers** use a condensed bold font with digits of equal width, so values do not jitter and take less room.
+* **HUD numbers** are set in Teko, a narrow bold face, drawn digit by digit in slots of equal width, so values do not jitter and take less
+  room (see "Fonts").
 * **Warning bar.** A thicker bar (48 dp) with a shape in front of the text, so it does not depend on colour alone: a triangle for
   critical, a diamond for warning, a circle for info. A critical warning breathes slowly (70 % to full) instead of blinking.
 * **No-video screen.** A big camera-off icon, "No video", and one line saying what is wrong or what to check; the technical line stays
@@ -421,7 +426,7 @@ screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| 
 * **Exit.** The MENU ends with an **Exit** item (in a warning colour, below a divider). It asks first, then closes the app, removes it
   from the recent apps and releases the radio's serial port.
 * **One look everywhere.** Every card (sticks, statistics, radar, checklist, charts) shares the same background, edge and colours, and
-  so do the menu and the panels. Buttons are flat and dark, dialog buttons are written like every other button (not in capitals), and
+  so do the menu and the panels. Buttons take the shape style of the tiles, dialog buttons are written like every other button (not in capitals), and
   every dialog is dark with light blue buttons.
 * **Capitals and spelling.** Every text starts with a capital letter (option values, column headings, error lines, hints, captions);
   no text is half in capitals and half not; one spelling (American) everywhere; one product name and one tagline on the splash and the
@@ -517,7 +522,7 @@ Locally: JDK 17, Android SDK + NDK, `gradle :app:assembleDebug` (copy the SDK fi
 The SDK talks to the radio over a serial link that Qt's `QSerialPort` opens only after creating a lock file. An Android app has no writable lock directory, so the link may never open: then the Show variables panel says `radio config: NOT loaded yet` and `mixout msgs` stays 0.
 
 * The app always points Qt's temp folder (`TMPDIR`) at its own data folder before the SDK starts (as RadioMaster's demo does).
-* To bypass the QSerialPort lock file requirement on Android, the app applies a memory patch similar to the official demo. That is the **second APK** the CI builds, `ax12-announcer-debug-lockpatch.apk` (Gradle flag `-PaxLockPatch=true`). It checks both instructions are exactly the expected ones before changing anything. Off in the plain APK.
+* To bypass the QSerialPort lock file requirement on Android, the app applies a memory patch similar to the official demo. The patch is in **`ax-hud.apk`**, which the CI builds with the Gradle flag `-PaxLockPatch=true`; **`ax-hud-plain.apk`** is the same app without it. It checks both instructions are exactly the expected ones before changing anything.
 * Close RadioMaster's own AX app first: two programs must not read the same serial port.
 * Look for the cause in `adb logcat`: lines with `qt`, `serial`, `lock` or `ax12bridge` ("Failed to create a lock file").
 * The proper fix is an official way from RadioMaster to open the link; please ask them.
@@ -550,14 +555,6 @@ also look for news a few seconds after it starts (switchable). Every build is si
 secrets, which is what lets each build install over the last one without uninstalling. The one-time setup, the daily routine and
 the error messages are in **[UPDATES.md](UPDATES.md)**. The only network use is fetching two files from github.com; the app has
 the internet permission for that and nothing else.
-
-## Start-up splash screen
-
-On a fresh start the app shows the logo with the version (name, version number and build number, read from the app
-itself) for **2 seconds**, then fades out. Two seconds is the usual range for a splash screen (1 to 3 s): long enough to
-read, short enough not to get in the way. A tap or the Back key skips it. The app starts up behind it (camera, radio
-link, settings), so it adds no waiting. Android's own start-up screen already shows the same navy and logo, so there is no
-white flash before it. A switch in Settings > Language / Dil / Sprache > Display turns the splash off.
 
 ## Logo
 

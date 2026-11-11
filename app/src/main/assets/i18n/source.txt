@@ -220,6 +220,7 @@ MENU
 Diagnostics
 Warning rules
 Pre-flight checks
+The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.
 Screenshot saved to Pictures/AX-HUD.
 Couldn't save the screenshot. Check storage permission and available space.
 Storage permission was denied; the screenshot was not saved.
@@ -574,7 +575,7 @@ The shape of cards, tiles and rows: two cut corners (the default), four cut corn
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.
 Always show the MENU button
 Off: the button hides and appears when you touch the screen.
-Start-up splash screen (logo and version, 2 seconds)
+Start-up splash screen (animated, about 3 seconds)
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.
 Aircraft and battery
 Active aircraft

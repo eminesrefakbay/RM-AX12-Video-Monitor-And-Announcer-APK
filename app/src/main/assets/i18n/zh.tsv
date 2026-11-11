@@ -550,7 +550,7 @@ The shape of cards, tiles and rows: two cut corners (the default), four cut corn
 Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	菜单、设置、其他界面和仪表盘使用浅色背景上的深色文字，并加强警告显示。在强烈日光下，这比深色背景上的浅色文字更易读。菜单中的“阳光”图块可快速切换。
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
-Start-up splash screen (logo and version, 2 seconds)	启动画面 (标志和版本, 2 秒)
+Start-up splash screen (animated, about 3 seconds)	启动画面 (动画, 约 3 秒)
 Aircraft and battery	飞行器和电池
 Active aircraft	当前飞行器
 Manage the aircraft (add, rename, delete)...	管理飞行器 (添加、重命名、删除)...
@@ -816,3 +816,4 @@ Screenshot saved to Pictures/AX-HUD.	屏幕截图已保存到 Pictures/AX-HUD。
 Couldn't save the screenshot. Check storage permission and available space.	无法保存屏幕截图。请检查存储权限和可用空间。
 Storage permission was denied; the screenshot was not saved.	存储权限被拒绝；未保存屏幕截图。
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	避开 MENU 按钮，在屏幕顶部轻点三次，即可将屏幕截图保存到 Pictures/AX-HUD。
+The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.	首次截图需要存储权限: 请在地面上、飞行器未解锁时进行。

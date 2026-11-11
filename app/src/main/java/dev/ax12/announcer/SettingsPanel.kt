@@ -436,7 +436,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             note(tr("Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch."))
             toggle(tr("Always show the MENU button"), host.menuAlways()) { host.setMenuAlways(it) }
             note(tr("Off: the button hides and appears when you touch the screen."))
-            toggle(tr("Start-up splash screen (logo and version, 2 seconds)"), host.splashOn()) { host.setSplashOn(it) }
+            toggle(tr("Start-up splash screen (animated, about 3 seconds)"), host.splashOn()) { host.setSplashOn(it) }
             note(tr("Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD."))
 
         }

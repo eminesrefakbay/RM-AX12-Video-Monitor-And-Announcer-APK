@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.10.2
+
+A fix release. The first screenshot no longer pauses the radio link (its storage permission dialog is now protected like the camera's, and is
+never asked for while the aircraft is armed). The README, the Settings label of the splash and the serial-lock section now match the app
+(shapes, the animated splash, the bundled Chinese font, the real APK names). Two small clean-ups: the horizon's expiry timer leaves with its
+view, and a stale code comment is corrected. New tests keep the README and these fixes honest.
+
 ## 1.10.1
 
 Added a triple-tap gesture along the top edge of the screen to save a full-screen PNG to `Pictures/AX-HUD`. The capture includes the video or dashboard and is available without tapping the MENU button. Screenshot messages and instructions are translated into Turkish, German and Chinese.
