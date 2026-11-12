@@ -38,7 +38,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,198 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,206 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -346,6 +346,10 @@ displays), and so do the switches and the big text pages. The corner geometry is
 draws, so a change shows at once.
 
 ## Antenna tracker
+
+> **Experimental.** The antenna tracker is new. Its packets and geometry are tested on a PC, but the Bluetooth, servo, GPS and compass parts have
+> had little testing on real hardware. Build it, try it away from people and with the antennas off first, and tell me what you see. Its
+> Bluetooth link has no pairing or encryption (see [SECURITY.md](SECURITY.md)).
 
 AX-HUD can drive an **antenna tracker**: an ESP32 with two servos (pan and tilt), its own GPS and a compass, that points your antennas (wide patch
 antennas are forgiving) at the aircraft. The firmware, the wiring and the build instructions are in **[tracker/README.md](tracker/README.md)**.

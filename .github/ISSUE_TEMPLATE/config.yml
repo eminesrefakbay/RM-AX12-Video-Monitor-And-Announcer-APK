@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Problems with the radio itself or the stock app (not AX-HUD)
+    url: https://github.com/Radiomaster-RC/AX12
+    about: The AX12, its firmware and RadioMaster's own software are RadioMaster's. AX-HUD is an independent project.
+  - name: Read the README first
+    url: https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK#readme
+    about: Install, settings, rules, flight logs, the antenna tracker and the licence notice are described there.

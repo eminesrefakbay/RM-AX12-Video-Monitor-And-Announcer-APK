@@ -1,0 +1,26 @@
+name: Question
+description: How does something work? Is my setup supported?
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The README answers many questions, and *Settings* has a search field in its title bar that finds a setting by its words.
+  - type: input
+    id: version
+    attributes:
+      label: AX-HUD version
+      placeholder: "1.12.0"
+  - type: input
+    id: setup
+    attributes:
+      label: Your setup
+      description: Flight controller and firmware, receiver, radio firmware.
+      placeholder: "INAV 9.1, ExpressLRS, AX12"
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true

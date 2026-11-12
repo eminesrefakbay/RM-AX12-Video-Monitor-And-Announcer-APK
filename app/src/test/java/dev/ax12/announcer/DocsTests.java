@@ -54,6 +54,22 @@ public class DocsTests {
         // the texts of the app and of the tracker name no place (a value for one town is wrong for everyone else)
         check(!src.contains("Mersin") && !read("tracker/README.md").contains("Mersin") && !read("tracker/src/main.cpp").contains("Mersin") && !read("app/src/main/java/dev/ax12/announcer/TrackerProtocol.java").contains("Mersin"), "no place name in the app texts, the tracker README or the tracker code");
         check(read("tracker/src/main.cpp").contains("prefs.getShort(\"decl\", 0)") && src.contains("Magnetic declination (degrees, east is positive)"), "the declination starts at 0 and the dialog asks for degrees, east positive");
+        // the community files, and the label on the tracker
+        for (String f : new String[]{"bug_report.yml", "feature_request.yml", "question.yml"}) {
+            String y = read(".github/ISSUE_TEMPLATE/" + f);
+            check(y.contains("name:") && y.contains("description:") && y.contains("body:") && y.contains("type: textarea"), f + ": an issue form with its fields");
+        }
+        String bug = read(".github/ISSUE_TEMPLATE/bug_report.yml");
+        check(bug.contains("Diagnostics and bug report") && bug.contains("Antenna tracker (experimental)") && bug.contains("id: version") && bug.contains("required: true"), "the bug form asks for the version and the diagnostics report");
+        check(read(".github/ISSUE_TEMPLATE/config.yml").contains("blank_issues_enabled: false") && new File(".github/PULL_REQUEST_TEMPLATE.md").exists(), "issues come through the forms, and pull requests have a template");
+        Matcher mail = Pattern.compile("[A-Za-z0-9._-]+@[A-Za-z0-9-]+\\.[a-z]+").matcher(read("CODE_OF_CONDUCT.md"));
+        String sec = read("SECURITY.md");
+        check(mail.find() && sec.contains("**" + mail.group() + "**") && sec.contains("no pairing and no encryption") && sec.contains("Report a vulnerability"), "SECURITY.md uses the contact address of the code of conduct and states the tracker's Bluetooth limit");
+        int at = r.indexOf("## Antenna tracker");
+        check(at > 0 && r.indexOf("> **Experimental.**", at) > at && r.indexOf("> **Experimental.**", at) < at + 200, "the README labels the antenna tracker experimental right under its heading");
+        String trk = read("tracker/README.md");
+        check(trk.contains("> **Experimental.**") && trk.contains("## Known limitations") && trk.contains("**No pairing and no encryption**"), "the tracker README is labelled experimental and lists its limits");
+
         String panel = read("app/src/main/java/dev/ax12/announcer/SettingsPanel.kt");
         check(panel.contains("Start-up splash screen (animated, about 3 seconds)") && !panel.contains("2 seconds)") && !src.contains("logo and version, 2 seconds"), "the Settings label of the splash describes the animated splash");
         check(Pattern.compile("SHOW_MS = (3[0-9]{3})L").matcher(read("app/src/main/java/dev/ax12/announcer/SplashOverlay.kt")).find(), "the splash stays about three seconds, as the label says");

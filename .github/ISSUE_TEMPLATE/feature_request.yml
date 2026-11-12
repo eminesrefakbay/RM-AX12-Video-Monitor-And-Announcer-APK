@@ -1,0 +1,47 @@
+name: Feature request
+description: An idea for AX-HUD
+title: "[Idea] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the idea. AX-HUD can only show and use what the radio's SDK and the aircraft's telemetry give it, and it only reads
+        from the radio. Ideas that fit that are the easiest to build.
+  - type: textarea
+    id: wish
+    attributes:
+      label: What would you like to be able to do?
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What do you do today, and what is missing?
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part does it concern?
+      options:
+        - Video and the camera
+        - HUD overlays and cards
+        - Speech and sound rules
+        - Warnings and checks
+        - Dashboard
+        - Flight logs and replay
+        - Approval window, landing and link loss
+        - Antenna tracker (experimental)
+        - Settings
+        - Language and texts
+        - Something else
+  - type: input
+    id: setup
+    attributes:
+      label: Flight controller and telemetry, if it matters
+      placeholder: "INAV 9.1, ExpressLRS, CRSF GPS and battery"
+  - type: checkboxes
+    id: before
+    attributes:
+      label: Before you send
+      options:
+        - label: I searched the existing issues, and the README, for the same idea.

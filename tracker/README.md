@@ -4,6 +4,9 @@ An **ESP32** that points your antennas at the aircraft. The AX-HUD app on the ra
 tracker has its **own GPS** and a **compass**, so it knows where it is and which way its base faces, works out where the aircraft is, and
 drives two servos (pan and tilt).
 
+> **Experimental.** Try it away from people, with the antennas off first, and tell me what you see. Servos can move suddenly: keep fingers and
+> cables clear. The Bluetooth link has no pairing or encryption, so anyone in range could connect and move it (see [../SECURITY.md](../SECURITY.md)).
+
 **Status: written and tested on a PC, not yet tested on hardware.** The geometry and the packets (`include/aim.h`, `include/protocol.h`) are
 plain C++ with 52 checks, read against the same packets as the app's tests. The Bluetooth, servo, GPS and compass code in `src/main.cpp` passed a
 syntax check on a PC but has not run on an ESP32. Expect to adjust things (the compass axis, the servo directions); the settings for that are in
@@ -107,3 +110,11 @@ The CI runs this, and the app's Java tests read the same `vectors.txt`. If you c
 ## Licence
 
 GPL-3.0-or-later, like the app (see the LICENSE file of the repository).
+
+## Known limitations
+
+* **Experimental:** the Bluetooth, servo, GPS and compass code has had little testing on real hardware.
+* **No pairing and no encryption** on the Bluetooth link: any Bluetooth LE device in range can connect and send commands (move the servos,
+  change the declination, start a calibration). Keep the tracker away from strangers.
+* **One tracker** is remembered by the app at a time.
+* The servos have **no position feedback**: the tracker points where it commands, and a stalled or slipping servo is not noticed.
