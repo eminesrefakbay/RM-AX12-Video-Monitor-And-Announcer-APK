@@ -817,3 +817,45 @@ Couldn't save the screenshot. Check storage permission and available space.	Scre
 Storage permission was denied; the screenshot was not saved.	Speicherberechtigung verweigert; der Screenshot wurde nicht gespeichert.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	Tippe dreimal oben auf den Bildschirm, nicht auf MENU, um einen Screenshot in Pictures/AX-HUD zu speichern.
 The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.	Der erste Screenshot fragt nach Speicherzugriff: bitte am Boden, bei entwaffnetem Fluggerät.
+Antenna tracker	Antennennachführung
+An antenna tracker points your antennas at the aircraft: an ESP32 with two servos, a GPS and a compass. The radio sends the aircraft's position over Bluetooth; the tracker does the pointing. Build instructions: the tracker folder of the project.	Eine Antennennachführung richtet Ihre Antennen auf das Fluggerät aus: ein ESP32 mit zwei Servos, GPS und Kompass. Die Fernsteuerung sendet die Position des Fluggeräts per Bluetooth; die Ausrichtung übernimmt die Nachführung. Bauanleitung: der Ordner tracker des Projekts.
+Use an antenna tracker	Antennennachführung verwenden
+Tracker	Nachführung
+Not chosen yet	Noch nicht gewählt
+Android asks for the location permission to search for Bluetooth devices. AX-HUD does not read your location.	Android verlangt die Standortberechtigung, um nach Bluetooth-Geräten zu suchen. AX-HUD liest Ihren Standort nicht.
+Follow the aircraft	Dem Fluggerät folgen
+Hold the antennas where they are	Antennen in der Position halten
+Center the antennas (straight ahead)	Antennen zentrieren (geradeaus)
+Test sweep (30 seconds)	Testschwenk (30 Sekunden)
+Compass calibration: start (turn the tracker through a full circle)	Kompasskalibrierung: starten (die Nachführung einmal ganz drehen)
+Compass calibration: save	Kompasskalibrierung: speichern
+Set the magnetic declination...	Magnetische Deklination einstellen...
+Set the antenna height above the launch point...	Antennenhöhe über dem Startpunkt einstellen...
+Magnetic declination (degrees east; Mersin is about 5.5)	Magnetische Deklination (Grad Ost; Mersin etwa 5,5)
+Antenna height above the launch point (meters)	Antennenhöhe über dem Startpunkt (Meter)
+Enter a number between {0} and {1}.	Geben Sie eine Zahl zwischen {0} und {1} ein.
+Sent to the tracker.	An die Nachführung gesendet.
+The tracker is not connected.	Die Nachführung ist nicht verbunden.
+Do this on the ground, with the aircraft disarmed.	Bitte am Boden, bei entwaffnetem Fluggerät.
+Location permission was denied, so the search cannot start.	Standortberechtigung verweigert, die Suche kann nicht starten.
+Looking for the tracker...	Suche nach der Nachführung...
+No tracker found. Is it switched on and near?	Keine Nachführung gefunden. Ist sie eingeschaltet und in der Nähe?
+Choose the tracker	Nachführung wählen
+The search could not start. Is Bluetooth switched on, and the location setting of the radio?	Die Suche konnte nicht starten. Sind Bluetooth und die Standorteinstellung der Fernsteuerung eingeschaltet?
+Bluetooth is not available on this radio.	Bluetooth ist an dieser Fernsteuerung nicht verfügbar.
+Bluetooth is switched off.	Bluetooth ist ausgeschaltet.
+Choose the tracker first.	Wählen Sie zuerst die Nachführung.
+Not connected.	Nicht verbunden.
+Connecting to the tracker...	Verbindung zur Nachführung...
+Connection lost, trying again...	Verbindung verloren, neuer Versuch...
+Connected. Waiting for the tracker's status...	Verbunden. Warte auf den Status der Nachführung...
+Connected.	Verbunden.
+Tracker GPS: {0} satellites	GPS der Nachführung: {0} Satelliten
+Tracker GPS: no fix	GPS der Nachführung: kein Fix
+Compass ready	Kompass bereit
+Compass needs calibration	Kompass muss kalibriert werden
+Calibrating the compass...	Kompass wird kalibriert...
+Following the aircraft	Folgt dem Fluggerät
+Not following the aircraft (hold, center or test)	Folgt nicht (Halten, Zentrieren oder Test)
+Waiting for the aircraft's GPS	Warte auf das GPS des Fluggeräts
+Waiting for the tracker's GPS or compass	Warte auf GPS oder Kompass der Nachführung

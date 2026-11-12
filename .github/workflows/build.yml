@@ -39,11 +39,15 @@ jobs:
         run: |
           mkdir -p out
           javac -d out app/src/main/java/dev/ax12/announcer/*.java app/src/test/java/dev/ax12/announcer/*.java
-          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests FirstRunTests LanguageFitTests CheckCardTests LogFormatTests FlightLoggerTests LogStoreTests ReplayTests LogTextTests DashboardTests PositionTests WindowTests PackTests SunlightTests DiagTests FontTests ShapeTests SplashTests ScreenshotTests DocsTests I18nTests; do
+          for t in RuleEngineTest ExtraTests RuleTextTests RulesFileTests TimingStatsTests OverlayTests AuxBarsTests FlightTests UpdateTests BatteryTests SettingsFileTests AircraftTests ChartTests LayoutTests AboutTests StartupTests SdkThreadTests AppVisibilityTests LookTests PolishTests LicenseTests FirstRunTests LanguageFitTests CheckCardTests LogFormatTests FlightLoggerTests LogStoreTests ReplayTests LogTextTests DashboardTests PositionTests WindowTests PackTests SunlightTests DiagTests FontTests ShapeTests SplashTests ScreenshotTests DocsTests TrackerProtocolTests I18nTests; do
             java -cp out dev.ax12.announcer.$t
           done
       - name: Translations are complete (every text in the code has a Turkish, German and Chinese version)
         run: python3 tools/i18n_extract.py --check
+      - name: Antenna tracker core (C++ geometry and Bluetooth packets, checked against the same packets as the app)
+        run: |
+          g++ -std=c++17 -Wall -Wextra -I tracker/include tracker/test/test_core.cpp -o /tmp/test_core
+          /tmp/test_core tracker/test/vectors.txt
       - name: Native bridge core with a fake SDK (needs only the SDK headers)
         run: |
           git clone "$SDK_REPO" sdk-src

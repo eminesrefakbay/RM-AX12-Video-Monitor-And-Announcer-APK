@@ -23,7 +23,7 @@ public final class BugReport {
 
     /** The settings that tell how the app behaves; names of aircraft and packs, rules, positions of cards and the like are left out. */
     public static final String[] SETTINGS = {
-        "language", "speechLanguage", "updateChannel", "updateAuto", "sunlight", "shape", "dashPage", "camera", "fill", "rotation", "splashOn", "menuAlways",
+        "language", "speechLanguage", "updateChannel", "updateAuto", "sunlight", "trkOn", "shape", "dashPage", "camera", "fill", "rotation", "splashOn", "menuAlways",
         "warnBarOn", "statsOn", "chartOn", "radarOn", "sticksOn", "checkOn", "barsOn", "layoutSnap", "logOn", "logRate", "logKeep",
         "winOn", "winSpeech", "debriefOn", "lossSpeech", "armCh", "armHigh", "armLow", "stickMode"
     };

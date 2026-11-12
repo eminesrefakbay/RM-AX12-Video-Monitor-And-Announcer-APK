@@ -56,7 +56,7 @@ public final class SettingsFile {
         s("aircraftStore"); s("aircraftActive");
         // flight logs
         b("layoutSnap"); b("layoutStripHidden"); b("dashPage"); s("dashTiles"); s("dashLayouts"); b("horizonInvPitch"); b("horizonInvRoll");
-        b("sunlight"); i("shape", 0, ShapeGeometry.COUNT - 1); b("winOn"); i("winStart", 0, 1439); i("winEnd", 0, 1439); s("winWarn"); b("winSpeech"); b("debriefOn"); b("lossSpeech"); s("packBook");
+        b("sunlight"); b("trkOn"); s("trkAddr"); s("trkName"); i("shape", 0, ShapeGeometry.COUNT - 1); b("winOn"); i("winStart", 0, 1439); i("winEnd", 0, 1439); s("winWarn"); b("winSpeech"); b("debriefOn"); b("lossSpeech"); s("packBook");
         b("logOn"); i("logRate", 0, FlightLogger.RATES_HZ.length - 1); i("logKeep", 0, FlightLogger.KEEP.length - 1); s("logFields");
     }
 
@@ -78,7 +78,7 @@ public final class SettingsFile {
         for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) { d(tile + "X", -1); d(tile + "Y", -1); d(tile + "Scale", 100); }
         d("batActive", 0); d("packActive", 0);
         d("layoutSnap", true); d("layoutStripHidden", false); d("dashPage", false); d("dashTiles", ""); d("dashLayouts", ""); d("horizonInvPitch", false); d("horizonInvRoll", false);
-        d("sunlight", false); d("shape", 0); d("winOn", false); d("winStart", 960); d("winEnd", 1080); d("winWarn", ApprovalWindow.DEFAULT_WARN); d("winSpeech", true); d("debriefOn", true); d("lossSpeech", true); d("packBook", "");
+        d("sunlight", false); d("trkOn", false); d("trkAddr", ""); d("trkName", ""); d("shape", 0); d("winOn", false); d("winStart", 960); d("winEnd", 1080); d("winWarn", ApprovalWindow.DEFAULT_WARN); d("winSpeech", true); d("debriefOn", true); d("lossSpeech", true); d("packBook", "");
         d("logOn", false); d("logRate", 3); d("logKeep", 1); d("logFields", "");
         d("chartOn", false); d("chartSize", 1); d("chartPos", 1); d("chartOpacity", 1); d("chartWindow", 1); d("chartSeries", ChartConfig.DEFAULT);
     }
@@ -206,6 +206,8 @@ public final class SettingsFile {
         if (key.equals("chartSeries")) return ChartConfig.valid(value) ? value : null;
         if (key.equals("dashTiles")) return DashLayout.valid(value) ? value : null;
         if (key.equals("dashLayouts")) return SavedDashLayouts.valid(value) ? value : null;
+        if (key.equals("trkAddr")) return value.isEmpty() || value.matches("([0-9A-F]{2}:){5}[0-9A-F]{2}") ? value : null;
+        if (key.equals("trkName")) return value.length() <= 32 && value.matches("[^\\p{Cntrl}]*") ? value : null;
         if (key.equals("logFields")) return value.isEmpty() ? value : (LogFields.parse(value).isEmpty() ? null : LogFields.join(LogFields.parse(value)));
         if (key.equals("packs")) return Packs.parseStrict(value) != null ? value : null;
         if (key.equals("winWarn")) return ApprovalWindow.validWarn(value) ? value : null;

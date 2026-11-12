@@ -9,7 +9,13 @@
     <!-- only used to look for an update on github.com and to download it, when you ask for it (or at start-up if you leave that on) -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- the antenna tracker (an ESP32 that points the antennas at the aircraft) is reached over Bluetooth LE. Android asks for the location permission
+         only to SEARCH for a Bluetooth device, once; the app does not read the location. A tracker that was chosen is connected by its address. -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
 
     <application
         android:name=".App"

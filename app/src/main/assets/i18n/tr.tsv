@@ -817,3 +817,45 @@ Couldn't save the screenshot. Check storage permission and available space.	Ekra
 Storage permission was denied; the screenshot was not saved.	Depolama izni reddedildi; ekran görüntüsü kaydedilmedi.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	Ekran görüntüsünü Pictures/AX-HUD klasörüne kaydetmek için MENU düğmesinden uzakta, ekranın üst kenarına üç kez dokunun.
 The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.	İlk ekran görüntüsü depolama erişimi ister: bunu yerde, hava aracı silahsızken (disarm) yapın.
+Antenna tracker	Anten takipçisi
+An antenna tracker points your antennas at the aircraft: an ESP32 with two servos, a GPS and a compass. The radio sends the aircraft's position over Bluetooth; the tracker does the pointing. Build instructions: the tracker folder of the project.	Anten takipçisi antenlerinizi hava aracına çevirir: iki servolu, GPS'li ve pusulalı bir ESP32. Telsiz hava aracının konumunu Bluetooth ile gönderir; yönlendirmeyi takipçi yapar. Yapım bilgisi: projenin tracker klasörü.
+Use an antenna tracker	Anten takipçisi kullan
+Tracker	Takipçi
+Not chosen yet	Henüz seçilmedi
+Android asks for the location permission to search for Bluetooth devices. AX-HUD does not read your location.	Android, Bluetooth cihazlarını aramak için konum izni ister. AX-HUD konumunuzu okumaz.
+Follow the aircraft	Hava aracını takip et
+Hold the antennas where they are	Antenleri olduğu yerde tut
+Center the antennas (straight ahead)	Antenleri ortala (düz ileri)
+Test sweep (30 seconds)	Test taraması (30 saniye)
+Compass calibration: start (turn the tracker through a full circle)	Pusula kalibrasyonu: başlat (takipçiyi tam bir daire döndürün)
+Compass calibration: save	Pusula kalibrasyonu: kaydet
+Set the magnetic declination...	Manyetik sapmayı ayarla...
+Set the antenna height above the launch point...	Antenin kalkış noktasından yüksekliğini ayarla...
+Magnetic declination (degrees east; Mersin is about 5.5)	Manyetik sapma (derece, doğu; Mersin yaklaşık 5,5)
+Antenna height above the launch point (meters)	Antenin kalkış noktasından yüksekliği (metre)
+Enter a number between {0} and {1}.	{0} ile {1} arasında bir sayı girin.
+Sent to the tracker.	Takipçiye gönderildi.
+The tracker is not connected.	Takipçi bağlı değil.
+Do this on the ground, with the aircraft disarmed.	Bunu yerde, hava aracı silahsızken yapın.
+Location permission was denied, so the search cannot start.	Konum izni reddedildi, bu yüzden arama başlatılamıyor.
+Looking for the tracker...	Takipçi aranıyor...
+No tracker found. Is it switched on and near?	Takipçi bulunamadı. Açık ve yakında mı?
+Choose the tracker	Takipçiyi seçin
+The search could not start. Is Bluetooth switched on, and the location setting of the radio?	Arama başlatılamadı. Bluetooth ve telsizin konum ayarı açık mı?
+Bluetooth is not available on this radio.	Bu telsizde Bluetooth yok.
+Bluetooth is switched off.	Bluetooth kapalı.
+Choose the tracker first.	Önce takipçiyi seçin.
+Not connected.	Bağlı değil.
+Connecting to the tracker...	Takipçiye bağlanılıyor...
+Connection lost, trying again...	Bağlantı koptu, yeniden deneniyor...
+Connected. Waiting for the tracker's status...	Bağlandı. Takipçinin durumu bekleniyor...
+Connected.	Bağlandı.
+Tracker GPS: {0} satellites	Takipçi GPS: {0} uydu
+Tracker GPS: no fix	Takipçi GPS: sinyal yok
+Compass ready	Pusula hazır
+Compass needs calibration	Pusula kalibrasyon gerektiriyor
+Calibrating the compass...	Pusula kalibre ediliyor...
+Following the aircraft	Hava aracı takip ediliyor
+Not following the aircraft (hold, center or test)	Hava aracı takip edilmiyor (bekleme, ortalama veya test)
+Waiting for the aircraft's GPS	Hava aracının GPS'i bekleniyor
+Waiting for the tracker's GPS or compass	Takipçinin GPS'i veya pusulası bekleniyor

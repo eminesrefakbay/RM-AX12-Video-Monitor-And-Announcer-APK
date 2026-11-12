@@ -1,0 +1,6 @@
+# Packets that the app (Java) and the tracker (C++) must read and write in the same way. One packet per line: kind, hex, then the values.
+# Checked by TrackerProtocolTests (Java) and tracker/test/test_core.cpp (C++); change one side and both tests tell.
+aircraft 010f11003cef1595a0a414d2045e016c030e6afa flags=15 sats=17 lat_e7=368000000 lon_e7=346333333 height_dm=1234 age_ms=350 speed_dkmh=876 course_cdeg=27150
+aircraft 010b090008d0eb78b8e0d5d6ffffff00009f8ce4 flags=11 sats=9 lat_e7=-338688000 lon_e7=-706693000 height_dm=-42 age_ms=65535 speed_dkmh=0 course_cdeg=35999
+status 010f1501401ef11539d5a514d204c8017b009900 flags=15 sats=21 mode=1 lat_e7=368123456 lon_e7=346412345 heading_ddeg=1234 azimuth_ddeg=456 elevation_ddeg=123 distance_10m=153
+status 01130c03c0a68cf8a0167a650f0e8c0aceffe8fd flags=19 sats=12 mode=3 lat_e7=-125000000 lon_e7=1702500000 heading_ddeg=3599 azimuth_ddeg=2700 elevation_ddeg=-50 distance_10m=65000

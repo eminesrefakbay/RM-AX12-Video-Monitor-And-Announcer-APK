@@ -221,8 +221,34 @@ Diagnostics
 Warning rules
 Pre-flight checks
 The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.
+Bluetooth is not available on this radio.
+Bluetooth is switched off.
+Choose the tracker first.
+Not connected.
+Connecting to the tracker...
+Connection lost, trying again...
+Connected. Waiting for the tracker's status...
+Tracker GPS: {0} satellites
+Tracker GPS: no fix
+Compass ready
+Compass needs calibration
+Calibrating the compass...
+Following the aircraft
+Not following the aircraft (hold, center or test)
+Waiting for the aircraft's GPS
+Waiting for the tracker's GPS or compass
+Connected.
+Do this on the ground, with the aircraft disarmed.
+Looking for the tracker...
+The search could not start. Is Bluetooth switched on, and the location setting of the radio?
+No tracker found. Is it switched on and near?
+Choose the tracker
+The tracker is not connected.
+Sent to the tracker.
+Enter a number between {0} and {1}.
 Screenshot saved to Pictures/AX-HUD.
 Couldn't save the screenshot. Check storage permission and available space.
+Location permission was denied, so the search cannot start.
 Storage permission was denied; the screenshot was not saved.
 SDK start failed ({0})
 Sound rules: {0} error(s). Open the rules editor.
@@ -246,6 +272,9 @@ Stable
 Nightly
 Stable (tested releases only)
 Nightly (newest build of every push)
+Not chosen yet
+Magnetic declination (degrees east; Mersin is about 5.5)
+Antenna height above the launch point (meters)
 {0} per second
 {0} values
 {0} flights
@@ -635,6 +664,19 @@ Replace the dashboard layout with the first one?
 Horizon: invert pitch
 Horizon: invert roll
 Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll.
+Antenna tracker
+An antenna tracker points your antennas at the aircraft: an ESP32 with two servos, a GPS and a compass. The radio sends the aircraft's position over Bluetooth; the tracker does the pointing. Build instructions: the tracker folder of the project.
+Use an antenna tracker
+Tracker
+Android asks for the location permission to search for Bluetooth devices. AX-HUD does not read your location.
+Follow the aircraft
+Hold the antennas where they are
+Center the antennas (straight ahead)
+Test sweep (30 seconds)
+Compass calibration: start (turn the tracker through a full circle)
+Compass calibration: save
+Set the magnetic declination...
+Set the antenna height above the launch point...
 Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.
 Log every flight
 Rows per second

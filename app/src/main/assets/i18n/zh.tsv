@@ -817,3 +817,45 @@ Couldn't save the screenshot. Check storage permission and available space.	无�
 Storage permission was denied; the screenshot was not saved.	存储权限被拒绝；未保存屏幕截图。
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	避开 MENU 按钮，在屏幕顶部轻点三次，即可将屏幕截图保存到 Pictures/AX-HUD。
 The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.	首次截图需要存储权限: 请在地面上、飞行器未解锁时进行。
+Antenna tracker	天线跟踪器
+An antenna tracker points your antennas at the aircraft: an ESP32 with two servos, a GPS and a compass. The radio sends the aircraft's position over Bluetooth; the tracker does the pointing. Build instructions: the tracker folder of the project.	天线跟踪器会让天线指向飞行器：它是一块带两个舵机、GPS 和指南针的 ESP32。遥控器通过蓝牙发送飞行器位置，由跟踪器负责转向。制作说明见项目的 tracker 文件夹。
+Use an antenna tracker	使用天线跟踪器
+Tracker	跟踪器
+Not chosen yet	尚未选择
+Android asks for the location permission to search for Bluetooth devices. AX-HUD does not read your location.	Android 要求位置权限才能搜索蓝牙设备。AX-HUD 不会读取您的位置。
+Follow the aircraft	跟踪飞行器
+Hold the antennas where they are	保持天线当前位置
+Center the antennas (straight ahead)	天线回中（正前方）
+Test sweep (30 seconds)	测试扫动（30 秒）
+Compass calibration: start (turn the tracker through a full circle)	指南针校准：开始（将跟踪器转动一整圈）
+Compass calibration: save	指南针校准：保存
+Set the magnetic declination...	设置磁偏角…
+Set the antenna height above the launch point...	设置天线高于起飞点的高度…
+Magnetic declination (degrees east; Mersin is about 5.5)	磁偏角（东偏为正，单位：度；梅尔辛约 5.5）
+Antenna height above the launch point (meters)	天线高于起飞点的高度（米）
+Enter a number between {0} and {1}.	请输入 {0} 到 {1} 之间的数字。
+Sent to the tracker.	已发送给跟踪器。
+The tracker is not connected.	跟踪器未连接。
+Do this on the ground, with the aircraft disarmed.	请在地面上、飞行器未解锁时进行。
+Location permission was denied, so the search cannot start.	位置权限被拒绝，无法开始搜索。
+Looking for the tracker...	正在搜索跟踪器…
+No tracker found. Is it switched on and near?	未找到跟踪器。它已开机并在附近吗？
+Choose the tracker	选择跟踪器
+The search could not start. Is Bluetooth switched on, and the location setting of the radio?	无法开始搜索。蓝牙和遥控器的位置设置是否已开启？
+Bluetooth is not available on this radio.	此遥控器没有蓝牙。
+Bluetooth is switched off.	蓝牙已关闭。
+Choose the tracker first.	请先选择跟踪器。
+Not connected.	未连接。
+Connecting to the tracker...	正在连接跟踪器…
+Connection lost, trying again...	连接已断开，正在重试…
+Connected. Waiting for the tracker's status...	已连接。正在等待跟踪器状态…
+Connected.	已连接。
+Tracker GPS: {0} satellites	跟踪器 GPS：{0} 颗卫星
+Tracker GPS: no fix	跟踪器 GPS：未定位
+Compass ready	指南针就绪
+Compass needs calibration	指南针需要校准
+Calibrating the compass...	正在校准指南针…
+Following the aircraft	正在跟踪飞行器
+Not following the aircraft (hold, center or test)	未跟踪飞行器（保持、回中或测试）
+Waiting for the aircraft's GPS	正在等待飞行器 GPS
+Waiting for the tracker's GPS or compass	正在等待跟踪器的 GPS 或指南针

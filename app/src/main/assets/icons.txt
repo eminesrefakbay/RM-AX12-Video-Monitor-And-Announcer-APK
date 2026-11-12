@@ -168,3 +168,10 @@ icon video_off
 rect 3 6 16 18 0 stroke
 poly 16 10.5 21 7.5 21 16.5 16 13.5 fill
 line 3 3 21 21
+
+icon tracker
+rect 5 3 19 11 0 stroke
+line 12 11 12 17
+line 7 17 17 17
+line 12 17 12 21
+line 8 21 16 21

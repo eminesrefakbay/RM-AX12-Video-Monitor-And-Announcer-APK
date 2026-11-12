@@ -127,6 +127,11 @@ class MainActivity : Activity() {
     private var topTapCount = 0
     private var lastTopTapAt = 0L
     private var screenshotPending = false
+    private val trackerFeed = TrackerFeed()
+    private val trackerLink: TrackerLink by lazy { TrackerLink(applicationContext).also { it.onChange = { onTrackerChanged() } } }
+    private var trackerOn = false
+    private var lastTrackerSendAt = 0L
+    private var lastTrackerState = TrackerLink.State.OFF
     private var overlayWasOpen = false
     private val hideMenuRunnable = Runnable {
         if (!Prefs.menuAlways(this) && !anyOverlayOpen()) menuButton.visibility = View.GONE
@@ -143,6 +148,7 @@ class MainActivity : Activity() {
         const val HOLD_REBUILD_MS = 10_000L     // a rebuild or a permission dialog: the screen is back within seconds
         const val HOLD_OPENED_MS = 40_000L      // a file picker, the rules editor, the browser: a little longer, but never for ever
         const val SCREENSHOT_PERMISSION_REQUEST = 2
+        const val TRACKER_PERMISSION_REQUEST = 3
     }
 
     private val sdkLinkHolder = lazy { if (AxSdkJni.loaded) AxSdkRadioLink(applicationContext) else null }
@@ -466,6 +472,150 @@ class MainActivity : Activity() {
     private fun storageGranted(): Boolean =
         Build.VERSION.SDK_INT >= 29 || screenshotPermissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 
+    // ---------------------------------------------------------------- the antenna tracker
+    private fun startTracker() {
+        if (!trackerOn) return
+        val addr = Prefs.string(this, "trkAddr", "")
+        if (addr.isEmpty() || !trackerLink.available()) return
+        trackerLink.connectTo(addr, Prefs.string(this, "trkName", ""))
+    }
+
+    private fun stopTracker() {
+        if (trackerLink.state == TrackerLink.State.OFF && !trackerSearching) return
+        trackerLink.stopSearch()
+        trackerLink.disconnect()
+    }
+
+    private var trackerSearching = false
+
+    private fun onTrackerChanged() {
+        val s = trackerLink.state
+        if (s != lastTrackerState) {
+            if (lastTrackerState == TrackerLink.State.CONNECTED && s == TrackerLink.State.LOST) Diagnostics.event("tracker", "the connection to the tracker was lost", "warn")
+            lastTrackerState = s
+            if (settingsPanel.isShowing) settingsPanel.refresh()
+        }
+    }
+
+    private fun trackerStatusText(): String {
+        if (!trackerLink.available()) return tr("Bluetooth is not available on this radio.")
+        if (!trackerLink.enabled()) return tr("Bluetooth is switched off.")
+        if (Prefs.string(this, "trkAddr", "").isEmpty()) return tr("Choose the tracker first.")
+        return when (trackerLink.state) {
+            TrackerLink.State.OFF -> tr("Not connected.")
+            TrackerLink.State.SEARCHING, TrackerLink.State.CONNECTING -> tr("Connecting to the tracker...")
+            TrackerLink.State.LOST -> tr("Connection lost, trying again...")
+            TrackerLink.State.CONNECTED -> {
+                val s = trackerLink.status
+                if (s == null) {
+                    tr("Connected. Waiting for the tracker's status...")
+                } else {
+                    val parts = ArrayList<String>()
+                    parts.add(if (s.has(TrackerProtocol.S_GPS)) tr("Tracker GPS: {0} satellites", s.sats) else tr("Tracker GPS: no fix"))
+                    parts.add(if (s.has(TrackerProtocol.S_COMPASS)) tr("Compass ready") else tr("Compass needs calibration"))
+                    parts.add(when {
+                        s.has(TrackerProtocol.S_CALIBRATING) -> tr("Calibrating the compass...")
+                        s.has(TrackerProtocol.S_TRACKING) -> tr("Following the aircraft")
+                        s.mode != TrackerProtocol.MODE_AUTO -> tr("Not following the aircraft (hold, center or test)")
+                        !trackerFeed.hasFix() -> tr("Waiting for the aircraft's GPS")
+                        else -> tr("Waiting for the tracker's GPS or compass")
+                    })
+                    tr("Connected.") + " " + parts.joinToString(" - ")
+                }
+            }
+        }
+    }
+
+    private fun findTracker() {
+        if (!trackerLink.available()) { Toasts.make(this, tr("Bluetooth is not available on this radio."), Toast.LENGTH_LONG).show(); return }
+        if (!trackerLink.enabled()) { Toasts.make(this, tr("Bluetooth is switched off."), Toast.LENGTH_LONG).show(); return }
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (flightStats.armed()) {                                         // a permission dialog pauses the screen: never ask in flight
+                Toasts.make(this, tr("Do this on the ground, with the aircraft disarmed."), Toast.LENGTH_LONG).show()
+                return
+            }
+            holdLink(HOLD_REBUILD_MS)                                          // the dialog pauses the screen for a moment: keep the radio link
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), TRACKER_PERMISSION_REQUEST)
+            return
+        }
+        openTrackerSearch()
+    }
+
+    private fun openTrackerSearch() {
+        trackerLink.disconnect()                                               // a connected tracker does not advertise: let it go for the search
+        val names = ArrayList<String>()
+        val found = ArrayList<TrackerLink.Found>()
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_list_item_1, names)
+        val dlg = Sunlight.builder(this)
+            .setTitle(tr("Looking for the tracker..."))
+            .setAdapter(adapter) { d, i ->
+                trackerLink.stopSearch()
+                trackerSearching = false
+                val f = found[i]
+                Prefs.setString(this, "trkAddr", f.address)
+                Prefs.setString(this, "trkName", f.name)
+                startTracker()
+                settingsPanel.refresh()
+                d.dismiss()
+            }
+            .setNegativeButton(tr("Cancel")) { _, _ -> trackerLink.stopSearch(); trackerSearching = false; startTracker() }
+            .create()
+        dlg.setOnDismissListener { trackerLink.stopSearch(); trackerSearching = false }
+        Immersive.show(dlg)
+        trackerSearching = true
+        trackerLink.search({ f ->
+            found.add(f)
+            names.add(f.name + "  " + f.address + "  (" + f.rssi + " dBm)")
+            adapter.notifyDataSetChanged()
+        }, { started ->
+            trackerSearching = false
+            if (!started) {
+                Toasts.make(this, tr("The search could not start. Is Bluetooth switched on, and the location setting of the radio?"), Toast.LENGTH_LONG).show()
+                dlg.dismiss()
+                startTracker()
+            } else {
+                dlg.setTitle(if (found.isEmpty()) tr("No tracker found. Is it switched on and near?") else tr("Choose the tracker"))
+            }
+        })
+    }
+
+    private fun sendTrackerCommand(kind: Int) {
+        if (trackerLink.state != TrackerLink.State.CONNECTED) { Toasts.make(this, tr("The tracker is not connected."), Toast.LENGTH_SHORT).show(); return }
+        val bytes = when (kind) {
+            TrackerKind.AUTO -> TrackerProtocol.cmdMode(TrackerProtocol.MODE_AUTO)
+            TrackerKind.HOLD -> TrackerProtocol.cmdMode(TrackerProtocol.MODE_HOLD)
+            TrackerKind.CENTRE -> TrackerProtocol.cmdMode(TrackerProtocol.MODE_CENTRE)
+            TrackerKind.SWEEP -> TrackerProtocol.cmdMode(TrackerProtocol.MODE_SWEEP)
+            TrackerKind.CAL_START -> TrackerProtocol.cmdCompassCalibration(true)
+            else -> TrackerProtocol.cmdCompassCalibration(false)
+        }
+        trackerLink.sendCommand(bytes)
+        Toasts.make(this, tr("Sent to the tracker."), Toast.LENGTH_SHORT).show()
+        ui.postDelayed({ if (settingsPanel.isShowing) settingsPanel.refresh() }, 1500)      // the tracker's status follows within a second
+    }
+
+    private fun trackerNumberDialog(title: String, lo: Double, hi: Double, command: (Double) -> ByteArray) {
+        val input = android.widget.EditText(this)
+        input.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL or android.text.InputType.TYPE_NUMBER_FLAG_SIGNED
+        val dlg = Sunlight.builder(this)
+            .setTitle(title)
+            .setView(input)
+            .setNegativeButton(tr("Cancel"), null)
+            .setPositiveButton(tr("Save")) { _, _ ->
+                val v = input.text.toString().trim().replace(',', '.').toDoubleOrNull()
+                if (v == null || v < lo || v > hi) {
+                    Toasts.make(this, tr("Enter a number between {0} and {1}.", lo.toInt(), hi.toInt()), Toast.LENGTH_SHORT).show()
+                } else if (trackerLink.state != TrackerLink.State.CONNECTED) {
+                    Toasts.make(this, tr("The tracker is not connected."), Toast.LENGTH_SHORT).show()
+                } else {
+                    trackerLink.sendCommand(command(v))
+                    Toasts.make(this, tr("Sent to the tracker."), Toast.LENGTH_SHORT).show()
+                }
+            }
+            .create()
+        Immersive.show(dlg)
+    }
+
     private fun captureScreenshot() {
         screenshotPending = true
         ScreenCapture.captureAndSave(
@@ -503,6 +653,8 @@ class MainActivity : Activity() {
         reloadChecks()
         reloadLogConfig()
         startSdk()
+        trackerOn = Prefs.bool(this, "trkOn", false)
+        startTracker()
         synchronized(pollLock) {
             pollGeneration++
             pollEnabled = true
@@ -518,6 +670,7 @@ class MainActivity : Activity() {
     }
 
     override fun onPause() {
+        stopTracker()
         synchronized(pollLock) {
             pollGeneration++
             pollEnabled = false
@@ -537,6 +690,7 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
+        stopTracker()
         synchronized(pollLock) {
             pollGeneration++
             pollEnabled = false
@@ -560,6 +714,11 @@ class MainActivity : Activity() {
 
     override fun onRequestPermissionsResult(code: Int, permissions: Array<out String>, results: IntArray) {
         super.onRequestPermissionsResult(code, permissions, results)
+        if (code == TRACKER_PERMISSION_REQUEST) {
+            if (results.firstOrNull() == PackageManager.PERMISSION_GRANTED) openTrackerSearch()
+            else Toasts.make(this, tr("Location permission was denied, so the search cannot start."), Toast.LENGTH_LONG).show()
+            return
+        }
         if (code == SCREENSHOT_PERMISSION_REQUEST) {
             val write = permissions.indexOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             if (write >= 0 && results.getOrNull(write) == PackageManager.PERMISSION_GRANTED) captureScreenshot()     // try it even if the read switch stayed off; a failure is said and logged
@@ -752,6 +911,7 @@ class MainActivity : Activity() {
                 }
                 extras.tick(sampleNow, numbers)                  // distance, energy, link loss, landing and the pack book
                 latestNumbers = numbers
+                trackerFeed.update(numbers, flightStats.armed(), sampleNow)      // the position for the antenna tracker
                 latestTexts = sample.texts
                 flightLogger.update(sampleNow, flightStats.armed(), numbers, sample.texts)  // a log from arming to disarming, when it is switched on
                 if (replay != null && flightStats.armed()) stopReplay()                  // an armed aircraft: the live screen comes first
@@ -794,6 +954,10 @@ class MainActivity : Activity() {
             if (poll?.sample == null && editingLayout && now - lastTileUpdate >= 200) {
                 lastTileUpdate = now
                 updateTiles(latestNumbers, latestTexts, now)
+            }
+            if (trackerOn && now - lastTrackerSendAt >= 200L) {                 // the antenna tracker gets the aircraft five times a second
+                lastTrackerSendAt = now
+                if (trackerLink.state == TrackerLink.State.CONNECTED) trackerLink.sendAircraft(trackerFeed.build(now))
             }
             ui.postDelayed(this, 50)
         }
@@ -946,6 +1110,22 @@ class MainActivity : Activity() {
         override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)
         override fun sunlightOn(): Boolean = Sunlight.on
+        override fun trackerOn(): Boolean = this@MainActivity.trackerOn
+        override fun setTrackerOn(on: Boolean) {
+            this@MainActivity.trackerOn = on
+            Prefs.setBool(this@MainActivity, "trkOn", on)
+            if (on) startTracker() else { trackerLink.stopSearch(); trackerLink.disconnect() }
+        }
+        override fun trackerDeviceLabel(): String {
+            val addr = Prefs.string(this@MainActivity, "trkAddr", "")
+            if (addr.isEmpty()) return tr("Not chosen yet")
+            return Prefs.string(this@MainActivity, "trkName", "").ifEmpty { TrackerProtocol.DEVICE_NAME } + " " + addr.takeLast(5)
+        }
+        override fun trackerStatusLine(): String = trackerStatusText()
+        override fun trackerFind() = findTracker()
+        override fun trackerCommand(kind: Int) = sendTrackerCommand(kind)
+        override fun trackerDeclinationDialog() = trackerNumberDialog(tr("Magnetic declination (degrees east; Mersin is about 5.5)"), -90.0, 90.0) { TrackerProtocol.cmdDeclination(it) }
+        override fun trackerHeightDialog() = trackerNumberDialog(tr("Antenna height above the launch point (meters)"), -50.0, 500.0) { TrackerProtocol.cmdHeightOffset(it) }
         override fun shapeLabel(): String = Shapes.label(Shapes.style)
         override fun cycleShape() {
             Shapes.style = (Shapes.style + 1) % ShapeGeometry.COUNT

@@ -37,7 +37,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,055 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,153 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -344,6 +344,21 @@ cut at two corners instead, because brackets would leave them nearly empty. The 
 displays), and so do the switches and the big text pages. The corner geometry is plain Java with tests; the style is read each time a view
 draws, so a change shows at once.
 
+## Antenna tracker
+
+AX-HUD can drive an **antenna tracker**: an ESP32 with two servos (pan and tilt), its own GPS and a compass, that points your antennas (wide patch
+antennas are forgiving) at the aircraft. The firmware, the wiring and the build instructions are in **[tracker/README.md](tracker/README.md)**.
+
+* **How it works.** The radio sends the aircraft's state over **Bluetooth LE** five times a second: position, speed, course, height above the
+  launch point and how old the position is. The tracker knows its own position (GPS) and the direction its base faces (compass), works out the
+  bearing and elevation, moves the position forward with the aircraft's speed and course (the telemetry of ExpressLRS can be seconds old), and points
+  the servos. With a tilt that goes past vertical, two ordinary 180-degree servos cover every direction.
+* **In the app:** *Settings > Antenna tracker*: use it, find the tracker (a search, once; Android asks for the location permission for it, AX-HUD does
+  not read the location), follow or hold, centre, a 30-second test sweep, compass calibration, the magnetic declination and the antenna height.
+  A chosen tracker is connected by its address and reconnected if the link drops.
+* **Tested on a PC:** the packets (the app and the firmware read the same file of packets, `tracker/test/vectors.txt`) and the geometry. **Not yet
+  tested on hardware:** the Bluetooth, servo, GPS and compass parts; please report what you see in the diagnostics events named "tracker".
+
 ## Splash screen
 
 The start-up splash is drawn and animated in one view (about 2.9 seconds; a tap or Back skips it; *Settings > Display* can switch it off). The
@@ -546,7 +561,8 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 
 Permissions: the **camera** (the HDMI input reaches Android as a camera), **internet** and **install packages** (only for the update check and
 the update you ask for), and, on Android 9 and older, **storage read and write**, used only to save a screenshot (triple tap on the top edge)
-to `Pictures/AX-HUD`; Android 9 lists them as two switches and the app asks for both. If a screenshot cannot be saved, *Settings > Diagnostics*
+to `Pictures/AX-HUD`; Android 9 lists them as two switches and the app asks for both. For the **antenna tracker**: Bluetooth, and the location permission,
+asked once and only to search for the tracker (Android requires it for Bluetooth searches; the app does not read the location). If a screenshot cannot be saved, *Settings > Diagnostics*
 shows why in the events.
 
 GPS coordinates are shown on screen. When a GPS fix is available, the app also saves the last known position to `last_position.txt` in its app folder, including during flight and when the link is lost; this is independent of flight logging. If you enable flight logs (off by default), those CSV files can also contain GPS positions. Three taps on the top edge (away from MENU) save a full-screen PNG, including any visible coordinates, to `Pictures/AX-HUD`. These files stay on the radio unless you copy them elsewhere. Do not commit flight logs or screenshots that show where you fly.

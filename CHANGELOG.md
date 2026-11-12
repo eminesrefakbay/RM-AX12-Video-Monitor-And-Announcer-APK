@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.11.0
+
+**Antenna tracker.** AX-HUD can drive an antenna tracker: an ESP32 with two servos, its own GPS and a compass, reached over Bluetooth LE. The radio
+sends the aircraft's position, speed, course and height five times a second; the tracker works out where the aircraft is (with dead reckoning
+between the slow telemetry updates) and points the antennas, with a flip so that two 180-degree servos cover every direction. Settings >
+Antenna tracker: choose the tracker, follow or hold, centre, test sweep, compass calibration, declination, antenna height. The firmware, the
+wiring and the build instructions are in the new `tracker/` folder; its geometry and packets are tested on a PC against the same packets as the
+app. Not yet tested on hardware.
+
 ## 1.10.3
 
 Screenshots now work on the AX12's Android 9: the app declares and asks for both storage permissions (the radio lists read and write as two

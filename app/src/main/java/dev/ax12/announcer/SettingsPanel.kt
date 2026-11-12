@@ -43,6 +43,15 @@ interface SettingsHost {
     fun sunlightOn(): Boolean
     fun shapeLabel(): String
     fun cycleShape()
+    // antenna tracker
+    fun trackerOn(): Boolean
+    fun setTrackerOn(on: Boolean)
+    fun trackerDeviceLabel(): String
+    fun trackerStatusLine(): String
+    fun trackerFind()
+    fun trackerCommand(kind: Int)
+    fun trackerDeclinationDialog()
+    fun trackerHeightDialog()
     fun setSunlightOn(on: Boolean)
     fun setMenuAlways(on: Boolean)
     fun variablesOn(): Boolean
@@ -547,6 +556,26 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             toggle(tr("Horizon: invert pitch"), host.horizonInvertPitch()) { host.setHorizonInvertPitch(it) }
             toggle(tr("Horizon: invert roll"), host.horizonInvertRoll()) { host.setHorizonInvertRoll(it) }
             note(tr("Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll."))
+        }
+        group("tracker", tr("Antenna tracker"), "tracker") {
+            note(tr("An antenna tracker points your antennas at the aircraft: an ESP32 with two servos, a GPS and a compass. The radio sends the aircraft's position over Bluetooth; the tracker does the pointing. Build instructions: the tracker folder of the project."))
+            toggle(tr("Use an antenna tracker"), host.trackerOn()) {
+                host.setTrackerOn(it)
+                refresh()
+            }
+            if (host.trackerOn()) {
+                valueRow(tr("Tracker"), host.trackerDeviceLabel()) { host.trackerFind() }
+                note(tr("Android asks for the location permission to search for Bluetooth devices. AX-HUD does not read your location."))
+                note(host.trackerStatusLine())
+                action(tr("Follow the aircraft")) { host.trackerCommand(TrackerKind.AUTO) }
+                action(tr("Hold the antennas where they are")) { host.trackerCommand(TrackerKind.HOLD) }
+                action(tr("Center the antennas (straight ahead)")) { host.trackerCommand(TrackerKind.CENTRE) }
+                action(tr("Test sweep (30 seconds)")) { host.trackerCommand(TrackerKind.SWEEP) }
+                action(tr("Compass calibration: start (turn the tracker through a full circle)")) { host.trackerCommand(TrackerKind.CAL_START) }
+                action(tr("Compass calibration: save")) { host.trackerCommand(TrackerKind.CAL_STOP) }
+                action(tr("Set the magnetic declination...")) { host.trackerDeclinationDialog() }
+                action(tr("Set the antenna height above the launch point...")) { host.trackerHeightDialog() }
+            }
         }
         group("logs", tr("Flight logs"), "logs") {
             note(tr("Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio."))
