@@ -2,8 +2,9 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.10.1)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.12.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
+> **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -37,7 +38,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,153 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,198 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -446,9 +447,12 @@ screen. If you capture logcat with PowerShell's `>`, the file is UTF-16; use `| 
 * **Capitals and spelling.** Every text starts with a capital letter (option values, column headings, error lines, hints, captions);
   no text is half in capitals and half not; one spelling (American) everywhere; one product name and one tagline on the splash and the
   About page. The all-capitals HUD labels (SPEED, READY, ...) are on purpose. A test checks all of this, in English, German and Turkish.
-* **Settings are grouped.** *Settings* shows eight collapsible groups with icons (Language and display, Aircraft and battery,
-  Overlays on the video, Video and speech, Rules and backup, Updates, Diagnostics, About); tap a group to open it, one at a time. The
-  first group is titled in four languages on purpose, so it can always be found.
+* **Settings are tabs, with a search.** *Settings* has a rail of eight tabs on the left (General, Aircraft and flight, Video and overlays,
+  Dashboard, Antenna tracker, Flight logs, Rules and backup, System) and the rows of the open tab on the right. The search field in the
+  title bar finds a setting by its words in every tab: capitals and accents do not matter ("istatistik" finds "İstatistik"), every word has to
+  be in the label, and the results are the real rows, listed under their tab and heading, so a switch works right there. Tapping a tab
+  clears the search. General opens first, and its first heading is written in four languages on purpose, so the language can always be found.
+  The two Diagnostics groups of earlier versions are one section of System.
 * **Icons** in the MENU and in the Settings groups. They are described in a small text file (`app/src/main/assets/icons.txt`), so they
   can be changed or extended without touching the code.
 * **Soft fades.** Cards fade in and out instead of popping; the MENU fades in.
@@ -584,6 +588,25 @@ drone, the gauge and the name. The launcher icons are built from it. Android 8 a
 an adaptive icon: navy background and the artwork as the foreground, kept inside the safe zone so every launcher shape
 shows it whole. Older Android versions get the full design. The logo has no third-party logos in it, and every edge is
 pure navy (no light fringe).
+
+## The RadioMaster SDK: what is settled and what is not
+
+AX-HUD reads the radio's channels and telemetry through the **AX SDK that RadioMaster publishes**
+(<https://github.com/Radiomaster-RC/RadiomasterAX_SDK>). The release APK contains the SDK's libraries, unchanged, from the commit pinned in
+`.github/workflows/build.yml`; the SDK files are not stored in this repository.
+
+* **What points to permission.** The SDK is published for app developers, and its manual tells integrators to put the libraries into their
+  app's `jniLibs` folder.
+* **What is not written down.** The SDK repository has no licence file, so its terms for using and redistributing the libraries are not
+  stated. The Qt libraries inside it are LGPL, and their licence text is in the app (About).
+* **What I did.** I asked RadioMaster in November 2026, first through their support (the ticket was closed without a reply) and then in an
+  issue on the SDK repository. I have had no answer so far, so I am publishing the app with this notice instead of waiting.
+* **What I will do if someone objects.** If RadioMaster or the authors of the SDK state terms or ask me to stop, I will remove the libraries
+  from the releases promptly and offer a way to build the app without them (you would add the SDK yourself, as described in "Build").
+* **The licence of AX-HUD's own code.** GPL-3.0-or-later, with an added permission in [LICENSE](LICENSE). That permission is mine to give
+  for my own code; it gives you no rights in RadioMaster's files.
+
+This is not legal advice. If you want to redistribute the APK, decide for yourself, and ask RadioMaster if you need certainty.
 
 ## Acknowledgments
 

@@ -139,7 +139,7 @@ public final class TrackerProtocol {
     public static byte[] cmdMode(int mode) { return new byte[]{(byte) CMD_MODE, (byte) mode}; }
     public static byte[] cmdCompassCalibration(boolean start) { return new byte[]{(byte) CMD_COMPASS_CAL, (byte) (start ? 1 : 0)}; }
 
-    /** The magnetic declination of the place, in degrees east (Mersin is about +5.5), kept in the tracker. */
+    /** The magnetic declination of the place, in degrees east (west is negative), kept in the tracker. */
     public static byte[] cmdDeclination(double degreesEast) {
         byte[] b = new byte[3];
         b[0] = (byte) CMD_DECLINATION;

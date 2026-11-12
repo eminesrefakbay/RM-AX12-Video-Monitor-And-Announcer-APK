@@ -206,7 +206,7 @@ public class PackTests {
         check(ex.contains("numbers[\"flown_km\"]") && ex.contains("numbers[\"energy_wh\"]") && ex.contains("numbers[\"wh_km\"]") && ex.contains("numbers[\"mah_km\"]") && ex.contains("numbers[\"win_left\"]"), "the derived values are put into the numbers");
         String cat = new String(Files.readAllBytes(new File(kt + "VariableCatalog.kt").toPath()), "UTF-8");
         for (String name : new String[]{"flown_km", "energy_wh", "wh_km", "mah_km", "win_left"}) check(cat.contains("\"" + name + "\" to tn("), "the catalog describes " + name);
-        check(sp.contains("group(\"window\"") && sp.contains("group(\"after\"") && sp.indexOf("group(\"window\"") > sp.indexOf("group(\"logs\"") && sp.indexOf("group(\"after\"") < sp.indexOf("group(\"rules\""), "the two settings groups sit between the logs and the rules");
+        check(sp.contains("windowContent()") && sp.contains("afterContent()") && sp.indexOf("Tab(\"flight\"") < sp.indexOf("windowContent()") && sp.indexOf("afterContent()") < sp.indexOf("Tab(\"video\""), "the approval window and the landing, link loss and packs sit in the Aircraft and flight tab");
         String icons = new String(Files.readAllBytes(new File("app/src/main/assets/icons.txt").toPath()), "UTF-8");
         check(icons.contains("icon clock\n") && icons.contains("icon battery\n"), "the icons of the new groups exist");
         for (String key : new String[]{"winOn", "winStart", "winEnd", "winWarn", "winSpeech", "debriefOn", "lossSpeech", "packBook"}) check(SettingsFile.isKnown(key) && SettingsFile.defaultOf(key) != null, "the backup knows " + key);

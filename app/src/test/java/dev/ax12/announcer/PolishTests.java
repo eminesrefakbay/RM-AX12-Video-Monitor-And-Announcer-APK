@@ -62,7 +62,7 @@ public class PolishTests {
             while (z.find()) { small++; System.out.println("  zero minimum size in " + f); }
         }
         check(small == 0, "no button is made smaller than its minimum (" + small + " are)");
-        check(read(kt + "SettingsPanel.kt").contains("header.minHeight = dp(56)") && read(kt + "SettingsPanel.kt").contains("sw.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)") && read(kt + "SettingsPanel.kt").contains("row.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)"), "group headers, switches and rows are 48 dp or more");
+        check(read(kt + "SettingsPanel.kt").contains("t.minHeight = dp(RAIL_ITEM_DP)") && read(kt + "SettingsPanel.kt").contains("const val RAIL_ITEM_DP = 40") && 8 * (40 + 4) <= 360 && read(kt + "SettingsPanel.kt").contains("sw.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)") && read(kt + "SettingsPanel.kt").contains("b.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)") && read(kt + "SettingsPanel.kt").contains("row.minimumHeight = dp(CardStyle.MIN_TOUCH_DP)"), "switches and rows are 48 dp or more; the eight tabs of the rail are 40 dp tall and full width so that all of them fit the screen");
         int off = 0;
         for (String f : new String[]{"SettingsPanel.kt", "AboutPanel.kt", "MainMenu.kt", "ConnectingBanner.kt", "NoVideoView.kt", "LayoutEditor.kt"}) {
             Matcher d = Pattern.compile("dp\\((\\d+)\\)").matcher(read(kt + f));
@@ -74,7 +74,7 @@ public class PolishTests {
         check(styles.contains("android:autoSizeTextType\">uniform") && styles.contains("android:autoSizeMinTextSize\">11sp") && styles.contains("android:maxLines\">2"), "buttons wrap to two lines and then shrink to 11 sp");
         String card = read(kt + "CardStyle.kt");
         check(card.contains("fun fitText(") && card.contains("setAutoSizeTextTypeUniformWithConfiguration") && card.contains("Build.VERSION.SDK_INT >= 26"), "other texts can do the same on Android 8 and newer");
-        check(read(kt + "MainMenu.kt").contains("CardStyle.fitText(name") && read(kt + "SettingsPanel.kt").contains("CardStyle.fitText(header") && read(kt + "NoVideoView.kt").contains("CardStyle.fitText(advice") && act.contains("CardStyle.fitText(warningText"), "tiles, group headers, the no-video line and the warning bar fit their text");
+        check(read(kt + "MainMenu.kt").contains("CardStyle.fitText(name") && read(kt + "SettingsPanel.kt").contains("CardStyle.fitText(t, 11, 15)") && read(kt + "NoVideoView.kt").contains("CardStyle.fitText(advice") && act.contains("CardStyle.fitText(warningText"), "tiles, the tabs of Settings, the no-video line and the warning bar fit their text");
 
         // ---------- 1. settings rows ----------
         String settings = read(kt + "SettingsPanel.kt");

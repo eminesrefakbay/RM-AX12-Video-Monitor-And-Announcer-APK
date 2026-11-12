@@ -6,6 +6,8 @@
 
 > **免责声明:** AX-HUD 是独立的开源项目, 与 RadioMaster 没有官方关联, 也未获其认可或支持。使用风险由你自行承担。应用只读取遥测数据, 不会写入遥控器设置; 但设备、配置和飞行安全完全由你负责。
 
+> **关于 RadioMaster SDK:** 发布的 APK 包含 RadioMaster AX SDK 的库文件。SDK 仓库没有许可证文件, 因此再分发条款并未写明; 我已于 2026 年 11 月先通过客服工单、再通过 SDK 仓库中的 issue 向 RadioMaster 询问, 目前尚无回复。若 RadioMaster 或 SDK 作者提出条件或要求我停止, 我会立即从发布版中移除这些库。详情 (英文): [README.md](README.md#the-radiomaster-sdk-what-is-settled-and-what-is-not)。以上不构成法律意见。
+
 **AX-HUD** 是适用于 RadioMaster AX12 的 Android 应用。它对遥控器**只读**, 不会写入任何设置。
 
 ## 功能

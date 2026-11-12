@@ -128,7 +128,7 @@ static void loadSettings() {
     compassCalibrated = prefs.getBool("cal", false);
     offX = prefs.getFloat("ox", 0); offY = prefs.getFloat("oy", 0); offZ = prefs.getFloat("oz", 0);
     scaleX = prefs.getFloat("sx", 1); scaleY = prefs.getFloat("sy", 1); scaleZ = prefs.getFloat("sz", 1);
-    declinationDeg = prefs.getShort("decl", 55) / 10.0f;       // Mersin is about +5.5 degrees east
+    declinationDeg = prefs.getShort("decl", 0) / 10.0f;        // degrees east; 0 until the app sets it
     trackerHeightM = prefs.getShort("hgt", 15) / 10.0f;
 }
 

@@ -6,6 +6,8 @@
 
 > **Haftungsausschluss:** AX-HUD ist ein unabhängiges Open-Source-Projekt und steht in keiner offiziellen Verbindung zu RadioMaster; es wird von RadioMaster weder unterstützt noch empfohlen. Die Nutzung erfolgt auf eigenes Risiko. Die App liest Telemetriedaten nur aus und schreibt keine Einstellungen auf die Fernsteuerung. Für deine Ausrüstung, Konfiguration und Flugsicherheit bist allein du verantwortlich.
 
+> **Zum RadioMaster SDK:** Die Release-APK enthält die Bibliotheken des AX SDK von RadioMaster. Im SDK-Repository gibt es keine Lizenzdatei, die Bedingungen für die Weitergabe sind also nicht niedergeschrieben; ich habe RadioMaster im November 2026 zuerst über den Support und dann mit einem Issue im SDK-Repository gefragt und bisher keine Antwort erhalten. Nennen RadioMaster oder die Autoren des SDK Bedingungen oder bitten sie mich aufzuhören, nehme ich die Bibliotheken umgehend aus den Releases. Einzelheiten (Englisch): [README.md](README.md#the-radiomaster-sdk-what-is-settled-and-what-is-not). Das ist keine Rechtsberatung.
+
 **AX-HUD** ist eine Android-App für die RadioMaster AX12. Sie **liest** nur von der Fernsteuerung und schreibt nie eine Einstellung.
 
 ## Was sie kann

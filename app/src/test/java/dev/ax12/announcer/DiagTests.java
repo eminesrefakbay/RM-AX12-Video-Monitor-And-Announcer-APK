@@ -109,7 +109,7 @@ public class DiagTests {
         check(act.contains("Intent.ACTION_SEND") && act.contains("i.type = \"text/plain\"") && act.contains("/issues/new") && act.contains("RM-AX12-Video-Monitor-And-Announcer-APK"), "share sends plain text, the issue page is this project's");
         check(act.contains("Diagnostics.event(\"link\", if (error == null) \"radio link started\" else error") && act.contains("radio configuration loaded after") && act.contains("Diagnostics.event(\"logger\", it, \"warn\")"), "the radio link and the logger leave events");
         check(act.contains("copyToClipboard(diagReport())") && act.contains("holdLink(HOLD_OPENED_MS)"), "copying uses the clipboard, leaving for another app holds the radio link");
-        check(sp.contains("group(\"diag\", tr(\"Diagnostics\"), \"bug\")") && sp.contains("host.openDiagnostics()"), "Settings has the Diagnostics group");
+        check(sp.contains("private fun diagnosticsContent()") && sp.contains("host.openDiagnostics()") && sp.contains("host.showStartupTimings()") && !sp.contains("diagContent") && sp.contains("Part(tr(\"Diagnostics\")) { diagnosticsContent() }"), "Settings has one Diagnostics section (the bug report and the tools together)");
         check(read("../../../../assets/icons.txt").contains("icon bug\n"), "the bug icon exists");
         check(fx.contains("Diagnostics.event(\"flight\"") && fx.contains("lost in flight") && fx.contains("\"back after \""), "arming, disarming and link loss leave events");
         check(up.contains("Diagnostics.event(\"update\""), "the update check leaves events");

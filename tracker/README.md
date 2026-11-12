@@ -75,7 +75,7 @@ syntax check on a PC but has not run on an ESP32. Expect to adjust things (the c
    once; it is only used to search), choose `AX-TRACK`. The status line shows the connection.
 4. **Calibrate the compass** (once, and again if you move it to a new mount): *Compass calibration: start*, turn the whole tracker base slowly through a
    full circle and tilt it a little each way, then *Compass calibration: save*. It is stored in the ESP32.
-5. **Declination.** Set the magnetic declination of your place (degrees east; look it up, Mersin is about 5.5). The tracker stores it. A wrong value turns
+5. **Declination.** Set the magnetic declination of your place (degrees, east is positive; look it up with a declination calculator for your location). The tracker stores it. A wrong value turns
    every pointing by the same angle.
 6. **Test.** *Centre the antennas* (they should look straight ahead and level), then *Test sweep* (30 seconds of pan and tilt through their range; watch for
    cables and stops).

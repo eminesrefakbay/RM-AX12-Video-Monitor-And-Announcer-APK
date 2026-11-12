@@ -41,8 +41,20 @@ public class DocsTests {
         check(read("CHANGELOG.md").contains("## " + ver + "\n"), "the changelog has an entry for " + ver);
         check(read("docs/release-notes/v" + ver + ".md").contains("not affiliated with or endorsed by RadioMaster"), "the release notes carry the independence line");
 
-        String panel = read("app/src/main/java/dev/ax12/announcer/SettingsPanel.kt");
+        // the notice about the RadioMaster SDK, in every language and in the app
+        check(r.contains("## The RadioMaster SDK: what is settled and what is not") && r.contains("states no licence") && r.contains("remove the libraries"), "the README has the SDK notice");
+        check(r.contains("(#the-radiomaster-sdk-what-is-settled-and-what-is-not)"), "the top of the README points to the notice");
+        for (String name : new String[]{"README.tr.md", "README.de.md", "README.zh.md"}) check(read(name).contains("README.md#the-radiomaster-sdk-what-is-settled-and-what-is-not"), name + ": has the notice and points to the English one");
+        String credits = read("app/src/main/java/dev/ax12/announcer/Credits.java");
+        check(credits.contains("(no license file; see the README notice)") && credits.contains("RadioMaster has not answered my questions about redistribution"), "the About page says the same as the README");
+        Matcher title = Pattern.compile("# AX-HUD: AX12 video monitor, HUD and announcer \\(v([0-9.]+)\\)").matcher(r);
+        check(title.find() && title.group(1).equals(ver), "the README title shows the current version " + ver + (title.find(0) ? " (it shows " + title.group(1) + ")" : ""));
+
         String src = read("app/src/main/assets/i18n/source.txt");
+        // the texts of the app and of the tracker name no place (a value for one town is wrong for everyone else)
+        check(!src.contains("Mersin") && !read("tracker/README.md").contains("Mersin") && !read("tracker/src/main.cpp").contains("Mersin") && !read("app/src/main/java/dev/ax12/announcer/TrackerProtocol.java").contains("Mersin"), "no place name in the app texts, the tracker README or the tracker code");
+        check(read("tracker/src/main.cpp").contains("prefs.getShort(\"decl\", 0)") && src.contains("Magnetic declination (degrees, east is positive)"), "the declination starts at 0 and the dialog asks for degrees, east positive");
+        String panel = read("app/src/main/java/dev/ax12/announcer/SettingsPanel.kt");
         check(panel.contains("Start-up splash screen (animated, about 3 seconds)") && !panel.contains("2 seconds)") && !src.contains("logo and version, 2 seconds"), "the Settings label of the splash describes the animated splash");
         check(Pattern.compile("SHOW_MS = (3[0-9]{3})L").matcher(read("app/src/main/java/dev/ax12/announcer/SplashOverlay.kt")).find(), "the splash stays about three seconds, as the label says");
 

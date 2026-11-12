@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.12.0
+
+Settings are tabs now, with a search. A rail on the left holds eight tabs (General, Aircraft and flight, Video and overlays, Dashboard, Antenna
+tracker, Flight logs, Rules and backup, System); the 14 collapsible groups of earlier versions are folded into them, and the two Diagnostics
+groups are one section. A search field in the title bar finds a setting in every tab by its words. The rows themselves are unchanged.
+
+## 1.11.2
+
+The magnetic declination dialog of the antenna tracker no longer names a place: it asks for degrees, east positive. The tracker firmware's
+stored default is now 0 (it was a value for one town), and the tracker README no longer names a place either.
+
+## 1.11.1
+
+A notice about the RadioMaster SDK, in the README (all four languages) and in the app's About page: the release APK contains RadioMaster's SDK
+libraries, the SDK repository states no licence, RadioMaster has not answered the questions about redistribution, and what will happen if
+someone objects. The README title shows the current version again, and a new test keeps the notice and the version in step.
+
 ## 1.11.0
 
 **Antenna tracker.** AX-HUD can drive an antenna tracker: an ESP32 with two servos, its own GPS and a compass, reached over Bluetooth LE. The radio

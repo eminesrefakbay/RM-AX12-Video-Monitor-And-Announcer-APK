@@ -1124,7 +1124,7 @@ class MainActivity : Activity() {
         override fun trackerStatusLine(): String = trackerStatusText()
         override fun trackerFind() = findTracker()
         override fun trackerCommand(kind: Int) = sendTrackerCommand(kind)
-        override fun trackerDeclinationDialog() = trackerNumberDialog(tr("Magnetic declination (degrees east; Mersin is about 5.5)"), -90.0, 90.0) { TrackerProtocol.cmdDeclination(it) }
+        override fun trackerDeclinationDialog() = trackerNumberDialog(tr("Magnetic declination (degrees, east is positive)"), -90.0, 90.0) { TrackerProtocol.cmdDeclination(it) }
         override fun trackerHeightDialog() = trackerNumberDialog(tr("Antenna height above the launch point (meters)"), -50.0, 500.0) { TrackerProtocol.cmdHeightOffset(it) }
         override fun shapeLabel(): String = Shapes.label(Shapes.style)
         override fun cycleShape() {

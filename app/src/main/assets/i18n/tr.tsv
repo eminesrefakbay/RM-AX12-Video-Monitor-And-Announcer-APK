@@ -60,7 +60,7 @@ Last {0} s	Son {0} sn
 Connecting to the radio... {0} s	Kumandaya bağlanılıyor... {0} sn
 Still waiting. Close the RadioMaster app and check that the radio is on.	Hâlâ bekleniyor. RadioMaster uygulamasını kapatın ve kumandanın açık olduğundan emin olun.
 This app: the HUD, the voice announcer, the rules and the settings.	Bu uygulama: HUD, sesli anons, kurallar ve ayarlar.
-Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri uygulamanın içindedir. Yayımladığı için teşekkürler, RadioMaster.
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository states no license, and RadioMaster has not answered my questions about redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri, RadioMaster'ın kılavuzunun uygulama geliştiricileri için tarif ettiği gibi uygulamaya dahildir. Deposunda lisans belirtilmemiştir ve RadioMaster yeniden dağıtım sorularıma henüz yanıt vermemiştir (README'deki nota bakın). Yayımladığı için teşekkürler, RadioMaster.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK'nın C++ çalışma zamanı; SDK'nın ihtiyaç duyduğu.
 The standard library of the Kotlin language, which the app is written in.	Uygulamanın yazıldığı Kotlin dilinin standart kütüphanesi.
@@ -551,7 +551,6 @@ Dark text on light backgrounds for the menu, the settings, the other screens and
 Always show the MENU button	MENÜ düğmesini her zaman göster
 Off: the button hides and appears when you touch the screen.	Kapalı: düğme gizlenir ve ekrana dokununca görünür.
 Start-up splash screen (animated, about 3 seconds)	Açılış ekranı (hareketli, yaklaşık 3 saniye)
-Aircraft and battery	Hava aracı ve batarya
 Active aircraft	Etkin hava aracı
 Manage the aircraft (add, rename, delete)...	Hava araçlarını yönet (ekle, yeniden adlandır, sil)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	Her hava aracı kendi kurallarını, uyarı kurallarını, kontrollerini, batarya profillerini ve paketlerini, kanal çubuklarını, stick eşlemesini ve arm anahtarını saklar. Ekran katmanlarının görünümü, dil ve güncellemeler ortaktır.
@@ -559,7 +558,6 @@ Active battery profile	Etkin batarya profili
 Edit the packs of this aircraft...	Bu hava aracının paketlerini düzenle...
 Edit the battery profiles (cells and voltage limits)...	Batarya profillerini düzenle (hücre sayısı ve voltaj sınırları)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	Kurallar ve kontroller, cell değerini (hücre başına volt) ve etkin profilin $low, $crit, $full sınırlarını kullanabilir; örneğin: cell < $low -> batarya düşük. Profili değiştirmek sayıları değiştirir, kuralları değil.
-Overlays on the video	Videonun üzerindeki katmanlar
 OSD overlays (drawn over the video)	OSD katmanları (videonun üzerine çizilir)
 Stick view: roll, pitch, yaw and throttle	Stick görünümü: roll, pitch, yaw ve gaz
 Stick size	Stick boyutu
@@ -594,7 +592,6 @@ Move and resize the cards with your finger...	Kartları parmağınızla taşıy�
 Put every card back in its corner at normal size	Her kartı köşesine, normal boyutta geri koy
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	Her kart köşesine, normal boyutta geri konsun mu? Seçtiğiniz yerler ve boyutlar unutulacak.
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	Bir kartı taşımak için sürükleyin, boyutunu değiştirmek için kare tutamacını sürükleyin. Kapalı kartlar gösterilmez. Bir kartın Boyut ayarı başlangıç boyutudur; yeniden boyutlandırma onu çarpar.
-Video and speech	Video ve konuşma
 Camera (HDMI input)	Kamera (HDMI girişi)
 Rotate video	Videoyu döndür
 Scale	Ölçek
@@ -831,7 +828,7 @@ Compass calibration: start (turn the tracker through a full circle)	Pusula kalib
 Compass calibration: save	Pusula kalibrasyonu: kaydet
 Set the magnetic declination...	Manyetik sapmayı ayarla...
 Set the antenna height above the launch point...	Antenin kalkış noktasından yüksekliğini ayarla...
-Magnetic declination (degrees east; Mersin is about 5.5)	Manyetik sapma (derece, doğu; Mersin yaklaşık 5,5)
+Magnetic declination (degrees, east is positive)	Manyetik sapma (derece, doğu pozitif)
 Antenna height above the launch point (meters)	Antenin kalkış noktasından yüksekliği (metre)
 Enter a number between {0} and {1}.	{0} ile {1} arasında bir sayı girin.
 Sent to the tracker.	Takipçiye gönderildi.
@@ -859,3 +856,9 @@ Following the aircraft	Hava aracı takip ediliyor
 Not following the aircraft (hold, center or test)	Hava aracı takip edilmiyor (bekleme, ortalama veya test)
 Waiting for the aircraft's GPS	Hava aracının GPS'i bekleniyor
 Waiting for the tracker's GPS or compass	Takipçinin GPS'i veya pusulası bekleniyor
+General	Genel
+Aircraft and flight	Hava aracı ve uçuş
+Video and overlays	Video ve katmanlar
+System	Sistem
+Search settings	Ayarlarda ara
+Nothing found.	Hiçbir şey bulunamadı.

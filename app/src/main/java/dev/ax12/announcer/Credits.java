@@ -55,9 +55,9 @@ public final class Credits {
             "https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK",
             I18n.n("This app: the HUD, the voice announcer, the rules and the settings."),
             new Text("AX-HUD license (GNU GPL v3 or later, with the SDK exception)", "licenses/AX-HUD-license.txt")));
-        e.add(new Entry("RadioMaster AX SDK", "RadioMaster", "Published by RadioMaster for app developers",
+        e.add(new Entry("RadioMaster AX SDK", "RadioMaster", "Published by RadioMaster for app developers (no license file; see the README notice)",
             "https://github.com/Radiomaster-RC/RadiomasterAX_SDK",
-            I18n.n("Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.")));
+            I18n.n("Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository states no license, and RadioMaster has not answered my questions about redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.")));
         e.add(new Entry("Qt 6 (Core, Network, SerialPort, Concurrent)", "The Qt Company", "GNU LGPL v3 (Qt open source license)",
             "https://www.qt.io/licensing",
             I18n.n("The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io."),

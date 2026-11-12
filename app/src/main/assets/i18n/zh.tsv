@@ -60,7 +60,7 @@ Last {0} s	最近 {0} 秒
 Connecting to the radio... {0} s	正在连接遥控器... {0} 秒
 Still waiting. Close the RadioMaster app and check that the radio is on.	仍在等待。请关闭 RadioMaster 应用, 并确认遥控器已开机。
 This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
-Reads the radio's channels and telemetry. Its libraries are included in the app. Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件包含在应用内。感谢 RadioMaster 发布它。
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository states no license, and RadioMaster has not answered my questions about redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件已包含在应用中, 与 RadioMaster 手册对应用开发者的说明一致。其仓库未声明许可证, RadioMaster 也尚未回复我关于再分发的询问 (见 README 中的说明)。感谢 RadioMaster 公开发布。
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
@@ -551,7 +551,6 @@ Dark text on light backgrounds for the menu, the settings, the other screens and
 Always show the MENU button	始终显示菜单按钮
 Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
 Start-up splash screen (animated, about 3 seconds)	启动画面 (动画, 约 3 秒)
-Aircraft and battery	飞行器和电池
 Active aircraft	当前飞行器
 Manage the aircraft (add, rename, delete)...	管理飞行器 (添加、重命名、删除)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	每个飞行器都保存自己的规则、警告规则、检查项、电池配置和电池包、通道条、摇杆映射以及解锁开关。叠加层外观、语言和更新是共用的。
@@ -559,7 +558,6 @@ Active battery profile	当前电池配置
 Edit the packs of this aircraft...	编辑此飞行器的电池包...
 Edit the battery profiles (cells and voltage limits)...	编辑电池配置 (节数和电压限值)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	规则和检查项可以使用 cell (每节电压) 以及当前配置的限值 $low、$crit、$full, 例如: cell < $low -> 电池电量低。切换配置只会改变数值, 不会改变规则。
-Overlays on the video	视频上的叠加层
 OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)
 Stick view: roll, pitch, yaw and throttle	摇杆视图: 横滚、俯仰、偏航和油门
 Stick size	摇杆大小
@@ -594,7 +592,6 @@ Move and resize the cards with your finger...	用手指移动卡片并调整大�
 Put every card back in its corner at normal size	将所有卡片放回各自角落并恢复正常大小
 Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	将所有卡片放回各自角落并恢复正常大小? 你选择的位置和大小将被清除。
 Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其方形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
-Video and speech	视频和语音
 Camera (HDMI input)	摄像头 (HDMI 输入)
 Rotate video	旋转视频
 Scale	缩放
@@ -831,7 +828,7 @@ Compass calibration: start (turn the tracker through a full circle)	指南针校
 Compass calibration: save	指南针校准：保存
 Set the magnetic declination...	设置磁偏角…
 Set the antenna height above the launch point...	设置天线高于起飞点的高度…
-Magnetic declination (degrees east; Mersin is about 5.5)	磁偏角（东偏为正，单位：度；梅尔辛约 5.5）
+Magnetic declination (degrees, east is positive)	磁偏角（单位：度，东偏为正）
 Antenna height above the launch point (meters)	天线高于起飞点的高度（米）
 Enter a number between {0} and {1}.	请输入 {0} 到 {1} 之间的数字。
 Sent to the tracker.	已发送给跟踪器。
@@ -859,3 +856,9 @@ Following the aircraft	正在跟踪飞行器
 Not following the aircraft (hold, center or test)	未跟踪飞行器（保持、回中或测试）
 Waiting for the aircraft's GPS	正在等待飞行器 GPS
 Waiting for the tracker's GPS or compass	正在等待跟踪器的 GPS 或指南针
+General	常规
+Aircraft and flight	飞行器与飞行
+Video and overlays	视频与叠加层
+System	系统
+Search settings	搜索设置
+Nothing found.	未找到任何内容。
