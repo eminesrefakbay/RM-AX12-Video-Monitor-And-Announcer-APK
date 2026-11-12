@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.12.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.12.1)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 > **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
@@ -38,7 +38,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,206 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,241 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -250,6 +250,25 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
   they are right at any position. There is no voice and no warning bar in a replay, and arming the aircraft ends it at once.
   A card shows only what the log holds: with fewer values chosen, some cards stay empty (a toast names what is missing).
 * **Privacy.** A log contains GPS positions. It stays on the radio unless you copy it. Do not publish a log that shows where you fly.
+
+
+### Reading a flight log
+
+* **Rows.** Up to 20 per second, because the radio is polled every 50 ms. `rate_hz` in the header is the setting; `actual_rate_hz` in the
+  last line is what the flight really got. The log ends with a line of totals that the app computed from the rows themselves.
+* **How fresh the values are.** The channels (sticks and switches) change about 18 times a second. Everything the aircraft sends back (battery,
+  current, GPS, attitude, vertical speed) changes only when the link sends it. With ExpressLRS at 150 Hz and a telemetry ratio of 1:32 that is
+  about once a second, so most rows repeat the last value, and the battery voltage moves in steps of 0.1 V. Choosing more rows per second adds
+  nothing; a faster telemetry ratio (1:16 or 1:8) gives a sharper log.
+* **Signal.** `up_rssi1`, `up_rssi2` and `dn_rssi` are dBm (negative: -55 is strong, -90 is weak). `dbm` is the radio's own signal figure: a small
+  positive number, not dBm, higher is stronger. `lost` is the radio's heartbeat: 0 means the receiver is lost, a steady number such as 5 means
+  the link is alive. `tx_power` is in mW and drops by itself with dynamic power.
+* **Logs from versions before 1.12.1** show the three RSSI columns wrongly, for example -201 for -55 dBm. The true value is the absolute value
+  minus 256 (|-201| - 256 = -55 dBm).
+* **`win_left`** is the minutes left in the approval window, negative once it has ended (minutes over), and empty before it opens or when it is
+  off.
+* **`fm`** is the flight-mode text of the flight controller: `ANGL`, `ACRO`, `HOR`, `RTH` and so on. `OK` means disarmed and ready; `!ERR` means
+  disarmed with arming disabled (for example the arm switch is still on after an automatic disarm).
 
 ## Around the flight: last position, approval window, packs and debrief
 

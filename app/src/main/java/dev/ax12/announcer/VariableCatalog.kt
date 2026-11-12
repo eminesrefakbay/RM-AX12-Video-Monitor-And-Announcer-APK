@@ -38,10 +38,10 @@ object VariableCatalog {
         "dn_rssi" to tn("Downlink signal strength, dBm"),
         "dn_snr" to tn("Downlink signal to noise, dB"),
         "rf_mode" to tn("ExpressLRS packet rate mode number"),
-        "tx_power" to tn("Transmitter power, mW"),
+        "tx_power" to tn("Transmitter power, mW (it changes by itself with dynamic power)"),
         "lq" to tn("Link quality from the radio, percent"),
-        "dbm" to tn("Signal strength from the radio"),
-        "lost" to tn("Radio's lost-frame counter"),
+        "dbm" to tn("Signal figure reported by the radio (not dBm: a small positive number, higher is stronger)"),
+        "lost" to tn("Link heartbeat counter from the radio: 0 means the receiver is lost, a steady number such as 5 means the link is alive"),
         "txv" to tn("Radio battery volts"),
         "rxv" to tn("Receiver volts"),
         "tlm" to tn("Telemetry present: 1 yes, 0 lost"),
@@ -62,7 +62,7 @@ object VariableCatalog {
         "energy_wh" to tn("Energy used in this flight, Wh (volts times amps over time)"),
         "wh_km" to tn("Energy per kilometre flown, Wh/km (after the first 0.2 km)"),
         "mah_km" to tn("Capacity per kilometre flown, mAh/km (after the first 0.2 km)"),
-        "win_left" to tn("Minutes left in the approval window (only while it is open)")
+        "win_left" to tn("Minutes left in the approval window; negative after it has ended (minutes over)")
     )
 
     class Group(val title: String, val names: List<String>)
@@ -108,10 +108,10 @@ object VariableCatalog {
         "gps_speed" to tn("Speed km/h"), "gps_alt" to tn("GPS altitude m"), "height" to tn("Height m"), "dist" to tn("Distance m"),
         "sats" to tn("Satellites"), "gps_heading" to tn("Heading deg"), "vspeed" to tn("Climb m/s"),
         "pitch" to tn("Pitch deg"), "roll" to tn("Roll deg"), "yaw" to tn("Yaw deg"),
-        "up_rssi1" to tn("Signal dBm"), "up_rssi2" to tn("Signal dBm"), "dn_rssi" to tn("Signal dBm"), "dbm" to tn("Signal dBm"),
+        "up_rssi1" to tn("Signal dBm"), "up_rssi2" to tn("Signal dBm"), "dn_rssi" to tn("Signal dBm"), "dbm" to tn("Signal figure"),
         "up_snr" to tn("Signal to noise dB"), "dn_snr" to tn("Signal to noise dB"),
         "tx_power" to tn("Power mW"), "txv" to tn("Radio volts"), "rxv" to tn("Receiver volts"),
-        "lost" to tn("Lost frames"), "rf_mode" to tn("Packet rate mode"), "tlm" to tn("Telemetry"),
+        "lost" to tn("Link heartbeat"), "rf_mode" to tn("Packet rate mode"), "tlm" to tn("Telemetry"),
         "flown_km" to tn("Distance flown km"), "energy_wh" to tn("Energy Wh"), "wh_km" to tn("Energy Wh/km"), "mah_km" to tn("Capacity mAh/km"), "win_left" to tn("Window minutes")
     )
 

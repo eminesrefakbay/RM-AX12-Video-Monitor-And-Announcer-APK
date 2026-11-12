@@ -615,7 +615,7 @@ The time you are approved to fly, for example the two hours the authority gave y
 Use an approval window	Genehmigungszeitraum verwenden
 Two hours from now	Zwei Stunden ab jetzt
 Speak the warnings	Warnungen ansagen
-The value win_left (minutes left) can be used in value cards, charts, rules and logs.	Der Wert win_left (verbleibende Minuten) kann in Wertkarten, Diagrammen, Regeln und Protokollen verwendet werden.
+The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs.	Der Wert win_left (verbleibende Minuten, nach dem Ende des Zeitraums negativ) kann in Wertkarten, Diagrammen, Regeln und Protokollen verwendet werden.
 Landing, link loss and packs	Landung, Verbindungsverlust und Akkus
 Speak a debrief after landing	Nach der Landung eine Zusammenfassung ansagen
 After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	Nach einem Flug von 20 Sekunden oder mehr: Flugzeit, Strecke, verbrauchte Kapazität, Effizienz, niedrigste Zelle und die Spannung, auf die sich der Akku erholt.
@@ -713,10 +713,10 @@ Downlink link quality, percent	Downlink-Verbindungsqualität, Prozent
 Downlink signal strength, dBm	Downlink-Signalstärke, dBm
 Downlink signal to noise, dB	Downlink-Signal-Rausch-Abstand, dB
 ExpressLRS packet rate mode number	ExpressLRS-Paketraten-Modusnummer
-Transmitter power, mW	Sendeleistung, mW
+Transmitter power, mW (it changes by itself with dynamic power)	Sendeleistung, mW (ändert sich mit Dynamic Power von selbst)
 Link quality from the radio, percent	Verbindungsqualität von der Fernsteuerung, Prozent
-Signal strength from the radio	Signalstärke von der Fernsteuerung
-Radio's lost-frame counter	Zähler verlorener Frames der Fernsteuerung
+Signal figure reported by the radio (not dBm: a small positive number, higher is stronger)	Von der Fernsteuerung gemeldeter Signalwert (kein dBm: eine kleine positive Zahl, höher ist stärker)
+Link heartbeat counter from the radio: 0 means the receiver is lost, a steady number such as 5 means the link is alive	Verbindungs-Heartbeat der Fernsteuerung: 0 heißt, der Empfänger ist verloren; eine gleichbleibende Zahl wie 5 heißt, die Verbindung lebt
 Radio battery volts	Akkuspannung der Fernsteuerung
 Receiver volts	Empfängerspannung
 Telemetry present: 1 yes, 0 lost	Telemetrie vorhanden: 1 ja, 0 verloren
@@ -737,7 +737,7 @@ Distance flown in this flight, km (kept after landing)	Geflogene Strecke in dies
 Energy used in this flight, Wh (volts times amps over time)	In diesem Flug verbrauchte Energie, Wh (Volt mal Ampere über die Zeit)
 Energy per kilometre flown, Wh/km (after the first 0.2 km)	Energie pro geflogenem Kilometer, Wh/km (nach den ersten 0,2 km)
 Capacity per kilometre flown, mAh/km (after the first 0.2 km)	Kapazität pro geflogenem Kilometer, mAh/km (nach den ersten 0,2 km)
-Minutes left in the approval window (only while it is open)	Verbleibende Minuten im Genehmigungszeitraum (nur solange er offen ist)
+Minutes left in the approval window; negative after it has ended (minutes over)	Verbleibende Minuten im Genehmigungszeitraum; nach dessen Ende negativ (Minuten darüber)
 Switches and sticks (channels, 1000 to 2000)	Schalter und Sticks (Kanäle, 1000 bis 2000)
 Battery (from the flight controller)	Akku (vom Flugcontroller)
 Link quality and signal	Verbindungsqualität und Signal
@@ -772,7 +772,7 @@ Signal dBm	Signal dBm
 Signal to noise dB	Signal-Rausch dB
 Power mW	Leistung mW
 Radio volts	Spannung der Fernsteuerung
-Lost frames	Verlorene Frames
+Link heartbeat	Verbindungs-Heartbeat
 Packet rate mode	Paketraten-Modus
 Telemetry	Telemetrie
 Distance flown km	Geflogen km
@@ -862,3 +862,5 @@ Video and overlays	Video und Einblendungen
 System	System
 Search settings	Einstellungen durchsuchen
 Nothing found.	Nichts gefunden.
+Signal figure	Signalwert
+Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	Zeilen werden bis zu 20-mal pro Sekunde geschrieben. Die Knüppel ändern sich so oft; die Werte vom Fluggerät (Akku, GPS, Lage) ändern sich nur so oft, wie Ihre Verbindung sie sendet, bei einem langsamen ELRS-Telemetrieverhältnis (1:32 bei 150 Hz) etwa einmal pro Sekunde. Ein schnelleres Verhältnis wie 1:16 oder 1:8 ergibt ein schärferes Protokoll.

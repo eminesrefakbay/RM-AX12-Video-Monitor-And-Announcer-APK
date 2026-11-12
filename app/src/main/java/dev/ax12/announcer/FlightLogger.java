@@ -35,7 +35,7 @@ public final class FlightLogger {
     public interface Wall { long now(); }
 
     public static final long MIN_FREE_BYTES = 20L * 1024 * 1024;
-    public static final int[] RATES_HZ = {1, 2, 5, 10, 25};
+    public static final int[] RATES_HZ = {1, 2, 5, 10, 20};      // the radio is polled 20 times a second, so a higher rate would only repeat rows
     public static final int[] KEEP = {20, 50, 100, 200};
 
     private final File dir;
@@ -174,6 +174,7 @@ public final class FlightLogger {
         sink.offer(LogFormat.metaLine("rate_hz", Integer.toString(rateHz)));
         sink.offer(LogFormat.metaLine("text", text.toString()));
         sink.offer(LogFormat.metaLine("note", "This file contains GPS positions."));
+        sink.offer(LogFormat.metaLine("telemetry", "Values from the aircraft (battery, GPS, attitude) change only when the link sends them: about once a second at a slow ELRS telemetry ratio."));
         sink.offer(LogFormat.headerRow(cols));
         return true;
     }
@@ -184,6 +185,7 @@ public final class FlightLogger {
         Map<String, String> end = new LinkedHashMap<String, String>();
         end.put("duration_ms", Long.toString(rows == 0 ? 0 : lastRowMs - startMs));
         end.put("rows", Integer.toString(rows));
+        end.put("actual_rate_hz", rows > 1 && lastRowMs > startMs ? String.format(Locale.US, "%.1f", rows * 1000.0 / (lastRowMs - startMs)) : "");
         end.put("dropped", Integer.toString(dropped));
         end.put("max_height", LogFormat.fmt("", maxHeight));
         end.put("max_dist", LogFormat.fmt("", maxDist));

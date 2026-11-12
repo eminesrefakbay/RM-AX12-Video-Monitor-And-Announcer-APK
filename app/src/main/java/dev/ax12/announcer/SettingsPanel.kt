@@ -638,7 +638,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             }
             valueRow(tr("Warn at (minutes left)"), host.windowWarnLabel()) { host.editWindowWarn() }
             toggle(tr("Speak the warnings"), host.windowSpeechOn()) { host.setWindowSpeechOn(it) }
-            note(tr("The value win_left (minutes left) can be used in value cards, charts, rules and logs."))
+            note(tr("The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs."))
         }
     }
 
@@ -776,6 +776,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
                 host.cycleLogRate()
                 refresh()
             }
+            note(tr("Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log."))
             valueRow(tr("Values in the log"), host.logFieldsLabel()) { host.editLogFields() }
             valueRow(tr("Flights to keep"), host.logKeepLabel()) {
                 host.cycleLogKeep()

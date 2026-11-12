@@ -615,7 +615,7 @@ The time you are approved to fly, for example the two hours the authority gave y
 Use an approval window	使用批准时段
 Two hours from now	从现在起两小时
 Speak the warnings	语音播报提醒
-The value win_left (minutes left) can be used in value cards, charts, rules and logs.	win_left（剩余分钟）可用于数值卡片、图表、规则和日志。
+The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs.	win_left（剩余分钟，时段结束后为负数）可用于数值卡片、图表、规则和日志。
 Landing, link loss and packs	降落、链路丢失与电池包
 Speak a debrief after landing	降落后语音播报总结
 After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	20秒以上的飞行结束后：飞行时间、距离、用电量、能耗、最低单节电压和电池静置电压。
@@ -713,10 +713,10 @@ Downlink link quality, percent	下行链路质量, 百分比
 Downlink signal strength, dBm	下行信号强度, dBm
 Downlink signal to noise, dB	下行信噪比, dB
 ExpressLRS packet rate mode number	ExpressLRS 包速率模式编号
-Transmitter power, mW	发射功率, mW
+Transmitter power, mW (it changes by itself with dynamic power)	发射功率, mW（启用动态功率时会自动变化）
 Link quality from the radio, percent	遥控器报告的链路质量, 百分比
-Signal strength from the radio	遥控器报告的信号强度
-Radio's lost-frame counter	遥控器的丢帧计数
+Signal figure reported by the radio (not dBm: a small positive number, higher is stronger)	遥控器报告的信号数值（不是 dBm：较小的正数，数值越大信号越强）
+Link heartbeat counter from the radio: 0 means the receiver is lost, a steady number such as 5 means the link is alive	遥控器的链路心跳计数：0 表示接收机丢失，5 这样的稳定数值表示链路正常
 Radio battery volts	遥控器电池电压
 Receiver volts	接收机电压
 Telemetry present: 1 yes, 0 lost	遥测存在: 1 是, 0 丢失
@@ -737,7 +737,7 @@ Distance flown in this flight, km (kept after landing)	本次飞行已飞距离�
 Energy used in this flight, Wh (volts times amps over time)	本次飞行消耗的能量，Wh（电压乘电流对时间积分）
 Energy per kilometre flown, Wh/km (after the first 0.2 km)	每飞行一公里的能量，Wh/km（前0.2公里之后）
 Capacity per kilometre flown, mAh/km (after the first 0.2 km)	每飞行一公里的容量，mAh/km（前0.2公里之后）
-Minutes left in the approval window (only while it is open)	批准时段剩余分钟（仅在时段内）
+Minutes left in the approval window; negative after it has ended (minutes over)	批准时段剩余分钟；时段结束后为负数（超出的分钟数）
 Switches and sticks (channels, 1000 to 2000)	开关和摇杆 (通道, 1000 到 2000)
 Battery (from the flight controller)	电池 (来自飞控)
 Link quality and signal	链路质量与信号
@@ -772,7 +772,7 @@ Signal dBm	信号 dBm
 Signal to noise dB	信噪比 dB
 Power mW	功率 mW
 Radio volts	遥控器电压
-Lost frames	丢帧数
+Link heartbeat	链路心跳
 Packet rate mode	包速率模式
 Telemetry	遥测
 Distance flown km	已飞距离 km
@@ -862,3 +862,5 @@ Video and overlays	视频与叠加层
 System	系统
 Search settings	搜索设置
 Nothing found.	未找到任何内容。
+Signal figure	信号数值
+Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	每秒最多写入 20 行。摇杆数据的变化有这么快；来自飞行器的数值（电池、GPS、姿态）只有在链路发送时才会变化，在较慢的 ELRS 遥测比（150 Hz 下为 1:32）时约每秒一次。更快的比例（如 1:16 或 1:8）能得到更精细的日志。

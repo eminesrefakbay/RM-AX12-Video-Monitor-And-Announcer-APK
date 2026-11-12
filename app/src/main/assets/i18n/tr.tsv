@@ -615,7 +615,7 @@ The time you are approved to fly, for example the two hours the authority gave y
 Use an approval window	Onay penceresi kullan
 Two hours from now	Şimdiden iki saat
 Speak the warnings	Uyarıları seslendir
-The value win_left (minutes left) can be used in value cards, charts, rules and logs.	Değer win_left (kalan dakika) değer kartlarında, grafiklerde, kurallarda ve kayıtlarda kullanılabilir.
+The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs.	Değer win_left (kalan dakika, pencere bittikten sonra eksi) değer kartlarında, grafiklerde, kurallarda ve kayıtlarda kullanılabilir.
 Landing, link loss and packs	İniş, bağlantı kaybı ve paketler
 Speak a debrief after landing	İnişten sonra özet seslendir
 After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	Uçuş 20 saniye veya daha uzunsa: uçuş süresi, mesafe, kullanılan kapasite, verimlilik, en düşük hücre ve paketin dinlendiği gerilim.
@@ -713,10 +713,10 @@ Downlink link quality, percent	Downlink bağlantı kalitesi, yüzde
 Downlink signal strength, dBm	Downlink sinyal gücü, dBm
 Downlink signal to noise, dB	Downlink sinyal/gürültü, dB
 ExpressLRS packet rate mode number	ExpressLRS paket hızı modu numarası
-Transmitter power, mW	Verici gücü, mW
+Transmitter power, mW (it changes by itself with dynamic power)	Verici gücü, mW (dinamik güçle kendiliğinden değişir)
 Link quality from the radio, percent	Kumandadan bağlantı kalitesi, yüzde
-Signal strength from the radio	Kumandadan sinyal gücü
-Radio's lost-frame counter	Kumandanın kayıp kare sayacı
+Signal figure reported by the radio (not dBm: a small positive number, higher is stronger)	Kumandanın bildirdiği sinyal değeri (dBm değil: küçük bir pozitif sayı, yüksek olan daha güçlü)
+Link heartbeat counter from the radio: 0 means the receiver is lost, a steady number such as 5 means the link is alive	Kumandanın bağlantı kalp atışı sayacı: 0 alıcının kaybolduğunu, 5 gibi sabit bir sayı bağlantının canlı olduğunu gösterir
 Radio battery volts	Kumanda batarya voltu
 Receiver volts	Alıcı voltu
 Telemetry present: 1 yes, 0 lost	Telemetri var: 1 evet, 0 kayıp
@@ -737,7 +737,7 @@ Distance flown in this flight, km (kept after landing)	Bu uçuşta uçulan mesaf
 Energy used in this flight, Wh (volts times amps over time)	Bu uçuşta kullanılan enerji, Wh (volt çarpı amper, zaman boyunca)
 Energy per kilometre flown, Wh/km (after the first 0.2 km)	Uçulan kilometre başına enerji, Wh/km (ilk 0,2 km'den sonra)
 Capacity per kilometre flown, mAh/km (after the first 0.2 km)	Uçulan kilometre başına kapasite, mAh/km (ilk 0,2 km'den sonra)
-Minutes left in the approval window (only while it is open)	Onay penceresinde kalan dakika (yalnızca açıkken)
+Minutes left in the approval window; negative after it has ended (minutes over)	Onay penceresinde kalan dakika; bittikten sonra eksi değer (aşılan dakika)
 Switches and sticks (channels, 1000 to 2000)	Anahtarlar ve stick'ler (kanallar, 1000 - 2000)
 Battery (from the flight controller)	Batarya (uçuş kontrolcüsünden)
 Link quality and signal	Bağlantı kalitesi ve sinyal
@@ -772,7 +772,7 @@ Signal dBm	Sinyal dBm
 Signal to noise dB	Sinyal/gürültü dB
 Power mW	Güç mW
 Radio volts	Kumanda voltu
-Lost frames	Kayıp kareler
+Link heartbeat	Bağlantı kalp atışı
 Packet rate mode	Paket hızı modu
 Telemetry	Telemetri
 Distance flown km	Uçulan mesafe km
@@ -862,3 +862,5 @@ Video and overlays	Video ve katmanlar
 System	Sistem
 Search settings	Ayarlarda ara
 Nothing found.	Hiçbir şey bulunamadı.
+Signal figure	Sinyal değeri
+Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	Satırlar saniyede en fazla 20 kez yazılır. Çubuklar o kadar sık değişir; hava aracından gelen değerler (batarya, GPS, duruş) ise yalnızca bağlantınız gönderdiği kadar sık değişir, yavaş bir ELRS telemetri oranında (150 Hz'de 1:32) saniyede yaklaşık bir kez. 1:16 veya 1:8 gibi daha hızlı bir oran daha keskin bir kayıt verir.

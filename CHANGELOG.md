@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.1
+
+Fixes found in the first real AX-HUD flight log. The signal strength (RSSI) was shown and logged wrongly (-201 for -55 dBm): it is read correctly
+now. The log rate no longer offers 25 rows per second (the radio is polled 20 times a second) and the log's last line states the rate the
+flight really got. `win_left` goes negative after the approval window has ended instead of going empty. The descriptions of the `dbm`, `lost`
+and `tx_power` values say what they really are. The README has a new section, "Reading a flight log".
+
 ## 1.12.0
 
 Settings are tabs now, with a search. A rail on the left holds eight tabs (General, Aircraft and flight, Video and overlays, Dashboard, Antenna

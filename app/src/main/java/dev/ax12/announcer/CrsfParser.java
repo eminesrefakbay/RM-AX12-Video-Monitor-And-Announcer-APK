@@ -14,6 +14,15 @@ import java.util.Map;
  */
 public final class CrsfParser {
 
+    /**
+     * A signal strength byte as dBm. The CRSF specification sends the magnitude (55 means -55 dBm), but the AX12's own module sends the signed
+     * byte (201 means -55 dBm). A magnitude never exceeds 128, so a bigger value is a signed byte.
+     */
+    public static double rssiDbm(byte b) {
+        int v = b & 0xFF;
+        return v > 128 ? v - 256 : -v;
+    }
+
     public static final int TYPE_GPS = 0x02;
     public static final int TYPE_VARIO = 0x07;
     public static final int TYPE_BATTERY = 0x08;
@@ -75,14 +84,14 @@ public final class CrsfParser {
                 break;
             case TYPE_LINK_STATS:
                 if (payloadLen < 10) { used = false; break; }
-                num.put("up_rssi1", (double) -(f[p] & 0xFF));
-                num.put("up_rssi2", (double) -(f[p + 1] & 0xFF));
+                num.put("up_rssi1", rssiDbm(f[p]));
+                num.put("up_rssi2", rssiDbm(f[p + 1]));
                 num.put("up_lq", (double) (f[p + 2] & 0xFF));
                 num.put("up_snr", (double) f[p + 3]);
                 num.put("rf_mode", (double) (f[p + 5] & 0xFF));
                 int tp = f[p + 6] & 0xFF;
                 num.put("tx_power", (double) (tp < TX_POWER_MW.length ? TX_POWER_MW[tp] : -1));
-                num.put("dn_rssi", (double) -(f[p + 7] & 0xFF));
+                num.put("dn_rssi", rssiDbm(f[p + 7]));
                 num.put("dn_lq", (double) (f[p + 8] & 0xFF));
                 num.put("dn_snr", (double) f[p + 9]);
                 break;

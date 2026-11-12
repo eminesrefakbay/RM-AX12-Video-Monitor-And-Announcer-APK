@@ -629,7 +629,7 @@ The time you are approved to fly, for example the two hours the authority gave y
 Use an approval window
 Two hours from now
 Speak the warnings
-The value win_left (minutes left) can be used in value cards, charts, rules and logs.
+The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs.
 Speak a debrief after landing
 After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.
 Speak the last position when the link is lost
@@ -699,6 +699,7 @@ Set the antenna height above the launch point...
 Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.
 Log every flight
 Rows per second
+Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.
 Flights to keep
 Flight logs: list, replay and delete...
 Export sound rules to a file...
@@ -788,10 +789,10 @@ Downlink link quality, percent
 Downlink signal strength, dBm
 Downlink signal to noise, dB
 ExpressLRS packet rate mode number
-Transmitter power, mW
+Transmitter power, mW (it changes by itself with dynamic power)
 Link quality from the radio, percent
-Signal strength from the radio
-Radio's lost-frame counter
+Signal figure reported by the radio (not dBm: a small positive number, higher is stronger)
+Link heartbeat counter from the radio: 0 means the receiver is lost, a steady number such as 5 means the link is alive
 Radio battery volts
 Receiver volts
 Telemetry present: 1 yes, 0 lost
@@ -812,7 +813,7 @@ Distance flown in this flight, km (kept after landing)
 Energy used in this flight, Wh (volts times amps over time)
 Energy per kilometre flown, Wh/km (after the first 0.2 km)
 Capacity per kilometre flown, mAh/km (after the first 0.2 km)
-Minutes left in the approval window (only while it is open)
+Minutes left in the approval window; negative after it has ended (minutes over)
 Switches and sticks (channels, 1000 to 2000)
 Battery (from the flight controller)
 Link quality and signal
@@ -844,10 +845,11 @@ Pitch deg
 Roll deg
 Yaw deg
 Signal dBm
+Signal figure
 Signal to noise dB
 Power mW
 Radio volts
-Lost frames
+Link heartbeat
 Packet rate mode
 Telemetry
 Distance flown km

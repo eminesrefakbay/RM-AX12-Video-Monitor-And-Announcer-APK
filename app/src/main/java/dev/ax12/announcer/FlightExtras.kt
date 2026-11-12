@@ -112,8 +112,8 @@ class FlightExtras(
             if (!mk.isNaN()) numbers["mah_km"] = mk
         }
         if (window.enabled()) {
-            val left = window.leftSeconds(secOfDay(wallMs))
-            if (!left.isNaN()) numbers["win_left"] = left / 60.0
+            val left = window.minutesLeftOrOver(secOfDay(wallMs))      // minutes left; negative once the window has ended
+            if (!left.isNaN()) numbers["win_left"] = left
         }
         if (armed != wasArmed) Diagnostics.event("flight", if (armed) "armed" else "disarmed after " + ApprovalWindow.clock(stats.armedMs(now) / 1000.0))
         when (loss.update(now, armed, numbers)) {

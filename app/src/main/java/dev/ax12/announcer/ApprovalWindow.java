@@ -66,6 +66,14 @@ public final class ApprovalWindow {
         return endS() - n;
     }
 
+    /** Minutes left while the window is open, minutes over (negative) after it has ended, NaN before it opens or when it is off. */
+    public double minutesLeftOrOver(int secOfDay) {
+        double left = leftSeconds(secOfDay);
+        if (!Double.isNaN(left)) return left / 60.0;
+        double ended = endedSecondsAgo(secOfDay);
+        return Double.isNaN(ended) ? Double.NaN : -ended / 60.0;
+    }
+
     /** Seconds until the window opens; NaN unless it is still to come. */
     public double startsInSeconds(int secOfDay) { return state(secOfDay) == State.BEFORE ? untilStart(secOfDay) : Double.NaN; }
 
