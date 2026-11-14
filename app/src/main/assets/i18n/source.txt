@@ -136,6 +136,7 @@ Where everything is
 Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft, Sunlight, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Sunlight: dark text on light, for direct sun. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
+No position in this log, so there is no 3D view.
 Packs
 Last known position
 LINK LOST {0}
@@ -296,6 +297,9 @@ Center
 The log cannot be read: {0}
 REPLAY
 This log lacks values that some cards need: {0}
+Orbit
+Pilot
+Chase
 SPEED
 HEIGHT
 CURRENT

@@ -864,3 +864,7 @@ Search settings	Einstellungen durchsuchen
 Nothing found.	Nichts gefunden.
 Signal figure	Signalwert
 Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	Zeilen werden bis zu 20-mal pro Sekunde geschrieben. Die Knüppel ändern sich so oft; die Werte vom Fluggerät (Akku, GPS, Lage) ändern sich nur so oft, wie Ihre Verbindung sie sendet, bei einem langsamen ELRS-Telemetrieverhältnis (1:32 bei 150 Hz) etwa einmal pro Sekunde. Ein schnelleres Verhältnis wie 1:16 oder 1:8 ergibt ein schärferes Protokoll.
+Chase	Verfolger
+Orbit	Orbit
+Pilot	Pilot
+No position in this log, so there is no 3D view.	Dieses Log enthält keine Position, daher gibt es keine 3D-Ansicht.

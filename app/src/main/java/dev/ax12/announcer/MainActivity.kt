@@ -96,6 +96,7 @@ class MainActivity : Activity() {
     private lateinit var diagPanel: InfoPanel
     private lateinit var replayUi: ReplayOverlay
     private var replay: ReplayEngine? = null
+    private lateinit var flight3d: Flight3DView           // the 3D replay: drawn over the backdrop, under the cards
     private var replayStats = FlightStats()               // the replay's own statistics: the live ones are never touched
     private var replayChart = ChartModel()
     private var replayLastReal = 0L
@@ -290,8 +291,11 @@ class MainActivity : Activity() {
         logDir = File(getExternalFilesDir(null) ?: filesDir, "flights")
         flightLogger = FlightLogger(logDir, FlightLogger.Wall { System.currentTimeMillis() }, FlightLogger.MetaSource { logMeta() })
         logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) })
-        replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() })
+        replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() }, { cycleReplayCamera() })
+        flight3d = Flight3DView(this)
+        flight3d.visibility = View.GONE
         replayUi.attach(frame, 2)                       // the backdrop sits above the video and its no-video screen, below every card
+        frame.addView(flight3d, 3, android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT, android.widget.FrameLayout.LayoutParams.MATCH_PARENT))
         dashboard = DashboardPage(this, object : DashboardPage.Host {
             override fun stats(): FlightStats = if (replay != null) replayStats else flightStats
             override fun chart(): ChartModel = if (replay != null) replayChart else chartModel
@@ -1414,6 +1418,9 @@ class MainActivity : Activity() {
         shown.started = log.meta("started", "")
         val title = tr("REPLAY") + "  " + LogText.dateTime(shown) + (if (log.meta("aircraft", "").isEmpty()) "" else "  \u00B7  " + log.meta("aircraft", ""))
         replayUi.show(title)
+        val path = FlightPath.build(log)
+        if (path.n >= 2) { flight3d.bind(path); flight3d.visibility = View.VISIBLE } else { flight3d.bind(null); flight3d.visibility = View.GONE }
+        replayUi.setCamera(path.n >= 2, cameraName(flight3d.cameraMode(), true))
         rebuildReplay(0)
         val missing = LogFields.missingForReplay(log.columns.toList(), log.metaNumber("arm_ch", 5.0).toInt())
         if (missing.isNotEmpty()) Toasts.make(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
@@ -1423,6 +1430,8 @@ class MainActivity : Activity() {
     private fun stopReplay() {
         if (replay == null) return
         replay = null
+        flight3d.bind(null)
+        flight3d.visibility = View.GONE
         replayUi.hide()
         radarView.bind(flightStats)                                       // the live cards come back on the next tick
         chartView.bind(chartModel)
@@ -1494,12 +1503,25 @@ class MainActivity : Activity() {
             replayTilesLast = now
             updateTiles(m, replayTexts, ReplayEngine.clock(r.positionMs()), replayStats, replayChart, false)
         }
+        flight3d.setClock(r.positionExact(), r.playing(), r.speed())
         replayUi.update(r.positionMs(), r.durationMs(), r.playing(), r.speed())
+    }
+
+    /** The name of a camera of the 3D view: the one that is on, or the one a tap switches to. */
+    private fun cameraName(mode: Int, next: Boolean): String {
+        val m = if (next) (mode + 1) % 3 else mode
+        return when (m) { Cam3D.ORBIT -> tr("Orbit"); Cam3D.PILOT -> tr("Pilot"); else -> tr("Chase") }
+    }
+
+    private fun cycleReplayCamera() {
+        val mode = flight3d.cycleCamera()
+        replayUi.setCamera(true, cameraName(mode, true))
     }
 
     private fun replaySeek(fraction: Double) {
         val r = replay ?: return
         r.seek((fraction * r.durationMs()).toLong())
+        flight3d.jump(r.positionExact())
         rebuildReplay(r.positionMs())
     }
 

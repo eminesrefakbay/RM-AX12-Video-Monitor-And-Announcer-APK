@@ -864,3 +864,7 @@ Search settings	Ayarlarda ara
 Nothing found.	Hiçbir şey bulunamadı.
 Signal figure	Sinyal değeri
 Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	Satırlar saniyede en fazla 20 kez yazılır. Çubuklar o kadar sık değişir; hava aracından gelen değerler (batarya, GPS, duruş) ise yalnızca bağlantınız gönderdiği kadar sık değişir, yavaş bir ELRS telemetri oranında (150 Hz'de 1:32) saniyede yaklaşık bir kez. 1:16 veya 1:8 gibi daha hızlı bir oran daha keskin bir kayıt verir.
+Chase	Takip
+Orbit	Yörünge
+Pilot	Pilot
+No position in this log, so there is no 3D view.	Bu kayıtta konum yok, bu yüzden 3D görünüm yok.

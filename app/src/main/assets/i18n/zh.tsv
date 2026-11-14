@@ -864,3 +864,7 @@ Search settings	搜索设置
 Nothing found.	未找到任何内容。
 Signal figure	信号数值
 Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	每秒最多写入 20 行。摇杆数据的变化有这么快；来自飞行器的数值（电池、GPS、姿态）只有在链路发送时才会变化，在较慢的 ELRS 遥测比（150 Hz 下为 1:32）时约每秒一次。更快的比例（如 1:16 或 1:8）能得到更精细的日志。
+Chase	跟随
+Orbit	旋转
+Pilot	飞手
+No position in this log, so there is no 3D view.	此日志没有位置数据，因此没有3D视图。

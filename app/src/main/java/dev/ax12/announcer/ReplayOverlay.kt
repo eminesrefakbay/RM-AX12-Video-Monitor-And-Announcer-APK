@@ -26,7 +26,8 @@ class ReplayOverlay(
     private val onToggle: () -> Unit,
     private val onSpeed: () -> Unit,
     private val onSeek: (Double) -> Unit,
-    private val onClose: () -> Unit
+    private val onClose: () -> Unit,
+    private val onCamera: () -> Unit = {}
 ) {
     val backdrop = View(activity)
     val tag = TextView(activity)
@@ -34,6 +35,7 @@ class ReplayOverlay(
     private val closeButton = Button(activity)
     private val playButton = Button(activity)
     private val speedButton = Button(activity)
+    private val cameraButton = Button(activity)
     private val seek = SeekBar(activity)
     private val timeView = TextView(activity)
     private val density = activity.resources.displayMetrics.density
@@ -68,6 +70,8 @@ class ReplayOverlay(
         square(closeButton, 96) { onClose() }
         square(playButton, 96) { onToggle() }
         square(speedButton, 72) { onSpeed() }
+        square(cameraButton, 96) { onCamera() }
+        cameraButton.visibility = View.GONE
         seek.max = 1000
         seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(s: SeekBar, progress: Int, fromUser: Boolean) { if (fromUser) onSeek(progress / 1000.0) }
@@ -95,6 +99,12 @@ class ReplayOverlay(
         backdrop.visibility = View.VISIBLE
         tag.visibility = View.VISIBLE
         bar.visibility = View.VISIBLE
+    }
+
+    /** The camera button of the 3D view: shows the name of the camera that a tap switches to; gone when the log has no 3D view. */
+    fun setCamera(visible: Boolean, nextName: String) {
+        cameraButton.visibility = if (visible) View.VISIBLE else View.GONE
+        cameraButton.text = nextName
     }
 
     fun hide() {

@@ -30,6 +30,8 @@ public final class ReplayEngine {
     public FlightLog log() { return log; }
     public long durationMs() { return log.durationMs(); }
     public long positionMs() { return (long) positionMs; }
+    /** The position as it is, not cut to a whole millisecond: the 3D view moves smoothly between logged samples. */
+    public double positionExact() { return positionMs; }
     public boolean playing() { return playing; }
     public boolean atEnd() { return positionMs >= durationMs(); }
     public int speed() { return SPEEDS[speedIndex]; }

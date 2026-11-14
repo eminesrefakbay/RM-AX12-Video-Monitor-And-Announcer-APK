@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.13.0
+
+The 3D flight replay, first version. A flight log now replays in 3D behind the cards: a speed-coloured ribbon over a flat ground with a horizon, the
+aircraft, a home ring and flags at the events. The motion is smooth (a curve through the logged points for position and attitude, a view clock that
+runs on every screen frame, a camera that follows with a half-life) and there are three cameras: chase, orbit and pilot.
+
 ## 1.12.1
 
 Fixes found in the first real AX-HUD flight log. The signal strength (RSSI) was shown and logged wrongly (-201 for -55 dBm): it is read correctly
