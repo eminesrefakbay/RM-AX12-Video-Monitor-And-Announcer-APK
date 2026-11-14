@@ -70,6 +70,12 @@ class Flight3DView(context: Context) : View(context) {
     private val homePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val hazePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val tipPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val wingPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val tailPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val bodyFill = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val noseFill = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val arrowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val headPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private val placed = FloatArray(MAX_LABELS * 4)
     private var placedCount = 0
@@ -127,6 +133,20 @@ class Flight3DView(context: Context) : View(context) {
         homePaint.style = Paint.Style.STROKE
         homePaint.strokeWidth = dp(2f)
         homePaint.color = 0xFF66BB6A.toInt()
+        wingPaint.style = Paint.Style.FILL
+        wingPaint.color = 0xE6DDE6EE.toInt()
+        tailPaint.style = Paint.Style.FILL
+        tailPaint.color = 0xE69FB2C4.toInt()
+        bodyFill.style = Paint.Style.FILL
+        bodyFill.color = 0xFFF4F7FA.toInt()
+        noseFill.style = Paint.Style.FILL
+        noseFill.color = 0xFFFFB300.toInt()
+        headPaint.style = Paint.Style.STROKE
+        headPaint.strokeWidth = dp(2f)
+        headPaint.strokeCap = Paint.Cap.ROUND
+        headPaint.color = 0xCCFFB300.toInt()
+        arrowPaint.style = Paint.Style.FILL
+        arrowPaint.color = 0x70FFB300
         tipPaint.style = Paint.Style.STROKE
         tipPaint.strokeWidth = dp(4f)
         tipPaint.strokeCap = Paint.Cap.ROUND
@@ -395,10 +415,12 @@ class Flight3DView(context: Context) : View(context) {
         if (!cam.project(pose.x, pose.y, pose.z, pt)) return
         val depth = pt[2]
         // the size: true size when it is near, never smaller than a mark you can see
-        val metre = Math.max(0.55, dp(10f) / cam.scaleAt(depth))
+        val metre = Math.max(0.6, dp(12f) / cam.scaleAt(depth))
         val arm = metre
         val cxp = pt[0].toFloat()
         val cyp = pt[1].toFloat()
+        drawHeadingMark(canvas, arm * 1.2)
+        drawForwardArrow(canvas, arm)
         if (cam.project(pose.x, pose.y, 0.0, pt2)) {
             canvas.drawLine(cxp, cyp, pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
             canvas.drawCircle(pt2[0].toFloat(), pt2[1].toFloat(), dp(5f), shadowPaint)
@@ -427,23 +449,74 @@ class Flight3DView(context: Context) : View(context) {
             canvas.drawLine(seg[0].toFloat(), seg[1].toFloat(), seg[2].toFloat(), seg[3].toFloat(), paint)
     }
 
-    /** A fixed-wing: fuselage, a straight wing, a tail plane and a fin, with a red and a green wing tip. */
+    /** A flat shape of the aircraft's body (points x, y, z in its own axes, in order), filled. */
+    private fun bodyPoly(canvas: Canvas, a: Double, pts: DoubleArray, paint: Paint) {
+        tmpPath.reset()
+        var n = 0
+        var i = 0
+        while (i < pts.size) {
+            val r = Quat.rotate(pose.q, pts[i] * a, pts[i + 1] * a, pts[i + 2] * a)
+            if (!cam.project(pose.x + r[0], pose.y + r[1], pose.z + r[2], pt2)) return
+            if (n == 0) tmpPath.moveTo(pt2[0].toFloat(), pt2[1].toFloat()) else tmpPath.lineTo(pt2[0].toFloat(), pt2[1].toFloat())
+            n++
+            i += 3
+        }
+        tmpPath.close()
+        canvas.drawPath(tmpPath, paint)
+    }
+
+    /** A level arrow ahead of the aircraft along its heading, at its own height: it shows which way the nose points whatever the pitch and the camera. */
+    private fun drawForwardArrow(canvas: Canvas, size: Double) {
+        val hd = Math.toRadians(pose.headingDeg)
+        val fx = Math.sin(hd)
+        val fy = Math.cos(hd)
+        val len = size * 5.0
+        val tx = pose.x + fx * len
+        val ty = pose.y + fy * len
+        if (cam.projectSegment(pose.x, pose.y, pose.z, tx, ty, pose.z, seg))
+            canvas.drawLine(seg[0].toFloat(), seg[1].toFloat(), seg[2].toFloat(), seg[3].toFloat(), headPaint)
+        val bx = tx - fx * size * 1.2
+        val by = ty - fy * size * 1.2
+        val sx = -fy * size * 0.7
+        val sy = fx * size * 0.7
+        if (cam.projectSegment(tx, ty, pose.z, bx + sx, by + sy, pose.z, seg))
+            canvas.drawLine(seg[0].toFloat(), seg[1].toFloat(), seg[2].toFloat(), seg[3].toFloat(), headPaint)
+        if (cam.projectSegment(tx, ty, pose.z, bx - sx, by - sy, pose.z, seg))
+            canvas.drawLine(seg[0].toFloat(), seg[1].toFloat(), seg[2].toFloat(), seg[3].toFloat(), headPaint)
+    }
+
+    /** On the ground under the aircraft: a triangle that points the way its nose points. It reads the same from every camera and at every pitch. */
+    private fun drawHeadingMark(canvas: Canvas, size: Double) {
+        val hd = Math.toRadians(pose.headingDeg)
+        val fx = Math.sin(hd)
+        val fy = Math.cos(hd)
+        val pts = doubleArrayOf(fx * size * 1.6, fy * size * 1.6, -fx * size - fy * size * 0.8, -fy * size + fx * size * 0.8, -fx * size + fy * size * 0.8, -fy * size - fx * size * 0.8)
+        tmpPath.reset()
+        for (k in 0 until 3) {
+            if (!cam.project(pose.x + pts[k * 2], pose.y + pts[k * 2 + 1], 0.0, pt2)) return
+            if (k == 0) tmpPath.moveTo(pt2[0].toFloat(), pt2[1].toFloat()) else tmpPath.lineTo(pt2[0].toFloat(), pt2[1].toFloat())
+        }
+        tmpPath.close()
+        canvas.drawPath(tmpPath, arrowPaint)
+    }
+
+    /** A fixed-wing: a tapered fuselage with an orange nose cone, a swept wing with a red and a green tip, a tail plane and a fin. */
     private fun drawPlane(canvas: Canvas) {
         if (!cam.project(pose.x, pose.y, pose.z, pt)) return
-        val a = Math.max(0.7, dp(10f) / cam.scaleAt(pt[2]))
-        if (cam.project(pose.x, pose.y, 0.0, pt2)) {
-            canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
-            canvas.drawCircle(pt2[0].toFloat(), pt2[1].toFloat(), dp(5f), shadowPaint)
-        }
-        bodyLine(canvas, a, 0.0, -1.5, 0.0, 0.0, 1.5, 0.0, bodyPaint)            // the fuselage
-        bodyLine(canvas, a, 0.0, 0.9, 0.0, 0.0, 1.7, 0.0, nosePaint)             // the nose
-        bodyLine(canvas, a, -1.8, 0.2, 0.0, 1.8, 0.2, 0.0, bodyPaint)            // the wing
-        bodyLine(canvas, a, -0.7, -1.4, 0.0, 0.7, -1.4, 0.0, bodyPaint)          // the tail plane
-        bodyLine(canvas, a, 0.0, -1.4, 0.0, 0.0, -1.2, 0.55, bodyPaint)          // the fin
+        val a = Math.max(0.9, dp(15f) / cam.scaleAt(pt[2]))
+        drawHeadingMark(canvas, a * 1.2)
+        drawForwardArrow(canvas, a)
+        if (cam.project(pose.x, pose.y, 0.0, pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
+        // the tail first, so that the wing and the nose are drawn over it
+        bodyPoly(canvas, a, doubleArrayOf(0.0, -1.4, 0.0, 0.0, -1.1, 0.7, 0.0, -0.8, 0.0), tailPaint)                       // fin
+        bodyPoly(canvas, a, doubleArrayOf(-0.75, -1.5, 0.0, 0.75, -1.5, 0.0, 0.5, -0.95, 0.0, -0.5, -0.95, 0.0), tailPaint) // tail plane
+        bodyPoly(canvas, a, doubleArrayOf(-0.12, -1.5, 0.0, 0.12, -1.5, 0.0, 0.18, 0.7, 0.0, -0.18, 0.7, 0.0), bodyFill)    // fuselage
+        bodyPoly(canvas, a, doubleArrayOf(-1.9, 0.0, 0.0, 1.9, 0.0, 0.0, 1.9, 0.45, 0.0, 0.2, 0.75, 0.0, -0.2, 0.75, 0.0, -1.9, 0.45, 0.0), wingPaint)  // wing
+        bodyPoly(canvas, a, doubleArrayOf(-0.18, 0.7, 0.0, 0.18, 0.7, 0.0, 0.0, 1.7, 0.0), noseFill)                         // nose cone
         tipPaint.color = 0xFFEF5350.toInt()
-        bodyLine(canvas, a, -1.8, 0.2, 0.0, -1.55, 0.2, 0.0, tipPaint)           // left tip red
+        bodyLine(canvas, a, -1.9, 0.2, 0.0, -1.5, 0.2, 0.0, tipPaint)
         tipPaint.color = 0xFF66BB6A.toInt()
-        bodyLine(canvas, a, 1.55, 0.2, 0.0, 1.8, 0.2, 0.0, tipPaint)             // right tip green
+        bodyLine(canvas, a, 1.5, 0.2, 0.0, 1.9, 0.2, 0.0, tipPaint)
     }
 
     private fun drawLegend(canvas: Canvas, w: Float, h: Float) {

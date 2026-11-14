@@ -80,7 +80,7 @@ public final class Cam3D {
                 break;
             }
             default: {                                           // chase: behind and above, looking a little ahead
-                double dist = 9, up = 3.2;
+                double dist = 8, up = 4.5;
                 double bx = Math.sin(az), by = Math.cos(az);
                 nex = fx - bx * dist; ney = fy - by * dist; nez = fz + up;
                 tx = fx + bx * 6; ty = fy + by * 6; tz = fz + 0.4;

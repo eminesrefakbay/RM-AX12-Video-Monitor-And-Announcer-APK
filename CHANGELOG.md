@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.3
+
+The aircraft of the 3D replay is easier to read: an arrow along its heading at its own height and a triangle on the ground, a plane made of filled shapes, a
+little bigger models and a higher chase camera. In a fast run the aircraft is pitched 30 degrees down, which could look like flying tail first.
+
 ## 1.13.2
 
 The 3D replay showed the pitch the wrong way: the log holds pitch positive with the nose down, so the nose rose in a straight run. Fixed.
