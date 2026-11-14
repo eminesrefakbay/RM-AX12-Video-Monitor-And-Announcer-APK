@@ -25,6 +25,8 @@ import android.view.View
  */
 class Flight3DView(context: Context) : View(context) {
     private var path: FlightPath? = null
+    /** What the aircraft is drawn as: MODEL_QUAD or MODEL_PLANE. */
+    var model = MODEL_QUAD
     private val cam = Cam3D()
     private val pose = FlightPath.Pose()
     private val density = context.resources.displayMetrics.density
@@ -67,6 +69,7 @@ class Flight3DView(context: Context) : View(context) {
     private val chipPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val homePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val hazePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val tipPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private val placed = FloatArray(MAX_LABELS * 4)
     private var placedCount = 0
@@ -124,6 +127,9 @@ class Flight3DView(context: Context) : View(context) {
         homePaint.style = Paint.Style.STROKE
         homePaint.strokeWidth = dp(2f)
         homePaint.color = 0xFF66BB6A.toInt()
+        tipPaint.style = Paint.Style.STROKE
+        tipPaint.strokeWidth = dp(4f)
+        tipPaint.strokeCap = Paint.Cap.ROUND
         hazePaint.style = Paint.Style.STROKE
         hazePaint.strokeWidth = dp(1.5f)
         hazePaint.color = 0x80BBD6EC.toInt()
@@ -384,6 +390,7 @@ class Flight3DView(context: Context) : View(context) {
     }
 
     private fun drawAircraft(canvas: Canvas) {
+        if (model == MODEL_PLANE) { drawPlane(canvas); return }
         val q = pose.q
         if (!cam.project(pose.x, pose.y, pose.z, pt)) return
         val depth = pt[2]
@@ -412,6 +419,33 @@ class Flight3DView(context: Context) : View(context) {
             canvas.drawLine(cxp, cyp, pt2[0].toFloat(), pt2[1].toFloat(), nosePaint)
     }
 
+    /** A line of the aircraft's body, from one point to another in its own axes (x right, y forward, z up), turned by its attitude. */
+    private fun bodyLine(canvas: Canvas, a: Double, ax: Double, ay: Double, az: Double, bx: Double, by: Double, bz: Double, paint: Paint) {
+        val p = Quat.rotate(pose.q, ax * a, ay * a, az * a)
+        val r = Quat.rotate(pose.q, bx * a, by * a, bz * a)
+        if (cam.projectSegment(pose.x + p[0], pose.y + p[1], pose.z + p[2], pose.x + r[0], pose.y + r[1], pose.z + r[2], seg))
+            canvas.drawLine(seg[0].toFloat(), seg[1].toFloat(), seg[2].toFloat(), seg[3].toFloat(), paint)
+    }
+
+    /** A fixed-wing: fuselage, a straight wing, a tail plane and a fin, with a red and a green wing tip. */
+    private fun drawPlane(canvas: Canvas) {
+        if (!cam.project(pose.x, pose.y, pose.z, pt)) return
+        val a = Math.max(0.7, dp(10f) / cam.scaleAt(pt[2]))
+        if (cam.project(pose.x, pose.y, 0.0, pt2)) {
+            canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
+            canvas.drawCircle(pt2[0].toFloat(), pt2[1].toFloat(), dp(5f), shadowPaint)
+        }
+        bodyLine(canvas, a, 0.0, -1.5, 0.0, 0.0, 1.5, 0.0, bodyPaint)            // the fuselage
+        bodyLine(canvas, a, 0.0, 0.9, 0.0, 0.0, 1.7, 0.0, nosePaint)             // the nose
+        bodyLine(canvas, a, -1.8, 0.2, 0.0, 1.8, 0.2, 0.0, bodyPaint)            // the wing
+        bodyLine(canvas, a, -0.7, -1.4, 0.0, 0.7, -1.4, 0.0, bodyPaint)          // the tail plane
+        bodyLine(canvas, a, 0.0, -1.4, 0.0, 0.0, -1.2, 0.55, bodyPaint)          // the fin
+        tipPaint.color = 0xFFEF5350.toInt()
+        bodyLine(canvas, a, -1.8, 0.2, 0.0, -1.55, 0.2, 0.0, tipPaint)           // left tip red
+        tipPaint.color = 0xFF66BB6A.toInt()
+        bodyLine(canvas, a, 1.55, 0.2, 0.0, 1.8, 0.2, 0.0, tipPaint)             // right tip green
+    }
+
     private fun drawLegend(canvas: Canvas, w: Float, h: Float) {
         val barW = dp(150f)
         val barH = dp(6f)
@@ -429,6 +463,8 @@ class Flight3DView(context: Context) : View(context) {
     }
 
     companion object {
+        const val MODEL_QUAD = 0
+        const val MODEL_PLANE = 1
         const val RIBBON_STEP_MS = 250L
         const val BAND_COUNT = 8
         const val MAX_LABELS = 24

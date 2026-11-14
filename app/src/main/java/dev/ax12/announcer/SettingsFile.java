@@ -36,7 +36,7 @@ public final class SettingsFile {
         s("language"); s("speechLanguage"); s("updateChannel"); s("camera");
         i("rotation", 0, 270); b("fill");
         // screen
-        b("menuAlways"); b("splashOn"); b("updateAuto");
+        b("menuAlways"); b("splashOn"); b("updateAuto"); i("replayModel", 0, 1);
         // sticks, bars, warning bar
         b("sticksOn"); i("sticksSize", 0, 2); i("sticksPos", 0, 4); i("sticksOpacity", 0, 2);
         i("stickMode", 1, 4); i("stickRoll", 1, 16); i("stickPitch", 1, 16); i("stickThrottle", 1, 16); i("stickYaw", 1, 16); i("stickInvert", 0, 15);
@@ -67,7 +67,7 @@ public final class SettingsFile {
     static {
         d("language", "auto"); d("speechLanguage", "same"); d("updateChannel", "stable");
         d("rotation", 0); d("fill", false);
-        d("menuAlways", false); d("splashOn", true); d("updateAuto", true);
+        d("menuAlways", false); d("splashOn", true); d("updateAuto", true); d("replayModel", 0);
         d("sticksOn", false); d("sticksSize", 1); d("sticksPos", 0); d("sticksOpacity", 1);
         d("stickMode", 2); d("stickRoll", 1); d("stickPitch", 2); d("stickThrottle", 3); d("stickYaw", 4); d("stickInvert", 0);
         d("barsOn", true); d("warnBarOn", true); d("warnBarPos", 0);

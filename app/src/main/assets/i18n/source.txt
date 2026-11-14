@@ -300,6 +300,8 @@ This log lacks values that some cards need: {0}
 Orbit
 Pilot
 Chase
+Plane
+Quad
 SPEED
 HEIGHT
 CURRENT

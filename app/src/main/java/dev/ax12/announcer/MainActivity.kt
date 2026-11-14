@@ -291,7 +291,7 @@ class MainActivity : Activity() {
         logDir = File(getExternalFilesDir(null) ?: filesDir, "flights")
         flightLogger = FlightLogger(logDir, FlightLogger.Wall { System.currentTimeMillis() }, FlightLogger.MetaSource { logMeta() })
         logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) })
-        replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() }, { cycleReplayCamera() })
+        replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() }, { cycleReplayCamera() }, { cycleReplayModel() })
         flight3d = Flight3DView(this)
         flight3d.visibility = View.GONE
         replayUi.attach(frame, 2)                       // the backdrop sits above the video and its no-video screen, below every card
@@ -403,6 +403,7 @@ class MainActivity : Activity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (replay != null && ev.actionMasked == MotionEvent.ACTION_DOWN) replayUi.touch()      // any touch brings the replay bar back
         if (ev.actionMasked == MotionEvent.ACTION_DOWN && !anyOverlayOpen()) showMenuButton(4000)
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -1420,7 +1421,9 @@ class MainActivity : Activity() {
         replayUi.show(title)
         val path = FlightPath.build(log)
         if (path.n >= 2) { flight3d.bind(path); flight3d.visibility = View.VISIBLE } else { flight3d.bind(null); flight3d.visibility = View.GONE }
+        flight3d.model = Prefs.int(this, "replayModel", 0).coerceIn(0, 1)
         replayUi.setCamera(path.n >= 2, cameraName(flight3d.cameraMode(), true))
+        replayUi.setModel(path.n >= 2, modelName(flight3d.model, true))
         rebuildReplay(0)
         val missing = LogFields.missingForReplay(log.columns.toList(), log.metaNumber("arm_ch", 5.0).toInt())
         if (missing.isNotEmpty()) Toasts.make(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
@@ -1511,6 +1514,17 @@ class MainActivity : Activity() {
     private fun cameraName(mode: Int, next: Boolean): String {
         val m = if (next) (mode + 1) % 3 else mode
         return when (m) { Cam3D.ORBIT -> tr("Orbit"); Cam3D.PILOT -> tr("Pilot"); else -> tr("Chase") }
+    }
+
+    private fun modelName(model: Int, next: Boolean): String {
+        val m = if (next) (model + 1) % 2 else model
+        return if (m == Flight3DView.MODEL_PLANE) tr("Plane") else tr("Quad")
+    }
+
+    private fun cycleReplayModel() {
+        flight3d.model = (flight3d.model + 1) % 2
+        Prefs.setInt(this, "replayModel", flight3d.model)
+        replayUi.setModel(true, modelName(flight3d.model, true))
     }
 
     private fun cycleReplayCamera() {

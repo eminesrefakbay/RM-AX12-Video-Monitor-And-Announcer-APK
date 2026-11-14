@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.13.2
+
+The 3D replay showed the pitch the wrong way: the log holds pitch positive with the nose down, so the nose rose in a straight run. Fixed.
+
+## 1.13.1
+
+The replay bar along the bottom fades out after four seconds and comes back on any touch, so it does not cover the sticks and the bottom cards. The
+3D replay can draw the aircraft as a quad or as a plane (a button on the replay bar; the choice is remembered).
+
 ## 1.13.0
 
 The 3D flight replay, first version. A flight log now replays in 3D behind the cards: a speed-coloured ribbon over a flat ground with a horizon, the

@@ -88,7 +88,7 @@ public class Flight3DTests {
         check(a.x == b.x && a.q[0] == b.q[0], "sampling is a pure function of the time");
         // the attitude: yaw 90 then 0 over the turn; at the keyframes it is the logged one
         p.sample(2000, a);
-        check(near(a.headingDeg, 90, 0.01) && near(a.pitchDeg, 5, 0.01), "attitude at a keyframe is the logged one");
+        check(near(a.headingDeg, 90, 0.01) && near(a.pitchDeg, 5 * FlightPath.PITCH_SIGN, 0.01), "attitude at a keyframe is the logged one");
         p.sample(10000, a);
         check(near(a.rollDeg, 30, 0.01), "roll 30 at 10 s");
         p.sample(9500, a); p.sample(10500, b);

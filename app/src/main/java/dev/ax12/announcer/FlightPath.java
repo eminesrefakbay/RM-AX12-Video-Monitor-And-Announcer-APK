@@ -33,8 +33,8 @@ public final class FlightPath {
         Event(long ms, String kind, String label, double x, double y, double z) { this.ms = ms; this.kind = kind; this.label = label; this.x = x; this.y = y; this.z = z; }
     }
 
-    /** Signs of the attitude angles as the log holds them. If a view shows the aircraft pitched or rolled the wrong way, flip one here. */
-    public static final double PITCH_SIGN = 1.0, ROLL_SIGN = 1.0;
+    /** Signs of the attitude angles as the log holds them. The log has pitch positive with the nose DOWN (flying fast gives +30 to +47), so it is turned here. If roll leans the wrong way, flip ROLL_SIGN. */
+    public static final double PITCH_SIGN = -1.0, ROLL_SIGN = 1.0;
     /** Fewer satellites than this: the position is not trusted. */
     public static final int MIN_SATS = 6;
     /** Changes closer together than this belong to one telemetry packet. */

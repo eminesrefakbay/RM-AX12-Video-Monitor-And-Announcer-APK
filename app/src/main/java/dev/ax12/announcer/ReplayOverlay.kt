@@ -27,7 +27,8 @@ class ReplayOverlay(
     private val onSpeed: () -> Unit,
     private val onSeek: (Double) -> Unit,
     private val onClose: () -> Unit,
-    private val onCamera: () -> Unit = {}
+    private val onCamera: () -> Unit = {},
+    private val onModel: () -> Unit = {}
 ) {
     val backdrop = View(activity)
     val tag = TextView(activity)
@@ -36,6 +37,7 @@ class ReplayOverlay(
     private val playButton = Button(activity)
     private val speedButton = Button(activity)
     private val cameraButton = Button(activity)
+    private val modelButton = Button(activity)
     private val seek = SeekBar(activity)
     private val timeView = TextView(activity)
     private val density = activity.resources.displayMetrics.density
@@ -47,6 +49,7 @@ class ReplayOverlay(
         backdrop.setBackgroundColor(0xFF0B1016.toInt())
         backdrop.visibility = View.GONE
         backdrop.isClickable = true                       // a touch on the backdrop must not reach anything under it
+        backdrop.setOnClickListener { touch() }
 
         tag.setTextColor(Color.WHITE)
         tag.textSize = 13f
@@ -64,7 +67,7 @@ class ReplayOverlay(
         bar.elevation = dp(16).toFloat()
 
         fun square(b: Button, width: Int, click: () -> Unit) {
-            b.setOnClickListener { click() }
+            b.setOnClickListener { touch(); click() }
             bar.addView(b, LinearLayout.LayoutParams(dp(width), dp(CardStyle.MIN_TOUCH_DP)).also { it.rightMargin = dp(8) })
         }
         square(closeButton, 96) { onClose() }
@@ -72,11 +75,13 @@ class ReplayOverlay(
         square(speedButton, 72) { onSpeed() }
         square(cameraButton, 96) { onCamera() }
         cameraButton.visibility = View.GONE
+        square(modelButton, 96) { onModel() }
+        modelButton.visibility = View.GONE
         seek.max = 1000
         seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(s: SeekBar, progress: Int, fromUser: Boolean) { if (fromUser) onSeek(progress / 1000.0) }
+            override fun onProgressChanged(s: SeekBar, progress: Int, fromUser: Boolean) { if (fromUser) { touch(); onSeek(progress / 1000.0) } }
             override fun onStartTrackingTouch(s: SeekBar) { dragging = true }
-            override fun onStopTrackingTouch(s: SeekBar) { dragging = false }
+            override fun onStopTrackingTouch(s: SeekBar) { dragging = false; touch() }
         })
         bar.addView(seek, LinearLayout.LayoutParams(0, dp(CardStyle.MIN_TOUCH_DP), 1f))
         timeView.setTextColor(Color.WHITE)
@@ -98,7 +103,28 @@ class ReplayOverlay(
         tag.text = title
         backdrop.visibility = View.VISIBLE
         tag.visibility = View.VISIBLE
+        touch()
+    }
+
+    private val hideBar = Runnable {
+        if (dragging) touch()
+        else bar.animate().alpha(0f).setDuration(Motion.OUT_MS.toLong()).withEndAction { if (bar.alpha == 0f) bar.visibility = View.GONE }.start()
+    }
+
+    /** Shows the bar and starts the countdown to hide it again: it covers the bottom of the picture (the sticks, the bottom cards) only while it is needed. */
+    fun touch() {
+        if (backdrop.visibility != View.VISIBLE) return
+        bar.animate().cancel()
+        bar.alpha = 1f
         bar.visibility = View.VISIBLE
+        bar.removeCallbacks(hideBar)
+        bar.postDelayed(hideBar, HIDE_MS)
+    }
+
+    /** The model button of the 3D view: shows the name of the model that a tap switches to. */
+    fun setModel(visible: Boolean, nextName: String) {
+        modelButton.visibility = if (visible) View.VISIBLE else View.GONE
+        modelButton.text = nextName
     }
 
     /** The camera button of the 3D view: shows the name of the camera that a tap switches to; gone when the log has no 3D view. */
@@ -108,6 +134,8 @@ class ReplayOverlay(
     }
 
     fun hide() {
+        bar.removeCallbacks(hideBar)
+        bar.animate().cancel()
         backdrop.visibility = View.GONE
         tag.visibility = View.GONE
         bar.visibility = View.GONE
@@ -118,5 +146,10 @@ class ReplayOverlay(
         speedButton.text = tr("{0}x", speed)
         timeView.text = LogText.duration(positionMs) + " / " + LogText.duration(durationMs)
         if (!dragging && durationMs > 0) seek.progress = (positionMs * 1000.0 / durationMs).toInt().coerceIn(0, 1000)
+    }
+
+    companion object {
+        /** The bar fades out after this long without a touch. */
+        const val HIDE_MS = 4000L
     }
 }
