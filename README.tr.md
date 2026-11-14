@@ -17,8 +17,31 @@
 * Kurallarla aynı mantıkta çalışan bir **uyarı durum çubuğu** gösterir (kritik = kırmızı ve yanıp söner, uyarı = sarı, bilgi = mavi; istenirse N saniye sonra gizlenir).
 * **Ekran katmanları:** stick görünümü ve aux anahtar çubukları (adları değiştirilebilir, ters çevrilebilir), uçuş istatistikleri (en yüksek hız, en yüksek irtifa, tepe akım), radar ve uçuş öncesi kontrol listesi.
 * **Menü:** Ses kuralları, Konuşma, Pil, Hava aracı ve Güneş ışığı ilk sırada; Pano/Video, Uçuş kayıtları, Ayarlar ve Çıkış ikinci sırada olmak üzere dokuz kutucuk.
+* **Uçuş kayıtları ve tekrar:** her uçuş CSV dosyasına kaydedilir (varsayılan kapalı) ve kumandada tekrar izlenir: radar, stickler, kanal çubukları, grafikler ve uçuşun akıcı bir **3D görünümü** (1.13 ile yeni).
 * **GitHub'dan güncelleme:** Ayarlar > Güncellemeler. İki kanal: Nightly (her push) ve Stable (sürümler). Ayrıntılar: [UPDATES.md](UPDATES.md).
 * **Dil:** İngilizce, Türkçe, Almanca, Çince. Ayarlar > Dil. Ses, ekrandan farklı bir dilde konuşabilir.
+
+## Yenilikler
+
+**1.13: 3D uçuş tekrarı (1.13.0 – 1.13.4)**
+
+* **3D tekrar.** Kaydedilmiş bir uçuş kartların arkasında 3D olarak çizilir: hıza göre renklenen bir şerit, ufuk çizgili düz zemin ve ızgara, hava aracı,
+  yeşil HOME halkası ve kalkış, her uçuş modu değişimi, onay penceresinin bitişi, en uzak nokta, en yüksek nokta, en yüksek hız ve iniş için bayraklar.
+* **Akıcı hareket.** Kayıtta konum ve yönelim yaklaşık saniyede bir değişir; hava aracı bu noktalardan geçen yumuşak bir eğri üzerinde hareket eder
+  (ekran hızından bağımsız), basamak ve köşe görülmez.
+* **Üç kamera, iki model.** Takip, Yörünge (kaydırarak döndürün, iki parmakla yakınlaştırın) ve Pilot; hava aracı quad veya uçak olarak çizilebilir.
+* **Tekrar çubuğu kendiliğinden gizlenir:** dört saniye sonra solar, ekrana dokununca geri gelir; böylece stickleri ve alttaki kartları kapatmaz.
+* **Düzeltme (1.13.2):** 3D model eğimi (pitch) ters gösteriyordu; kayıtta pitch burun aşağıyken pozitiftir.
+* **Okunması kolaylaştı (1.13.3, 1.13.4):** yönü gösteren ok ve yerde bir üçgen, dolu şekillerle çizilmiş uçak ve quad, biraz büyük modeller, daha yüksek takip kamerası.
+
+**1.12: sekmeli ayarlar ve doğru kayıtlar (1.12.0 ve 1.12.1)**
+
+* **Ayarlar sekmeli ve arama alanlı** (1.12.0); iki Tanılama grubu birleştirildi.
+* **Düzeltme (1.12.1):** uçuş kaydındaki üç RSSI sütunu işaretsiz bayt olarak yazılıyordu (-55 dBm yerine -201); gerçek kayıt hızı bildirilir; `win_left` dakika
+  cinsindendir ve pencere bittikten sonra negatiftir; sütun açıklamaları düzeltildi.
+* Topluluk dosyaları: sorun şablonları ve `SECURITY.md`.
+
+Tam liste: [CHANGELOG.md](CHANGELOG.md). 3D tekrarın ayrıntıları için [İngilizce README](README.md#3d-replay) dosyasına bakın.
 
 ## Gereksinimler ve kurulum
 

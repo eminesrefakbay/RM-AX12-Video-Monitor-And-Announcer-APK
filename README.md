@@ -13,8 +13,32 @@
 * **speaks announcements** from rules you type, e.g. `ch5 >= 1500 -> drone armed`;
 * announces **battery per cell, link quality, telemetry loss and the flight controller's flight mode**;
 * has a second page, the **dashboard**: cards only and no video, with an artificial horizon, a compass, value cards, radar, charts and sticks, for goggles or a second pair of eyes;
-* can **record every flight** to a CSV file (off by default) and **replay** it on the radio: radar, sticks, channel bars and charts;
+* can **record every flight** to a CSV file (off by default) and **replay** it on the radio: radar, sticks, channel bars and charts, and a smooth **3D view** of the flight (new in 1.13);
 * only **reads** from the radio. It never writes a setting.
+
+## What's new
+
+**1.13: the 3D flight replay (1.13.0 to 1.13.4)**
+
+* **3D replay.** A replayed flight is drawn in 3D behind your cards: a speed-coloured ribbon over a flat ground with a horizon and a grid, the
+  aircraft, a green HOME ring and flags at take-off, every flight-mode change, the end of the approval window, the farthest point, the highest
+  point, the top speed and the landing. See [3D replay](#3d-replay).
+* **Smooth motion.** The log holds a position and an attitude about once a second; the aircraft moves on a smooth curve through those points
+  (frame-rate independent), so there are no steps and no corners.
+* **Three cameras, two models.** Chase, Orbit (drag to turn, pinch to zoom) and Pilot; the aircraft can be drawn as a quad or as a plane.
+* **The replay bar hides itself** after four seconds and comes back on any touch, so it no longer covers the sticks and the bottom cards.
+* **Fixed (1.13.2):** the 3D model showed the pitch the wrong way (the log holds pitch positive with the nose down).
+* **Easier to read (1.13.3, 1.13.4):** an arrow along the heading at the aircraft's own height, a triangle on the ground, a plane and a quad made of
+  filled shapes, slightly bigger models and a higher chase camera.
+
+**1.12: tabbed settings and honest logs (1.12.0 and 1.12.1)**
+
+* **Settings in tabs with a search field** (1.12.0); the two Diagnostics groups were merged into one.
+* **Fixed (1.12.1):** the three RSSI columns of a flight log were written as unsigned bytes (-201 instead of -55 dBm); the real log rate is
+  reported; `win_left` is in minutes and negative after the window ends; the column descriptions were corrected. New: [Reading a flight log](#reading-a-flight-log).
+* Community files: issue templates and `SECURITY.md`.
+
+The full list is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Install and first start
 
@@ -246,11 +270,34 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
   distance, top speed, peak current, lowest cell, mAh used. Each can be replayed or deleted; the flight being recorded is marked.
 * **Replay.** The statistics, radar (with the track), stick view, channel bars and charts are drawn from the log by the same code that
   draws the live flight, over a dark backdrop with a red REPLAY tag (the video is not recorded). A bar at the bottom has Close, Play or
-  Pause, the speed (1x, 2x, 4x, 8x), a scrub bar and the time. Seeking rebuilds the statistics and the chart from the start of the log, so
+  Pause, the speed (1x, 2x, 4x, 8x), the camera and model buttons of the 3D view, a scrub bar and the time; it fades out after four seconds and
+  comes back when you touch the screen. Seeking rebuilds the statistics and the chart from the start of the log, so
   they are right at any position. There is no voice and no warning bar in a replay, and arming the aircraft ends it at once.
   A card shows only what the log holds: with fewer values chosen, some cards stay empty (a toast names what is missing).
 * **Privacy.** A log contains GPS positions. It stays on the radio unless you copy it. Do not publish a log that shows where you fly.
 
+
+### 3D replay
+
+When the log holds a position (a GPS fix with at least 6 satellites), the replay shows the flight in 3D behind the cards. The cards, charts and
+scrub bar work as before; a log without a position shows a short note and the old replay.
+
+* **What you see.** A ribbon coloured by speed (blue when slow, then green, yellow, orange, red above 110 km/h), a flat ground with a grid and a
+  horizon, a green HOME ring where the log starts, thin drop lines to the ground (height at a glance), the aircraft, and flags: take-off, each
+  flight-mode change, the end of the approval window, the farthest point, the highest point, the top speed and the landing. Flags never cover each
+  other. An orange arrow at the aircraft's height and a triangle on the ground show which way the nose points.
+* **Cameras.** One button on the replay bar: **Chase** (behind and above, follows with a delay; shows the last minute and the next 20 seconds),
+  **Orbit** (drag to turn, pinch to zoom; the whole flight) and **Pilot** (fixed at home, the lens closes in as the aircraft goes away). A seek
+  puts the camera at the new place at once.
+* **Model.** Another button switches the aircraft between a **Quad** (long body, battery, camera, orange front arms, props) and a **Plane**
+  (fuselage, wing with a red left and a green right tip, tail plane, fin, orange nose). The choice is remembered and is part of the settings backup.
+* **Smooth motion.** The log changes about once a second, so the aircraft is moved on a smooth curve through the logged points (a cubic Hermite
+  curve for the position, a quaternion curve for the attitude) and the view runs its own clock on every screen frame. It looks the same at 30 and
+  60 frames a second. It cannot show what the log does not hold: a flip or a sharp turn shorter than a second is smoothed, and attitude and position
+  come in separate packets up to a second apart. A faster telemetry ratio (1:16 or 1:8) gives a sharper replay.
+* **Angles.** The log holds pitch positive with the **nose down** (fast flight reads +30 to +47 degrees), and the 3D view turns it. Yaw is the
+  heading from the flight controller; roll is taken as positive with the right side down.
+* **Limits.** Drawn with the canvas, not OpenGL (it is fast on the AX12); no event markers on the scrub bar yet; flag texts are in English.
 
 ### Reading a flight log
 
@@ -267,6 +314,7 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
   minus 256 (|-201| - 256 = -55 dBm).
 * **`win_left`** is the minutes left in the approval window, negative once it has ended (minutes over), and empty before it opens or when it is
   off.
+* **`pitch`, `roll`, `yaw`** are degrees from the flight controller's attitude. Pitch is positive with the nose down, yaw is the heading (-180 to 180).
 * **`fm`** is the flight-mode text of the flight controller: `ANGL`, `ACRO`, `HOR`, `RTH` and so on. `OK` means disarmed and ready; `!ERR` means
   disarmed with arming disabled (for example the arm switch is still on after an automatic disarm).
 

@@ -17,8 +17,32 @@
 * Eine **Warn-Statusleiste** mit derselben Logik (kritisch = rot und blinkend, Warnung = gelb, Info = blau; auf Wunsch nach N Sekunden ausgeblendet).
 * **Einblendungen:** Stick-Ansicht und Aux-Schalterbalken (Namen änderbar, umkehrbar), Flugstatistik (Höchstgeschwindigkeit, Maximalhöhe, Spitzenstrom), Radar und Checkliste vor dem Flug.
 * **Menü:** neun Kacheln: Soundregeln, Sprache, Akku, Fluggerät und Sonnenlicht in der ersten Reihe; Dashboard/Video, Flugprotokolle, Einstellungen und Beenden in der zweiten.
+* **Flug-Logs und Replay:** jeder Flug wird in eine CSV-Datei geschrieben (standardmäßig aus) und auf der Fernsteuerung wiedergegeben: Radar, Sticks, Kanalbalken, Diagramme und eine flüssige **3D-Ansicht** des Flugs (neu in 1.13).
 * **Updates von GitHub:** Einstellungen > Updates. Zwei Kanäle: Nightly (jeder Push) und Stable (Releases). Details: [UPDATES.md](UPDATES.md).
 * **Sprache:** Englisch, Türkisch, Deutsch, Chinesisch. Einstellungen > Sprache. Die Stimme kann eine andere Sprache sprechen als die Anzeige.
+
+## Neu
+
+**1.13: der 3D-Flugreplay (1.13.0 bis 1.13.4)**
+
+* **3D-Replay.** Ein aufgezeichneter Flug wird hinter den Karten in 3D gezeichnet: ein nach Geschwindigkeit eingefärbtes Band über einem flachen Boden mit Horizont
+  und Raster, das Fluggerät, ein grüner HOME-Ring und Flaggen für Start, jeden Flugmodus-Wechsel, das Ende des Genehmigungsfensters, den weitesten Punkt, den
+  höchsten Punkt, die Höchstgeschwindigkeit und die Landung.
+* **Flüssige Bewegung.** Das Log enthält Position und Lage etwa einmal pro Sekunde; das Fluggerät bewegt sich auf einer glatten Kurve durch diese Punkte
+  (unabhängig von der Bildrate), ohne Stufen und Ecken.
+* **Drei Kameras, zwei Modelle.** Verfolger, Orbit (ziehen zum Drehen, mit zwei Fingern zoomen) und Pilot; das Fluggerät kann als Quad oder als Flugzeug gezeichnet werden.
+* **Die Replay-Leiste blendet sich selbst aus:** nach vier Sekunden ohne Berührung, bei jeder Berührung kommt sie zurück; sie verdeckt so die Sticks und die unteren Karten nicht mehr.
+* **Behoben (1.13.2):** Das 3D-Modell zeigte den Nickwinkel (Pitch) falsch herum; im Log ist Pitch bei Nase unten positiv.
+* **Besser lesbar (1.13.3, 1.13.4):** ein Pfeil entlang der Flugrichtung und ein Dreieck am Boden, Flugzeug und Quad aus gefüllten Formen, etwas größere Modelle, höhere Verfolgerkamera.
+
+**1.12: Einstellungen in Tabs und ehrliche Logs (1.12.0 und 1.12.1)**
+
+* **Einstellungen in Tabs mit Suchfeld** (1.12.0); die beiden Diagnose-Gruppen wurden zusammengelegt.
+* **Behoben (1.12.1):** Die drei RSSI-Spalten eines Flug-Logs wurden als vorzeichenlose Bytes geschrieben (-201 statt -55 dBm); die echte Log-Rate wird angegeben;
+  `win_left` ist in Minuten und nach Ende des Fensters negativ; die Spaltenbeschreibungen wurden korrigiert.
+* Community-Dateien: Issue-Vorlagen und `SECURITY.md`.
+
+Die vollständige Liste: [CHANGELOG.md](CHANGELOG.md). Details zum 3D-Replay stehen im [englischen README](README.md#3d-replay).
 
 ## Voraussetzungen und Installation
 
