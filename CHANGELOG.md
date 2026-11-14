@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.4
+
+The quad of the 3D replay is drawn with filled shapes like the plane: a long body plate, battery, camera pod, arms with orange front ones, prop discs and
+red and green lights. Both models are a little bigger.
+
 ## 1.13.3
 
 The aircraft of the 3D replay is easier to read: an arrow along its heading at its own height and a triangle on the ground, a plane made of filled shapes, a

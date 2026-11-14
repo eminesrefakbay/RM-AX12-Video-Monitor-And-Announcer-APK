@@ -76,6 +76,12 @@ class Flight3DView(context: Context) : View(context) {
     private val noseFill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val arrowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val headPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val carbonPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val frontArmPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val batteryPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val propPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val ledRedPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val ledGreenPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private val placed = FloatArray(MAX_LABELS * 4)
     private var placedCount = 0
@@ -141,6 +147,18 @@ class Flight3DView(context: Context) : View(context) {
         bodyFill.color = 0xFFF4F7FA.toInt()
         noseFill.style = Paint.Style.FILL
         noseFill.color = 0xFFFFB300.toInt()
+        carbonPaint.style = Paint.Style.FILL
+        carbonPaint.color = 0xFF8FA0B0.toInt()
+        frontArmPaint.style = Paint.Style.FILL
+        frontArmPaint.color = 0xFFFFB300.toInt()
+        batteryPaint.style = Paint.Style.FILL
+        batteryPaint.color = 0xFF2E3946.toInt()
+        propPaint.style = Paint.Style.FILL
+        propPaint.color = 0x884FC3F7.toInt()
+        ledRedPaint.style = Paint.Style.FILL
+        ledRedPaint.color = 0xFFEF5350.toInt()
+        ledGreenPaint.style = Paint.Style.FILL
+        ledGreenPaint.color = 0xFF66BB6A.toInt()
         headPaint.style = Paint.Style.STROKE
         headPaint.strokeWidth = dp(2f)
         headPaint.strokeCap = Paint.Cap.ROUND
@@ -411,34 +429,39 @@ class Flight3DView(context: Context) : View(context) {
 
     private fun drawAircraft(canvas: Canvas) {
         if (model == MODEL_PLANE) { drawPlane(canvas); return }
-        val q = pose.q
         if (!cam.project(pose.x, pose.y, pose.z, pt)) return
-        val depth = pt[2]
         // the size: true size when it is near, never smaller than a mark you can see
-        val metre = Math.max(0.6, dp(12f) / cam.scaleAt(depth))
-        val arm = metre
-        val cxp = pt[0].toFloat()
-        val cyp = pt[1].toFloat()
-        drawHeadingMark(canvas, arm * 1.2)
-        drawForwardArrow(canvas, arm)
-        if (cam.project(pose.x, pose.y, 0.0, pt2)) {
-            canvas.drawLine(cxp, cyp, pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
-            canvas.drawCircle(pt2[0].toFloat(), pt2[1].toFloat(), dp(5f), shadowPaint)
+        val a = Math.max(0.6, dp(20f) / cam.scaleAt(pt[2]))
+        drawHeadingMark(canvas, a * 1.2)
+        drawForwardArrow(canvas, a)
+        if (cam.project(pose.x, pose.y, 0.0, pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
+        // the arms: flat bars, the two front ones orange; the props are discs over them
+        val tips = arrayOf(doubleArrayOf(-1.0, -1.0), doubleArrayOf(1.0, -1.0), doubleArrayOf(-1.0, 1.0), doubleArrayOf(1.0, 1.0))
+        for (t in tips) {
+            val len = Math.sqrt(t[0] * t[0] + t[1] * t[1])
+            val px = -t[1] / len * 0.1
+            val py = t[0] / len * 0.1
+            bodyPoly(canvas, a, doubleArrayOf(px, py, 0.0, t[0] + px, t[1] + py, 0.0, t[0] - px, t[1] - py, 0.0, -px, -py, 0.0), if (t[1] > 0) frontArmPaint else carbonPaint)
         }
-        val corners = arrayOf(doubleArrayOf(-1.0, 1.0), doubleArrayOf(1.0, 1.0), doubleArrayOf(-1.0, -1.0), doubleArrayOf(1.0, -1.0))
-        val xs = FloatArray(4)
-        val ys = FloatArray(4)
-        for (i in 0 until 4) {
-            val v = Quat.rotate(q, corners[i][0] * arm, corners[i][1] * arm, 0.0)
-            if (cam.project(pose.x + v[0], pose.y + v[1], pose.z + v[2], pt2)) {
-                xs[i] = pt2[0].toFloat(); ys[i] = pt2[1].toFloat()
-                canvas.drawLine(cxp, cyp, xs[i], ys[i], if (corners[i][1] > 0) nosePaint else bodyPaint)
-                canvas.drawCircle(xs[i], ys[i], Math.max(dp(3f), (cam.scaleAt(pt2[2]) * arm * 0.55).toFloat()), rotorPaint)
-            }
+        for (t in tips) bodyDisc(canvas, a, t[0], t[1], 0.12, 0.62, propPaint)
+        // the body of a long-range build: a long chamfered plate, the battery on top, the camera at the front
+        bodyPoly(canvas, a, doubleArrayOf(-0.22, -0.8, 0.0, 0.22, -0.8, 0.0, 0.3, -0.6, 0.0, 0.3, 0.6, 0.0, 0.22, 0.85, 0.0, -0.22, 0.85, 0.0, -0.3, 0.6, 0.0, -0.3, -0.6, 0.0), carbonPaint)
+        bodyPoly(canvas, a, doubleArrayOf(-0.2, -0.62, 0.2, 0.2, -0.62, 0.2, 0.2, 0.3, 0.2, -0.2, 0.3, 0.2), batteryPaint)
+        bodyPoly(canvas, a, doubleArrayOf(-0.16, 0.85, 0.05, 0.16, 0.85, 0.05, 0.12, 1.1, 0.12, -0.12, 1.1, 0.12), noseFill)
+        bodyDisc(canvas, a, 0.0, -0.8, 0.1, 0.07, ledRedPaint)
+        bodyDisc(canvas, a, 0.0, 1.12, 0.12, 0.07, ledGreenPaint)
+    }
+
+    /** A flat disc of the aircraft's body (a prop, a light) as a filled polygon of 16 points, in its own axes. */
+    private fun bodyDisc(canvas: Canvas, a: Double, cx: Double, cy: Double, cz: Double, r: Double, paint: Paint) {
+        val pts = DoubleArray(48)
+        for (k in 0 until 16) {
+            val ang = k * Math.PI * 2 / 16
+            pts[k * 3] = cx + Math.cos(ang) * r
+            pts[k * 3 + 1] = cy + Math.sin(ang) * r
+            pts[k * 3 + 2] = cz
         }
-        val nose = Quat.rotate(q, 0.0, arm * 2.4, 0.0)
-        if (cam.project(pose.x + nose[0], pose.y + nose[1], pose.z + nose[2], pt2))
-            canvas.drawLine(cxp, cyp, pt2[0].toFloat(), pt2[1].toFloat(), nosePaint)
+        bodyPoly(canvas, a, pts, paint)
     }
 
     /** A line of the aircraft's body, from one point to another in its own axes (x right, y forward, z up), turned by its attitude. */
@@ -503,7 +526,7 @@ class Flight3DView(context: Context) : View(context) {
     /** A fixed-wing: a tapered fuselage with an orange nose cone, a swept wing with a red and a green tip, a tail plane and a fin. */
     private fun drawPlane(canvas: Canvas) {
         if (!cam.project(pose.x, pose.y, pose.z, pt)) return
-        val a = Math.max(0.9, dp(15f) / cam.scaleAt(pt[2]))
+        val a = Math.max(0.9, dp(22f) / cam.scaleAt(pt[2]))
         drawHeadingMark(canvas, a * 1.2)
         drawForwardArrow(canvas, a)
         if (cam.project(pose.x, pose.y, 0.0, pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
