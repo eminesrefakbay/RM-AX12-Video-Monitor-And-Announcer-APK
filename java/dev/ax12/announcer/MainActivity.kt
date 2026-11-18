@@ -366,6 +366,7 @@ class MainActivity : Activity() {
         applyTiles()
         applyFlightConfig()
 
+        if (SwitchCoverActivity.showing) Diagnostics.event("aircraft", "new screen built, closing the loading screen")
         if (SwitchCoverActivity.showing) Handler(Looper.getMainLooper()).postDelayed({ SwitchCoverActivity.finishCover() }, 600)   // the screen is built: the loading screen goes
         if (savedInstanceState == null) backupReminder()
         // a fresh start (not a turn of the screen or a return from the background): logo and version for 2 seconds
@@ -2704,9 +2705,11 @@ class MainActivity : Activity() {
         if (id == Aircraft.store(this).activeId()) return
         val name = Aircraft.store(this).list().firstOrNull { it.id == id }?.name ?: return
         holdLink(HOLD_REBUILD_MS * 2)                    // the loading screen is in front for a moment: the radio link stays
+        Diagnostics.event("aircraft", "switch to " + name + ": loading screen asked for")
         SwitchCoverActivity.show(this, name)
         Handler(Looper.getMainLooper()).postDelayed({
             if (!Aircraft.switchTo(this, id)) { SwitchCoverActivity.finishCover(); return@postDelayed }
+            Diagnostics.event("aircraft", "settings of " + name + " loaded, building the screen again (loading screen showing: " + SwitchCoverActivity.showing + ")")
             recreate()
         }, 350)
     }
