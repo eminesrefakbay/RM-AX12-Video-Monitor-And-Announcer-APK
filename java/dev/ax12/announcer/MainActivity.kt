@@ -148,7 +148,6 @@ class MainActivity : Activity() {
 
     private val fakeLink = FakeRadioLink()
     private companion object {
-        @Volatile var switchingTo: String? = null      // set while the screens are rebuilt for another aircraft: the new screen starts with the loading cover
         const val HOLD_REBUILD_MS = 10_000L     // a rebuild or a permission dialog: the screen is back within seconds
         const val HOLD_OPENED_MS = 40_000L      // a file picker, the rules editor, the browser: a little longer, but never for ever
         const val SCREENSHOT_PERMISSION_REQUEST = 2
@@ -367,11 +366,7 @@ class MainActivity : Activity() {
         applyTiles()
         applyFlightConfig()
 
-        switchingTo?.let { name ->
-            switchingTo = null
-            val cover = showSwitchCover(name)
-            cover.postDelayed({ cover.animate().alpha(0f).setDuration(Motion.IN_MS.toLong()).withEndAction { (cover.parent as? ViewGroup)?.removeView(cover) }.start() }, 700)
-        }
+        if (SwitchCoverActivity.showing) Handler(Looper.getMainLooper()).postDelayed({ SwitchCoverActivity.finishCover() }, 600)   // the screen is built: the loading screen goes
         if (savedInstanceState == null) backupReminder()
         // a fresh start (not a turn of the screen or a return from the background): logo and version for 2 seconds
         if (savedInstanceState == null && Prefs.bool(this, "splashOn", true)) {
@@ -2704,53 +2699,16 @@ class MainActivity : Activity() {
         )
     }
 
-    /** Saves this aircraft's settings, loads the other one's, and builds the screens again. */
+    /** Saves this aircraft's settings, loads the other one's, and builds the screens again behind a loading screen. */
     private fun switchAircraft(id: String) {
         if (id == Aircraft.store(this).activeId()) return
-        val name = Aircraft.store(this).list().firstOrNull { it.id == id }?.name ?: ""
-        val cover = showSwitchCover(name)
-        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(COVER_COLOR))
-        // let the cover be drawn first, then load the settings and build the screens again
-        cover.post { cover.postDelayed({
-            if (!Aircraft.switchTo(this, id)) { (cover.parent as? ViewGroup)?.removeView(cover); return@postDelayed }
-            switchingTo = Aircraft.activeName(this)
+        val name = Aircraft.store(this).list().firstOrNull { it.id == id }?.name ?: return
+        holdLink(HOLD_REBUILD_MS * 2)                    // the loading screen is in front for a moment: the radio link stays
+        SwitchCoverActivity.show(this, name)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!Aircraft.switchTo(this, id)) { SwitchCoverActivity.finishCover(); return@postDelayed }
             recreate()
-        }, 120) }
-    }
-
-    private val COVER_COLOR = 0xFF10171F.toInt()
-
-    /** A full-screen cover with the aircraft's name and a spinner, shown while its settings load. */
-    private fun showSwitchCover(name: String): View {
-        val cover = LinearLayout(this)
-        cover.orientation = LinearLayout.VERTICAL
-        cover.gravity = Gravity.CENTER
-        cover.setBackgroundColor(COVER_COLOR)
-        cover.isClickable = true
-        cover.elevation = dp(100).toFloat()
-        val small = TextView(this)
-        small.text = tr("SWITCHING AIRCRAFT")
-        small.textSize = 13f
-        small.setTextColor(CardStyle.LABEL)
-        cover.addView(small)
-        val big = TextView(this)
-        big.text = name
-        big.textSize = 30f
-        big.setTypeface(null, Typeface.BOLD)
-        big.setTextColor(Color.WHITE)
-        big.setPadding(0, dp(6), 0, dp(14))
-        cover.addView(big)
-        val spin = android.widget.ProgressBar(this)
-        spin.isIndeterminate = true
-        cover.addView(spin, LinearLayout.LayoutParams(dp(40), dp(40)))
-        val note = TextView(this)
-        note.text = tr("Loading its settings, rules and layout...")
-        note.textSize = 13f
-        note.setTextColor(CardStyle.LABEL)
-        note.setPadding(0, dp(14), 0, 0)
-        cover.addView(note)
-        (window.decorView as ViewGroup).addView(cover, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        return cover
+        }, 350)
     }
 
     private fun manageAircraft() {
