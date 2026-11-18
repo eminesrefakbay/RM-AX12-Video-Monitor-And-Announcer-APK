@@ -103,6 +103,7 @@ class CameraPreview(private val activity: Activity, private val view: TextureVie
     fun stop() {
         running = false
         main.removeCallbacks(retry)
+        restartAfterStop = false                  // a stop during a shutdown cancels a start that was waiting for it
         if (stopping) return
         val cameraThread = thread
         val cameraHandler = handler
