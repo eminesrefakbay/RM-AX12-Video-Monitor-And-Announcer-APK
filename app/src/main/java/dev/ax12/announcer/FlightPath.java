@@ -53,6 +53,33 @@ public final class FlightPath {
     public final List<Event> events = new ArrayList<Event>();
     public double maxRangeM, maxHeightM, maxSpeedKmh;
 
+    /** The times of the events in order, without repeats closer than a second: where the player's next and previous buttons jump to. */
+    public long[] markerTimes() {
+        long[] all = new long[events.size()];
+        for (int i = 0; i < all.length; i++) all[i] = events.get(i).ms;
+        java.util.Arrays.sort(all);
+        long[] out = new long[all.length];
+        int k = 0;
+        for (long v : all) {
+            if (k > 0 && v - out[k - 1] < 1000) continue;
+            out[k++] = v;
+        }
+        return java.util.Arrays.copyOf(out, k);
+    }
+
+    /** The last marker that is more than marginMs before the position; -1 when there is none. */
+    public static long previousMarker(long[] markers, long positionMs, long marginMs) {
+        long best = -1;
+        for (long m : markers) if (m < positionMs - marginMs) best = m;
+        return best;
+    }
+
+    /** The first marker that is more than marginMs after the position; -1 when there is none. */
+    public static long nextMarker(long[] markers, long positionMs, long marginMs) {
+        for (long m : markers) if (m > positionMs + marginMs) return m;
+        return -1;
+    }
+
     public long startMs() { return n == 0 ? 0 : t[0]; }
     public long endMs() { return n == 0 ? 0 : t[n - 1]; }
 

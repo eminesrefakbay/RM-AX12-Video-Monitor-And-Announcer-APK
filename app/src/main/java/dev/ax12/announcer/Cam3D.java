@@ -11,7 +11,9 @@ package dev.ax12.announcer;
  * and a seek (reset) puts it straight at the new place instead of flying there. World axes: x east, y north, z up.
  */
 public final class Cam3D {
-    public static final int CHASE = 0, ORBIT = 1, PILOT = 2;
+    public static final int CHASE = 0, ORBIT = 1, PILOT = 2, TOP = 3;
+    /** How many cameras there are. */
+    public static final int COUNT = 4;
     public static final double NEAR = 0.2;
 
     public int mode = CHASE;
@@ -71,6 +73,12 @@ public final class Cam3D {
                 setFov(damp(fov, 55, dtSec, 0.3), fresh);
                 break;
             }
+            case TOP: {                                          // straight above the aircraft, north up; the pinch sets the height
+                nex = fx; ney = fy - userDistance * 0.02; nez = fz + userDistance;
+                tx = fx; ty = fy; tz = fz;
+                setFov(damp(fov, 55, dtSec, 0.3), fresh);
+                break;
+            }
             case PILOT: {
                 nex = homeX; ney = homeY; nez = homeY * 0 + eyeHeight;
                 tx = fx; ty = fy; tz = fz;
@@ -89,7 +97,7 @@ public final class Cam3D {
         }
         if (fresh || mode == PILOT) { ex = nex; ey = ney; ez = nez; }
         else {
-            double hl = mode == ORBIT ? 0.18 : 0.30;
+            double hl = (mode == ORBIT || mode == TOP) ? 0.18 : 0.30;
             ex = damp(ex, nex, dtSec, hl); ey = damp(ey, ney, dtSec, hl); ez = damp(ez, nez, dtSec, hl);
         }
         if (ez < tz - 400) ez = tz - 400;
@@ -98,7 +106,7 @@ public final class Cam3D {
         basis();
     }
 
-    private void setFov(double v, boolean snap) { fov = snap ? 70 : v; if (mode == ORBIT && snap) fov = 55; }
+    private void setFov(double v, boolean snap) { fov = snap ? 70 : v; if ((mode == ORBIT || mode == TOP) && snap) fov = 55; }
 
     private void basis() {
         dx = tx - ex; dy = ty - ey; dz = tz - ez;

@@ -23,6 +23,11 @@
 
 ## Neu
 
+**1.14: der Replay-Player (1.14.0)**
+
+* **Eine Videoplayer-Leiste.** Eine Suchleiste über die ganze Breite mit einer Marke für jedes Ereignis, Stopp, voriges und nächstes Ereignis, 10 Sekunden zurück und vor, Wiedergabe oder Pause, Tempo (0,5x bis 8x) und Schleife.
+* **Eine Leiste rechts** mit Schließen, Kamera (Verfolger, Orbit, Pilot, Oben), Fluggerät, Spurfarbe (Tempo oder Höhe), Karten ein oder aus und Schnappschuss.
+
 **1.13: der 3D-Flugreplay (1.13.0 bis 1.13.4)**
 
 * **3D-Replay.** Ein aufgezeichneter Flug wird hinter den Karten in 3D gezeichnet: ein nach Geschwindigkeit eingefärbtes Band über einem flachen Boden mit Horizont

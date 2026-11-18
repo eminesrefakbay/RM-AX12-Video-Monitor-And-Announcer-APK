@@ -149,6 +149,10 @@ public class Flight3DTests {
         double far0 = cam.fovDeg;
         pose.x = 30; pose.y = 10; cam.reset(); cam.update(pose, 0.016);
         check(cam.fovDeg > far0, "the lens opens up when the aircraft comes close: " + far0 + " -> " + cam.fovDeg);
+        cam.mode = Cam3D.TOP; cam.reset(); pose.x = 0; pose.y = 0; pose.z = 20; cam.update(pose, 0.016);
+        check(cam.ez > pose.z + 20 && Math.hypot(cam.ex - pose.x, cam.ey - pose.y) < cam.userDistance * 0.1, "top view hangs above the aircraft");
+        check(cam.project(pose.x, pose.y, pose.z, sc) && near(sc[0], 640, 2) && near(sc[1], 360, 2), "top view has the aircraft in the middle of the screen: " + sc[0] + ", " + sc[1]);
+        check(Cam3D.COUNT == 4, "there are four cameras");
         // a seek does not make the camera fly across the map
         cam.mode = Cam3D.CHASE; cam.reset(); pose.x = 0; pose.y = 0; cam.update(pose, 0.016);
         double ex0 = cam.ex;

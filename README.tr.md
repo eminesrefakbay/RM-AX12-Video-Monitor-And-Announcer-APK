@@ -23,6 +23,11 @@
 
 ## Yenilikler
 
+**1.14: tekrar oynatıcısı (1.14.0)**
+
+* **Video oynatıcı çubuğu.** Her olay için bir işaret taşıyan tam genişlikte gezinme çubuğu, Durdur, önceki ve sonraki olay, 10 saniye geri ve ileri, Oynat veya Duraklat, hız (0,5x - 8x) ve Döngü.
+* **Sağda bir düğme sütunu:** Kapat, kamera (Takip, Yörünge, Pilot, Üst), hava aracı, iz rengi (hız veya yükseklik), kartları aç veya kapat ve ekran görüntüsü.
+
 **1.13: 3D uçuş tekrarı (1.13.0 – 1.13.4)**
 
 * **3D tekrar.** Kaydedilmiş bir uçuş kartların arkasında 3D olarak çizilir: hıza göre renklenen bir şerit, ufuk çizgili düz zemin ve ızgara, hava aracı,

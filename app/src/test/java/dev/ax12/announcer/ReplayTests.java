@@ -41,7 +41,16 @@ public class ReplayTests {
         r.cycleSpeed(); r.cycleSpeed();
         check(r.speed() == 8, "then 4x and 8x");
         r.cycleSpeed();
-        check(r.speed() == 1, "and round to 1x again");
+        check(r.speed() == 0.5, "then half speed");
+        r.advance(200);
+        check(r.positionMs() == 800, "at half speed, 200 ms of real time are 100 ms of flight");
+        r.cycleSpeed();
+        check(r.speed() == 1 && r.speedIndex() == ReplayEngine.NORMAL_SPEED, "and round to 1x again");
+        r.setSpeedIndex(99);
+        check(r.speed() == 8, "a speed index past the end is the last speed");
+        r.setSpeedIndex(-3);
+        check(r.speed() == 0.5, "and one below the first is the first");
+        r.setSpeedIndex(ReplayEngine.NORMAL_SPEED);
         r.advance(10_000);
         check(r.positionMs() == 1000 && !r.playing() && r.atEnd(), "at the end it stops");
         r.advance(500);
@@ -60,6 +69,27 @@ public class ReplayTests {
         check(r.positionMs() == 450, "seek");
         r.advance(-100);
         check(r.positionMs() == 450, "time does not run backwards");
+
+        // ---------- stop, loop and markers ----------
+        ReplayEngine q = new ReplayEngine(small());
+        q.play(); q.advance(400);
+        q.stop();
+        check(q.positionMs() == 0 && !q.playing(), "stop pauses and goes back to the start");
+        q.setLoop(true);
+        q.play(); q.advance(900);
+        check(q.positionMs() == 900 && q.playing() && !q.takeWrapped(), "loop: before the end nothing special happens");
+        q.advance(300);
+        check(q.positionMs() == 0 && q.playing() && q.takeWrapped(), "loop: at the end it goes round to the start and keeps playing");
+        check(!q.takeWrapped(), "and the wrap is told only once");
+        q.setLoop(false);
+        q.seek(950); q.advance(500);
+        check(q.positionMs() == 1000 && !q.playing(), "without loop it stops at the end again");
+        long[] marks = {2000, 9000, 30000};
+        check(FlightPath.previousMarker(marks, 9500, 1000) == 9000 || FlightPath.previousMarker(marks, 9500, 400) == 9000, "the previous marker is the last one behind the position");
+        check(FlightPath.previousMarker(marks, 9500, 1000) == 2000, "a marker right under the position (within the margin) is skipped when going back");
+        check(FlightPath.previousMarker(marks, 1000, 500) == -1, "no marker before the first one");
+        check(FlightPath.nextMarker(marks, 9500, 1000) == 30000 && FlightPath.nextMarker(marks, 7500, 1000) == 9000, "the next marker is the first one ahead");
+        check(FlightPath.nextMarker(marks, 29900, 500) == -1, "no marker after the last one");
 
         // ---------- rows and values ----------
         check(r.rowAt(-5) == 0 && r.rowAt(0) == 0 && r.rowAt(50) == 0 && r.rowAt(100) == 1 && r.rowAt(150) == 1 && r.rowAt(200) == 2 && r.rowAt(999) == 2 && r.rowAt(1000) == 3 && r.rowAt(99999) == 3, "the row at a position is the last one at or before it");

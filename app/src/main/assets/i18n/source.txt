@@ -297,11 +297,6 @@ Center
 The log cannot be read: {0}
 REPLAY
 This log lacks values that some cards need: {0}
-Orbit
-Pilot
-Chase
-Plane
-Quad
 SPEED
 HEIGHT
 CURRENT
@@ -472,9 +467,16 @@ This build has no RadioMaster SDK files (see the README)
 SDK worker thread failed to start
 The SDK could not open the radio's serial link (see README: serial lock)
 SDK start failed (code {0})
+{0}x
+Chase
+Orbit
+Pilot
+Quad
+Plane
+Speed
+Height
 Pause
 Play
-{0}x
 Line {0}: missing '->'  ({1})
 Line {0}: nothing before '->'
 Line {0}: nothing to say after '->'

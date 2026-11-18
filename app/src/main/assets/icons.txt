@@ -175,3 +175,64 @@ line 12 11 12 17
 line 7 17 17 17
 line 12 17 12 21
 line 8 21 16 21
+
+icon play
+poly 7 4.5 19.5 12 7 19.5 fill
+
+icon pause
+rect 6 4.5 10 19.5 0 fill
+rect 14 4.5 18 19.5 0 fill
+
+icon stop
+rect 5.5 5.5 18.5 18.5 0 fill
+
+icon skip_prev
+rect 4.5 5 6.5 19 0 fill
+poly 19.5 5 8.5 12 19.5 19 fill
+
+icon skip_next
+rect 17.5 5 19.5 19 0 fill
+poly 4.5 5 15.5 12 4.5 19 fill
+
+icon back10
+arc 4 5 20 21 -60 300
+polyline 4.5 3 4.5 8 9.5 8
+line 10 10.5 10 15.5
+rect 12.5 10.5 15.5 15.5 0 stroke
+
+icon fwd10
+arc 4 5 20 21 -60 300
+polyline 19.5 3 19.5 8 14.5 8
+line 10 10.5 10 15.5
+rect 12.5 10.5 15.5 15.5 0 stroke
+
+icon loop
+polyline 4 11 4 8 7 6 17 6 20 8 20 11
+polyline 17.5 3.5 20 6 17.5 8.5
+polyline 20 13 20 16 17 18 7 18 4 16 4 13
+polyline 6.5 15.5 4 18 6.5 20.5
+
+icon camera
+rect 3 7 21 19 0 stroke
+circle 12 13 3.5 stroke
+rect 8 4 14 7 0 fill
+
+icon snapshot
+polyline 4 9 4 4 9 4
+polyline 15 4 20 4 20 9
+polyline 20 15 20 20 15 20
+polyline 9 20 4 20 4 15
+circle 12 12 3 fill
+
+icon close
+line 6 6 18 18
+line 18 6 6 18
+
+icon trail
+polyline 3 19 8 12 12 15 21 5
+circle 21 5 1.5 fill
+
+icon cards
+rect 3 4 21 20 0 stroke
+rect 6 7 12 12 0 fill
+line 6 15.5 18 15.5

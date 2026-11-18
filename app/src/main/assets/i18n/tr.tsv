@@ -412,8 +412,6 @@ This build has no RadioMaster SDK files (see the README)	Bu sürümde RadioMaste
 SDK worker thread failed to start	SDK çalışan iş parçacığı başlatılamadı
 The SDK could not open the radio's serial link (see README: serial lock)	SDK, kumandanın seri bağlantısını açamadı (README'ye bakın: seri kilit)
 SDK start failed (code {0})	SDK başlatılamadı (kod {0})
-Pause	Duraklat
-Play	Oynat
 {0}x	{0}x
 Line {0}: missing '->'  ({1})	Satır {0}: '->' eksik  ({1})
 Line {0}: nothing before '->'	Satır {0}: '->' öncesinde bir şey yok
@@ -870,3 +868,7 @@ Pilot	Pilot
 No position in this log, so there is no 3D view.	Bu kayıtta konum yok, bu yüzden 3D görünüm yok.
 Plane	Uçak
 Quad	Quad
+Speed	Hız
+Height	Yükseklik
+Play	Oynat
+Pause	Duraklat

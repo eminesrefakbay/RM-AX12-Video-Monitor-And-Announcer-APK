@@ -12,7 +12,10 @@ import java.util.Map;
  * and gives the values of the row at that position. The screen feeds them to the same cards that show the live flight.
  */
 public final class ReplayEngine {
-    public static final int[] SPEEDS = {1, 2, 4, 8};
+    /** The speeds of the player, in times real time: half speed to eight times. */
+    public static final double[] SPEEDS = {0.5, 1, 2, 4, 8};
+    /** The speed a replay starts at: 1x. */
+    public static final int NORMAL_SPEED = 1;
 
     /** Receives rows in order, with a time that only grows. */
     public interface Sink { void accept(long replayNowMs, Map<String, Double> numbers, Map<String, String> texts); }
@@ -23,7 +26,9 @@ public final class ReplayEngine {
     private final FlightLog log;
     private double positionMs;
     private boolean playing;
-    private int speedIndex;
+    private int speedIndex = NORMAL_SPEED;
+    private boolean loop;
+    private boolean wrapped;
 
     public ReplayEngine(FlightLog log) { this.log = log; }
 
@@ -34,7 +39,22 @@ public final class ReplayEngine {
     public double positionExact() { return positionMs; }
     public boolean playing() { return playing; }
     public boolean atEnd() { return positionMs >= durationMs(); }
-    public int speed() { return SPEEDS[speedIndex]; }
+    public double speed() { return SPEEDS[speedIndex]; }
+    public int speedIndex() { return speedIndex; }
+    public boolean loop() { return loop; }
+    public void setLoop(boolean on) { loop = on; }
+    /** True once after the replay went round from the end to the start (loop): the screen then rebuilds what it shows from the start. */
+    public boolean takeWrapped() { boolean w = wrapped; wrapped = false; return w; }
+
+    /** Sets the speed by its place in SPEEDS. */
+    public void setSpeedIndex(int i) { speedIndex = Math.max(0, Math.min(SPEEDS.length - 1, i)); }
+
+    /** Pauses and goes back to the start: the stop button of a player (closing is something else). */
+    public void stop() {
+        playing = false;
+        positionMs = 0;
+        wrapped = false;
+    }
 
     public void play() {
         if (atEnd()) positionMs = 0;                  // play again from the start
@@ -50,10 +70,15 @@ public final class ReplayEngine {
     /** Moves the position by what the real clock moved. Stops at the end. */
     public void advance(long realDeltaMs) {
         if (!playing || realDeltaMs <= 0) return;
-        positionMs += realDeltaMs * (double) speed();
+        positionMs += realDeltaMs * speed();
         if (positionMs >= durationMs()) {
-            positionMs = durationMs();
-            playing = false;
+            if (loop && durationMs() > 0) {
+                positionMs = 0;
+                wrapped = true;                       // goes round and keeps playing
+            } else {
+                positionMs = durationMs();
+                playing = false;
+            }
         }
     }
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.14.0
+
+A new player for the 3D replay. The scrub bar now runs over the whole width at the bottom, like a video player's, with a mark for every event of the flight
+(take-off, mode changes, the highest point, landing). Under it: Stop, the previous and next event, 10 seconds back and forward, Play or Pause, the time, the
+speed (0.5x, 1x, 2x, 4x, 8x) and Loop. On the right side a rail holds Close, the camera (Chase, Orbit, Pilot and a new Top view), the aircraft (quad or
+plane), the colour of the trail (by speed or by height), a button that hides the cards, and a snapshot. The bar and the rail fade out after four seconds and
+come back with a touch.
+
 ## 1.13.4
 
 The quad of the 3D replay is drawn with filled shapes like the plane: a long body plate, battery, camera pod, arms with orange front ones, prop discs and

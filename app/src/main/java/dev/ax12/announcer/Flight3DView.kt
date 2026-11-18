@@ -36,7 +36,7 @@ class Flight3DView(context: Context) : View(context) {
     private var engineMs = 0.0
     private var engineNano = 0L
     private var playing = false
-    private var speed = 1
+    private var speed = 1.0
     private var lastNano = 0L
     private var snapNext = true
 
@@ -199,7 +199,7 @@ class Flight3DView(context: Context) : View(context) {
     }
 
     /** Called on every tick of the replay: where the replay is, and whether it runs. */
-    fun setClock(positionMs: Double, isPlaying: Boolean, speedFactor: Int) {
+    fun setClock(positionMs: Double, isPlaying: Boolean, speedFactor: Double) {
         engineMs = positionMs
         engineNano = System.nanoTime()
         playing = isPlaying
@@ -217,13 +217,19 @@ class Flight3DView(context: Context) : View(context) {
 
     fun cameraMode(): Int = cam.mode
 
-    /** Chase, then orbit, then pilot, then chase again. */
-    fun cycleCamera(): Int {
-        cam.mode = (cam.mode + 1) % 3
+    /** Chase, orbit, pilot, top, then chase again. */
+    fun cycleCamera(): Int = setCamera((cam.mode + 1) % Cam3D.COUNT)
+
+    /** Puts a camera on: Cam3D.CHASE, ORBIT, PILOT or TOP. */
+    fun setCamera(mode: Int): Int {
+        cam.mode = mode.coerceIn(0, Cam3D.COUNT - 1)
         cam.autoOrbit = true
         cam.reset()
         return cam.mode
     }
+
+    /** What the trail is coloured by: TRAIL_SPEED or TRAIL_HEIGHT. */
+    var trailMode = TRAIL_SPEED
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -351,7 +357,7 @@ class Flight3DView(context: Context) : View(context) {
                 futureLines[o] = seg[0].toFloat(); futureLines[o + 1] = seg[1].toFloat(); futureLines[o + 2] = seg[2].toFloat(); futureLines[o + 3] = seg[3].toFloat()
                 futureCount += 4
             } else {
-                val band = bandOf(ribbon[a + 3].toDouble())
+                val band = bandOf(trailValue(ribbon[a + 3].toDouble(), ribbon[a + 2].toDouble()))
                 val arr = bands[band]
                 val o = bandCount[band]
                 arr[o] = seg[0].toFloat(); arr[o + 1] = seg[1].toFloat(); arr[o + 2] = seg[2].toFloat(); arr[o + 3] = seg[3].toFloat()
@@ -542,6 +548,13 @@ class Flight3DView(context: Context) : View(context) {
         bodyLine(canvas, a, 1.5, 0.2, 0.0, 1.9, 0.2, 0.0, tipPaint)
     }
 
+    /** The number that colours a piece of the trail, on the 0..110 scale of the colour ramp: the speed, or the height as a part of the highest point. */
+    private fun trailValue(speedKmh: Double, heightM: Double): Double {
+        if (trailMode != TRAIL_HEIGHT) return speedKmh
+        val top = Math.max(10.0, path?.maxHeightM ?: 10.0)
+        return heightM.coerceIn(0.0, top) / top * 110.0
+    }
+
     private fun drawLegend(canvas: Canvas, w: Float, h: Float) {
         val barW = dp(150f)
         val barH = dp(6f)
@@ -554,13 +567,20 @@ class Flight3DView(context: Context) : View(context) {
         textPaint.color = 0xFFB0BEC5.toInt()
         textPaint.textSize = dp(10f)
         canvas.drawText("0", x, y - dp(3f), textPaint)
-        canvas.drawText("km/h  110+", x + barW - dp(54f), y - dp(3f), textPaint)
+        if (trailMode == TRAIL_HEIGHT) {
+            val top = Math.max(10.0, path?.maxHeightM ?: 10.0)
+            canvas.drawText("m  " + Math.round(top), x + barW - dp(54f), y - dp(3f), textPaint)
+        } else {
+            canvas.drawText("km/h  110+", x + barW - dp(54f), y - dp(3f), textPaint)
+        }
         textPaint.textSize = dp(11f)
     }
 
     companion object {
         const val MODEL_QUAD = 0
         const val MODEL_PLANE = 1
+        const val TRAIL_SPEED = 0
+        const val TRAIL_HEIGHT = 1
         const val RIBBON_STEP_MS = 250L
         const val BAND_COUNT = 8
         const val MAX_LABELS = 24

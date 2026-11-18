@@ -104,6 +104,8 @@ class MainActivity : Activity() {
     private var replayChartLast = 0L
     private var replayTilesLast = 0L
     private var replayCells = 6
+    private var replayMarks: LongArray? = null            // the events of the replay's flight, for the previous and next buttons
+    private var replayCardsOn = true                       // the Cards button of the replay rail: off shows the picture alone
     private val replayNumbers = HashMap<String, Double>()
     private val replayTexts = HashMap<String, String>()
     private val fader = CardFader()             // cards fade in and out
@@ -291,7 +293,22 @@ class MainActivity : Activity() {
         logDir = File(getExternalFilesDir(null) ?: filesDir, "flights")
         flightLogger = FlightLogger(logDir, FlightLogger.Wall { System.currentTimeMillis() }, FlightLogger.MetaSource { logMeta() })
         logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) })
-        replayUi = ReplayOverlay(this, { replay?.toggle() }, { replay?.cycleSpeed() }, { f -> replaySeek(f) }, { stopReplay() }, { cycleReplayCamera() }, { cycleReplayModel() })
+        replayUi = ReplayOverlay(this, object : ReplayOverlay.Actions {
+            override fun toggle() { replay?.toggle() }
+            override fun stop() { replayStopToStart() }
+            override fun speed(index: Int) { replay?.setSpeedIndex(index) }
+            override fun seek(fraction: Double) { replaySeek(fraction) }
+            override fun step(deltaMs: Long) { replayStepBy(deltaMs) }
+            override fun previousMarker() { replayJumpMarker(false) }
+            override fun nextMarker() { replayJumpMarker(true) }
+            override fun loop(on: Boolean) { replay?.setLoop(on) }
+            override fun close() { stopReplay() }
+            override fun camera(mode: Int) { setReplayCamera(mode) }
+            override fun model(model: Int) { setReplayModel(model) }
+            override fun trail(mode: Int) { setReplayTrail(mode) }
+            override fun cards(show: Boolean) { setReplayCards(show) }
+            override fun snapshot() { replaySnapshot() }
+        })
         flight3d = Flight3DView(this)
         flight3d.visibility = View.GONE
         replayUi.attach(frame, 2)                       // the backdrop sits above the video and its no-video screen, below every card
@@ -1422,8 +1439,15 @@ class MainActivity : Activity() {
         val path = FlightPath.build(log)
         if (path.n >= 2) { flight3d.bind(path); flight3d.visibility = View.VISIBLE } else { flight3d.bind(null); flight3d.visibility = View.GONE }
         flight3d.model = Prefs.int(this, "replayModel", 0).coerceIn(0, 1)
-        replayUi.setCamera(path.n >= 2, cameraName(flight3d.cameraMode(), true))
-        replayUi.setModel(path.n >= 2, modelName(flight3d.model, true))
+        flight3d.trailMode = Prefs.int(this, "replayTrail", Flight3DView.TRAIL_SPEED).coerceIn(0, 1)
+        replayCardsOn = true
+        replayUi.setCards(true)
+        replayUi.setLoop(false)
+        replayUi.set3d(path.n >= 2, flight3d.cameraMode(), flight3d.model, flight3d.trailMode)
+        val times = path.markerTimes()
+        replayMarks = times
+        val total = log.durationMs().coerceAtLeast(1L).toDouble()
+        replayUi.setMarks(DoubleArray(times.size) { (times[it] / total).coerceIn(0.0, 1.0) }, IntArray(times.size) { markColor(path, times[it]) })
         rebuildReplay(0)
         val missing = LogFields.missingForReplay(log.columns.toList(), log.metaNumber("arm_ch", 5.0).toInt())
         if (missing.isNotEmpty()) Toasts.make(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
@@ -1436,6 +1460,9 @@ class MainActivity : Activity() {
         flight3d.bind(null)
         flight3d.visibility = View.GONE
         replayUi.hide()
+        replayCardsOn = true
+        replayMarks = null
+        fader.set(sticksView, sticksEnabled)
         radarView.bind(flightStats)                                       // the live cards come back on the next tick
         chartView.bind(chartModel)
     }
@@ -1506,30 +1533,86 @@ class MainActivity : Activity() {
             replayTilesLast = now
             updateTiles(m, replayTexts, ReplayEngine.clock(r.positionMs()), replayStats, replayChart, false)
         }
+        if (r.takeWrapped()) {                                            // Loop: the log has gone round, so the cards start again from the first row
+            flight3d.jump(r.positionExact())
+            rebuildReplay(r.positionMs())
+        }
         flight3d.setClock(r.positionExact(), r.playing(), r.speed())
-        replayUi.update(r.positionMs(), r.durationMs(), r.playing(), r.speed())
+        replayUi.update(r.positionMs(), r.durationMs(), r.playing(), r.speedIndex())
     }
 
-    /** The name of a camera of the 3D view: the one that is on, or the one a tap switches to. */
-    private fun cameraName(mode: Int, next: Boolean): String {
-        val m = if (next) (mode + 1) % 3 else mode
-        return when (m) { Cam3D.ORBIT -> tr("Orbit"); Cam3D.PILOT -> tr("Pilot"); else -> tr("Chase") }
+    private fun setReplayCamera(mode: Int) {
+        flight3d.setCamera(mode.coerceIn(0, Cam3D.COUNT - 1))
     }
 
-    private fun modelName(model: Int, next: Boolean): String {
-        val m = if (next) (model + 1) % 2 else model
-        return if (m == Flight3DView.MODEL_PLANE) tr("Plane") else tr("Quad")
-    }
-
-    private fun cycleReplayModel() {
-        flight3d.model = (flight3d.model + 1) % 2
+    private fun setReplayModel(model: Int) {
+        flight3d.model = model.coerceIn(0, 1)
         Prefs.setInt(this, "replayModel", flight3d.model)
-        replayUi.setModel(true, modelName(flight3d.model, true))
     }
 
-    private fun cycleReplayCamera() {
-        val mode = flight3d.cycleCamera()
-        replayUi.setCamera(true, cameraName(mode, true))
+    private fun setReplayTrail(mode: Int) {
+        flight3d.trailMode = mode.coerceIn(0, 1)
+        Prefs.setInt(this, "replayTrail", flight3d.trailMode)
+    }
+
+    /** The Cards button: the cards over the picture (chart, statistics, radar, sticks) go away so that the 3D view can be seen alone, or come back. */
+    private fun setReplayCards(show: Boolean) {
+        replayCardsOn = show
+        fader.set(sticksView, sticksEnabled && show)
+        if (!show) {
+            fader.set(chartView, false)
+            fader.set(statsView, false)
+            fader.set(radarView, false)
+        }
+    }
+
+    /** The colour of a mark on the scrub bar: the event of the path at that time (mode amber, window red, take-off and landing green, the rest blue). */
+    private fun markColor(path: FlightPath, ms: Long): Int {
+        for (e in path.events) {
+            if (Math.abs(e.ms - ms) < 1000L) {
+                return when (e.kind) {
+                    "mode" -> 0xFFFFB300.toInt()
+                    "window" -> 0xFFEF5350.toInt()
+                    "takeoff", "landing" -> 0xFF66BB6A.toInt()
+                    else -> 0xFF4FC3F7.toInt()
+                }
+            }
+        }
+        return 0xFF4FC3F7.toInt()
+    }
+
+    /** Stop: the replay stops and goes back to the start, ready to play again. */
+    private fun replayStopToStart() {
+        val r = replay ?: return
+        r.stop()
+        flight3d.jump(r.positionExact())
+        rebuildReplay(0)
+    }
+
+    /** The buttons 10 seconds back and forward. */
+    private fun replayStepBy(deltaMs: Long) {
+        val r = replay ?: return
+        r.seek((r.positionMs() + deltaMs).coerceIn(0L, r.durationMs()))
+        flight3d.jump(r.positionExact())
+        rebuildReplay(r.positionMs())
+    }
+
+    /** The buttons for the previous and the next event of the flight (take-off, a mode change, the highest point...). */
+    private fun replayJumpMarker(forward: Boolean) {
+        val r = replay ?: return
+        val marks = replayMarks ?: return
+        val target = if (forward) FlightPath.nextMarker(marks, r.positionMs(), 1000L) else FlightPath.previousMarker(marks, r.positionMs(), 1000L)
+        if (target < 0) return
+        r.seek(target)
+        flight3d.jump(r.positionExact())
+        rebuildReplay(r.positionMs())
+    }
+
+    /** The snapshot button: a picture of the screen, with the bar and the rail out of it. */
+    private fun replaySnapshot() {
+        replayUi.hideForSnapshot()
+        window.decorView.postDelayed({ captureScreenshot() }, 250L)
+        window.decorView.postDelayed({ replayUi.touch() }, 900L)
     }
 
     private fun replaySeek(fraction: Double) {
@@ -1583,12 +1666,13 @@ class MainActivity : Activity() {
     private fun updateTiles(numbers: Map<String, Double>, texts: Map<String, String>, now: Long,
                             fs: FlightStats = flightStats, chart: ChartModel = chartModel, sampleChart: Boolean = true) {
         if (sampleChart) chart.sample(numbers, now)
-        val showChart = chartOn && chart.names.isNotEmpty()
+        val cardsOff = replay != null && !replayCardsOn            // the Cards button of the replay
+        val showChart = chartOn && chart.names.isNotEmpty() && !cardsOff
         fader.set(chartView, showChart)
         if (showChart) chartView.refresh(now)
         val flight = fs.armed() || fs.hasFlight() || editingLayout
 
-        val showStats = statsOn && flight
+        val showStats = statsOn && flight && !cardsOff
         fader.set(statsView, showStats)
         if (showStats) {
             val content = statsContent(fs, now)
@@ -1596,7 +1680,7 @@ class MainActivity : Activity() {
         }
 
         dashboard.update(now)
-        val showRadar = radarOn && (fs.hasHome() || editingLayout)
+        val showRadar = radarOn && (fs.hasHome() || editingLayout) && !cardsOff
         fader.set(radarView, showRadar)
         if (showRadar) radarView.refresh(fs)
 

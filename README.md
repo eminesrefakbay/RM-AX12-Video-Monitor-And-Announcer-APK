@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.13.4)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.14.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 > **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
@@ -18,6 +18,12 @@
 
 ## What's new
 
+**1.14: the replay player (1.14.0)**
+
+* **A video-player bar.** A full-width scrub bar with a mark for every event, Stop, previous and next event, 10 seconds back and forward, Play or Pause, the
+  speed (0.5x to 8x) and Loop.
+* **A rail on the right** with Close, the camera (Chase, Orbit, Pilot, Top), the aircraft, the trail colour (speed or height), Cards on or off and a snapshot.
+
 **1.13: the 3D flight replay (1.13.0 to 1.13.4)**
 
 * **3D replay.** A replayed flight is drawn in 3D behind your cards: a speed-coloured ribbon over a flat ground with a horizon and a grid, the
@@ -25,8 +31,8 @@
   point, the top speed and the landing. See [3D replay](#3d-replay).
 * **Smooth motion.** The log holds a position and an attitude about once a second; the aircraft moves on a smooth curve through those points
   (frame-rate independent), so there are no steps and no corners.
-* **Three cameras, two models.** Chase, Orbit (drag to turn, pinch to zoom) and Pilot; the aircraft can be drawn as a quad or as a plane.
-* **The replay bar hides itself** after four seconds and comes back on any touch, so it no longer covers the sticks and the bottom cards.
+* **Four cameras, two models.** Chase, Orbit (drag to turn, pinch to zoom), Pilot and Top; the aircraft can be drawn as a quad or as a plane.
+* **The replay bar hides itself** after four seconds and comes back on any touch, so it does not cover the sticks and the bottom cards.
 * **Fixed (1.13.2):** the 3D model showed the pitch the wrong way (the log holds pitch positive with the nose down).
 * **Easier to read (1.13.3, 1.13.4):** an arrow along the heading at the aircraft's own height, a triangle on the ground, a plane and a quad made of
   filled shapes, slightly bigger models and a higher chase camera.

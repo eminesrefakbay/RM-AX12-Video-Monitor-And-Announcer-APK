@@ -412,8 +412,6 @@ This build has no RadioMaster SDK files (see the README)	此版本不含 RadioMa
 SDK worker thread failed to start	SDK 工作线程启动失败
 The SDK could not open the radio's serial link (see README: serial lock)	SDK 无法打开遥控器的串口连接 (见 README: 串口锁)
 SDK start failed (code {0})	SDK 启动失败 (代码 {0})
-Pause	暂停
-Play	播放
 {0}x	{0}x
 Line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
 Line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
@@ -870,3 +868,7 @@ Pilot	飞手
 No position in this log, so there is no 3D view.	此日志没有位置数据，因此没有3D视图。
 Plane	飞机
 Quad	Quad
+Speed	速度
+Height	高度
+Play	播放
+Pause	暂停

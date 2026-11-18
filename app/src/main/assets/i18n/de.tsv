@@ -412,8 +412,6 @@ This build has no RadioMaster SDK files (see the README)	Diese Version enthält 
 SDK worker thread failed to start	SDK-Arbeitsthread konnte nicht gestartet werden
 The SDK could not open the radio's serial link (see README: serial lock)	Das SDK konnte die serielle Verbindung der Fernsteuerung nicht öffnen (siehe README: serielle Sperre)
 SDK start failed (code {0})	SDK-Start fehlgeschlagen (Code {0})
-Pause	Pause
-Play	Abspielen
 {0}x	{0}x
 Line {0}: missing '->'  ({1})	Zeile {0}: '->' fehlt  ({1})
 Line {0}: nothing before '->'	Zeile {0}: nichts vor '->'
@@ -870,3 +868,7 @@ Pilot	Pilot
 No position in this log, so there is no 3D view.	Dieses Log enthält keine Position, daher gibt es keine 3D-Ansicht.
 Plane	Flugzeug
 Quad	Quad
+Speed	Tempo
+Height	Höhe
+Play	Abspielen
+Pause	Pause
