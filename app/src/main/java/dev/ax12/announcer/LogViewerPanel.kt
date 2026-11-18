@@ -26,7 +26,8 @@ class LogViewerPanel(
     private val activity: Activity,
     private val folder: () -> File,
     private val activeFile: () -> File?,
-    private val onReplay: (File) -> Unit
+    private val onReplay: (File) -> Unit,
+    private val onSummary: (File) -> Unit = {}
 ) {
     val root = LinearLayout(activity)
     private val titleView = TextView(activity)
@@ -178,6 +179,11 @@ class LogViewerPanel(
             replay.isEnabled = e.rows >= 2
             replay.setOnClickListener { onReplay(e.file) }
             row.addView(replay, LinearLayout.LayoutParams(0, dp(CardStyle.MIN_TOUCH_DP), 1f).also { it.rightMargin = dp(8) })
+            val summary = Button(activity)
+            summary.text = tr("Summary")
+            summary.isEnabled = e.rows >= 2
+            summary.setOnClickListener { onSummary(e.file) }
+            row.addView(summary, LinearLayout.LayoutParams(0, dp(CardStyle.MIN_TOUCH_DP), 1f).also { it.rightMargin = dp(8) })
             val del = Button(activity)
             del.text = tr("Delete")
             del.setOnClickListener {

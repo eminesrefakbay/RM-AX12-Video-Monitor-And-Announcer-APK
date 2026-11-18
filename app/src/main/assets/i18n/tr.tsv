@@ -341,8 +341,6 @@ No file picker, and no {0} to import	Dosya seçici yok ve içe aktarılacak {0} 
 Could not open the file	Dosya açılamadı
 Could not read the file: {0}	Dosya okunamadı: {0}
 Cannot import	İçe aktarılamıyor
-Import all settings	Tüm ayarları içe aktar
-The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.	Dosyada {0}\n\nBu, içindeki ayarların yerine geçer. Mevcut ayarlarınız yedek olarak saklanır ve Ayarlar'dan geri yüklenebilir.
 Import	İçe aktar
 Imported {0} settings	{0} ayar içe aktarıldı
 Settings restored	Ayarlar geri yüklendi
@@ -872,3 +870,95 @@ Speed	Hız
 Height	Yükseklik
 Play	Oynat
 Pause	Duraklat
+Reserve low. Turn back.	Yedek azaldı. Geri dön.
+Return now.	Şimdi geri dön.
+Summary	Özet
+The file has {0}\n\nChoose what to take from it. This replaces the same things here. Your current settings are kept as a backup, and Settings can restore them.	Dosyada {0} var\n\nNelerin alınacağını seç. Bu, buradaki aynı şeylerin yerini alır. Mevcut ayarların yedek olarak saklanır ve Ayarlar onları geri yükleyebilir.
+Restore from a file	Dosyadan geri yükle
+Nothing chosen	Hiçbir şey seçilmedi
+Flight time	Uçuş süresi
+Highest	En yüksek
+Above 120 m for {0} s	{0} sn boyunca 120 m üstünde
+Farthest	En uzak
+Top speed	En yüksek hız
+Average {0} km/h	Ortalama {0} km/sa
+Battery used	Kullanılan batarya
+Energy	Enerji
+Lowest cell	En düşük hücre
+Peak current	Tepe akım
+Approval window at the end	Sonda onay penceresi
+{0} min left	{0} dk kaldı
+Over by {0} min	{0} dk aşıldı
+Manoeuvres found	Bulunan manevralar
+{0} dives, {1} rolls, {2} flips	{0} dalış, {1} rulo, {2} takla
+Copy the report text	Rapor metnini kopyala
+Copied	Kopyalandı
+Flight summary	Uçuş özeti
+Replay in 3D	3B yeniden oynat
+Export...	Dışa aktar...
+GPX track	GPX izi
+KML path with heights	Yükseklikli KML yolu
+CSV, every value	CSV, tüm değerler
+CSV, the main values	CSV, ana değerler
+Report text	Rapor metni
+Take the GPS positions out (a track is moved to 0, 0; its shape stays)	GPS konumlarını çıkar (iz 0, 0'a taşınır, şekli kalır)
+GPX and KML open in Google Earth and most map tools. A log holds the places you flew: share it with care.	GPX ve KML, Google Earth'te ve çoğu harita aracında açılır. Kayıt uçtuğun yerleri içerir: dikkatle paylaş.
+Export this flight	Bu uçuşu dışa aktar
+Save to the radio	Telsize kaydet
+Exported	Dışa aktarıldı
+Copy	Kopyala
+Too long to copy: save it to a file.	Kopyalamak için çok uzun: dosyaya kaydet.
+Could not save the file: {0}	Dosya kaydedilemedi: {0}
+Rules and warnings	Kurallar ve uyarılar
+Batteries and packs	Bataryalar ve paketler
+Layouts	Yerleşimler
+Tracker pairing	Takipçi eşleşmesi
+Pack history	Paket geçmişi
+Last backup: {0}	Son yedek: {0}
+No backup has been made on this radio yet.	Bu telsizde henüz yedek alınmadı.
+The file holds no passwords and nothing of the radio link. The pack history and the tracker pairing are optional.	Dosya parola ve telsiz bağlantısına dair hiçbir şey içermez. Paket geçmişi ve takipçi eşleşmesi isteğe bağlıdır.
+Remind me when the last backup is 30 days old	Son yedek 30 günlük olunca hatırlat
+Backup and restore	Yedekle ve geri yükle
+Save a backup file	Yedek dosyası kaydet
+Restore from a file...	Dosyadan geri yükle...
+No recent backup. Settings > Rules and backup > Backup and restore.	Yakın zamanlı yedek yok. Ayarlar > Kurallar ve yedek > Yedekle ve geri yükle.
+There is no pack yet: add one under Edit the packs, with its capacity.	Henüz paket yok: Paketleri düzenle altında kapasitesiyle bir tane ekle.
+Pack {0}, {1} mAh. Every pack keeps its own numbers.	Paket {0}, {1} mAh. Her paket kendi değerlerini saklar.
+Speed on the way home (km/h)	Eve dönüş hızı (km/sa)
+Current on the way home (A, 0 = learned during the flight)	Eve dönüş akımı (A, 0 = uçuş sırasında öğrenilir)
+Extra distance, the way is not a straight line (%)	Ek mesafe, yol düz bir çizgi değil (%)
+Kept for the landing (% of the pack)	İniş için ayrılan (paketin %)
+Warn when the margin is below (% of the pack)	Pay şunun altına inince uyar (paketin %)
+Critical when the margin is below (% of the pack)	Pay şunun altına inince kritik (paketin %)
+Return reserve	Dönüş yedeği
+Dive	Dalış
+Roll	Rulo
+Flip	Takla
+MANOEUVRES  {0}	MANEVRALAR  {0}
+All	Tümü
+Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.	Kayıttaki yükseklik ve duruştan bulunur. Yavaş bir kayıtta hızlı bir rulo veya takla gözden kaçabilir.
+DIVE REPORT  {0}	DALIŞ RAPORU  {0}
+Start	Başlangıç
+Height lost	Kaybedilen yükseklik
+Dive angle	Dalış açısı
+Fall time	Düşüş süresi
+Recovery	Toparlanma
+RETURN RESERVE	DÖNÜŞ YEDEĞİ
+Home {0}  ·  {1} s  ·  needs {2} % + {3} % to land	Ev {0}  ·  {1} sn  ·  iniş için {2} % + {3} % gerekir
+Speed on the way home: 10 to 300 km/h.	Eve dönüş hızı: 10 ile 300 km/sa arası.
+Current on the way home: 0 (learned) to 200 A.	Eve dönüş akımı: 0 (öğrenilir) ile 200 A arası.
+Extra distance: 0 to 200 %.	Ek mesafe: %0 ile %200 arası.
+Landing reserve: 0 to 50 %.	İniş yedeği: %0 ile %50 arası.
+Use critical below warning, both below 50 %.	Kritik değeri uyarının altına ayarla, ikisi de %50'nin altında olsun.
+Set the pack's capacity (Settings > Packs)	Paketin kapasitesini gir (Ayarlar > Paketler)
+Waiting for the battery	Batarya bekleniyor
+Waiting for the position	Konum bekleniyor
+Learning the current	Akım öğreniliyor
+Turn back now	Şimdi geri dön
+About {0} of flying left before you must turn back	Geri dönmen gerekene kadar yaklaşık {0} uçuş kaldı
+Change the layout with the aircraft	Yerleşimi uçakla birlikte değiştir
+On: the place and size of the cards and the dashboard tiles belong to the aircraft too. Off: the layout stays as it is when you switch, and only the rules, the battery and the rest change.	Açık: kartların ve gösterge panelindeki karoların yeri ve boyutu da uçağa aittir. Kapalı: geçişte yerleşim olduğu gibi kalır, yalnızca kurallar, batarya ve diğerleri değişir.
+Show the return reserve while flying	Uçarken dönüş yedeğini göster
+Return reserve of this pack...	Bu paketin dönüş yedeği...
+Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	Paketde kalanı eve dönüşün alacağıyla karşılaştırır ve pay bitmeden önce seslenir. Paketin kapasitesi (Paketleri düzenle) ve ev konumu gerekir. reserve_pct ve reserve_s değerleri kurallarda, grafiklerde ve kayıtlarda kullanılabilir. Düz çizgi mesafesine ve ortalama akıma dayanan bir kılavuzdur, söz değildir.
+Backup and restore: choose what goes in...	Yedekle ve geri yükle: içeriği seç...

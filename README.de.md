@@ -23,6 +23,13 @@
 
 ## Neu
 
+**1.15: Flugwerkzeuge (1.15.0)**
+
+* **Rückflugreserve.** Eine Karte im HUD vergleicht, was im Akku übrig ist, mit dem, was der Heimflug braucht, mit Sprachansage, bevor der Spielraum aufgebraucht ist. Die Werte gehören zu jedem Akku (Einstellungen > Akkus).
+* **Manöver und Sturzflug-Bericht** in der Wiedergabe (Sturzflüge, Rollen, Flips, mit Marken auf der Leiste), eine **Flugzusammenfassung** und **Export** als GPX, KML, CSV oder Berichtstext, auf Wunsch ohne GPS-Positionen.
+* **Sichern und Wiederherstellen** mit Auswahl des Inhalts, Datum der letzten Sicherung und Erinnerung nach 30 Tagen.
+* **Ein Layout je Flugzeug**, abschaltbar.
+
 **1.14: der Replay-Player (1.14.0)**
 
 * **Eine Videoplayer-Leiste.** Eine Suchleiste über die ganze Breite mit einer Marke für jedes Ereignis, Stopp, voriges und nächstes Ereignis, 10 Sekunden zurück und vor, Wiedergabe oder Pause, Tempo (0,5x bis 8x) und Schleife.

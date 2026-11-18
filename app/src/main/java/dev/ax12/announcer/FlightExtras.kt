@@ -40,6 +40,12 @@ class FlightExtras(
     private var book = PackBook.decode(Prefs.packBookText(activity))
     private val card = LinkLossCard(activity)
     private val chip = WindowChip(activity)
+    private val reserveCard = ReserveCard(activity)
+    private val learner = ReturnReserve.Learner()
+    private val watcher = ReturnReserve.Watcher()
+    private var reserveOn = false
+    private var reserveCfgs: Map<String, ReturnReserve.Cfg> = emptyMap()
+    private var lastReserveAt = 0L
     private val io = Executors.newSingleThreadExecutor()
     private val density = activity.resources.displayMetrics.density
 
@@ -66,6 +72,7 @@ class FlightExtras(
             it.topMargin = dp(52)
             it.rightMargin = dp(8)
         })
+        frame.addView(reserveCard.view, FrameLayout.LayoutParams(dp(380), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).also { it.topMargin = dp(8) })
         card.closeButton.setOnClickListener {
             loss.dismiss()
             backUntil = 0
@@ -85,11 +92,45 @@ class FlightExtras(
             Prefs.string(activity, "winWarn", ApprovalWindow.DEFAULT_WARN)
         )
         if (!window.enabled()) chip.hide()
+        reserveOn = Prefs.bool(activity, "reserveOn", false)
+        reserveCfgs = ReturnReserve.decode(Prefs.string(activity, "reserveCfg", ""))
+        if (!reserveOn) { reserveCard.hide(); watcher.reset() }
         prevLeft = Double.NaN
         prevState = ApprovalWindow.State.OFF
     }
 
     fun noteFile(): File = File(activity.getExternalFilesDir(null) ?: activity.filesDir, "last_position.txt")
+
+    // ------------------------------------------------------------------ the return reserve
+
+    /** The settings of the pack in use (the defaults when it has none yet). */
+    fun reserveConfig(): ReturnReserve.Cfg = ReturnReserve.forPack(reserveCfgs, Battery.activePack(activity)?.name ?: "")
+
+    private fun reserve(now: Long, armed: Boolean, numbers: MutableMap<String, Double>) {
+        learner.update(now, numbers["curr"] ?: Double.NaN, armed)
+        if (!reserveOn || !armed) {
+            if (reserveCard.isShown) reserveCard.hide()
+            watcher.reset()
+            return
+        }
+        val cfg = reserveConfig()
+        val capacity = (Battery.activePack(activity)?.capacityMah ?: 0).toDouble()
+        val dist = numbers["dist"] ?: Double.NaN
+        val r = ReturnReserve.compute(cfg, capacity, numbers["capa"] ?: Double.NaN, numbers["batpct"] ?: Double.NaN, dist, learner.value())
+        if (r.valid) {
+            numbers["reserve_pct"] = r.marginPct                          // rules, charts and logs can use these
+            numbers["reserve_s"] = r.spareS
+        }
+        if (now - lastReserveAt >= 500) {
+            lastReserveAt = now
+            if (r.valid) reserveCard.show(r, dist) else reserveCard.hide()
+        }
+        when (watcher.update(r, cfg)) {
+            ReturnReserve.Event.WARN -> { Diagnostics.event("reserve", "the return reserve is low", "warn"); if (cfg.voice) speaker.say(I18n.tIn(code(), "Reserve low. Turn back."), false) }
+            ReturnReserve.Event.CRIT -> { Diagnostics.event("reserve", "the return reserve is gone", "warn"); if (cfg.voice) speaker.say(I18n.tIn(code(), "Return now."), true) }
+            else -> {}
+        }
+    }
 
     // ------------------------------------------------------------------ every tick
 
@@ -133,6 +174,7 @@ class FlightExtras(
             saveNote("in flight", fix, wallMs)
         }
         updateCard(now)
+        reserve(now, armed, numbers)
         landing(now, wallMs, armed, numbers)
         if (armed && !wasArmed) armedEdge = true
         wasArmed = armed

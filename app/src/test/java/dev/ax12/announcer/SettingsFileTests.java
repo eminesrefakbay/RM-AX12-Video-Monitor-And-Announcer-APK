@@ -98,7 +98,7 @@ public class SettingsFileTests {
             if (dv == null) { noDefault.append(k).append(' '); continue; }
             defs.put(k, dv);
         }
-        check(noDefault.toString().trim().equals("rules warnRules checkRules barsConfig batProfiles camera packs aircraftStore aircraftActive"), "only the texts with their own defaults and the camera have none: " + noDefault);
+        check(noDefault.toString().trim().equals("rules warnRules checkRules barsConfig batProfiles camera packs aircraftStore aircraftActive reserveCfg"), "only the texts with their own defaults and the camera have none: " + noDefault);
         SettingsFile.Summary ds = SettingsFile.inspect(SettingsFile.export(defs, "x", "y"));
         check(ds.usable && ds.ignored == 0 && ds.entries == defs.size(), "every default is accepted by the reader (" + ds.entries + "/" + defs.size() + ", ignored " + ds.ignored + ")");
 
@@ -116,6 +116,7 @@ public class SettingsFileTests {
         used.add("dashLayouts");
         Set<String> notExported = new HashSet<String>();
         notExported.add("rulesBackup"); notExported.add("settingsBackup");
+        notExported.add("backupLast"); notExported.add("backupRemind");   // when this device was last backed up: device state
         notExported.add("guideSeen");               // which welcome guide this device has shown: device state, not a setting to back up
         StringBuilder missing = new StringBuilder();
         for (String k : used) if (!SettingsFile.isKnown(k) && !notExported.contains(k)) missing.append(k).append(' ');

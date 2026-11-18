@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.14.0)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.15.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 > **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
@@ -17,6 +17,13 @@
 * only **reads** from the radio. It never writes a setting.
 
 ## What's new
+
+**1.15: flight tools (1.15.0)**
+
+* **Return reserve.** A card on the HUD compares what is left in the pack with what the flight home needs, with a voice call before the margin is gone. The numbers belong to each pack (Settings > Packs).
+* **Manoeuvres and a dive report** in the replay (dives, rolls, flips, with marks on the scrub bar), a **flight summary** page, and **export** as GPX, KML, CSV or report text, with an option to take the GPS positions out.
+* **Backup and restore** with a choice of what goes in, the date of the last backup and a 30-day reminder.
+* **A layout for each aircraft**, with a switch to turn it off.
 
 **1.14: the replay player (1.14.0)**
 

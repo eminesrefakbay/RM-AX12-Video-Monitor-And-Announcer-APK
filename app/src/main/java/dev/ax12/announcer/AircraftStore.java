@@ -27,12 +27,35 @@ public final class AircraftStore {
     private static final Pattern ID = Pattern.compile("[a-z0-9]{1,8}");
 
     /** What belongs to an aircraft: rules, battery, packs, channel names, stick mapping, arm switch. Looks and language are shared. */
-    private static final String[] KEY_LIST = {
+    private static final String[] BASE_KEYS = {
         "rules", "warnRules", "checkRules", "batProfiles", "batActive", "packs", "packActive", "barsConfig",
         "stickMode", "stickRoll", "stickPitch", "stickThrottle", "stickYaw", "stickInvert",
         "armCh", "armHigh", "armLow", "currentLimit"
     };
+    /** The layout of the screen: where the cards are, how big, and the dashboard tiles. It goes with the aircraft unless the pilot switched that off. */
+    private static final String[] LAYOUT_KEYS = layoutKeysList();
+    private static final String[] KEY_LIST = concat(BASE_KEYS, LAYOUT_KEYS);
     private static final Set<String> KEYS = new HashSet<String>(Arrays.asList(KEY_LIST));
+    private static final Set<String> LAYOUT_SET = new HashSet<String>(Arrays.asList(LAYOUT_KEYS));
+
+    private static String[] layoutKeysList() {
+        List<String> l = new ArrayList<String>();
+        l.add("dashTiles");
+        l.add("statsRows");
+        for (String tile : new String[]{"sticks", "stats", "radar", "check", "chart"}) {
+            for (String suffix : new String[]{"X", "Y", "Scale", "Size", "Pos"}) l.add(tile + suffix);
+        }
+        return l.toArray(new String[0]);
+    }
+
+    private static String[] concat(String[] a, String[] b) {
+        String[] out = new String[a.length + b.length];
+        System.arraycopy(a, 0, out, 0, a.length);
+        System.arraycopy(b, 0, out, a.length, b.length);
+        return out;
+    }
+
+    public static boolean isLayoutKey(String k) { return LAYOUT_SET.contains(k); }
 
     public static String[] keys() { return KEY_LIST.clone(); }
     public static boolean isAircraftKey(String k) { return KEYS.contains(k); }
@@ -193,11 +216,16 @@ public final class AircraftStore {
      * Switching: the live settings are saved into the current aircraft, the target becomes active, and its settings are returned
      * (to be written into the live settings). Settings the target does not have are not in the result: they stay as they are.
      */
-    public Map<String, Object> switchTo(String id, Map<String, Object> live) {
+    public Map<String, Object> switchTo(String id, Map<String, Object> live) { return switchTo(id, live, true); }
+
+    /** @param withLayout false: the layout of the screen stays as it is (it is still saved into the aircraft that is left) */
+    public Map<String, Object> switchTo(String id, Map<String, Object> live, boolean withLayout) {
         Aircraft target = find(id);
         if (target == null) return null;
         syncActive(live);
         activeId = id;
-        return new LinkedHashMap<String, Object>(target.values);
+        Map<String, Object> out = new LinkedHashMap<String, Object>(target.values);
+        if (!withLayout) for (String k : LAYOUT_KEYS) out.remove(k);
+        return out;
     }
 }

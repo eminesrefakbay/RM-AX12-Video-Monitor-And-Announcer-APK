@@ -292,7 +292,7 @@ class MainActivity : Activity() {
         welcomeGuide = WelcomeGuide(this) { }
         logDir = File(getExternalFilesDir(null) ?: filesDir, "flights")
         flightLogger = FlightLogger(logDir, FlightLogger.Wall { System.currentTimeMillis() }, FlightLogger.MetaSource { logMeta() })
-        logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) })
+        logViewer = LogViewerPanel(this, { logDir }, { if (flightLogger.isLogging()) flightLogger.currentFile() else null }, { f -> startReplayFrom(f) }, { f -> openSummary(f) })
         replayUi = ReplayOverlay(this, object : ReplayOverlay.Actions {
             override fun toggle() { replay?.toggle() }
             override fun stop() { replayStopToStart() }
@@ -308,6 +308,7 @@ class MainActivity : Activity() {
             override fun trail(mode: Int) { setReplayTrail(mode) }
             override fun cards(show: Boolean) { setReplayCards(show) }
             override fun snapshot() { replaySnapshot() }
+            override fun jumpTo(ms: Long) { replayJumpTo(ms) }
         })
         flight3d = Flight3DView(this)
         flight3d.visibility = View.GONE
@@ -365,6 +366,7 @@ class MainActivity : Activity() {
         applyTiles()
         applyFlightConfig()
 
+        if (savedInstanceState == null) backupReminder()
         // a fresh start (not a turn of the screen or a return from the background): logo and version for 2 seconds
         if (savedInstanceState == null && Prefs.bool(this, "splashOn", true)) {
             val sp = SplashOverlay(this)
@@ -1107,6 +1109,12 @@ class MainActivity : Activity() {
         override fun chooseAircraft() = this@MainActivity.chooseAircraft()
         override fun manageAircraft() = this@MainActivity.manageAircraft()
         override fun editPacks() = this@MainActivity.editPacks()
+        override fun reserveOn(): Boolean = Prefs.bool(this@MainActivity, "reserveOn", false)
+        override fun setReserveOn(on: Boolean) { Prefs.setBool(this@MainActivity, "reserveOn", on); extras.reload() }
+        override fun editReserve() = this@MainActivity.editReserve()
+        override fun layoutWithAircraft(): Boolean = Prefs.bool(this@MainActivity, "layoutWithAircraft", true)
+        override fun setLayoutWithAircraft(on: Boolean) { Prefs.setBool(this@MainActivity, "layoutWithAircraft", on) }
+        override fun openBackup() = this@MainActivity.openBackup()
         override fun batteryLabel(): String = batteryName
         override fun cycleBattery() = switchBattery()
         override fun editBatteries() = this@MainActivity.editBatteries()
@@ -1453,6 +1461,18 @@ class MainActivity : Activity() {
         replayMarks = times
         val total = log.durationMs().coerceAtLeast(1L).toDouble()
         replayUi.setMarks(DoubleArray(times.size) { (times[it] / total).coerceIn(0.0, 1.0) }, IntArray(times.size) { markColor(path, times[it]) })
+        val moves = Manoeuvres.detect(log)
+        replayUi.setMoves(moves, log.time, Manoeuvres.heights(log))
+        if (moves.isNotEmpty()) {
+            val f = DoubleArray(times.size + moves.size)
+            val c = IntArray(f.size)
+            for (i in times.indices) { f[i] = (times[i] / total).coerceIn(0.0, 1.0); c[i] = markColor(path, times[i]) }
+            for (i in moves.indices) {
+                f[times.size + i] = (moves[i].startMs / total).coerceIn(0.0, 1.0)
+                c[times.size + i] = when (moves[i].kind) { Manoeuvres.DIVE -> 0xFFEF7C4F.toInt(); Manoeuvres.ROLL -> 0xFF4FC3F7.toInt(); else -> 0xFFB388FF.toInt() }
+            }
+            replayUi.setMarks(f, c)
+        }
         rebuildReplay(0)
         val missing = LogFields.missingForReplay(log.columns.toList(), log.metaNumber("arm_ch", 5.0).toInt())
         if (missing.isNotEmpty()) Toasts.make(this, tr("This log lacks values that some cards need: {0}", missing.joinToString(", ")), Toast.LENGTH_LONG).show()
@@ -1618,6 +1638,13 @@ class MainActivity : Activity() {
         replayUi.hideForSnapshot()
         window.decorView.postDelayed({ captureScreenshot() }, 250L)
         window.decorView.postDelayed({ replayUi.touch() }, 900L)
+    }
+
+    private fun replayJumpTo(ms: Long) {
+        val r = replay ?: return
+        r.seek(ms.coerceIn(0L, r.durationMs()))
+        flight3d.jump(r.positionExact())
+        rebuildReplay(r.positionMs())
     }
 
     private fun replaySeek(fraction: Double) {
@@ -2292,8 +2319,12 @@ class MainActivity : Activity() {
     private val requestImportSettings = 44
     private val settingsFileName = "ax-hud-settings.txt"
 
-    private fun settingsText(): String =
-        SettingsFile.export(Prefs.exportMap(this), SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(Date()), updater.installedName())
+    private var exportGroups: BooleanArray? = null              // which groups the file being saved holds (null = everything)
+
+    private fun settingsText(groups: BooleanArray? = null): String {
+        val all = Prefs.exportMap(this)
+        return SettingsFile.export(if (groups == null) all else BackupGroups.filter(all, groups), SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(Date()), updater.installedName())
+    }
 
     /** For a device without a file picker: the app's own folder, reachable over USB. */
     private fun saveToAppFolder(name: String, text: String, title: String) {
@@ -2312,21 +2343,26 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun exportSettings() {
+    private fun exportSettings() = startExport(null)
+
+    private fun startExport(groups: BooleanArray?) {
+        exportGroups = groups
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "text/plain"
-        intent.putExtra(Intent.EXTRA_TITLE, settingsFileName)
+        intent.putExtra(Intent.EXTRA_TITLE, if (groups == null) settingsFileName else "ax-hud-backup-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()) + ".txt")
         try {
             startActivityForResult(intent, requestExportSettings)
         } catch (e: ActivityNotFoundException) {
-            saveToAppFolder(settingsFileName, settingsText(), tr("Settings saved"))
+            saveToAppFolder(settingsFileName, settingsText(groups), tr("Settings saved"))
+            Prefs.setString(this, "backupLast", System.currentTimeMillis().toString())
         }
     }
 
     private fun writeSettings(uri: Uri) {
         try {
-            contentResolver.openOutputStream(uri, "wt")?.use { it.write(settingsText().toByteArray(Charsets.UTF_8)) }
+            contentResolver.openOutputStream(uri, "wt")?.use { it.write(settingsText(exportGroups).toByteArray(Charsets.UTF_8)) }
+            Prefs.setString(this, "backupLast", System.currentTimeMillis().toString())
             Toasts.make(this, tr("Settings saved"), Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Toasts.make(this, tr("Could not save the settings: {0}", e.message), Toast.LENGTH_LONG).show()
@@ -2363,14 +2399,39 @@ class MainActivity : Activity() {
             Immersive.show(Sunlight.builder(this).setTitle(tr("Cannot import")).setMessage(summary.message).setPositiveButton("OK", null).create())
             return
         }
+        val present = BackupGroups.present(summary.values)
+        val counts = BackupGroups.counts(summary.values)
+        val chosen = BooleanArray(BackupGroups.COUNT) { it in present }
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val info = TextView(this)
+        info.text = tr("The file has {0}\n\nChoose what to take from it. This replaces the same things here. Your current settings are kept as a backup, and Settings can restore them.", summary.message)
+        info.textSize = 13f
+        body.addView(info)
+        for (g in 0 until BackupGroups.COUNT) {
+            if (g !in present) continue
+            val box = CheckBox(this)
+            box.text = backupGroupLabel(g) + "  (" + counts[g] + ")"
+            box.isChecked = chosen[g]
+            box.setOnCheckedChangeListener { _, on -> chosen[g] = on }
+            body.addView(box)
+        }
+        val scroll = ScrollView(this)
+        scroll.addView(body)
         Immersive.show(
             Sunlight.builder(this)
-                .setTitle(tr("Import all settings"))
-                .setMessage(tr("The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.", summary.message))
+                .setTitle(tr("Restore from a file"))
+                .setView(scroll)
                 .setPositiveButton(tr("Import")) { _, _ ->
-                    Prefs.setSettingsBackup(this, settingsText())          // the state before, for "restore"
-                    Prefs.applyAll(this, summary.values)
-                    afterSettingsChanged(tr("Imported {0} settings", summary.entries))
+                    val take = BackupGroups.filter(summary.values, chosen)
+                    if (take.isEmpty()) {
+                        Toasts.make(this, tr("Nothing chosen"), Toast.LENGTH_SHORT).show()
+                    } else {
+                        Prefs.setSettingsBackup(this, settingsText())          // the state before, for "restore"
+                        Prefs.applyAll(this, take)
+                        afterSettingsChanged(tr("Imported {0} settings", take.size))
+                    }
                 }
                 .setNegativeButton(tr("Cancel"), null)
                 .create()
@@ -2822,6 +2883,287 @@ class MainActivity : Activity() {
         }
     }
 
+    // ------------------------------------------------------------------ the flight summary and the export of a log
+
+    private val requestExportLog = 46
+    private var pendingExport: LogExport.Result? = null
+
+    /** The capacity of the pack a log was flown with (the log holds the pack's label); 0 when it is not known. */
+    private fun capacityForLog(log: FlightLog): Double {
+        val label = log.meta("pack", "")
+        for (p in Battery.packs(this)) if (p.name.isNotEmpty() && label.startsWith(p.name)) return p.capacityMah.toDouble()
+        return 0.0
+    }
+
+    private fun openSummary(file: File) {
+        Toasts.make(this, tr("Loading the log..."), Toast.LENGTH_SHORT).show()
+        Thread {
+            try {
+                val log = LogFormat.readFile(file, 4_000_000)
+                val moves = Manoeuvres.detect(log)
+                runOnUiThread { if (!isFinishing) showSummary(log, file, moves) }
+            } catch (e: Exception) {
+                runOnUiThread { Toasts.make(this, tr("The log cannot be read: {0}", e.message ?: ""), Toast.LENGTH_LONG).show() }
+            }
+        }.start()
+    }
+
+    private fun showSummary(log: FlightLog, file: File, moves: List<Manoeuvres.Item>) {
+        val s = FlightSummary.build(log, capacityForLog(log), 120.0)
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        fun line(label: String, value: String, warn: Boolean = false) {
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            val l = TextView(this)
+            l.text = label
+            l.textSize = 14f
+            val v = TextView(this)
+            v.text = value
+            v.textSize = 16f
+            v.setTypeface(null, android.graphics.Typeface.BOLD)
+            if (warn) v.setTextColor(CardStyle.WARN)
+            row.addView(l, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            row.addView(v)
+            body.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(32)))
+        }
+        fun n0(v: Double, unit: String) = if (v.isNaN()) "-" else Math.round(v).toString() + " " + unit
+        val head = TextView(this)
+        head.text = s.started + (if (s.aircraft.isEmpty()) "" else "  \u00B7  " + s.aircraft) + (if (s.pack.isEmpty()) "" else "  \u00B7  " + s.pack)
+        head.textSize = 12f
+        body.addView(head)
+        line(tr("Flight time"), FlightSummary.clock(s.durationMs))
+        line(tr("Highest"), n0(s.maxHeight, "m") + (if (s.aboveLimitS >= 1) "  (" + tr("Above 120 m for {0} s", Math.round(s.aboveLimitS)) + ")" else ""), s.aboveLimitS >= 1)
+        line(tr("Farthest"), if (s.maxDist.isNaN()) "-" else String.format(Locale.US, "%.2f km", s.maxDist / 1000.0))
+        line(tr("Top speed"), n0(s.topSpeed, "km/h") + (if (s.avgSpeed.isNaN()) "" else "  (" + tr("Average {0} km/h", Math.round(s.avgSpeed)) + ")"))
+        line(tr("Battery used"), n0(s.mah, "mAh") + (if (s.packPct.isNaN()) "" else "  (" + Math.round(s.packPct) + " %)"))
+        line(tr("Energy"), if (s.wh.isNaN()) "-" else String.format(Locale.US, "%.1f Wh", s.wh))
+        line(tr("Lowest cell"), if (s.minCell.isNaN()) "-" else String.format(Locale.US, "%.2f V", s.minCell), !s.minCell.isNaN() && s.minCell < 3.3)
+        line(tr("Peak current"), n0(s.peakCurrent, "A") + (if (s.peakPowerW.isNaN()) "" else "  (" + String.format(Locale.US, "%.1f kW", s.peakPowerW / 1000.0) + ")"))
+        if (!s.windowLeftMin.isNaN()) line(tr("Approval window at the end"), if (s.windowLeftMin >= 0) tr("{0} min left", Math.round(s.windowLeftMin)) else tr("Over by {0} min", Math.round(-s.windowLeftMin)), s.windowLeftMin < 0)
+        line(tr("Manoeuvres found"), tr("{0} dives, {1} rolls, {2} flips", Manoeuvres.count(moves, Manoeuvres.DIVE), Manoeuvres.count(moves, Manoeuvres.ROLL), Manoeuvres.count(moves, Manoeuvres.FLIP)))
+        val copy = Button(this)
+        copy.text = tr("Copy the report text")
+        copy.isAllCaps = false
+        copy.setOnClickListener { copyToClipboard(s.reportText()); Toasts.make(this, tr("Copied"), Toast.LENGTH_SHORT).show() }
+        body.addView(copy, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)).also { it.topMargin = dp(8) })
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        Immersive.show(
+            Sunlight.builder(this)
+                .setTitle(tr("Flight summary"))
+                .setView(scroll)
+                .setPositiveButton(tr("Replay in 3D")) { _, _ -> logViewer.hide(); startReplay(log, file.name) }
+                .setNeutralButton(tr("Export...")) { _, _ -> chooseExport(log, file) }
+                .setNegativeButton(tr("Close"), null)
+                .create()
+        )
+    }
+
+    private fun chooseExport(log: FlightLog, file: File) {
+        val names = arrayOf(tr("GPX track"), tr("KML path with heights"), tr("CSV, every value"), tr("CSV, the main values"), tr("Report text"))
+        var pick = LogExport.GPX
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val group = android.widget.RadioGroup(this)
+        for (i in names.indices) {
+            val rb = android.widget.RadioButton(this)
+            rb.text = names[i]
+            rb.id = 1000 + i
+            group.addView(rb)
+        }
+        group.check(1000 + pick)
+        group.setOnCheckedChangeListener { _, id -> pick = id - 1000 }
+        body.addView(group)
+        val noGps = CheckBox(this)
+        noGps.text = tr("Take the GPS positions out (a track is moved to 0, 0; its shape stays)")
+        body.addView(noGps)
+        val hint = TextView(this)
+        hint.text = tr("GPX and KML open in Google Earth and most map tools. A log holds the places you flew: share it with care.")
+        hint.textSize = 12f
+        body.addView(hint)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        Immersive.show(
+            Sunlight.builder(this)
+                .setTitle(tr("Export this flight"))
+                .setView(scroll)
+                .setPositiveButton(tr("Save to the radio")) { _, _ ->
+                    val result = LogExport.export(log, pick, file.name.removeSuffix(".csv"), noGps.isChecked, capacityForLog(log), java.util.TimeZone.getDefault())
+                    pendingExport = result
+                    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    intent.type = result.mime
+                    intent.putExtra(Intent.EXTRA_TITLE, result.name)
+                    try {
+                        startActivityForResult(intent, requestExportLog)
+                    } catch (e: ActivityNotFoundException) {
+                        saveToAppFolder(result.name, result.text, tr("Exported"))
+                    }
+                }
+                .setNeutralButton(tr("Copy")) { _, _ ->
+                    val result = LogExport.export(log, pick, file.name.removeSuffix(".csv"), noGps.isChecked, capacityForLog(log), java.util.TimeZone.getDefault())
+                    if (result.text.length > 400_000) Toasts.make(this, tr("Too long to copy: save it to a file."), Toast.LENGTH_LONG).show()
+                    else { copyToClipboard(result.text); Toasts.make(this, tr("Copied"), Toast.LENGTH_SHORT).show() }
+                }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
+    private fun writeExport(uri: Uri) {
+        val r = pendingExport ?: return
+        try {
+            contentResolver.openOutputStream(uri, "wt")?.use { it.write(r.text.toByteArray(Charsets.UTF_8)) }
+            Toasts.make(this, tr("Exported"), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toasts.make(this, tr("Could not save the file: {0}", e.message), Toast.LENGTH_LONG).show()
+        }
+        pendingExport = null
+    }
+
+    // ------------------------------------------------------------------ backup and restore
+
+    private fun backupGroupLabel(g: Int): String = when (g) {
+        BackupGroups.SETTINGS -> tr("Settings")
+        BackupGroups.RULES -> tr("Rules and warnings")
+        BackupGroups.AIRCRAFT -> tr("Aircraft")
+        BackupGroups.BATTERY -> tr("Batteries and packs")
+        BackupGroups.LAYOUTS -> tr("Layouts")
+        BackupGroups.TRACKER -> tr("Tracker pairing")
+        else -> tr("Pack history")
+    }
+
+    /** The backup screen: what goes into the file (counted from what is set now), the date of the last backup and the reminder. */
+    private fun openBackup() {
+        val counts = BackupGroups.counts(Prefs.exportMap(this))
+        val chosen = BackupGroups.defaultSelection()
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val last = Prefs.string(this, "backupLast", "").toLongOrNull() ?: 0L
+        val info = TextView(this)
+        info.text = if (last > 0) tr("Last backup: {0}", SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(Date(last))) else tr("No backup has been made on this radio yet.")
+        info.textSize = 13f
+        body.addView(info)
+        for (g in 0 until BackupGroups.COUNT) {
+            val box = CheckBox(this)
+            box.text = backupGroupLabel(g) + "  (" + counts[g] + ")"
+            box.isChecked = chosen[g]
+            box.setOnCheckedChangeListener { _, on -> chosen[g] = on }
+            body.addView(box)
+        }
+        val hint = TextView(this)
+        hint.text = tr("The file holds no passwords and nothing of the radio link. The pack history and the tracker pairing are optional.")
+        hint.textSize = 12f
+        hint.setPadding(0, dp(8), 0, 0)
+        body.addView(hint)
+        val remind = CheckBox(this)
+        remind.text = tr("Remind me when the last backup is 30 days old")
+        remind.isChecked = Prefs.bool(this, "backupRemind", true)
+        remind.setOnCheckedChangeListener { _, on -> Prefs.setBool(this, "backupRemind", on) }
+        body.addView(remind)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = Sunlight.builder(this)
+            .setTitle(tr("Backup and restore"))
+            .setView(scroll)
+            .setPositiveButton(tr("Save a backup file"), null)
+            .setNeutralButton(tr("Restore from a file..."), null)
+            .setNegativeButton(tr("Close"), null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (chosen.none { it }) Toasts.make(this, tr("Nothing chosen"), Toast.LENGTH_SHORT).show()
+            else { startExport(chosen.copyOf()); dlg.dismiss() }
+        }
+        dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener { importSettings(); dlg.dismiss() }
+    }
+
+    /** At a fresh start: a short notice when the last backup is old (or there was none yet). */
+    private fun backupReminder() {
+        val last = Prefs.string(this, "backupLast", "").toLongOrNull() ?: 0L
+        if (!BackupGroups.reminderDue(last, System.currentTimeMillis(), 30, Prefs.bool(this, "backupRemind", true))) return
+        ui.postDelayed({
+            if (!isFinishing) Toasts.make(this, tr("No recent backup. Settings > Rules and backup > Backup and restore."), Toast.LENGTH_LONG).show()
+        }, 6000)
+    }
+
+    // ------------------------------------------------------------------ the return reserve
+
+    /** The return reserve numbers of the pack in use. */
+    private fun editReserve() {
+        val pack = Battery.activePack(this)
+        val packName = pack?.name ?: ""
+        val all = LinkedHashMap(ReturnReserve.decode(Prefs.string(this, "reserveCfg", "")))
+        val cfg = ReturnReserve.forPack(all, packName)
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val intro = TextView(this)
+        intro.text = if (pack == null) tr("There is no pack yet: add one under Edit the packs, with its capacity.")
+            else tr("Pack {0}, {1} mAh. Every pack keeps its own numbers.", pack.name, pack.capacityMah)
+        intro.textSize = 13f
+        body.addView(intro)
+        fun field(label: String, value: String, decimal: Boolean): EditText {
+            val t = TextView(this)
+            t.text = label
+            t.textSize = 12f
+            t.setPadding(0, dp(8), 0, 0)
+            body.addView(t)
+            val e = EditText(this)
+            e.setSingleLine(true)
+            e.inputType = android.text.InputType.TYPE_CLASS_NUMBER or (if (decimal) android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL else 0)
+            e.setText(value)
+            body.addView(e)
+            return e
+        }
+        val speed = field(tr("Speed on the way home (km/h)"), if (cfg.speedKmh == Math.rint(cfg.speedKmh)) cfg.speedKmh.toInt().toString() else cfg.speedKmh.toString(), true)
+        val current = field(tr("Current on the way home (A, 0 = learned during the flight)"), if (cfg.currentA == Math.rint(cfg.currentA)) cfg.currentA.toInt().toString() else cfg.currentA.toString(), true)
+        val factor = field(tr("Extra distance, the way is not a straight line (%)"), cfg.factorPct.toString(), false)
+        val land = field(tr("Kept for the landing (% of the pack)"), cfg.landPct.toString(), false)
+        val warn = field(tr("Warn when the margin is below (% of the pack)"), cfg.warnPct.toString(), false)
+        val crit = field(tr("Critical when the margin is below (% of the pack)"), cfg.critPct.toString(), false)
+        val voice = android.widget.CheckBox(this)
+        voice.text = tr("Speak the warnings")
+        voice.isChecked = cfg.voice
+        body.addView(voice)
+        val scroll = ScrollView(this)
+        scroll.addView(body)
+        val dlg = Sunlight.builder(this)
+            .setTitle(tr("Return reserve"))
+            .setView(scroll)
+            .setPositiveButton(tr("Save"), null)
+            .setNegativeButton(tr("Cancel"), null)
+            .create()
+        Immersive.show(dlg)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val c = ReturnReserve.Cfg()
+            val sp = speed.text.toString().trim().toDoubleOrNull()
+            val cu = current.text.toString().trim().toDoubleOrNull()
+            val fa = factor.text.toString().trim().toIntOrNull()
+            val la = land.text.toString().trim().toIntOrNull()
+            val wa = warn.text.toString().trim().toIntOrNull()
+            val cr = crit.text.toString().trim().toIntOrNull()
+            if (sp == null || cu == null || fa == null || la == null || wa == null || cr == null) {
+                Toasts.make(this, tr("Enter numbers in every field"), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            c.speedKmh = sp; c.currentA = cu; c.factorPct = fa; c.landPct = la; c.warnPct = wa; c.critPct = cr; c.voice = voice.isChecked
+            val problem = ReturnReserve.validate(c)
+            if (problem != null) {
+                Toasts.make(this, problem, Toast.LENGTH_LONG).show()
+            } else {
+                all[Packs.cleanName(packName)] = c
+                Prefs.setString(this, "reserveCfg", ReturnReserve.encode(all))
+                extras.reload()
+                dlg.dismiss()
+            }
+        }
+    }
+
     // ------------------------------------------------------------------ exit
 
     /** Closes the app for good: the radio link stops, the radio's serial port is released, and the app leaves the recent apps. */
@@ -2962,6 +3304,7 @@ class MainActivity : Activity() {
         val uri = data?.data ?: return
         if (requestCode == requestExportSettings) { writeSettings(uri); return }
         if (requestCode == requestImportSettings) { readSettings(uri); return }
+        if (requestCode == requestExportLog) { writeExport(uri); return }
         if (requestCode == requestExport) {
             try {
                 contentResolver.openOutputStream(uri, "wt")?.use { it.write(exportText().toByteArray(Charsets.UTF_8)) }

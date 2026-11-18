@@ -341,8 +341,6 @@ No file picker, and no {0} to import	Kein Dateiauswahldialog und kein {0} zum Im
 Could not open the file	Datei konnte nicht geöffnet werden
 Could not read the file: {0}	Datei konnte nicht gelesen werden: {0}
 Cannot import	Import nicht möglich
-Import all settings	Alle Einstellungen importieren
-The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nDas ersetzt die darin enthaltenen Einstellungen. Deine aktuellen Einstellungen bleiben als Sicherung erhalten, und die Einstellungen können sie wiederherstellen.
 Import	Importieren
 Imported {0} settings	{0} Einstellungen importiert
 Settings restored	Einstellungen wiederhergestellt
@@ -872,3 +870,95 @@ Speed	Tempo
 Height	Höhe
 Play	Abspielen
 Pause	Pause
+Reserve low. Turn back.	Reserve niedrig. Umkehren.
+Return now.	Sofort zurückkehren.
+Summary	Zusammenfassung
+The file has {0}\n\nChoose what to take from it. This replaces the same things here. Your current settings are kept as a backup, and Settings can restore them.	Die Datei enthält {0}\n\nWähle, was übernommen wird. Das ersetzt die gleichen Dinge hier. Deine aktuellen Einstellungen bleiben als Sicherung erhalten, und die Einstellungen können sie wiederherstellen.
+Restore from a file	Aus einer Datei wiederherstellen
+Nothing chosen	Nichts gewählt
+Flight time	Flugzeit
+Highest	Höchster Punkt
+Above 120 m for {0} s	{0} s über 120 m
+Farthest	Weiteste Entfernung
+Top speed	Höchstes Tempo
+Average {0} km/h	Durchschnitt {0} km/h
+Battery used	Akku verbraucht
+Energy	Energie
+Lowest cell	Niedrigste Zelle
+Peak current	Spitzenstrom
+Approval window at the end	Freigabefenster am Ende
+{0} min left	{0} min übrig
+Over by {0} min	{0} min überschritten
+Manoeuvres found	Manöver gefunden
+{0} dives, {1} rolls, {2} flips	{0} Sturzflüge, {1} Rollen, {2} Flips
+Copy the report text	Berichtstext kopieren
+Copied	Kopiert
+Flight summary	Flugzusammenfassung
+Replay in 3D	Wiedergabe in 3D
+Export...	Exportieren...
+GPX track	GPX-Spur
+KML path with heights	KML-Pfad mit Höhen
+CSV, every value	CSV, alle Werte
+CSV, the main values	CSV, die wichtigsten Werte
+Report text	Berichtstext
+Take the GPS positions out (a track is moved to 0, 0; its shape stays)	GPS-Positionen entfernen (die Spur wird nach 0, 0 verschoben, ihre Form bleibt)
+GPX and KML open in Google Earth and most map tools. A log holds the places you flew: share it with care.	GPX und KML öffnen sich in Google Earth und den meisten Kartenwerkzeugen. Ein Log enthält die Orte, an denen du geflogen bist: gib es mit Bedacht weiter.
+Export this flight	Diesen Flug exportieren
+Save to the radio	Auf dem Funkgerät speichern
+Exported	Exportiert
+Copy	Kopieren
+Too long to copy: save it to a file.	Zu lang zum Kopieren: in eine Datei speichern.
+Could not save the file: {0}	Die Datei konnte nicht gespeichert werden: {0}
+Rules and warnings	Regeln und Warnungen
+Batteries and packs	Akkus und Packs
+Layouts	Layouts
+Tracker pairing	Nachführung-Kopplung
+Pack history	Akku-Verlauf
+Last backup: {0}	Letzte Sicherung: {0}
+No backup has been made on this radio yet.	Auf diesem Funkgerät wurde noch keine Sicherung erstellt.
+The file holds no passwords and nothing of the radio link. The pack history and the tracker pairing are optional.	Die Datei enthält keine Passwörter und nichts von der Funkverbindung. Akku-Verlauf und Nachführung-Kopplung sind optional.
+Remind me when the last backup is 30 days old	Erinnere mich, wenn die letzte Sicherung 30 Tage alt ist
+Backup and restore	Sichern und Wiederherstellen
+Save a backup file	Sicherungsdatei speichern
+Restore from a file...	Aus einer Datei wiederherstellen...
+No recent backup. Settings > Rules and backup > Backup and restore.	Keine aktuelle Sicherung. Einstellungen > Regeln und Sicherung > Sichern und Wiederherstellen.
+There is no pack yet: add one under Edit the packs, with its capacity.	Es gibt noch keinen Akku: lege unter Akkus bearbeiten einen an, mit seiner Kapazität.
+Pack {0}, {1} mAh. Every pack keeps its own numbers.	Akku {0}, {1} mAh. Jeder Akku hat seine eigenen Werte.
+Speed on the way home (km/h)	Tempo auf dem Heimweg (km/h)
+Current on the way home (A, 0 = learned during the flight)	Strom auf dem Heimweg (A, 0 = im Flug gelernt)
+Extra distance, the way is not a straight line (%)	Mehrstrecke, der Weg ist keine Gerade (%)
+Kept for the landing (% of the pack)	Für die Landung reserviert (% des Akkus)
+Warn when the margin is below (% of the pack)	Warnen, wenn der Spielraum unter (% des Akkus) liegt
+Critical when the margin is below (% of the pack)	Kritisch, wenn der Spielraum unter (% des Akkus) liegt
+Return reserve	Rückflugreserve
+Dive	Sturzflug
+Roll	Rolle
+Flip	Flip
+MANOEUVRES  {0}	MANÖVER  {0}
+All	Alle
+Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.	Aus Höhe und Fluglage im Log ermittelt. Eine schnelle Rolle oder ein Flip kann in einem langsamen Log übersehen werden.
+DIVE REPORT  {0}	STURZFLUG-BERICHT  {0}
+Start	Start
+Height lost	Höhenverlust
+Dive angle	Sturzwinkel
+Fall time	Fallzeit
+Recovery	Abfangen
+RETURN RESERVE	RÜCKFLUGRESERVE
+Home {0}  ·  {1} s  ·  needs {2} % + {3} % to land	Heimat {0}  ·  {1} s  ·  braucht {2} % + {3} % zum Landen
+Speed on the way home: 10 to 300 km/h.	Tempo auf dem Heimweg: 10 bis 300 km/h.
+Current on the way home: 0 (learned) to 200 A.	Strom auf dem Heimweg: 0 (gelernt) bis 200 A.
+Extra distance: 0 to 200 %.	Mehrstrecke: 0 bis 200 %.
+Landing reserve: 0 to 50 %.	Landereserve: 0 bis 50 %.
+Use critical below warning, both below 50 %.	Kritisch unter der Warnung wählen, beide unter 50 %.
+Set the pack's capacity (Settings > Packs)	Kapazität des Akkus eintragen (Einstellungen > Akkus)
+Waiting for the battery	Warte auf den Akku
+Waiting for the position	Warte auf die Position
+Learning the current	Strom wird gelernt
+Turn back now	Jetzt umkehren
+About {0} of flying left before you must turn back	Noch etwa {0} Flug, bis du umkehren musst
+Change the layout with the aircraft	Layout mit dem Flugzeug wechseln
+On: the place and size of the cards and the dashboard tiles belong to the aircraft too. Off: the layout stays as it is when you switch, and only the rules, the battery and the rest change.	Ein: Platz und Größe der Karten und der Dashboard-Kacheln gehören ebenfalls zum Flugzeug. Aus: Das Layout bleibt beim Wechsel, wie es ist; nur Regeln, Akku und der Rest ändern sich.
+Show the return reserve while flying	Rückflugreserve im Flug anzeigen
+Return reserve of this pack...	Rückflugreserve dieses Akkus...
+Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	Vergleicht, was im Akku übrig ist, mit dem, was der Heimflug braucht, und meldet sich, bevor der Spielraum aufgebraucht ist. Nötig sind die Kapazität des Akkus (Akkus bearbeiten) und die Position von Home. Die Werte reserve_pct und reserve_s lassen sich in Regeln, Diagrammen und Logs verwenden. Es ist ein Richtwert aus der Luftlinie und einem mittleren Strom, keine Garantie.
+Backup and restore: choose what goes in...	Sichern und Wiederherstellen: Inhalt wählen...

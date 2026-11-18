@@ -23,6 +23,13 @@
 
 ## Yenilikler
 
+**1.15: uçuş araçları (1.15.0)**
+
+* **Dönüş yedeği.** HUD'da bir kart, paketteki kalanı eve dönüşün gerektirdiğiyle karşılaştırır ve pay bitmeden sesli uyarır. Değerler her pakete aittir (Ayarlar > Paketler).
+* **Manevralar ve dalış raporu** tekrar oynatmada (dalış, rulo, takla; çubukta işaretlerle), bir **uçuş özeti** sayfası ve GPX, KML, CSV veya rapor metni olarak **dışa aktarma**; isteğe bağlı olarak GPS konumları çıkarılır.
+* **Yedekle ve geri yükle:** içeriği seçme, son yedek tarihi ve 30 günlük hatırlatma.
+* **Her uçak için bir yerleşim**, kapatılabilir.
+
 **1.14: tekrar oynatıcısı (1.14.0)**
 
 * **Video oynatıcı çubuğu.** Her olay için bir işaret taşıyan tam genişlikte gezinme çubuğu, Durdur, önceki ve sonraki olay, 10 saniye geri ve ileri, Oynat veya Duraklat, hız (0,5x - 8x) ve Döngü.

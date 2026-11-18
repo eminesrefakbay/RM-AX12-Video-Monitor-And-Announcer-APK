@@ -48,10 +48,26 @@ public class AircraftTests {
         check(Packs.profileIndex(p.get(1), BatteryProfiles.defaults()) == 1 && Packs.profileIndex(p.get(0), BatteryProfiles.defaults()) == 0 && Packs.profileIndex(new Packs.Pack("x", "nope", 0), BatteryProfiles.defaults()) == -1, "a pack finds its profile by name");
         check(Packs.cleanName("  a|b\tc ").equals("a b c") && Packs.cleanName("ABCDEFGHIJKLMNOPQRSTUVWXYZ").length() <= 16, "names are cleaned");
 
+        // ---------- the layout goes with the aircraft, unless that is switched off ----------
+        {
+            AircraftStore ls = AircraftStore.createDefault();
+            ls.add("B", new java.util.LinkedHashMap<String, Object>());
+            java.util.Map<String, Object> liveA = new java.util.LinkedHashMap<String, Object>();
+            liveA.put("rules", "A rules"); liveA.put("radarX", 100); liveA.put("radarY", 200);
+            ls.find(ls.list().get(1).id).values.put("rules", "B rules");
+            ls.find(ls.list().get(1).id).values.put("radarX", 500);
+            java.util.Map<String, Object> toB = ls.switchTo(ls.list().get(1).id, liveA, true);
+            check("B rules".equals(toB.get("rules")) && Integer.valueOf(500).equals(toB.get("radarX")), "with the layout: the other aircraft's cards come with it");
+            check(Integer.valueOf(100).equals(ls.find("a1").values.get("radarX")), "and the layout of the aircraft that was left is kept");
+            java.util.Map<String, Object> liveB = new java.util.LinkedHashMap<String, Object>(toB);
+            java.util.Map<String, Object> backA = ls.switchTo("a1", liveB, false);
+            check("A rules".equals(backA.get("rules")) && !backA.containsKey("radarX"), "without the layout: the rules change, the cards stay where they are");
+        }
+
         // ---------- the aircraft store ----------
         AircraftStore st = AircraftStore.createDefault();
         check(st.list().size() == 1 && st.active().name.equals("My aircraft") && st.activeId().equals("a1"), "one aircraft to start with");
-        check(AircraftStore.keys().length == 18 && AircraftStore.isAircraftKey("rules") && AircraftStore.isAircraftKey("packs") && !AircraftStore.isAircraftKey("language") && !AircraftStore.isAircraftKey("sticksOn"), "what belongs to an aircraft");
+        check(AircraftStore.keys().length == 18 + 27 && AircraftStore.isAircraftKey("rules") && AircraftStore.isLayoutKey("radarX") && AircraftStore.isAircraftKey("chartScale") && !AircraftStore.isLayoutKey("rules") && AircraftStore.isAircraftKey("packs") && !AircraftStore.isAircraftKey("language") && !AircraftStore.isAircraftKey("sticksOn"), "what belongs to an aircraft");
         for (String k : AircraftStore.keys()) check(SettingsFile.isKnown(k), "aircraft setting is in the schema: " + k);
         AircraftStore.Aircraft b = st.add("XL9", settings("ch5 >= 1 -> xl9 armed\n", 1, "1|5|ARM|0\n"));
         check(b != null && b.id.equals("a2") && b.name.equals("XL9") && b.values.size() == 18, "a second aircraft");

@@ -341,8 +341,6 @@ No file picker, and no {0} to import	没有文件选择器, 也没有可导入�
 Could not open the file	无法打开文件
 Could not read the file: {0}	无法读取文件: {0}
 Cannot import	无法导入
-Import all settings	导入所有设置
-The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换其中包含的设置。当前设置会保留为备份, 可在设置中恢复。
 Import	导入
 Imported {0} settings	已导入 {0} 项设置
 Settings restored	设置已恢复
@@ -383,7 +381,7 @@ Add profile	添加配置
 Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	单位: 每节伏特。严重值必须低于低压值, 低压值必须低于满电值。规则使用 cell 以及 $low、$crit、$full 这些名称。
 Battery profiles	电池配置
 Import sound rules	导入语音规则
-The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中恢复。
+The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中还原。
 Imported {0} rules	已导入 {0} 条规则
 Sound rules	语音规则
 Speech	语音
@@ -872,3 +870,95 @@ Speed	速度
 Height	高度
 Play	播放
 Pause	暂停
+Reserve low. Turn back.	余量不足，请返航。
+Return now.	立即返航。
+Summary	摘要
+The file has {0}\n\nChoose what to take from it. This replaces the same things here. Your current settings are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n请选择要导入的内容。这会替换这里相同的内容。当前设置会保留为备份，可在设置中还原。
+Restore from a file	从文件恢复
+Nothing chosen	未选择任何内容
+Flight time	飞行时间
+Highest	最高
+Above 120 m for {0} s	高于 120 米 {0} 秒
+Farthest	最远
+Top speed	最高速度
+Average {0} km/h	平均 {0} 公里/小时
+Battery used	已用电量
+Energy	能量
+Lowest cell	最低单节电压
+Peak current	峰值电流
+Approval window at the end	结束时的批准窗口
+{0} min left	剩余 {0} 分钟
+Over by {0} min	超出 {0} 分钟
+Manoeuvres found	检测到的机动
+{0} dives, {1} rolls, {2} flips	{0} 次俯冲、{1} 次横滚、{2} 次转圈
+Copy the report text	复制报告文本
+Copied	已复制
+Flight summary	飞行摘要
+Replay in 3D	3D 回放
+Export...	导出...
+GPX track	GPX 航迹
+KML path with heights	带高度的 KML 航线
+CSV, every value	CSV，全部数值
+CSV, the main values	CSV，主要数值
+Report text	报告文本
+Take the GPS positions out (a track is moved to 0, 0; its shape stays)	移除 GPS 位置（航迹移到 0, 0，形状保留）
+GPX and KML open in Google Earth and most map tools. A log holds the places you flew: share it with care.	GPX 和 KML 可在 Google Earth 及大多数地图工具中打开。日志包含你飞行的地点，请小心分享。
+Export this flight	导出此次飞行
+Save to the radio	保存到遥控器
+Exported	已导出
+Copy	复制
+Too long to copy: save it to a file.	内容太长无法复制，请保存为文件。
+Could not save the file: {0}	无法保存文件：{0}
+Rules and warnings	规则与警告
+Batteries and packs	电池与电池包
+Layouts	布局
+Tracker pairing	跟踪器配对
+Pack history	电池包记录
+Last backup: {0}	上次备份：{0}
+No backup has been made on this radio yet.	此遥控器尚未做过备份。
+The file holds no passwords and nothing of the radio link. The pack history and the tracker pairing are optional.	文件不含密码，也不含无线链路信息。电池包记录和跟踪器配对为可选项。
+Remind me when the last backup is 30 days old	上次备份超过 30 天时提醒我
+Backup and restore	备份与恢复
+Save a backup file	保存备份文件
+Restore from a file...	从文件恢复...
+No recent backup. Settings > Rules and backup > Backup and restore.	没有近期备份。设置 > 规则与备份 > 备份与恢复。
+There is no pack yet: add one under Edit the packs, with its capacity.	还没有电池包：请在编辑电池包中添加，并填写容量。
+Pack {0}, {1} mAh. Every pack keeps its own numbers.	电池包 {0}，{1} mAh。每个电池包保存各自的数值。
+Speed on the way home (km/h)	返航速度（公里/小时）
+Current on the way home (A, 0 = learned during the flight)	返航电流（A，0 = 飞行中自动测定）
+Extra distance, the way is not a straight line (%)	额外距离，路线并非直线（%）
+Kept for the landing (% of the pack)	为降落保留（电池包的 %）
+Warn when the margin is below (% of the pack)	余量低于此值时警告（电池包的 %）
+Critical when the margin is below (% of the pack)	余量低于此值时为严重（电池包的 %）
+Return reserve	返航余量
+Dive	俯冲
+Roll	横滚
+Flip	转圈
+MANOEUVRES  {0}	机动  {0}
+All	全部
+Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.	依据日志中的高度和姿态检测。日志采样较慢时，快速的横滚或转圈可能错过。
+DIVE REPORT  {0}	俯冲报告  {0}
+Start	起点
+Height lost	损失高度
+Dive angle	俯冲角度
+Fall time	下降时间
+Recovery	拉起
+RETURN RESERVE	返航余量
+Home {0}  ·  {1} s  ·  needs {2} % + {3} % to land	起飞点 {0}  ·  {1} 秒  ·  需要 {2} % + 降落 {3} %
+Speed on the way home: 10 to 300 km/h.	返航速度：10 到 300 公里/小时。
+Current on the way home: 0 (learned) to 200 A.	返航电流：0（自动测定）到 200 A。
+Extra distance: 0 to 200 %.	额外距离：0 到 200 %。
+Landing reserve: 0 to 50 %.	降落余量：0 到 50 %。
+Use critical below warning, both below 50 %.	严重值应低于警告值，且两者都低于 50 %。
+Set the pack's capacity (Settings > Packs)	请设置电池包容量（设置 > 电池包）
+Waiting for the battery	等待电池数据
+Waiting for the position	等待定位
+Learning the current	正在测定电流
+Turn back now	立即返航
+About {0} of flying left before you must turn back	约还能飞 {0} 就必须返航
+Change the layout with the aircraft	布局随飞机切换
+On: the place and size of the cards and the dashboard tiles belong to the aircraft too. Off: the layout stays as it is when you switch, and only the rules, the battery and the rest change.	开：卡片和仪表盘磁贴的位置与大小也跟随该飞机。关：切换时布局保持不变，只有规则、电池等其余内容会改变。
+Show the return reserve while flying	飞行时显示返航余量
+Return reserve of this pack...	此电池包的返航余量...
+Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	将电池包剩余电量与返航所需电量比较，并在余量用完前提醒。需要电池包容量（编辑电池包）和起飞点位置。数值 reserve_pct 和 reserve_s 可用于规则、图表和日志。这是依据直线距离和平均电流得出的大致值，并非保证。
+Backup and restore: choose what goes in...	备份与恢复：选择内容...

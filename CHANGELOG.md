@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.15.0
+
+Flight tools. A return reserve card on the HUD compares what is left in the pack with what the flight home needs and calls out before the margin is gone; its
+numbers are kept for each pack. The replay lists the dives, rolls and flips of the flight (marks on the scrub bar, a tap jumps there) and shows a report for a
+dive. Every log has a summary page, and can be exported as GPX, KML, CSV or report text, with an option to take the GPS positions out. Backup and restore lets
+you choose what goes in, shows the date of the last backup and reminds you after 30 days. The layout can now change with the aircraft, with a switch to turn it
+off.
+
 ## 1.14.0
 
 A new player for the 3D replay. The scrub bar now runs over the whole width at the bottom, like a video player's, with a mark for every event of the flight

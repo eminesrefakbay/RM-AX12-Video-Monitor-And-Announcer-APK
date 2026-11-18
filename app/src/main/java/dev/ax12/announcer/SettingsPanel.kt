@@ -164,6 +164,12 @@ interface SettingsHost {
     fun chooseAircraft()
     fun manageAircraft()
     fun editPacks()
+    fun reserveOn(): Boolean
+    fun setReserveOn(on: Boolean)
+    fun editReserve()
+    fun layoutWithAircraft(): Boolean
+    fun setLayoutWithAircraft(on: Boolean)
+    fun openBackup()
     fun batteryLabel(): String
     fun cycleBattery()
     fun editBatteries()
@@ -612,6 +618,8 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         valueRow(tr("Active aircraft"), host.aircraftName()) { host.chooseAircraft() }
         action(tr("Manage the aircraft (add, rename, delete)...")) { host.manageAircraft() }
         note(tr("Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared."))
+        toggle(tr("Change the layout with the aircraft"), host.layoutWithAircraft()) { host.setLayoutWithAircraft(it) }
+        note(tr("On: the place and size of the cards and the dashboard tiles belong to the aircraft too. Off: the layout stays as it is when you switch, and only the rules, the battery and the rest change."))
 
         section(tr("Battery"))
         valueRow(tr("Active battery profile"), host.batteryLabel()) {
@@ -621,6 +629,14 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         action(tr("Edit the packs of this aircraft...")) { host.editPacks() }
         action(tr("Edit the battery profiles (cells and voltage limits)...")) { host.editBatteries() }
         note(tr("Rules and checks can use the value cell (volts per cell) and the limits \$low, \$crit and \$full of the active profile, for example: cell < \$low -> battery low. Switching the profile changes the numbers, not the rules."))
+
+        section(tr("Return reserve"))
+        toggle(tr("Show the return reserve while flying"), host.reserveOn()) {
+            host.setReserveOn(it)
+            refresh()
+        }
+        if (host.reserveOn()) action(tr("Return reserve of this pack...")) { host.editReserve() }
+        note(tr("Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise."))
     }
 
     private fun windowContent() {
@@ -808,6 +824,7 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         action(tr("Edit the rules as text (advanced)")) { host.openRulesText() }
 
         section(tr("Backup of all settings"))
+        action(tr("Backup and restore: choose what goes in...")) { host.openBackup() }
         action(tr("Export all settings to a file...")) { host.exportSettings() }
         action(tr("Import all settings from a file...")) { host.importSettings() }
         action(tr("Restore the settings from before the last import"), host.hasSettingsBackup()) {

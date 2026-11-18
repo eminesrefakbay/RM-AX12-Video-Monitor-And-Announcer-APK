@@ -139,6 +139,8 @@ AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as 
 No position in this log, so there is no 3D view.
 Packs
 Last known position
+Reserve low. Turn back.
+Return now.
 LINK LOST {0}
 The link is back
 Copied: {0}
@@ -216,6 +218,7 @@ Delete all {0} logs? They cannot be brought back.
 The logs hold GPS positions and stay on this radio, in the folder {0}
 Recording now
 Replay
+Summary
 Delete this log? It cannot be brought back.
 MENU
 Diagnostics
@@ -396,9 +399,10 @@ No file picker, and no {0} to import
 Could not open the file
 Could not read the file: {0}
 Cannot import
-Import all settings
-The file has {0}\n\nThis replaces the settings it contains. Your current settings are kept as a backup, and Settings can restore them.
+The file has {0}\n\nChoose what to take from it. This replaces the same things here. Your current settings are kept as a backup, and Settings can restore them.
+Restore from a file
 Import
+Nothing chosen
 Imported {0} settings
 Settings restored
 Sticks
@@ -428,6 +432,63 @@ Add pack
 Pack {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.
 Enter numbers in every field
+Flight time
+Highest
+Above 120 m for {0} s
+Farthest
+Top speed
+Average {0} km/h
+Battery used
+Energy
+Lowest cell
+Peak current
+Approval window at the end
+{0} min left
+Over by {0} min
+Manoeuvres found
+{0} dives, {1} rolls, {2} flips
+Copy the report text
+Copied
+Flight summary
+Replay in 3D
+Export...
+GPX track
+KML path with heights
+CSV, every value
+CSV, the main values
+Report text
+Take the GPS positions out (a track is moved to 0, 0; its shape stays)
+GPX and KML open in Google Earth and most map tools. A log holds the places you flew: share it with care.
+Export this flight
+Save to the radio
+Exported
+Copy
+Too long to copy: save it to a file.
+Could not save the file: {0}
+Settings
+Rules and warnings
+Batteries and packs
+Layouts
+Tracker pairing
+Pack history
+Last backup: {0}
+No backup has been made on this radio yet.
+The file holds no passwords and nothing of the radio link. The pack history and the tracker pairing are optional.
+Remind me when the last backup is 30 days old
+Backup and restore
+Save a backup file
+Restore from a file...
+No recent backup. Settings > Rules and backup > Backup and restore.
+There is no pack yet: add one under Edit the packs, with its capacity.
+Pack {0}, {1} mAh. Every pack keeps its own numbers.
+Speed on the way home (km/h)
+Current on the way home (A, 0 = learned during the flight)
+Extra distance, the way is not a straight line (%)
+Kept for the landing (% of the pack)
+Warn when the margin is below (% of the pack)
+Critical when the margin is below (% of the pack)
+Speak the warnings
+Return reserve
 Exit AX-HUD?
 The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.
 Exit
@@ -445,7 +506,6 @@ Speech
 Battery
 Dashboard
 Sunlight
-Settings
 On
 Off
 Video
@@ -467,6 +527,18 @@ This build has no RadioMaster SDK files (see the README)
 SDK worker thread failed to start
 The SDK could not open the radio's serial link (see README: serial lock)
 SDK start failed (code {0})
+Dive
+Roll
+Flip
+MANOEUVRES  {0}
+All
+Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.
+DIVE REPORT  {0}
+Start
+Height lost
+Dive angle
+Fall time
+Recovery
 {0}x
 Chase
 Orbit
@@ -477,6 +549,19 @@ Speed
 Height
 Pause
 Play
+RETURN RESERVE
+Home {0}  ·  {1} s  ·  needs {2} % + {3} % to land
+Speed on the way home: 10 to 300 km/h.
+Current on the way home: 0 (learned) to 200 A.
+Extra distance: 0 to 200 %.
+Landing reserve: 0 to 50 %.
+Use critical below warning, both below 50 %.
+Set the pack's capacity (Settings > Packs)
+Waiting for the battery
+Waiting for the position
+Learning the current
+Turn back now
+About {0} of flying left before you must turn back
 Line {0}: missing '->'  ({1})
 Line {0}: nothing before '->'
 Line {0}: nothing to say after '->'
@@ -629,14 +714,18 @@ Tap the top edge three times, away from MENU, to save a screenshot to Pictures/A
 Active aircraft
 Manage the aircraft (add, rename, delete)...
 Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.
+Change the layout with the aircraft
+On: the place and size of the cards and the dashboard tiles belong to the aircraft too. Off: the layout stays as it is when you switch, and only the rules, the battery and the rest change.
 Active battery profile
 Edit the packs of this aircraft...
 Edit the battery profiles (cells and voltage limits)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.
+Show the return reserve while flying
+Return reserve of this pack...
+Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.
 The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.
 Use an approval window
 Two hours from now
-Speak the warnings
 The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs.
 Speak a debrief after landing
 After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.
@@ -719,6 +808,7 @@ Reset the rules to the defaults
 Replace your rules with the defaults? Your current rules are kept as a backup.
 Edit the rules as text (advanced)
 Backup of all settings
+Backup and restore: choose what goes in...
 Export all settings to a file...
 Import all settings from a file...
 Restore the settings from before the last import

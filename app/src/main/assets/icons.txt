@@ -236,3 +236,9 @@ icon cards
 rect 3 4 21 20 0 stroke
 rect 6 7 12 12 0 fill
 line 6 15.5 18 15.5
+
+icon moves
+polyline 3 17 8 10 12 14 17 6 21 11
+circle 8 10 1.5 fill
+circle 17 6 1.5 fill
+line 3 20.5 21 20.5

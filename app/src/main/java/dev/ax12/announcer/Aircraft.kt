@@ -40,7 +40,7 @@ object Aircraft {
     /** Saves the aircraft in use and loads another one's settings. @return false if there is no such aircraft */
     fun switchTo(c: Context, id: String): Boolean {
         val s = store(c)
-        val values = s.switchTo(id, live(c)) ?: return false
+        val values = s.switchTo(id, live(c), Prefs.bool(c, "layoutWithAircraft", true)) ?: return false
         Prefs.applyAll(c, values)
         save(c, s)
         return true

@@ -6,7 +6,9 @@
 package dev.ax12.announcer
 
 import android.app.Activity
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.SystemClock
 import android.view.Gravity
@@ -40,6 +42,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         fun trail(mode: Int)
         fun cards(show: Boolean)
         fun snapshot()
+        fun jumpTo(ms: Long)
     }
 
     val backdrop = View(activity)
@@ -56,6 +59,16 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private val modelRail = ImageView(activity)
     private val trailRail = ImageView(activity)
     private val cardsRail = ImageView(activity)
+    private val movesRail = ImageView(activity)
+    private val movesPanel = LinearLayout(activity)
+    private val movesList = LinearLayout(activity)
+    private val movesChips = LinearLayout(activity)
+    private val diveCard = LinearLayout(activity)
+    private var moves: List<Manoeuvres.Item> = emptyList()
+    private var logTimes = LongArray(0)
+    private var logHeights = DoubleArray(0)
+    private var movesFilter: String? = null
+    private var selectedMove = -1
     private val density = activity.resources.displayMetrics.density
     private var held = false
     private var lastSeekAt = 0L
@@ -107,6 +120,202 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         menu.visibility = View.GONE
         menu.isClickable = true
         menu.elevation = dp(18).toFloat()
+
+        movesPanel.orientation = LinearLayout.VERTICAL
+        movesPanel.background = CardStyle.panelBackground(density, CardStyle.PANEL, solid = true)
+        movesPanel.setPadding(dp(10), dp(8), dp(10), dp(8))
+        movesPanel.visibility = View.GONE
+        movesPanel.isClickable = true
+        movesPanel.elevation = dp(17).toFloat()
+        diveCard.orientation = LinearLayout.VERTICAL
+        diveCard.background = CardStyle.panelBackground(density, CardStyle.PANEL, 0xFFEF7C4F.toInt(), solid = true)
+        diveCard.setPadding(dp(12), dp(8), dp(12), dp(8))
+        diveCard.visibility = View.GONE
+        diveCard.isClickable = true
+        diveCard.elevation = dp(17).toFloat()
+    }
+
+    // ------------------------------------------------------------------ the manoeuvres
+
+    /** The dives, rolls and flips of the flight, and the log's heights (for the chart of a dive). The button shows only when there are some. */
+    fun setMoves(items: List<Manoeuvres.Item>, times: LongArray, heights: DoubleArray) {
+        moves = items
+        logTimes = times
+        logHeights = heights
+        movesFilter = null
+        selectedMove = -1
+        movesRail.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
+        movesPanel.visibility = View.GONE
+        diveCard.visibility = View.GONE
+    }
+
+    private fun moveColor(kind: String): Int = when (kind) {
+        Manoeuvres.DIVE -> 0xFFEF7C4F.toInt()
+        Manoeuvres.ROLL -> 0xFF4FC3F7.toInt()
+        else -> 0xFFB388FF.toInt()
+    }
+
+    private fun kindName(kind: String): String = when (kind) {
+        Manoeuvres.DIVE -> tr("Dive")
+        Manoeuvres.ROLL -> tr("Roll")
+        else -> tr("Flip")
+    }
+
+    private fun toggleMoves() {
+        if (movesPanel.visibility == View.VISIBLE) {
+            movesPanel.visibility = View.GONE
+            diveCard.visibility = View.GONE
+            return
+        }
+        closeMenu()
+        buildMoves()
+        movesPanel.visibility = View.VISIBLE
+        touch()
+    }
+
+    private fun buildMoves() {
+        movesPanel.removeAllViews()
+        val head = TextView(activity)
+        head.text = tr("MANOEUVRES  {0}", moves.size)
+        head.textSize = 12f
+        head.setTextColor(CardStyle.LABEL)
+        movesPanel.addView(head)
+        movesChips.removeAllViews()
+        movesChips.orientation = LinearLayout.HORIZONTAL
+        val kinds = arrayOf<String?>(null, Manoeuvres.DIVE, Manoeuvres.ROLL, Manoeuvres.FLIP)
+        for (k in kinds) {
+            val c = TextView(activity)
+            val n = if (k == null) moves.size else Manoeuvres.count(moves, k)
+            c.text = (if (k == null) tr("All") else kindName(k)) + " " + n
+            c.textSize = 13f
+            c.gravity = Gravity.CENTER
+            c.setPadding(dp(10), 0, dp(10), 0)
+            val on = movesFilter == k
+            c.setTextColor(if (on) 0xFF0B1016.toInt() else Color.WHITE)
+            c.setBackgroundColor(if (on) CardStyle.ACCENT else 0xFF243447.toInt())
+            c.setOnClickListener { touch(); movesFilter = k; buildMoves() }
+            movesChips.addView(c, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(36)).also { it.rightMargin = dp(6); it.topMargin = dp(6) })
+        }
+        movesPanel.addView(movesChips)
+        movesList.removeAllViews()
+        movesList.orientation = LinearLayout.VERTICAL
+        for (i in moves.indices) {
+            val m = moves[i]
+            if (movesFilter != null && m.kind != movesFilter) continue
+            val row = LinearLayout(activity)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.gravity = Gravity.CENTER_VERTICAL
+            row.setPadding(dp(6), 0, dp(6), 0)
+            if (i == selectedMove) row.setBackgroundColor(0x5516506F)
+            val dot = View(activity)
+            dot.setBackgroundColor(moveColor(m.kind))
+            row.addView(dot, LinearLayout.LayoutParams(dp(12), dp(12)).also { it.rightMargin = dp(10) })
+            val t = TextView(activity)
+            t.text = LogText.duration(m.startMs)
+            t.textSize = 14f
+            t.setTextColor(CardStyle.LABEL)
+            row.addView(t, LinearLayout.LayoutParams(dp(56), ViewGroup.LayoutParams.WRAP_CONTENT))
+            val k = TextView(activity)
+            k.text = kindName(m.kind)
+            k.textSize = 14f
+            k.setTypeface(null, Typeface.BOLD)
+            k.setTextColor(Color.WHITE)
+            row.addView(k, LinearLayout.LayoutParams(dp(60), ViewGroup.LayoutParams.WRAP_CONTENT))
+            val d = TextView(activity)
+            d.text = m.detail()
+            d.textSize = 13f
+            d.setTextColor(0xFFB7C4D1.toInt())
+            row.addView(d, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            row.setOnClickListener {
+                touch()
+                selectedMove = i
+                actions.jumpTo(Math.max(0L, m.startMs - 2000L))
+                if (m.kind == Manoeuvres.DIVE) showDive(m) else diveCard.visibility = View.GONE
+                buildMoves()
+            }
+            movesList.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)))
+        }
+        val scroll = android.widget.ScrollView(activity)
+        scroll.addView(movesList)
+        movesPanel.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(300)))
+        val note = TextView(activity)
+        note.text = tr("Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.")
+        note.textSize = 11f
+        note.setTextColor(CardStyle.LABEL)
+        movesPanel.addView(note)
+    }
+
+    /** The height of a dive and the figures of it, on a card at the left. */
+    private fun showDive(m: Manoeuvres.Item) {
+        diveCard.removeAllViews()
+        val title = TextView(activity)
+        title.text = tr("DIVE REPORT  {0}", LogText.duration(m.startMs))
+        title.textSize = 12f
+        title.setTextColor(0xFFEF7C4F.toInt())
+        diveCard.addView(title)
+        diveCard.addView(DiveChart(activity, logTimes, logHeights, m), LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(110)).also { it.topMargin = dp(6) })
+        fun row(label: String, value: String) {
+            val r = LinearLayout(activity)
+            val l = TextView(activity)
+            l.text = label
+            l.textSize = 14f
+            l.setTextColor(0xFFB7C4D1.toInt())
+            val v = TextView(activity)
+            v.text = value
+            v.textSize = 15f
+            v.setTypeface(null, Typeface.BOLD)
+            v.setTextColor(Color.WHITE)
+            r.addView(l, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            r.addView(v)
+            diveCard.addView(r, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(26)))
+        }
+        fun n0(v: Double, unit: String) = if (v.isNaN()) "-" else Math.round(v).toString() + " " + unit
+        row(tr("Start"), n0(m.startH, "m"))
+        row(tr("Bottom"), n0(m.bottomH, "m"))
+        row(tr("Height lost"), n0(m.startH - m.bottomH, "m"))
+        row(tr("Dive angle"), if (m.angleDeg.isNaN()) "-" else Math.round(m.angleDeg).toString() + " \u00B0")
+        row(tr("Top speed"), n0(m.maxSpeed, "km/h"))
+        row(tr("Fall time"), String.format(java.util.Locale.US, "%.1f s", m.fallS))
+        row(tr("Recovery"), String.format(java.util.Locale.US, "%.1f s", m.recoverS))
+        row(tr("Peak current"), n0(m.peakCurrent, "A"))
+        diveCard.visibility = View.VISIBLE
+    }
+
+    /** The height around a dive: a line, the ground, the bottom marked. */
+    private class DiveChart(context: android.content.Context, private val t: LongArray, private val h: DoubleArray, private val m: Manoeuvres.Item) : View(context) {
+        private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        override fun onDraw(canvas: Canvas) {
+            val w = width.toFloat()
+            val ht = height.toFloat()
+            paint.style = Paint.Style.FILL
+            paint.color = 0xFF10171F.toInt()
+            canvas.drawRect(0f, 0f, w, ht, paint)
+            val from = m.startMs - 3000
+            val to = m.endMs + 4000
+            var top = 10.0
+            for (i in t.indices) if (t[i] in from..to && !h[i].isNaN() && h[i] > top) top = h[i]
+            top *= 1.1
+            fun x(ms: Long): Float = ((ms - from).toDouble() / (to - from) * w).toFloat()
+            fun y(v: Double): Float = (ht - 4f - (Math.max(0.0, v) / top * (ht - 8f))).toFloat()
+            paint.color = 0xFFEF5350.toInt()
+            paint.strokeWidth = 1f
+            canvas.drawLine(0f, y(0.0), w, y(0.0), paint)
+            paint.color = CardStyle.ACCENT
+            paint.strokeWidth = 3f
+            var px = 0f
+            var py = 0f
+            var have = false
+            for (i in t.indices) {
+                if (t[i] < from || t[i] > to || h[i].isNaN()) continue
+                val cx = x(t[i])
+                val cy = y(h[i])
+                if (have) canvas.drawLine(px, py, cx, cy, paint)
+                px = cx; py = cy; have = true
+            }
+            paint.color = 0xFFEF7C4F.toInt()
+            canvas.drawCircle(x(m.endMs), y(m.bottomH), 6f, paint)
+        }
     }
 
     private fun buildBar() {
@@ -187,6 +396,8 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         railButton(modelRail, "aircraft") { openMenu(modelRail, listOf(tr("Quad"), tr("Plane")), model) { actions.model(it) } }
         railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height")), trailMode) { actions.trail(it) } }
         railButton(cardsRail, "cards") { cardsOn = !cardsOn; paintToggles(); actions.cards(cardsOn) }
+        railButton(movesRail, "moves") { toggleMoves() }
+        movesRail.visibility = View.GONE
         railButton(ImageView(activity), "snapshot") { closeMenu(); actions.snapshot() }
     }
 
@@ -231,6 +442,8 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         frame.addView(bar, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
         frame.addView(rail, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.END or Gravity.TOP).also { it.setMargins(0, dp(10), dp(8), dp(104)) })
         frame.addView(menu, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.END or Gravity.TOP))
+        frame.addView(movesPanel, FrameLayout.LayoutParams(dp(400), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.END or Gravity.TOP).also { it.setMargins(0, dp(10), dp(82), dp(112)) })
+        frame.addView(diveCard, FrameLayout.LayoutParams(dp(340), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.START or Gravity.TOP).also { it.setMargins(dp(10), dp(52), 0, 0) })
     }
 
     fun show(title: String) {
@@ -241,7 +454,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     }
 
     private val hideBar = Runnable {
-        if (held || menu.visibility == View.VISIBLE) touch()
+        if (held || menu.visibility == View.VISIBLE || movesPanel.visibility == View.VISIBLE) touch()
         else {
             closeMenu()
             for (v in arrayOf<View>(bar, rail)) {
