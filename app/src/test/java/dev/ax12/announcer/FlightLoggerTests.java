@@ -133,6 +133,16 @@ public class FlightLoggerTests {
         check(log.end.get("max_height").equals("59") && log.end.get("max_dist").equals("245") && log.end.get("min_cell").equals("3.61") && log.end.get("max_speed").equals("26") && log.end.get("peak_current").equals("18") && log.end.get("mah").equals("980"), "the footer holds the summary: " + log.end);
         rm(d);
 
+        // ---------- a full queue still leaves a footer ----------
+        d = tmp();
+        lg = new FlightLogger(d, WALL, META, 16, false);                   // a tiny queue and no writer thread: the queue is full for most of the flight
+        lg.configure(true, 3, Arrays.asList("ch1"), 1);
+        t = run(lg, 0, 300, 20, true);
+        lg.update(t, false, nums(1000, 0, 0, 0), new HashMap<String, String>());
+        log = LogFormat.readFile(logs(d).get(0), 1_000_000);
+        check(!log.end.isEmpty() && Integer.parseInt(log.end.get("dropped")) > 0, "rows were dropped and the footer is still there: " + log.end);
+        rm(d);
+
         // ---------- values that are not there are empty ----------
         d = tmp();
         lg = new FlightLogger(d, WALL, META);

@@ -210,17 +210,20 @@ public final class FlightLogger {
 
     /** Lines go into a queue; one thread writes them, and flushes about once a second, so a crash costs a second at most. */
     static final class Sink implements Runnable {
-        private static final String END = new String("end-of-log");
         private final BlockingQueue<String> queue;
         private final BufferedWriter out;
         private final Thread thread;
+        private final boolean started;
         private volatile String failure;
+        private volatile String footer;
+        private volatile boolean closing;
 
         Sink(File f, int capacity, boolean start) throws IOException {
             out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"), 32768);
             queue = new ArrayBlockingQueue<String>(capacity);
             thread = new Thread(this, "ax-log-writer");
             thread.setDaemon(true);
+            started = start;
             if (start) thread.start();
         }
 
@@ -228,24 +231,38 @@ public final class FlightLogger {
         boolean failed() { return failure != null; }
         String failure() { return failure == null ? "" : failure; }
 
-        void close(String footer) {
+        /**
+         * The footer does not go through the queue (which may be full when the storage was slow): the writer takes it after the last row.
+         * If the storage is so slow that the writer is not done in a moment, it finishes and closes the file by itself.
+         */
+        void close(String footerLine) {
+            footer = footerLine;
+            closing = true;
+            if (!started) { drainHere(); closeOut(); return; }
             try {
-                queue.offer(footer, 100, TimeUnit.MILLISECONDS);
-                queue.offer(END, 100, TimeUnit.MILLISECONDS);
-                if (thread.isAlive()) thread.join(600);
-                else drainHere();
+                thread.join(600);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+        }
+
+        private void closeOut() {
             try { out.close(); } catch (IOException e) { if (failure == null) failure = I18n.t("The log file cannot be written"); }
+        }
+
+        private void writeFooter() throws IOException {
+            String f = footer;
+            if (f != null) { out.write(f); out.write('\n'); }
         }
 
         /** With no writer thread (a test): write what is queued, on this thread. */
         private void drainHere() {
             String s;
-            while ((s = queue.poll()) != null) {
-                if (s == END) break;
-                try { out.write(s); out.write('\n'); } catch (IOException e) { failure = I18n.t("The log file cannot be written"); break; }
+            try {
+                while ((s = queue.poll()) != null) { out.write(s); out.write('\n'); }
+                writeFooter();
+            } catch (IOException e) {
+                failure = I18n.t("The log file cannot be written");
             }
         }
 
@@ -254,16 +271,19 @@ public final class FlightLogger {
             try {
                 while (true) {
                     String s = queue.poll(300, TimeUnit.MILLISECONDS);
-                    if (s == END) break;
                     if (s != null) { out.write(s); out.write('\n'); }
+                    else if (closing) break;                    // closing and nothing left to write
                     long now = System.currentTimeMillis();
                     if (now - lastFlush >= 1000) { out.flush(); lastFlush = now; }
                 }
+                writeFooter();
                 out.flush();
             } catch (IOException e) {
                 failure = I18n.t("The log file cannot be written");
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+            } finally {
+                closeOut();
             }
         }
     }

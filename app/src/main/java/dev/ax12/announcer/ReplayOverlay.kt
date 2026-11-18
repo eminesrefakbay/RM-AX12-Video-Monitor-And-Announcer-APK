@@ -213,7 +213,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         }
         val lp = menu.layoutParams as FrameLayout.LayoutParams
         lp.topMargin = (rail.top + anchor.top).coerceAtLeast(0)
-        lp.rightMargin = rail.width + dp(8)
+        lp.rightMargin = rail.width + dp(16)               // the rail itself sits 8 dp from the edge
         menu.layoutParams = lp
         menu.visibility = View.VISIBLE
         touch()

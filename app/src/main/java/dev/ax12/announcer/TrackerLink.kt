@@ -72,6 +72,7 @@ class TrackerLink(private val context: Context) {
 
     /** Keeps a connection to the tracker with this address (switches if it was another one). */
     fun connectTo(addr: String, name: String) {
+        if (wanted && addr == address && gatt != null && (state == State.CONNECTED || state == State.CONNECTING)) { deviceName = name; return }    // already on it: do not drop a good link
         if (addr != address) { closeGatt(); status = null }
         address = addr
         deviceName = name

@@ -568,6 +568,7 @@ class MainActivity : Activity() {
         val names = ArrayList<String>()
         val found = ArrayList<TrackerLink.Found>()
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_list_item_1, names)
+        var settled = false                                                    // the tracker is connected again (or a new one was chosen): the dismissal has nothing left to do
         val dlg = Sunlight.builder(this)
             .setTitle(tr("Looking for the tracker..."))
             .setAdapter(adapter) { d, i ->
@@ -576,13 +577,18 @@ class MainActivity : Activity() {
                 val f = found[i]
                 Prefs.setString(this, "trkAddr", f.address)
                 Prefs.setString(this, "trkName", f.name)
+                settled = true
                 startTracker()
                 settingsPanel.refresh()
                 d.dismiss()
             }
-            .setNegativeButton(tr("Cancel")) { _, _ -> trackerLink.stopSearch(); trackerSearching = false; startTracker() }
+            .setNegativeButton(tr("Cancel"), null)
             .create()
-        dlg.setOnDismissListener { trackerLink.stopSearch(); trackerSearching = false }
+        dlg.setOnDismissListener {                                             // Cancel, Back and a tap outside all end here: the tracker that was let go for the search comes back
+            trackerLink.stopSearch()
+            trackerSearching = false
+            if (!settled) { settled = true; startTracker() }
+        }
         Immersive.show(dlg)
         trackerSearching = true
         trackerLink.search({ f ->
@@ -593,8 +599,7 @@ class MainActivity : Activity() {
             trackerSearching = false
             if (!started) {
                 Toasts.make(this, tr("The search could not start. Is Bluetooth switched on, and the location setting of the radio?"), Toast.LENGTH_LONG).show()
-                dlg.dismiss()
-                startTracker()
+                dlg.dismiss()                                                  // the dismissal reconnects the tracker
             } else {
                 dlg.setTitle(if (found.isEmpty()) tr("No tracker found. Is it switched on and near?") else tr("Choose the tracker"))
             }
