@@ -1,0 +1,965 @@
+# Simplified Chinese translation of AX-HUD. Format: English text TAB translation (\n = new line). Keep every {0}, {1} ... as it is.
+About AX-HUD	关于 AX-HUD
+Close	关闭
+The license text could not be read.	无法读取许可证文本。
+Back	返回
+No web browser found. The address is: {0}	未找到网络浏览器。地址为: {0}
+Video monitor, HUD and voice announcer for the RadioMaster AX12.	适用于 RadioMaster AX12 的视频监视器、HUD 和语音播报应用。
+License	许可证
+AX-HUD is free software under the GNU General Public License, version 3 or later, with an additional permission that allows it to be combined with the RadioMaster AX SDK. You may use, change and share it; if you share a changed version, you must share its source code under the same license. It comes without any warranty.	AX-HUD 是自由软件, 采用 GNU 通用公共许可证第 3 版或更高版本, 并附加一项允许与 RadioMaster AX SDK 结合的额外许可。你可以使用、修改和分享它; 如果你分享修改后的版本, 必须以相同许可证提供其源代码。本软件不提供任何担保。
+Read the {0}	阅读 {0}
+Project page and source code: {0}	项目主页和源代码: {0}
+Open the project page	打开项目主页
+Open-source libraries and SDKs	开源库和 SDK
+These parts are inside the app. Each keeps its own license; tap to read it.	这些组件包含在应用内。每个都有自己的许可证; 点按即可阅读。
+Read: {0}	阅读: {0}
+Open the page	打开设置页
+Thanks	致谢
+Thank you, RadioMaster, for publishing the AX SDK that makes this app possible.	感谢 RadioMaster 发布 AX SDK, 让这款应用成为可能。
+AX-HUD is an independent project. It is not affiliated with, endorsed by or supported by RadioMaster. RadioMaster and AX12 are names of their owners.	AX-HUD 是独立项目, 与 RadioMaster 无关联, 也未获其认可或支持。RadioMaster 和 AX12 是其所有者的名称。
+Give the aircraft a name.	请给飞行器起一个名称。
+There is already an aircraft with this name: {0}.	已经有同名的飞行器: {0}。
+That aircraft does not exist.	该飞行器不存在。
+At least one aircraft must stay.	至少要保留一个飞行器。
+You cannot delete the aircraft in use. Switch to another one first.	不能删除正在使用的飞行器。请先切换到另一个。
+One minute left in the approval window.	批准时段还剩一分钟。
+{0} minutes left in the approval window.	批准时段还剩{0}分钟。
+The approval window has ended. Land now.	批准时段已结束。请立即降落。
+Warning: you are outside the approval window.	警告：您不在批准时段内。
+Window {0} left	时段剩余 {0}
+Window opens in {0}	时段将在 {0} 后开始
+Window ended {0} ago	时段已于 {0} 前结束
+Bar {0}: the channel must be 1 to 16.	第 {0} 个条: 通道必须是 1 到 16。
+Add at least one battery profile.	请至少添加一个电池配置。
+At most {0} battery profiles.	最多 {0} 个电池配置。
+Profile {0}: the name cannot be empty.	配置 {0}: 名称不能为空。
+Profile {0}: cells must be 1 to 12.	配置 {0}: 节数必须为 1 到 12。
+Profile {0}: use critical below low below full, between 2.5 and 4.4 volts per cell.	配置 {0}: 需满足 严重 < 低 < 满电, 且在每节 2.5 到 4.4 伏之间。
+Two profiles have the same name: {0}.	有两个配置同名: {0}。
+Low {0}, critical {1}, full {2} V per cell	低 {0}, 严重 {1}, 满电 {2} 伏/节
+Starting...	正在启动...
+Video: %.1f frames/s   gap between frames: 95%% under %d ms, worst %d ms (last 5 s)	视频: %.1f 帧/秒   帧间隔: 95%% 低于 %d 毫秒, 最差 %d 毫秒 (最近 5 秒)
+Camera {0}  {1}x{2}  ·  {3}	摄像头 {0}  {1}x{2}  ·  {3}
+Auto	自动
+Camera {0}   buffer {1}x{2}   rotation {3} {4}   view {5}x{6}\n{7}	摄像头 {0}   缓冲 {1}x{2}   旋转 {3} {4}   视图 {5}x{6}\n{7}
+Fill	填充
+Fit	适应
+Camera {0}  ({1}, sensor {2} deg)	摄像头 {0}  ({1}, 传感器 {2} 度)
+Camera permission needed	需要摄像头权限
+No camera found - check the HDMI cable and the video receiver	未找到摄像头 - 请检查 HDMI 线和视频接收机
+Opening camera {0}...	正在打开摄像头 {0}...
+Camera disconnected	摄像头已断开
+Camera error {0}	摄像头错误 {0}
+Cannot open camera: {0}	无法打开摄像头: {0}
+No surface yet	暂无画面表面
+Waiting for video...	等待视频...
+Preview failed: {0}	预览失败: {0}
+Camera session failed	摄像头会话失败
+Session error: {0}	会话错误: {0}
+Last {0} s	最近 {0} 秒
+Connecting to the radio... {0} s	正在连接遥控器... {0} 秒
+Still waiting. Close the RadioMaster app and check that the radio is on.	仍在等待。请关闭 RadioMaster 应用, 并确认遥控器已开机。
+This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository states no license, and RadioMaster has not answered my questions about redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件已包含在应用中, 与 RadioMaster 手册对应用开发者的说明一致。其仓库未声明许可证, RadioMaster 也尚未回复我关于再分发的询问 (见 README 中的说明)。感谢 RadioMaster 公开发布。
+The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
+The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
+The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
+The typeface of the menus, settings and all running text, in four weights (trimmed to the letters the app needs).	菜单、设置和所有正文使用的字体，共四种字重（已裁剪为应用所需的字符）。
+The narrow typeface of the titles and the big numbers, in two weights (trimmed to the letters the app needs).	标题和大号数字使用的窄体字体，共两种字重（已裁剪为应用所需的字符）。
+The font of the Chinese texts, cut down to the characters the app's Chinese texts use. It is used only when the language is Chinese, so that Chinese shows on radios that have no Chinese font.	中文文本使用的字体，已裁剪为应用中文文本所用的字符。仅在语言为中文时使用，因此即使遥控器没有中文字体，中文也能正常显示。
+Horizon	地平仪
+Compass	指南针
+Flight statistics	飞行统计
+Radar map	雷达地图
+Live charts	实时图表
+Stick view	摇杆视图
+Value	值
+Add a card...	添加卡片...
+Remove a card...	移除卡片...
+Edit a value card...	编辑数值卡片...
+Add a card	添加卡片
+Cancel	取消
+The dashboard has the most cards it can hold.	仪表盘已达到卡片数量上限。
+Remove which card?	移除哪张卡片?
+There is no value card to edit.	没有可编辑的数值卡片。
+Edit which value card?	编辑哪张数值卡片?
+Value: {0}	数值: {0}
+Label (optional)	标签(可选)
+Unit	单位
+Decimals: {0}	小数位: {0}
+Low is bad	越低越差
+High is bad	越高越差
+No limits	无限值
+Amber limit	黄色限值
+Red limit	红色限值
+Value card	数值卡片
+Done	完成
+Flight time {0} minutes {1} seconds.	飞行时间{0}分{1}秒。
+Flight time {0} minute {1} seconds.	飞行时间{0}分{1}秒。
+Flight time {0} seconds.	飞行时间{0}秒。
+Distance {0} kilometers.	距离{0}公里。
+Used {0} milliamp hours.	用电{0}毫安时。
+Efficiency {0} watt hours per kilometer.	能耗每公里{0}瓦时。
+Lowest cell {0} volts.	最低单节电压{0}伏。
+Resting cell {0} volts.	静置单节电压{0}伏。
+Pack {0}, flight {1}.	电池包{0}，第{1}次飞行。
+Welcome to AX-HUD	欢迎使用 AX-HUD
+AX-HUD shows the video from the HDMI input of your AX12 full screen, with a HUD on top, and speaks announcements and warnings. It only reads from the radio and never writes to it. This guide takes about a minute.	AX-HUD 会把 AX12 的 HDMI 输入视频全屏显示, 在上面叠加 HUD, 并语音播报提示和警告。它只从遥控器读取数据, 绝不向其写入。本指南大约需要一分钟。
+Allow the camera	允许使用相机
+The HDMI input reaches Android as a camera, so AX-HUD needs the camera permission. If you said no by mistake, allow it in the Android settings, under Apps, AX-HUD, Permissions. Without it you see the gray No video screen.	HDMI 输入在 Android 中被识别为相机, 所以 AX-HUD 需要相机权限。如果你误点了拒绝, 请在 Android 设置的“应用”、AX-HUD、“权限”中允许。没有权限时, 你只会看到灰色的“无视频”画面。
+The first data takes about 12 seconds	首批数据约需 12 秒
+After you open the app, the radio data (sticks, link quality, telemetry) appears after about 12 seconds. That wait is inside the RadioMaster SDK and is not an error. A banner counts the seconds. The video starts at once.	打开应用后, 遥控器数据(摇杆、链路质量、遥测)大约 12 秒后才会出现。这段等待发生在 RadioMaster SDK 内部, 不是错误。横幅会显示已等待的秒数。视频会立即开始。
+Where everything is	各项功能在哪里
+Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft, Sunlight, Dashboard, Flight logs, Settings and Exit. Choose your aircraft and battery pack first, because their limits drive the warnings. Sunlight: dark text on light, for direct sun. Settings holds the overlays, the layout, the checks, the flight logs, the languages and the updates.	点按右上角的“菜单”会看到九个图块: 语音规则、语音、电池、飞行器、阳光、仪表盘、飞行日志、设置和退出。请先选择你的飞行器和电池组, 因为警告取决于它们的限值。“阳光”: 浅色背景深色文字。“设置”中包含叠加显示、布局、检查、飞行日志、语言和更新。
+An aid, not a safety system	辅助工具, 而非安全系统
+AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.	AX-HUD 帮助你看到并听到飞行器的状态。请不要把它当作唯一的警告来源。始终遵守当地规定飞行。
+Packs	电池包
+Last known position	最后已知位置
+LINK LOST {0}	链路丢失 {0}
+The link is back	链路已恢复
+Copied: {0}	已复制：{0}
+No flights counted yet. Every flight of 20 seconds or more is added to the pack that is selected, when you land.	尚无记录的飞行。每次20秒以上的飞行，降落后会记入当前选中的电池包。
+Flights {0}	飞行 {0} 次
+{0} mAh	{0} mAh
+{0} Wh	{0} Wh
+{0} km	{0} km
+{0} Wh/km	{0} Wh/km
+{0} mAh/km	{0} mAh/km
+Average flight {0} min	平均每次 {0} 分钟
+{0} full charges of {1} mAh	相当于 {0} 次充满（{1} mAh）
+Lowest cell {0} V	最低单芯电压 {0} V
+Rest {0} V	静置 {0} V
+Remove this pack from the book...	从记录簿中移除这个电池包...
+Remove {0} and its flights from the book? It cannot be brought back.	要从记录簿中移除{0}及其飞行记录吗？无法恢复。
+Remove	移除
+The book counts every flight of 20 seconds or more when you land, for the pack that is selected. It is part of the settings backup, and it does not depend on the flight logs.	每次降落时，记录簿会为当前选中的电池包记入20秒以上的飞行。它是设置备份的一部分，不依赖飞行日志。
+Clear the whole book...	清空整个记录簿...
+Clear the book of all {0} packs? It cannot be brought back.	要清空全部{0}个电池包的记录簿吗？无法恢复。
+Clear	清除
+No position is saved yet. The radio saves one every 5 seconds in flight, and at once when the link is lost.	尚未保存位置。遥控器在飞行中每5秒保存一次，链路丢失时立即保存。
+Link lost	链路丢失
+In flight, the latest position	飞行中，最新位置
+Saved {0}	保存于 {0}
+No position was received in this flight.	本次飞行未收到位置。
+{0} m from home, bearing {1} deg {2}	距起点 {0} 米，方位 {1} 度 {2}
+Height {0} m	高度 {0} 米
+Speed {0} km/h	速度 {0} km/h
+{0} satellites	{0} 颗卫星
+Copy position	复制位置
+Open in a maps app	在地图应用中打开
+No maps app on this radio. Copy the position instead.	这台遥控器上没有地图应用。请改为复制位置。
+Delete this note...	删除此记录...
+Delete the saved position? It cannot be brought back.	要删除已保存的位置吗？无法恢复。
+Delete	删除
+The file is {0}	文件：{0}
+Logging stopped: {0}	记录已停止: {0}
+The log folder cannot be made	无法创建日志文件夹
+Storage is almost full	存储空间几乎已满
+The log file cannot be written	无法写入日志文件
+North	北
+North east	东北
+East	东
+South east	东南
+South	南
+South west	西南
+West	西
+North west	西北
+Snap to grid	对齐网格
+Reset the layout	重置布局
+Hide the buttons	隐藏按钮
+Show the buttons	显示按钮
+Saved on this radio: Settings > Flight logs > Last known position.	已保存在这台遥控器上：设置 > 飞行日志 > 最后已知位置。
+Tick the values to write into each flight log.	勾选要写入每个飞行日志的数值。
+A replay needs these values and cannot show everything without them: {0}	回放需要这些数值, 缺少它们就无法显示全部内容: {0}
+Replay set	回放集
+Everything	全部
+None	无
+Values in the log	日志中的数值
+Tick at least one value.	请至少勾选一个数值。
+Max height {0} m	最大高度 {0} m
+Max distance {0} m	最远距离 {0} m
+Top speed {0} km/h	最高速度 {0} km/h
+Peak current {0} A	峰值电流 {0} A
+{0} mAh used	已用 {0} mAh
+Flew {0} km	飞行 {0} km
+{0} Wh used	用电 {0} Wh
+The log was cut off: the app was stopped while it was writing.	日志不完整: 应用在写入时被停止。
+{0} logs, {1}	{0} 个日志, {1}
+Flight logs	飞行日志
+Loading the log...	正在加载日志...
+No flight logs yet. Switch on logging in Settings, then arm to start one.	还没有飞行日志。请在设置中开启记录, 然后解锁以开始一个。
+Delete all the logs...	删除所有日志...
+Delete all {0} logs? They cannot be brought back.	删除全部 {0} 个日志吗? 无法恢复。
+The logs hold GPS positions and stay on this radio, in the folder {0}	日志包含 GPS 位置, 保存在此遥控器的文件夹 {0} 中
+Recording now	正在记录
+Replay	回放
+Delete this log? It cannot be brought back.	删除此日志吗? 无法恢复。
+MENU	菜单
+Diagnostics	诊断
+Warning rules	警告规则
+Pre-flight checks	飞行前检查项
+SDK start failed ({0})	SDK 启动失败 ({0})
+Sound rules: {0} error(s). Open the rules editor.	语音规则: {0} 个错误。请打开规则编辑器。
+Pre-flight checks: {0} error(s). Open Settings, then the checks.	飞行前检查项: {0} 个错误。请打开设置, 再打开检查项。
+Warning rules: {0} error(s). Open Settings, then the warning rules.	警告规则: {0} 个错误。请打开设置, 再打开警告规则。
+The SDK is starting in the background...	SDK 正在后台启动...
+No data from the radio yet...	尚未收到遥控器数据...
+Test channels are on - the radio is not being read\n	测试通道已开启 - 未读取遥控器\n
+No SDK in this build - the radio is not being read\n	此版本不含 SDK - 未读取遥控器\n
+The SDK is not running - the radio is not being read\n	SDK 未运行 - 未读取遥控器\n
+Android lists no cameras	Android 未列出任何摄像头
+Choose the HDMI camera	选择 HDMI 摄像头
+Speech is off	语音已关闭
+Sound test	语音测试
+Automatic ({0})	自动 ({0})
+This device has no Chinese font, so the Chinese screen language is not available.	此设备没有中文字体, 因此无法使用中文界面语言。
+Same as the app ({0})	与应用相同 ({0})
+The voice now speaks {0}.	语音现在使用 {0}。
+Installed: version {0} (build {1})   Channel: {2}	已安装: 版本 {0} (构建 {1})   渠道: {2}
+Stable	稳定版
+Nightly	Nightly
+Stable (tested releases only)	稳定版 (仅经过测试的正式版本)
+Nightly (newest build of every push)	Nightly (每次提交的最新构建)
+{0} per second	每秒 {0} 行
+{0} values	{0} 个数值
+{0} flights	{0} 次飞行
+Logging now: {0} rows	正在记录: {0} 行
+Opens at	开始时间
+Closes at	结束时间
+Top	顶部
+Bottom	底部
+BATTERY CRITICAL 3.48 V per cell	电池电量严重不足 每节 3.48 V
+Small	小
+Medium	中
+Large	大
+Bottom center	底部居中
+Bottom left	左下
+Bottom right	右下
+Top left	左上
+Top right	右上
+Center	居中
+The log cannot be read: {0}	无法读取日志: {0}
+REPLAY	回放
+This log lacks values that some cards need: {0}	此日志缺少某些卡片需要的数值: {0}
+SPEED	速度
+HEIGHT	高度
+CURRENT	电流
+DISTANCE	距离
+MIN LINK	最低链路
+MIN CELL	最低单节
+FLIGHT  	飞行  
+LAST FLIGHT  	上次飞行  
+READY	就绪
+NOT READY: 1 check failed	未就绪: 1 项检查未通过
+NOT READY: {0} checks failed	未就绪: {0} 项检查未通过
+WAITING FOR DATA	等待数据
+PRE-FLIGHT CHECK	飞行前检查
+Version {0} (build {1})	版本 {0}（构建 {1}）
+{0} {1}, Android {2}	{0} {1}，Android {2}
+Radio link: connected after {0} s	遥控器链路：{0} 秒后已连接
+Radio link: not connected	遥控器链路：未连接
+Events: {0} ({1} warnings, {2} errors)	事件：{0}（{1} 条警告，{2} 个错误）
+The app stopped unexpectedly	应用意外停止
+Delete the crash record	删除崩溃记录
+The report holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	报告不含GPS位置、飞行器或电池包名称，也不含任何个人信息。发送前请先阅读。
+Copy the report	复制报告
+Report copied. Paste it into the issue.	报告已复制。请粘贴到问题反馈中。
+Share the report...	分享报告...
+Share the report	分享报告
+Nothing on this radio can take it. Copy the report instead.	这台遥控器上没有能接收它的应用。请改为复制报告。
+Read the report	查看报告
+The report	报告
+Add a note...	添加备注...
+Edit the note...	编辑备注...
+Save the report to a file	将报告保存为文件
+Saved: {0}	已保存：{0}
+Could not save the report	无法保存报告
+Open the issue page	打开问题反馈页面
+No browser on this radio. The address was copied.	这台遥控器上没有浏览器。地址已复制。
+Clear the events	清除事件
+Events cleared	事件已清除
+Recent events	最近事件
+No events yet.	暂无事件。
+What did you do, and what happened? Positions and addresses are removed from the note automatically.	您做了什么，发生了什么？备注中的位置和地址会被自动删除。
+Describe the problem (optional)	描述问题（可选）
+OK	确定
+Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.	1到240之间的整数分钟，最多8个，例如 30,15,10,5,2,1。留空表示不提醒；时段结束总会语音播报。
+Warn at (minutes left)	提醒时间（剩余分钟）
+Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.	请使用1到240之间的整数分钟，最多8个，例如 30,15,10,5,2,1。
+Arm switch channel (1 to 16, AUX1 is channel 5)	解锁开关通道 (1 到 16, AUX1 为通道 5)
+Counts as armed at or above (microseconds)	大于等于此值视为已解锁 (微秒)
+Counts as disarmed below (microseconds)	低于此值视为已上锁 (微秒)
+The gap between the two thresholds stops a bump of the switch from arming or disarming the statistics. The switch must stay put for 0.3 seconds.	两个阈值之间的间隔可防止碰到开关时误触发统计的开始或结束。开关必须保持 0.3 秒。
+Arm detection	解锁检测
+Save	保存
+The channel is 1 to 16	通道为 1 到 16
+Use microseconds, with the disarmed value not above the armed one	请使用微秒, 且上锁值不能高于解锁值
+Speed (now / maximum)	速度 (当前 / 最大)
+Height above the arming point (now / maximum)	相对解锁点的高度 (当前 / 最大)
+Current (now / peak, with a limit line)	电流 (当前 / 峰值, 带限值线)
+Distance from home (now / maximum)	距离起点 (当前 / 最大)
+Lowest link quality	最低链路质量
+Lowest volts per cell	最低每节电压
+Current limit line (amps)	电流限值线 (安)
+Height comes from the GPS altitude relative to where you armed, so expect a few meters of error. The bar turns red when the current is above the limit line.	高度来自相对解锁位置的 GPS 海拔, 可能有几米误差。电流超过限值线时, 条会变红。
+Flight statistics rows	飞行统计项
+The current limit is 5 to 300 amps	电流限值为 5 到 300 安
+Left of the sticks	摇杆左侧
+Right of the sticks	摇杆右侧
+On      Channel      Name on the overlay                 Reverse	开启      通道      叠加显示名称                 反向
+A bar fills with the channel value. Gray-blue = low, amber = middle, green = high. Names are written along the bar; a short name reads best.\n\nReverse: tick it for a switch that is reversed in the radio, so the bar shows the switch the way you flip it (up = full and green). Only the picture changes: sound and warning rules still use the real channel values.	条会随通道数值填充。灰蓝 = 低, 琥珀 = 中, 绿色 = 高。名称沿条书写, 名称短一些更易读。\n\n反向: 如果遥控器中该开关是反向的, 请勾选, 这样条就会按你拨动开关的方向显示 (向上 = 满格且为绿色)。只改变显示: 语音和警告规则仍使用真实的通道数值。
+Channel bars	通道条
+Defaults	默认
+Bar {0}: the channel must be 1 to 16	第 {0} 个条: 通道必须是 1 到 16
+Mode 1: left = pitch + yaw, right = throttle + roll	模式 1: 左 = 俯仰 + 偏航, 右 = 油门 + 横滚
+Mode 2: left = throttle + yaw, right = pitch + roll	模式 2: 左 = 油门 + 偏航, 右 = 俯仰 + 横滚
+Mode 3: left = throttle + roll, right = pitch + yaw	模式 3: 左 = 油门 + 横滚, 右 = 俯仰 + 偏航
+Mode 4: left = pitch + roll, right = throttle + yaw	模式 4: 左 = 俯仰 + 横滚, 右 = 油门 + 偏航
+Roll channel (1 to 16)	横滚通道 (1 到 16)
+Pitch channel	俯仰通道
+Throttle channel	油门通道
+Yaw channel	偏航通道
+Left stick up/down drawn reversed	左摇杆上下反向显示
+Left stick left/right drawn reversed	左摇杆左右反向显示
+Right stick up/down drawn reversed	右摇杆上下反向显示
+Right stick left/right drawn reversed	右摇杆左右反向显示
+The sticks show the channel values the radio sends. Common order: roll 1, pitch 2, throttle 3, yaw 4. Turn a direction round if the dot moves the wrong way.	摇杆显示遥控器发送的通道数值。常见顺序: 横滚 1, 俯仰 2, 油门 3, 偏航 4。如果圆点移动方向不对, 请反转该方向。
+Channels are numbers from 1 to 16	通道为 1 到 16 的数字
+Each of the four needs its own channel	四项各需要独立的通道
+Android has no {0} voice installed. Install it in Android Settings, Text-to-speech output.	Android 未安装 {0} 语音。请在 Android 设置的文字转语音输出中安装。
+Built without the RadioMaster SDK files (test channels only).	构建时未包含 RadioMaster SDK 文件 (仅测试通道)。
+RadioMaster SDK: running.	RadioMaster SDK: 运行中。
+RadioMaster SDK: not running{0}.	RadioMaster SDK: 未运行{0}。
+AX-HUD, version {0}\n{1}	AX-HUD, 版本 {0}\n{1}
+Thanks to RadioMaster for publishing the AX SDK.	感谢 RadioMaster 公开发布 AX SDK。
+Sound rules saved	语音规则已保存
+This device has no file picker, so the file was saved here:\n{0}\n\nCopy it with a USB cable or adb. To import, put a file with the same name in that folder.	此设备没有文件选择器, 因此文件已保存在这里:\n{0}\n\n请用 USB 线或 adb 复制。导入时, 把同名文件放进该文件夹。
+Could not save the rules: {0}	无法保存规则: {0}
+Could not save the settings: {0}	无法保存设置: {0}
+Settings saved	设置已保存
+No file picker, and no {0} to import	没有文件选择器, 也没有可导入的 {0}
+Could not open the file	无法打开文件
+Could not read the file: {0}	无法读取文件: {0}
+Cannot import	无法导入
+Import	导入
+Imported {0} settings	已导入 {0} 项设置
+Settings restored	设置已恢复
+Sticks	摇杆
+Statistics	统计
+Radar	雷达
+Checklist	检查清单
+Charts	图表
+Milliseconds since the app started. "graph" is when the first stick value reached the screen. The newest launch is last.	自应用启动以来的毫秒数。"graph" 表示第一个摇杆数值到达屏幕的时刻。最新一次启动排在最后。
+No timings yet. Start the app, wait until the sticks move, and look again.	还没有计时记录。启动应用, 等到摇杆有反应后再查看。
+Start-up timings	启动计时
+List	列表
+Add a chart	添加图表
+Time window: {0} s  (tap to change)	时间窗口: {0} 秒  (点按更改)
+Each chart shows one value over the last seconds, with its own scale. Pick values from the list (up to four). Link quality is always drawn from 0 to 100, so a small wobble stays small.	每个图表以自己的刻度显示一个数值在最近几秒内的变化。请从列表中选择数值 (最多四个)。链路质量始终按 0 到 100 绘制, 因此小幅波动看起来仍然很小。
+Use names from the list, such as up_lq or cell.	请使用列表中的名称, 例如 up_lq 或 cell。
+{0}  (in use)	{0}  (使用中)
+Choose the aircraft	选择飞行器
+In use	使用中
+Aircraft {0}	飞行器 {0}
+At most {0} aircraft.	最多 {0} 个飞行器。
+Add: copy of the current	添加: 复制当前飞行器
+Add: starting settings	添加: 使用初始设置
+Aircraft	飞行器
+Name                    Battery profile              mAh	名称                    电池配置              mAh
+Add pack	添加电池包
+Pack {0}	电池包 {0}
+Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.	每个电池包使用一个电池配置 (即其限值)。在菜单中选择电池包会切换到它的配置。容量仅供记录 (0 = 未知)。没有电池包时, 菜单直接切换配置。
+Enter numbers in every field	请在每个栏位中输入数字
+Exit AX-HUD?	退出 AX-HUD?
+The radio link stops and the radio's serial port is released. There is no HUD and no voice until you start the app again.	遥控器连接将停止, 遥控器的串口将被释放。在你重新启动应用之前, 将没有 HUD 和语音。
+Exit	退出
+Battery profile: {0}\n{1}	电池配置: {0}\n{1}
+Battery {0}	电池 {0}
+Name                  Cells    Full    Low    Critical	名称                  节数    满电    低    严重
+Add profile	添加配置
+Volts per cell. Critical must be below low, and low below full. Rules use cell and the names $low, $crit and $full.	单位: 每节伏特。严重值必须低于低压值, 低压值必须低于满电值。规则使用 cell 以及 $low、$crit、$full 这些名称。
+Battery profiles	电池配置
+Import sound rules	导入语音规则
+The file has {0}\n\nThis replaces your current rules. They are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n这将替换你当前的规则。当前规则会保留为备份, 可在设置中还原。
+Imported {0} rules	已导入 {0} 条规则
+Sound rules	语音规则
+Speech	语音
+Battery	电池
+Dashboard	仪表盘
+Sunlight	阳光
+Settings	设置
+On	开
+Off	关
+Video	视频
+No video	无视频
+At most {0} packs.	最多 {0} 个电池包。
+Pack {0}: the name cannot be empty.	电池包 {0}: 名称不能为空。
+Pack {0}: the capacity is 0 to {1} mAh (0 = unknown).	电池包 {0}: 容量为 0 到 {1} mAh (0 = 未知)。
+Two packs have the same name: {0}.	有两个电池包同名: {0}。
+{0} ({1}, {2} mAh)	{0} ({1}, {2} mAh)
+{0} ({1})	{0} ({1})
+Link lost.	链路丢失。
+Link lost. The last position is saved.	链路丢失。最后位置已保存。
+Link lost. Last position {0} meters {1} of home, height {2} meters.	链路丢失。最后位置在起点{1}方向{0}米，高度{2}米。
+Link lost. Last position {0} meters {1} of home.	链路丢失。最后位置在起点{1}方向{0}米。
+Test sliders	测试滑块
+Test sliders (no radio)	测试滑块 (无遥控器)
+RadioMaster SDK	RadioMaster SDK
+This build has no RadioMaster SDK files (see the README)	此版本不含 RadioMaster SDK 文件 (见 README)
+SDK worker thread failed to start	SDK 工作线程启动失败
+The SDK could not open the radio's serial link (see README: serial lock)	SDK 无法打开遥控器的串口连接 (见 README: 串口锁)
+SDK start failed (code {0})	SDK 启动失败 (代码 {0})
+{0}x	{0}x
+Line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
+Line {0}: nothing before '->'	第 {0} 行: '->' 之前没有内容
+Line {0}: nothing to say after '->'	第 {0} 行: '->' 之后没有要播报的内容
+Line {0}: cannot read condition '{1}'  (use  ch5 >= 1500   or   vbat / 6 < 3.5   or   fm ~ "RTH" )	第 {0} 行: 无法读取条件 '{1}'  (请使用  ch5 >= 1500   或   vbat / 6 < 3.5   或   fm ~ "RTH" )
+Line {0}: cannot divide by zero  ({1})	第 {0} 行: 不能除以零  ({1})
+Line {0}: unknown name ${1}  (use $low, $crit or $full)	第 {0} 行: 未知名称 ${1}  (请使用 $low、$crit 或 $full)
+Line {0}: bad value for {1} ({2})	第 {0} 行: {1} 的值无效 ({2})
+Add at least one condition.	请至少添加一个条件。
+Pick a variable (letters, digits and _ only).	请选择变量 (仅限字母、数字和 _)。
+Text can use is, is not or contains.	文本只能使用 等于、不等于 或 包含。
+Text must not contain quotation marks.	文本不能包含引号。
+'contains' works on text variables only.	“包含”仅适用于文本变量。
+Enter a value for {0}.	请输入 {0} 的值。
+'{0}' is not a number.	“{0}”不是数字。
+The divisor cannot be 0.	除数不能为 0。
+Type what to say.	请输入要播报的内容。
+The spoken text cannot contain | or ->.	播报内容不能包含 | 或 ->。
+The spoken text cannot end with @number.	播报内容不能以 @数字 结尾。
+The rule could not be read.	无法读取该规则。
+{0} contains “{1}”	{0} 包含 “{1}”
+{0} is “{1}”	{0} 等于 “{1}”
+{0} is not “{1}”	{0} 不等于 “{1}”
+{0} or {1}	{0} 或 {1}
+{0} and {1}	{0} 且 {1}
+Passes when {0}: ✓ “{1}”	当 {0} 时通过: ✓ “{1}”
+CRITICAL	严重
+INFO	信息
+WARNING	警告
+, hides after {0} s	, {0} 秒后隐藏
+When {0}: show “{1}”	当 {0} 时: 显示 “{1}”
+When {0}: say “{1}”	当 {0} 时: 播报 “{1}”
+, then “{0}” when it turns false	, 条件变为假时播报 “{0}”
+, every {0} s while true	, 条件为真时每 {0} 秒一次
+ (urgent)	 (紧急)
+Rules as text - one per line:   ch5 >= 1500 -> drone armed | drone disarmed	文本规则 - 每行一条:   ch5 >= 1500 -> 已解锁 | 已上锁
+And / or allowed.  ! = urgent.  @10 = repeat every 10 s.  Settings: hysteresis = 25, hold = 100, initial = on/off.  # = comment.	可使用 and / or。  ! = 紧急。  @10 = 每 10 秒重复。  设置: hysteresis = 25, hold = 100, initial = on/off。  # = 注释。
+Check	检查
+Sample	示例
+OK: {0} rules	正常: {0} 条规则
+The file is empty.	文件为空。
+The file is too large to be a rules file.	文件太大, 不是规则文件。
+This does not look like a text file.	这看起来不是文本文件。
+No rules found in this file.	此文件中没有找到规则。
+No usable rules found. First problem: {0}	没有找到可用的规则。第一个问题: {0}
+1 rule	1 条规则
+{0} rules	{0} 条规则
+ ({0} switched off)	 (其中 {0} 条已关闭)
+. 1 line has a problem and will not work. First: {0}	。有 1 行有问题, 将不会生效。第一个: {0}
+. {0} lines have a problem and will not work. First: {1}	。有 {0} 行有问题, 将不会生效。第一个: {1}
+, no problems found.	, 未发现问题。
++ Add rule	+ 添加规则
+Text editor	文本编辑器
+Each check shows a tick when its condition is true and a cross when not, before you arm. The switch on the left turns a check off without deleting it.	每项检查在你解锁之前, 条件为真时显示对勾, 否则显示叉。左侧的开关可以关闭某项检查而不删除它。
+A warning shows in the status bar while its condition is true. Critical = red and blinking, warning = amber, info = blue. The switch on the left turns a rule off without deleting it.	警告在条件为真时显示在状态栏中。严重 = 红色并闪烁, 警告 = 琥珀色, 信息 = 蓝色。左侧的开关可以关闭某条规则而不删除它。
+A rule speaks when its condition becomes true. The switch on the left turns a rule off without deleting it.	规则在条件变为真时播报。左侧的开关可以关闭某条规则而不删除它。
+Speech is muted (MENU, Speech)	语音已静音 (菜单, 语音)
+$low  - warning limit of the active battery profile	$low  - 当前电池配置的警告限值
+$crit  - critical limit	$crit  - 严重限值
+$full  - limit for a full pack	$full  - 满电限值
+Battery limit	电池限值
+No rules yet. Tap + Add rule.	还没有规则。点按 + 添加规则。
+Advanced rule (open the text editor): {0}	高级规则 (请打开文本编辑器): {0}
+Edit	编辑
+Test	测试
+Delete this rule?	删除此规则?
+Channel hysteresis, microseconds (stops chatter near a switch threshold)	通道回差, 微秒 (防止在开关阈值附近抖动)
+Voltage and link hysteresis, percent of the threshold	电压与链路回差, 阈值的百分比
+Hold time, milliseconds (ignore changes shorter than this)	保持时间, 毫秒 (忽略比此更短的变化)
+Speak rules that are already true at start-up	启动时已为真的规则也播报
+Unit of the radio's channel numbers (auto is fine)	遥控器通道数值的单位 (自动即可)
+Rule settings	规则设置
+Enter numbers (0 or more)	请输入数字 (0 或更大)
+≥ at least	≥ 至少
+≤ at most	≤ 至多
+> above	> 高于
+< below	< 低于
+= equals	= 等于
+≠ not equal	≠ 不等于
+Contains (text)	包含 (文本)
+Variable (type, or tap List)	变量 (输入, 或点按列表)
+  Divide by	  除以
+Now: {0}{1}	当前: {0}{1}
+Level: Info (blue)  - tap to change	级别: 信息 (蓝色)  - 点按更改
+Level: Critical (red, blinking)  - tap to change	级别: 严重 (红色, 闪烁)  - 点按更改
+Level: Warning (amber)  - tap to change	级别: 警告 (琥珀色)  - 点按更改
+The timeout needs a number of seconds, 2 or more.	超时需要 2 秒或更大的秒数。
+Repeat needs a number of seconds, 2 or more.	重复需要 2 秒或更大的秒数。
+No channel values yet (is the radio connected? try Settings, Diagnostics, Show variables)	还没有通道数值 (遥控器已连接吗? 请查看 设置, 诊断, 显示变量)
+Move the switch now...	请现在拨动开关...
+No switch moved.	没有检测到开关动作。
+Detected {0} at {1}	检测到 {0}, 值 {1}
+When	当
+All of these are true	以下全部为真
+Any of these is true	以下任一为真
++ condition	+ 条件
+Detect switch	检测开关
+Check label (shown with a tick or a cross)	检查标签 (显示对勾或叉)
+Show in the status bar	在状态栏显示
+Say	播报
+Label, for example GPS {sats} satellites	标签, 例如 GPS {sats} 颗卫星
+Text, for example BATTERY {vbat/6:2} V	文字, 例如 电池 {vbat/6:2} V
+Words to speak	要播报的文字
+Live values: {vbat/6:2} = volts per cell with 2 decimals, {up_lq}, {sats}, {fm}	实时数值: {vbat/6:2} = 每节电压 (2 位小数), {up_lq}, {sats}, {fm}
+Urgent (interrupts what is being said)	紧急 (打断正在播报的内容)
+Also say something when it turns false	条件变为假时也播报
+Words when it turns false	条件变为假时播报的文字
+Hide after (seconds), even if the condition stays true	多少秒后隐藏, 即使条件仍为真
+Repeat while it stays true, every (seconds)	条件为真时重复, 每隔 (秒)
+The rule as text	文本形式的规则
+New check	新建检查
+Edit check	编辑检查
+New warning	新建警告
+Edit warning	编辑警告
+New rule	新建规则
+Edit rule	编辑规则
+Label now: {0}	当前标签: {0}
+The file is too large to be a settings file.	文件太大, 不是设置文件。
+No usable settings found in this file.	此文件中没有找到可用的设置。
+No settings found in this file.	此文件中没有找到设置。
+{0} settings, including {1} sound rules, {2} warning rules and {3} checks	{0} 项设置, 其中包括 {1} 条语音规则、{2} 条警告规则和 {3} 项检查
+. {0} lines were ignored (unknown or invalid)	。已忽略 {0} 行 (未知或无效)
+. {0} rule lines have problems and will not work	。有 {0} 行规则存在问题, 将不会生效
+Size	大小
+Position	位置
+Opacity	不透明度
+Language	语言
+Speech language	语音语言
+The screen and the voice can use different languages. Your rules keep their own words: "Reset the rules to the defaults" loads the starting rules in the voice's language.	屏幕和语音可以使用不同的语言。你的规则保持原有文字: “将规则重置为默认值” 会以语音的语言载入初始规则。
+Display	显示
+Sunlight theme	阳光主题
+Shape	形状
+The shape of cards, tiles and rows: two cut corners (the default), four cut corners, corner brackets, soft corners or plain rectangles. Warnings keep a solid fill.	卡片、图块和行的形状：两个切角（默认）、四个切角、角标框、圆角或直角矩形。警告始终保持实心填充。
+Dark text on light backgrounds for the menu, the settings, the other screens and the dashboard, and stronger warnings. In direct sun this reads better than light on dark. The MENU has a Sunlight tile as a quick switch.	菜单、设置、其他界面和仪表盘使用浅色背景上的深色文字，并加强警告显示。在强烈日光下，这比深色背景上的浅色文字更易读。菜单中的“阳光”图块可快速切换。
+Always show the MENU button	始终显示菜单按钮
+Off: the button hides and appears when you touch the screen.	关闭时: 按钮会隐藏, 触摸屏幕时出现。
+Start-up splash screen (animated, about 3 seconds)	启动画面 (动画, 约 3 秒)
+Active aircraft	当前飞行器
+Manage the aircraft (add, rename, delete)...	管理飞行器 (添加、重命名、删除)...
+Each aircraft keeps its own rules, warning rules, checks, battery profiles and packs, channel bars, stick mapping and arm switch. Overlay looks, language and updates are shared.	每个飞行器都保存自己的规则、警告规则、检查项、电池配置和电池包、通道条、摇杆映射以及解锁开关。叠加层外观、语言和更新是共用的。
+Active battery profile	当前电池配置
+Edit the packs of this aircraft...	编辑此飞行器的电池包...
+Edit the battery profiles (cells and voltage limits)...	编辑电池配置 (节数和电压限值)...
+Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.	规则和检查项可以使用 cell (每节电压) 以及当前配置的限值 $low、$crit、$full, 例如: cell < $low -> 电池电量低。切换配置只会改变数值, 不会改变规则。
+OSD overlays (drawn over the video)	OSD 叠加层 (绘制在视频上)
+Stick view: roll, pitch, yaw and throttle	摇杆视图: 横滚、俯仰、偏航和油门
+Stick size	摇杆大小
+Stick position	摇杆位置
+Stick opacity	摇杆不透明度
+Stick mode, channels and direction...	摇杆模式、通道和方向...
+Channel bars beside the sticks (aux switches)	摇杆旁的通道条 (辅助开关)
+Channel bars: names, channels, on and off...	通道条: 名称、通道、开关...
+Tip: press and hold the stick view on the video to open the channel bars.	提示: 在视频上长按摇杆视图可打开通道条。
+Warning status bar	警告状态栏
+Warning bar position	警告栏位置
+Edit the warning rules (thresholds and logic)...	编辑警告规则 (阈值与逻辑)...
+Reset the warning rules to the defaults	将警告规则重置为默认值
+Replace your warning rules with the defaults? Export all settings first if you want to keep the current ones.	用默认值替换你的警告规则? 如果想保留当前规则, 请先导出所有设置。
+Reset	重置
+Preview the warning bar (4 seconds)	预览警告栏 (4 秒)
+Warnings show while their condition is true, so thresholds and logic are yours to set.	警告在条件为真时显示, 阈值和逻辑由你自己设定。
+Flight overlays (statistics, radar, checklist)	飞行叠加层 (统计、雷达、检查清单)
+The arm switch starts and stops a flight: the statistics start over when you arm and stay readable after landing.	解锁开关决定一次飞行的开始与结束: 解锁时统计重新开始, 降落后仍可查看。
+Arm detection: channel, thresholds, cells in the pack...	解锁检测: 通道、阈值、电池节数...
+Flight statistics: max speed, max height, peak current	飞行统计: 最大速度、最大高度、峰值电流
+Rows and current limit...	显示项与电流限值...
+Radar map: home in the center, your track and range rings	雷达图: 起点居中, 显示航迹和距离环
+Live charts: rolling graphs of telemetry values	实时图表: 遥测数值的滚动曲线
+Charts: choose the values and the time window...	图表: 选择数值和时间窗口...
+Pre-flight checklist (shown while disarmed)	飞行前检查清单 (上锁时显示)
+Edit the checks (thresholds and logic)...	编辑检查项 (阈值与逻辑)...
+Reset the checks to the defaults	将检查项重置为默认值
+Replace your checks with the defaults? Export all settings first if you want to keep the current ones.	用默认值替换你的检查项? 如果想保留当前检查项, 请先导出所有设置。
+Layout of the cards	卡片布局
+Move and resize the cards with your finger...	用手指移动卡片并调整大小...
+Put every card back in its corner at normal size	将所有卡片放回各自角落并恢复正常大小
+Put every card back in its corner at normal size? The places and sizes you chose will be forgotten.	将所有卡片放回各自角落并恢复正常大小? 你选择的位置和大小将被清除。
+Drag a card to move it and drag its square handle to resize it. Cards that are switched off are not shown. The Size setting of a card is its starting size; resizing multiplies it.	拖动卡片可移动它, 拖动其方形手柄可调整大小。已关闭的卡片不会显示。卡片的“大小”设置是起始大小, 调整大小会在其基础上相乘。
+Camera (HDMI input)	摄像头 (HDMI 输入)
+Rotate video	旋转视频
+Scale	缩放
+Fill (stretch)	填充 (拉伸)
+Speech on	语音开启
+Speak a test sentence	播报一句测试语
+A second page with cards only and no video, for goggles or for a second pair of eyes. Switch pages with the Dashboard tile in the MENU.	只有卡片、没有视频的第二页, 适合戴视频眼镜时使用, 或供另一个人查看。在“菜单”中用“仪表盘”图块切换页面。
+Edit the dashboard layout...	编辑仪表盘布局...
+Reset the dashboard layout	重置仪表盘布局
+Replace the dashboard layout with the first one?	用初始布局替换仪表盘布局吗?
+Horizon: invert pitch	地平仪: 反转俯仰
+Horizon: invert roll	地平仪: 反转横滚
+Tilt the aircraft nose down: the horizon should show more ground. If it shows the opposite, switch the pitch inversion; the same for roll.	让飞行器机头朝下: 地平仪应显示更多地面。如果相反, 请切换俯仰反转; 横滚同理。
+Writes a log of every flight, from arming to disarming: the values you choose, several rows per second. The files are plain CSV that a spreadsheet opens, and the log viewer can replay them on the radio.	为每次飞行写入日志, 从解锁到上锁: 记录你选择的数值, 每秒数行。文件是电子表格可直接打开的纯 CSV, 日志查看器可以在遥控器上回放它们。
+Log every flight	记录每次飞行
+Rows per second	每秒行数
+Flights to keep	保留的飞行数
+Flight logs: list, replay and delete...	飞行日志: 列表、回放和删除...
+Approval window	批准时段
+The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.	您获准飞行的时间，例如主管部门批准的两小时。遥控器会显示剩余时间，在飞机解锁期间语音提醒，并在时段之外解锁时发出警告。每天重复，使用这台遥控器的时钟，现在是 {0}。
+Use an approval window	使用批准时段
+Two hours from now	从现在起两小时
+Speak the warnings	语音播报提醒
+The value win_left (minutes left, negative after the window has ended) can be used in value cards, charts, rules and logs.	win_left（剩余分钟，时段结束后为负数）可用于数值卡片、图表、规则和日志。
+Landing, link loss and packs	降落、链路丢失与电池包
+Speak a debrief after landing	降落后语音播报总结
+After a flight of 20 seconds or more: flight time, distance, capacity used, efficiency, lowest cell and the voltage the pack rests at.	20秒以上的飞行结束后：飞行时间、距离、用电量、能耗、最低单节电压和电池静置电压。
+Speak the last position when the link is lost	链路丢失时语音播报最后位置
+When the link is lost in flight, a card shows the last position with its distance and bearing from home, and the position is saved on this radio.	飞行中链路丢失时，卡片会显示最后位置及其到起点的距离和方位，并把位置保存在这台遥控器上。
+Last known position...	最后已知位置...
+Packs: totals per pack...	电池包：每个电池包的累计...
+If something goes wrong, this page collects what a bug report needs: versions, the device, the state of the radio link and its start-up timing, a digest of the settings and the last events. It holds no GPS positions, no aircraft or pack names and nothing personal. Read it before you send it.	出现问题时，此页面会收集错误报告所需的信息：版本、设备、遥控器链路状态及其启动耗时、设置摘要和最近的事件。其中不含GPS位置、飞行器或电池包名称，也不含任何个人信息。发送前请先阅读。
+Diagnostics and bug report...	诊断与错误报告...
+Rules and backup	规则和备份
+Export sound rules to a file...	将语音规则导出到文件...
+Import sound rules from a file...	从文件导入语音规则...
+Restore the rules from before the last import, reset or restore	恢复上次导入、重置或恢复之前的规则
+Swap back to the previous rules? The current rules are kept, so you can swap again.	切换回之前的规则? 当前规则会保留, 可以再次切换。
+Restore	恢复
+Reset the rules to the defaults	将规则重置为默认值
+Replace your rules with the defaults? Your current rules are kept as a backup.	用默认规则替换你的规则? 当前规则会保留为备份。
+Edit the rules as text (advanced)	以文本方式编辑规则 (高级)
+Backup of all settings	备份所有设置
+Export all settings to a file...	将所有设置导出到文件...
+Import all settings from a file...	从文件导入所有设置...
+Restore the settings from before the last import	恢复上次导入之前的设置
+Swap back to the settings from before the last import? The current settings are kept, so you can swap again.	切换回上次导入之前的设置? 当前设置会保留, 可以再次切换。
+One file with everything: sound rules, warning rules, checks, overlays, channel bars, battery profiles and language. The sound rules also have their own export above.	一个文件包含所有内容: 语音规则、警告规则、检查项、叠加层、通道条、电池配置和语言。语音规则在上方还有单独的导出功能。
+Updates	更新
+Check for updates now	立即检查更新
+Update channel	更新通道
+Check at start-up (needs internet)	启动时检查 (需要联网)
+Android asks you to confirm every update. The first time it also asks you to allow installs from AX-HUD. Never update during a flight.	Android 会要求你确认每次更新。第一次还会要求你允许 AX-HUD 安装应用。切勿在飞行中更新。
+Show the variables panel (every value the radio sends)	显示变量面板 (遥控器发送的所有数值)
+Test channels: sliders instead of the radio	测试通道: 用滑块代替遥控器
+Show the start-up timings of the last launches...	显示最近几次启动的计时...
+The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes.	遥控器连接在后台线程中启动, 并在应用自己的界面、文件选择器和重建过程中保持运行; 离开应用时才会停止。SDK 自身打开遥控器串口大约需要 12 秒; 计时记录会显示时间花在哪里。
+Close Settings to see the panels over the video.	关闭设置即可在视频上看到这些面板。
+About	关于
+Show the welcome guide...	显示欢迎指南...
+About AX-HUD, licenses and thanks...	关于 AX-HUD、许可证和致谢...
+Chamfer, two corners	切角（两个角）
+Chamfer, four corners	切角（四个角）
+Corner brackets	角标框
+Soft corners	圆角
+Plain rectangles	直角矩形
+Video monitor	视频监视器
+HUD  ·  voice announcer	HUD  ·  语音播报
+Version {0}  ·  Build {1}	版本 {0}  ·  构建 {1}
+Use {variable} for a live value, for example {vbat/6:2}.	使用 {variable} 显示实时数值, 例如 {vbat/6:2}。
+A divisor in { } cannot be 0.	{ } 中的除数不能为 0。
+Canceled	已取消
+Only https:// addresses are allowed	仅允许 https:// 地址
+Not a valid address	不是有效的地址
+The server answered {0}	服务器返回 {0}
+The answer is too large	响应数据过大
+The file is too large	文件过大
+The file has an unexpected size	文件大小不符合预期
+The download is incomplete or the wrong size	下载不完整或大小不对
+The checksum does not match: the file is damaged or not the published one	校验和不匹配: 文件已损坏或不是发布的文件
+Cannot replace the old file	无法替换旧文件
+Cannot save the file	无法保存文件
+SHA-256 is not available	SHA-256 不可用
+Already checking	正在检查中
+Looking for an update on github.com ...	正在 github.com 上查找更新 ...
+The update information could not be read	无法读取更新信息
+No connection	无网络连接
+No build has been published on this channel yet.	此渠道尚未发布任何构建。
+Could not check: {0}\n\nIs the phone hotspot on?	无法检查: {0}\n\n手机热点已开启吗?
+You have the latest build: version {0} (build {1})	已是最新构建: 版本 {0} (构建 {1})
+AX-HUD update available: {0} (build {1}). Open Settings, then Updates.	AX-HUD 有可用更新: {0} (构建 {1})。请打开 设置, 再打开 更新。
+Update available	有可用更新
+New: version {0} (build {1}, {2} MB)\nInstalled: version {3} (build {4}){5}\n\nDo not do this during a flight.	新版本: {0} (构建 {1}, {2} MB)\n已安装: 版本 {3} (构建 {4}){5}\n\n请勿在飞行中操作。
+Download and install	下载并安装
+Later	稍后
+Starting ...	正在开始 ...
+Downloading {0}	正在下载 {0}
+Download failed	下载失败
+Allow installing	允许安装
+Android needs your permission before AX-HUD can install an update. Open the page, switch it on for AX-HUD, come back and run the update again. The download is kept, so it will not be downloaded twice.	Android 需要你的许可, AX-HUD 才能安装更新。请打开该页面, 为 AX-HUD 打开此选项, 然后返回并重新运行更新。已下载的文件会保留, 不会重复下载。
+Could not start the installation	无法开始安装
+Unknown error	未知错误
+Updated. The app will reopen.	已更新。应用将重新打开。
+Installation canceled	安装已取消
+\n\nThe installed copy was signed with a different key. Export your rules (Settings), uninstall AX-HUD once and install this build; after that updates work. See UPDATES.md.	\n\n已安装的版本使用了不同的密钥签名。请先导出规则 (设置), 卸载一次 AX-HUD, 再安装此构建; 之后更新即可正常使用。详见 UPDATES.md。
+\n\nThis build is older than the installed one.	\n\n此构建比已安装的版本更旧。
+Installation stopped	安装已停止
+Android did not say why (code {0}).	Android 未说明原因 (代码 {0})。
+Battery volts (flight controller); divide by the cell count for volts per cell	电池电压 (飞控); 除以节数得到每节电压
+Volts per cell: battery volts divided by the cells of the active battery profile	每节电压: 电池电压除以当前电池配置的节数
+Battery current, amps	电池电流, 安
+Capacity used, mAh	已用容量, mAh
+Battery remaining, percent	剩余电量, 百分比
+Uplink link quality, percent (0 = no link)	上行链路质量, 百分比 (0 = 无链路)
+Uplink signal strength, antenna 1, dBm (negative)	上行信号强度, 天线 1, dBm (负值)
+Uplink signal strength, antenna 2, dBm (negative)	上行信号强度, 天线 2, dBm (负值)
+Uplink signal to noise, dB	上行信噪比, dB
+Downlink link quality, percent	下行链路质量, 百分比
+Downlink signal strength, dBm	下行信号强度, dBm
+Downlink signal to noise, dB	下行信噪比, dB
+ExpressLRS packet rate mode number	ExpressLRS 包速率模式编号
+Transmitter power, mW (it changes by itself with dynamic power)	发射功率, mW（启用动态功率时会自动变化）
+Link quality from the radio, percent	遥控器报告的链路质量, 百分比
+Signal figure reported by the radio (not dBm: a small positive number, higher is stronger)	遥控器报告的信号数值（不是 dBm：较小的正数，数值越大信号越强）
+Link heartbeat counter from the radio: 0 means the receiver is lost, a steady number such as 5 means the link is alive	遥控器的链路心跳计数：0 表示接收机丢失，5 这样的稳定数值表示链路正常
+Radio battery volts	遥控器电池电压
+Receiver volts	接收机电压
+Telemetry present: 1 yes, 0 lost	遥测存在: 1 是, 0 丢失
+GPS satellites	GPS 卫星数
+Ground speed, km/h	地速, km/h
+GPS altitude, meters	GPS 海拔, 米
+GPS heading, degrees	GPS 航向, 度
+Height above the arming point, meters (while armed)	相对解锁点的高度, 米 (解锁期间)
+Distance from home, meters (while armed)	距离起点, 米 (解锁期间)
+Latitude	纬度
+Longitude	经度
+Pitch angle, degrees	俯仰角, 度
+Roll angle, degrees	横滚角, 度
+Yaw / heading, degrees	偏航 / 航向, 度
+Climb rate, m/s	爬升率, m/s
+Flight mode name from the flight controller (text)	飞控报告的飞行模式名称 (文本)
+Distance flown in this flight, km (kept after landing)	本次飞行已飞距离，km（降落后保留）
+Energy used in this flight, Wh (volts times amps over time)	本次飞行消耗的能量，Wh（电压乘电流对时间积分）
+Energy per kilometre flown, Wh/km (after the first 0.2 km)	每飞行一公里的能量，Wh/km（前0.2公里之后）
+Capacity per kilometre flown, mAh/km (after the first 0.2 km)	每飞行一公里的容量，mAh/km（前0.2公里之后）
+Minutes left in the approval window; negative after it has ended (minutes over)	批准时段剩余分钟；时段结束后为负数（超出的分钟数）
+Switches and sticks (channels, 1000 to 2000)	开关和摇杆 (通道, 1000 到 2000)
+Battery (from the flight controller)	电池 (来自飞控)
+Link quality and signal	链路质量与信号
+Radio status	遥控器状态
+GPS and attitude	GPS 与姿态
+Flight totals and approval window	飞行累计与批准时段
+Flight mode (text)	飞行模式 (文本)
+Other values from the radio	遥控器的其他数值
+Advanced: the radio's own channel numbers	高级: 遥控器自身的通道数值
+Advanced: the radio's logic values	高级: 遥控器的逻辑值
+Channel {0}, 1000 to 2000 microseconds	通道 {0}, 1000 到 2000 微秒
+The radio's own channel number	遥控器自身的通道数值
+The radio's logic value	遥控器的逻辑值
+Link quality %	链路质量 %
+Downlink quality %	下行链路质量 %
+Cell volts	每节电压
+Battery volts	电池电压
+Current A	电流 A
+Capacity used mAh	已用容量 mAh
+Battery %	电量 %
+Speed km/h	速度 km/h
+GPS altitude m	GPS 海拔 m
+Height m	高度 m
+Distance m	距离 m
+Satellites	卫星数
+Heading deg	航向 度
+Climb m/s	爬升率 m/s
+Pitch deg	俯仰 度
+Roll deg	横滚 度
+Yaw deg	偏航 度
+Signal dBm	信号 dBm
+Signal to noise dB	信噪比 dB
+Power mW	功率 mW
+Radio volts	遥控器电压
+Link heartbeat	链路心跳
+Packet rate mode	包速率模式
+Telemetry	遥测
+Distance flown km	已飞距离 km
+Energy Wh	能量 Wh
+Energy Wh/km	能耗 Wh/km
+Capacity mAh/km	容量 mAh/km
+Window minutes	时段分钟
+Channel {0}	通道 {0}
+Now: {0}	当前: {0}
+No value now	当前无数值
+Pick a channel or value	选择通道或数值
+Step {0} of {1}	第 {0} 步, 共 {1} 步
+Skip	跳过
+Next	下一步
+Layout name	布局名称
+Save current dashboard layout	保存当前仪表盘布局
+Enter a name for this layout.	请输入此布局的名称。
+You can save up to {0} dashboard layouts.	最多可保存 {0} 个仪表盘布局。
+Dashboard layout saved: {0}	已保存仪表盘布局：{0}
+A saved layout named {0} already exists. Replace it?	名为“{0}”的已保存布局已存在。要替换吗？
+Replace	替换
+There are no saved dashboard layouts.	没有已保存的仪表盘布局。
+Load a saved dashboard layout	加载已保存的仪表盘布局
+Load saved layout: {0}	加载已保存的布局：{0}
+Load	加载
+Delete a saved dashboard layout	删除已保存的仪表盘布局
+Delete saved layout: {0}?	要删除已保存的布局“{0}”吗？
+Saved layout deleted: {0}	已删除布局：{0}
+Full flight	完整飞行
+Minimal flight	简约飞行
+Channel bench	通道调试
+Choose a dashboard preset	选择仪表盘预设
+Use the {0} preset and replace the current layout?	使用“{0}”预设并替换当前布局吗？
+Apply	应用
+Dashboard layout updated.	仪表盘布局已更新。
+Choose a dashboard preset...	选择仪表盘预设...
+Screenshot saved to Pictures/AX-HUD.	屏幕截图已保存到 Pictures/AX-HUD。
+Couldn't save the screenshot. Check storage permission and available space.	无法保存屏幕截图。请检查存储权限和可用空间。
+Storage permission was denied; the screenshot was not saved.	存储权限被拒绝；未保存屏幕截图。
+Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.	避开 MENU 按钮，在屏幕顶部轻点三次，即可将屏幕截图保存到 Pictures/AX-HUD。
+The first screenshot asks for storage access: do it on the ground, with the aircraft disarmed.	首次截图需要存储权限: 请在地面上、飞行器未解锁时进行。
+Antenna tracker	天线跟踪器
+An antenna tracker points your antennas at the aircraft: an ESP32 with two servos, a GPS and a compass. The radio sends the aircraft's position over Bluetooth; the tracker does the pointing. Build instructions: the tracker folder of the project.	天线跟踪器会让天线指向飞行器：它是一块带两个舵机、GPS 和指南针的 ESP32。遥控器通过蓝牙发送飞行器位置，由跟踪器负责转向。制作说明见项目的 tracker 文件夹。
+Use an antenna tracker	使用天线跟踪器
+Tracker	跟踪器
+Not chosen yet	尚未选择
+Android asks for the location permission to search for Bluetooth devices. AX-HUD does not read your location.	Android 要求位置权限才能搜索蓝牙设备。AX-HUD 不会读取您的位置。
+Follow the aircraft	跟踪飞行器
+Hold the antennas where they are	保持天线当前位置
+Center the antennas (straight ahead)	天线回中（正前方）
+Test sweep (30 seconds)	测试扫动（30 秒）
+Compass calibration: start (turn the tracker through a full circle)	指南针校准：开始（将跟踪器转动一整圈）
+Compass calibration: save	指南针校准：保存
+Set the magnetic declination...	设置磁偏角…
+Set the antenna height above the launch point...	设置天线高于起飞点的高度…
+Magnetic declination (degrees, east is positive)	磁偏角（单位：度，东偏为正）
+Antenna height above the launch point (meters)	天线高于起飞点的高度（米）
+Enter a number between {0} and {1}.	请输入 {0} 到 {1} 之间的数字。
+Sent to the tracker.	已发送给跟踪器。
+The tracker is not connected.	跟踪器未连接。
+Do this on the ground, with the aircraft disarmed.	请在地面上、飞行器未解锁时进行。
+Location permission was denied, so the search cannot start.	位置权限被拒绝，无法开始搜索。
+Looking for the tracker...	正在搜索跟踪器…
+No tracker found. Is it switched on and near?	未找到跟踪器。它已开机并在附近吗？
+Choose the tracker	选择跟踪器
+The search could not start. Is Bluetooth switched on, and the location setting of the radio?	无法开始搜索。蓝牙和遥控器的位置设置是否已开启？
+Bluetooth is not available on this radio.	此遥控器没有蓝牙。
+Bluetooth is switched off.	蓝牙已关闭。
+Choose the tracker first.	请先选择跟踪器。
+Not connected.	未连接。
+Connecting to the tracker...	正在连接跟踪器…
+Connection lost, trying again...	连接已断开，正在重试…
+Connected. Waiting for the tracker's status...	已连接。正在等待跟踪器状态…
+Connected.	已连接。
+Tracker GPS: {0} satellites	跟踪器 GPS：{0} 颗卫星
+Tracker GPS: no fix	跟踪器 GPS：未定位
+Compass ready	指南针就绪
+Compass needs calibration	指南针需要校准
+Calibrating the compass...	正在校准指南针…
+Following the aircraft	正在跟踪飞行器
+Not following the aircraft (hold, center or test)	未跟踪飞行器（保持、回中或测试）
+Waiting for the aircraft's GPS	正在等待飞行器 GPS
+Waiting for the tracker's GPS or compass	正在等待跟踪器的 GPS 或指南针
+General	常规
+Aircraft and flight	飞行器与飞行
+Video and overlays	视频与叠加层
+System	系统
+Search settings	搜索设置
+Nothing found.	未找到任何内容。
+Signal figure	信号数值
+Rows are written up to 20 times a second. The sticks change that often; the values from the aircraft (battery, GPS, attitude) change only as often as your link sends them, about once a second at a slow ELRS telemetry ratio (1:32 at 150 Hz). A faster ratio, such as 1:16 or 1:8, gives a sharper log.	每秒最多写入 20 行。摇杆数据的变化有这么快；来自飞行器的数值（电池、GPS、姿态）只有在链路发送时才会变化，在较慢的 ELRS 遥测比（150 Hz 下为 1:32）时约每秒一次。更快的比例（如 1:16 或 1:8）能得到更精细的日志。
+Chase	跟随
+Orbit	旋转
+Pilot	飞手
+No position in this log, so there is no 3D view.	此日志没有位置数据，因此没有3D视图。
+Plane	飞机
+Quad	Quad
+Speed	速度
+Height	高度
+Play	播放
+Pause	暂停
+Reserve low. Turn back.	余量不足，请返航。
+Return now.	立即返航。
+Summary	摘要
+The file has {0}\n\nChoose what to take from it. This replaces the same things here. Your current settings are kept as a backup, and Settings can restore them.	文件包含 {0}\n\n请选择要导入的内容。这会替换这里相同的内容。当前设置会保留为备份，可在设置中还原。
+Restore from a file	从文件恢复
+Nothing chosen	未选择任何内容
+Flight time	飞行时间
+Highest	最高
+Above 120 m for {0} s	高于 120 米 {0} 秒
+Farthest	最远
+Top speed	最高速度
+Average {0} km/h	平均 {0} 公里/小时
+Battery used	已用电量
+Energy	能量
+Lowest cell	最低单节电压
+Peak current	峰值电流
+Approval window at the end	结束时的批准窗口
+{0} min left	剩余 {0} 分钟
+Over by {0} min	超出 {0} 分钟
+Manoeuvres found	检测到的机动
+{0} dives, {1} rolls, {2} flips	{0} 次俯冲、{1} 次横滚、{2} 次转圈
+Copy the report text	复制报告文本
+Copied	已复制
+Flight summary	飞行摘要
+Replay in 3D	3D 回放
+Export...	导出...
+GPX track	GPX 航迹
+KML path with heights	带高度的 KML 航线
+CSV, every value	CSV，全部数值
+CSV, the main values	CSV，主要数值
+Report text	报告文本
+Take the GPS positions out (a track is moved to 0, 0; its shape stays)	移除 GPS 位置（航迹移到 0, 0，形状保留）
+GPX and KML open in Google Earth and most map tools. A log holds the places you flew: share it with care.	GPX 和 KML 可在 Google Earth 及大多数地图工具中打开。日志包含你飞行的地点，请小心分享。
+Export this flight	导出此次飞行
+Save to the radio	保存到遥控器
+Exported	已导出
+Copy	复制
+Too long to copy: save it to a file.	内容太长无法复制，请保存为文件。
+Could not save the file: {0}	无法保存文件：{0}
+Rules and warnings	规则与警告
+Batteries and packs	电池与电池包
+Layouts	布局
+Tracker pairing	跟踪器配对
+Pack history	电池包记录
+Last backup: {0}	上次备份：{0}
+No backup has been made on this radio yet.	此遥控器尚未做过备份。
+The file holds no passwords and nothing of the radio link. The pack history and the tracker pairing are optional.	文件不含密码，也不含无线链路信息。电池包记录和跟踪器配对为可选项。
+Remind me when the last backup is 30 days old	上次备份超过 30 天时提醒我
+Backup and restore	备份与恢复
+Save a backup file	保存备份文件
+Restore from a file...	从文件恢复...
+No recent backup. Settings > Rules and backup > Backup and restore.	没有近期备份。设置 > 规则与备份 > 备份与恢复。
+There is no pack yet: add one under Edit the packs, with its capacity.	还没有电池包：请在编辑电池包中添加，并填写容量。
+Pack {0}, {1} mAh. Every pack keeps its own numbers.	电池包 {0}，{1} mAh。每个电池包保存各自的数值。
+Speed on the way home (km/h)	返航速度（公里/小时）
+Current on the way home (A, 0 = learned during the flight)	返航电流（A，0 = 飞行中自动测定）
+Extra distance, the way is not a straight line (%)	额外距离，路线并非直线（%）
+Kept for the landing (% of the pack)	为降落保留（电池包的 %）
+Warn when the margin is below (% of the pack)	余量低于此值时警告（电池包的 %）
+Critical when the margin is below (% of the pack)	余量低于此值时为严重（电池包的 %）
+Return reserve	返航余量
+Dive	俯冲
+Roll	横滚
+Flip	转圈
+MANOEUVRES  {0}	机动  {0}
+All	全部
+Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.	依据日志中的高度和姿态检测。日志采样较慢时，快速的横滚或转圈可能错过。
+DIVE REPORT  {0}	俯冲报告  {0}
+Start	起点
+Height lost	损失高度
+Dive angle	俯冲角度
+Fall time	下降时间
+Recovery	拉起
+RETURN RESERVE	返航余量
+Home {0}  ·  {1} s  ·  needs {2} % + {3} % to land	起飞点 {0}  ·  {1} 秒  ·  需要 {2} % + 降落 {3} %
+Speed on the way home: 10 to 300 km/h.	返航速度：10 到 300 公里/小时。
+Current on the way home: 0 (learned) to 200 A.	返航电流：0（自动测定）到 200 A。
+Extra distance: 0 to 200 %.	额外距离：0 到 200 %。
+Landing reserve: 0 to 50 %.	降落余量：0 到 50 %。
+Use critical below warning, both below 50 %.	严重值应低于警告值，且两者都低于 50 %。
+Set the pack's capacity (Settings > Packs)	请设置电池包容量（设置 > 电池包）
+Waiting for the battery	等待电池数据
+Waiting for the position	等待定位
+Learning the current	正在测定电流
+Turn back now	立即返航
+About {0} of flying left before you must turn back	约还能飞 {0} 就必须返航
+Change the layout with the aircraft	布局随飞机切换
+On: the place and size of the cards and the dashboard tiles belong to the aircraft too. Off: the layout stays as it is when you switch, and only the rules, the battery and the rest change.	开：卡片和仪表盘磁贴的位置与大小也跟随该飞机。关：切换时布局保持不变，只有规则、电池等其余内容会改变。
+Show the return reserve while flying	飞行时显示返航余量
+Return reserve of this pack...	此电池包的返航余量...
+Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	将电池包剩余电量与返航所需电量比较，并在余量用完前提醒。需要电池包容量（编辑电池包）和起飞点位置。数值 reserve_pct 和 reserve_s 可用于规则、图表和日志。这是依据直线距离和平均电流得出的大致值，并非保证。
+Backup and restore: choose what goes in...	备份与恢复：选择内容...
+SWITCHING AIRCRAFT	正在切换飞机
+Loading its settings, rules and layout...	正在加载其设置、规则和布局...
