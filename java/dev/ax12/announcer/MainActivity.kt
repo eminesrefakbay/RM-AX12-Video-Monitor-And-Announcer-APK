@@ -714,7 +714,7 @@ class MainActivity : Activity() {
         ui.removeCallbacks(holdFire)
         extras.onPause()                                // a landing that waits for the rest voltage is counted now
         flightLogger.close()                            // the file is complete whenever the screen is left
-        flightLogger.problem()?.let { Diagnostics.event("logger", it, "warn") }
+        flightLogger.problem()?.takeIf { it.isNotEmpty() }?.let { Diagnostics.event("logger", it, "warn") }
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
         super.onPause()
