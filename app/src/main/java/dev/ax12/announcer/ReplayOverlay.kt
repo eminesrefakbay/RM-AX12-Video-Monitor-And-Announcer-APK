@@ -61,7 +61,6 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private val cardsRail = ImageView(activity)
     private val movesRail = ImageView(activity)
     private val movesPanel = LinearLayout(activity)
-    private val movesList = LinearLayout(activity)
     private val movesChips = LinearLayout(activity)
     private val diveCard = LinearLayout(activity)
     private var moves: List<Manoeuvres.Item> = emptyList()
@@ -70,6 +69,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private var movesFilter: String? = null
     private var selectedMove = -1
     private var movesMissing = ""
+    private var movesScrollY = 0
     private val density = activity.resources.displayMetrics.density
     private var held = false
     private var lastSeekAt = 0L
@@ -170,6 +170,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
             return
         }
         closeMenu()
+        movesScrollY = 0
         buildMoves()
         movesPanel.visibility = View.VISIBLE
         touch()
@@ -204,11 +205,12 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
             val on = movesFilter == k
             c.setTextColor(if (on) 0xFF0B1016.toInt() else Color.WHITE)
             c.setBackgroundColor(if (on) CardStyle.ACCENT else 0xFF243447.toInt())
-            c.setOnClickListener { touch(); movesFilter = k; buildMoves() }
+            c.setOnClickListener { touch(); movesFilter = k; movesScrollY = 0; buildMoves() }
             movesChips.addView(c, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(36)).also { it.rightMargin = dp(6); it.topMargin = dp(6) })
         }
         movesPanel.addView(movesChips)
-        movesList.removeAllViews()
+        // a new list every time: the old one still sits inside the old scroll view, and a view with a parent cannot be added again
+        val movesList = LinearLayout(activity)
         movesList.orientation = LinearLayout.VERTICAL
         for (i in moves.indices) {
             val m = moves[i]
@@ -246,9 +248,47 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
             }
             movesList.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)))
         }
+        val shown = if (movesFilter == null) moves.size else Manoeuvres.count(moves, movesFilter!!)
+        val many = shown * CardStyle.MIN_TOUCH_DP > 240
+        // a long list: the panel takes the height of the screen (between the top and the player bar) and the list scrolls inside it
+        val lp = movesPanel.layoutParams as FrameLayout.LayoutParams
+        lp.height = if (many) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+        movesPanel.layoutParams = lp
         val scroll = android.widget.ScrollView(activity)
         scroll.addView(movesList)
-        movesPanel.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(300)))
+        scroll.isVerticalScrollBarEnabled = true
+        scroll.isScrollbarFadingEnabled = false
+        scroll.scrollBarSize = dp(6)
+        scroll.setOnScrollChangeListener { _, _, y, _, _ -> movesScrollY = y; touch() }
+        val step = dp(CardStyle.MIN_TOUCH_DP) * 3
+        if (many) {
+            // two buttons for the finger that does not want to swipe: a page up and a page down
+            val pager = LinearLayout(activity)
+            pager.orientation = LinearLayout.HORIZONTAL
+            for (dir in intArrayOf(-1, 1)) {
+                val arrow = object : View(activity) {
+                    private val p = Paint(Paint.ANTI_ALIAS_FLAG)
+                    override fun onDraw(canvas: Canvas) {
+                        p.color = Color.WHITE
+                        p.style = Paint.Style.FILL
+                        val w = width.toFloat(); val h = height.toFloat(); val u = Math.min(w, h) * 0.22f
+                        val path = android.graphics.Path()
+                        if (dir < 0) { path.moveTo(w / 2, h / 2 - u); path.lineTo(w / 2 + u * 1.4f, h / 2 + u); path.lineTo(w / 2 - u * 1.4f, h / 2 + u) }
+                        else { path.moveTo(w / 2, h / 2 + u); path.lineTo(w / 2 + u * 1.4f, h / 2 - u); path.lineTo(w / 2 - u * 1.4f, h / 2 - u) }
+                        path.close()
+                        canvas.drawPath(path, p)
+                    }
+                }
+                arrow.setBackgroundColor(0xFF243447.toInt())
+                arrow.setOnClickListener { touch(); scroll.smoothScrollBy(0, dir * step) }
+                pager.addView(arrow, LinearLayout.LayoutParams(0, dp(40), 1f).also { it.rightMargin = dp(if (dir < 0) 6 else 0); it.topMargin = dp(6) })
+            }
+            movesPanel.addView(pager)
+        }
+        movesPanel.addView(scroll, if (many) LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).also { it.topMargin = dp(6) }
+            else LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val keep = movesScrollY
+        scroll.post { scroll.scrollTo(0, keep) }
         val note = TextView(activity)
         note.text = tr("Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.")
         note.textSize = 11f
