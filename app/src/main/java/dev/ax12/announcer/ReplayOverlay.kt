@@ -70,6 +70,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private var selectedMove = -1
     private var movesMissing = ""
     private var movesScrollY = 0
+    private val rowViews = ArrayList<Pair<Int, View>>()
     private val density = activity.resources.displayMetrics.density
     private var held = false
     private var lastSeekAt = 0L
@@ -178,6 +179,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
 
     private fun buildMoves() {
         movesPanel.removeAllViews()
+        rowViews.clear()
         val head = TextView(activity)
         head.text = tr("MANOEUVRES  {0}", moves.size)
         head.textSize = 12f
@@ -239,12 +241,14 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
             d.textSize = 13f
             d.setTextColor(0xFFB7C4D1.toInt())
             row.addView(d, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            rowViews.add(Pair(i, row))
             row.setOnClickListener {
                 touch()
                 selectedMove = i
-                actions.jumpTo(Math.max(0L, m.startMs - 2000L))
+                // only the highlight changes (the list is not built again), and the seek, which rebuilds the cards from the start, waits for the next frame so the tap shows at once
+                for (p in rowViews) p.second.setBackgroundColor(if (p.first == i) 0x5516506F else Color.TRANSPARENT)
                 if (m.kind == Manoeuvres.DIVE) showDive(m) else diveCard.visibility = View.GONE
-                buildMoves()
+                movesPanel.post { actions.jumpTo(Math.max(0L, m.startMs - 2000L)) }
             }
             movesList.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)))
         }

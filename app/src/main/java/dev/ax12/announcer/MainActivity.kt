@@ -1497,8 +1497,19 @@ class MainActivity : Activity() {
     }
 
     /** Builds the statistics and the chart up to a position, from the start of the log (after a start or a seek). */
-    private fun rebuildReplay(position: Long) {
+    private fun rebuildReplay(position: Long, forwardOnly: Boolean = false) {
         val r = replay ?: return
+        if (forwardOnly) {
+            // a jump ahead: the statistics and the chart already hold everything up to the present row, so only the rows in between are fed
+            val target = r.rowAt(position)
+            if (replayRow in 0..target) {
+                if (target > replayRow) {
+                    r.feed(replayRow + 1, target, ReplayEngine.Sink { t, numbers, _ -> replayFeed(t, numbers, true) })
+                    replayRow = target
+                }
+                return
+            }
+        }
         val log = r.log()
         replayStats = FlightStats()
         replayStats.configure(
@@ -1648,7 +1659,7 @@ class MainActivity : Activity() {
         val r = replay ?: return
         r.seek(ms.coerceIn(0L, r.durationMs()))
         flight3d.jump(r.positionExact())
-        rebuildReplay(r.positionMs())
+        rebuildReplay(r.positionMs(), forwardOnly = true)
     }
 
     private fun replaySeek(fraction: Double) {
