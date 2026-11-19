@@ -359,7 +359,6 @@ Each chart shows one value over the last seconds, with its own scale. Pick value
 Use names from the list, such as up_lq or cell.	Verwende Namen aus der Liste, zum Beispiel up_lq oder cell.
 {0}  (in use)	{0}  (in Benutzung)
 Choose the aircraft	Fluggerät wählen
-Aircraft: {0}	Fluggerät: {0}
 In use	In Benutzung
 Aircraft {0}	Fluggerät {0}
 At most {0} aircraft.	Höchstens {0} Fluggeräte.
@@ -962,3 +961,5 @@ Show the return reserve while flying	Rückflugreserve im Flug anzeigen
 Return reserve of this pack...	Rückflugreserve dieses Akkus...
 Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	Vergleicht, was im Akku übrig ist, mit dem, was der Heimflug braucht, und meldet sich, bevor der Spielraum aufgebraucht ist. Nötig sind die Kapazität des Akkus (Akkus bearbeiten) und die Position von Home. Die Werte reserve_pct und reserve_s lassen sich in Regeln, Diagrammen und Logs verwenden. Es ist ein Richtwert aus der Luftlinie und einem mittleren Strom, keine Garantie.
 Backup and restore: choose what goes in...	Sichern und Wiederherstellen: Inhalt wählen...
+SWITCHING AIRCRAFT	FLUGZEUG WIRD GEWECHSELT
+Loading its settings, rules and layout...	Einstellungen, Regeln und Layout werden geladen...

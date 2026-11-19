@@ -420,7 +420,8 @@ Each chart shows one value over the last seconds, with its own scale. Pick value
 Use names from the list, such as up_lq or cell.
 {0}  (in use)
 Choose the aircraft
-Aircraft: {0}
+SWITCHING AIRCRAFT
+Loading its settings, rules and layout...
 In use
 Aircraft {0}
 At most {0} aircraft.

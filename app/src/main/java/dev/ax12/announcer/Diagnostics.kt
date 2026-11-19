@@ -96,7 +96,7 @@ object Diagnostics {
 
         val data = BugReport.Section("Flight data")
             .add("Logging: " + (if (logger.isLogging) "recording now, " + logger.rows() + " rows, " + logger.dropped() + " dropped" else "not recording"))
-        logger.problem()?.let { data.add("Logger problem: $it") }
+        logger.problem()?.takeIf { it.isNotEmpty() }?.let { data.add("Logger problem: $it") }
         try {
             val files = LogStore.files(logDir)
             data.add("Flight logs on disk: " + files.size + " (" + mb(files.sumOf { it.length() }) + " MB)")

@@ -46,6 +46,13 @@
         </receiver>
 
         <activity
+            android:name=".SwitchCoverActivity"
+            android:exported="false"
+            android:theme="@style/SwitchCoverTheme"
+            android:screenOrientation="sensorLandscape"
+            android:excludeFromRecents="true" />
+
+        <activity
             android:name=".RulesActivity"
             android:exported="false"
             android:screenOrientation="sensorLandscape"

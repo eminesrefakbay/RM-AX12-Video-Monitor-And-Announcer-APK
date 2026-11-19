@@ -359,7 +359,6 @@ Each chart shows one value over the last seconds, with its own scale. Pick value
 Use names from the list, such as up_lq or cell.	Listedeki adları kullanın, örneğin up_lq veya cell.
 {0}  (in use)	{0}  (kullanımda)
 Choose the aircraft	Hava aracını seçin
-Aircraft: {0}	Hava aracı: {0}
 In use	Kullanımda
 Aircraft {0}	Hava aracı {0}
 At most {0} aircraft.	En fazla {0} hava aracı olabilir.
@@ -962,3 +961,5 @@ Show the return reserve while flying	Uçarken dönüş yedeğini göster
 Return reserve of this pack...	Bu paketin dönüş yedeği...
 Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	Paketde kalanı eve dönüşün alacağıyla karşılaştırır ve pay bitmeden önce seslenir. Paketin kapasitesi (Paketleri düzenle) ve ev konumu gerekir. reserve_pct ve reserve_s değerleri kurallarda, grafiklerde ve kayıtlarda kullanılabilir. Düz çizgi mesafesine ve ortalama akıma dayanan bir kılavuzdur, söz değildir.
 Backup and restore: choose what goes in...	Yedekle ve geri yükle: içeriği seç...
+SWITCHING AIRCRAFT	UÇAK DEĞİŞTİRİLİYOR
+Loading its settings, rules and layout...	Ayarları, kuralları ve yerleşimi yükleniyor...

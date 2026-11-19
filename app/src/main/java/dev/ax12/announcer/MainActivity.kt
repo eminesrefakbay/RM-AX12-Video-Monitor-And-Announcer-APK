@@ -366,6 +366,8 @@ class MainActivity : Activity() {
         applyTiles()
         applyFlightConfig()
 
+        if (SwitchCoverActivity.showing) Diagnostics.event("aircraft", "new screen built, closing the loading screen")
+        if (SwitchCoverActivity.showing) Handler(Looper.getMainLooper()).postDelayed({ SwitchCoverActivity.finishCover() }, 600)   // the screen is built: the loading screen goes
         if (savedInstanceState == null) backupReminder()
         // a fresh start (not a turn of the screen or a return from the background): logo and version for 2 seconds
         if (savedInstanceState == null && Prefs.bool(this, "splashOn", true)) {
@@ -712,7 +714,7 @@ class MainActivity : Activity() {
         ui.removeCallbacks(holdFire)
         extras.onPause()                                // a landing that waits for the rest voltage is counted now
         flightLogger.close()                            // the file is complete whenever the screen is left
-        flightLogger.problem()?.let { Diagnostics.event("logger", it, "warn") }
+        flightLogger.problem()?.takeIf { it.isNotEmpty() }?.let { Diagnostics.event("logger", it, "warn") }
         camera.stop()
         forgetSdk()                                     // the radio link itself is shut down by App, when no screen of the app is on show
         super.onPause()
@@ -2698,12 +2700,18 @@ class MainActivity : Activity() {
         )
     }
 
-    /** Saves this aircraft's settings, loads the other one's, and builds the screens again. */
+    /** Saves this aircraft's settings, loads the other one's, and builds the screens again behind a loading screen. */
     private fun switchAircraft(id: String) {
         if (id == Aircraft.store(this).activeId()) return
-        if (!Aircraft.switchTo(this, id)) return
-        Toasts.make(this, tr("Aircraft: {0}", Aircraft.activeName(this)), Toast.LENGTH_LONG).show()
-        recreate()
+        val name = Aircraft.store(this).list().firstOrNull { it.id == id }?.name ?: return
+        holdLink(HOLD_REBUILD_MS * 2)                    // the loading screen is in front for a moment: the radio link stays
+        Diagnostics.event("aircraft", "switch to " + name + ": loading screen asked for")
+        SwitchCoverActivity.show(this, name)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!Aircraft.switchTo(this, id)) { SwitchCoverActivity.finishCover(); return@postDelayed }
+            Diagnostics.event("aircraft", "settings of " + name + " loaded, building the screen again (loading screen showing: " + SwitchCoverActivity.showing + ")")
+            recreate()
+        }, 350)
     }
 
     private fun manageAircraft() {

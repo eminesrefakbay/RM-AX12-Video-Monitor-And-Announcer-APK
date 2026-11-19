@@ -359,7 +359,6 @@ Each chart shows one value over the last seconds, with its own scale. Pick value
 Use names from the list, such as up_lq or cell.	请使用列表中的名称, 例如 up_lq 或 cell。
 {0}  (in use)	{0}  (使用中)
 Choose the aircraft	选择飞行器
-Aircraft: {0}	飞行器: {0}
 In use	使用中
 Aircraft {0}	飞行器 {0}
 At most {0} aircraft.	最多 {0} 个飞行器。
@@ -962,3 +961,5 @@ Show the return reserve while flying	飞行时显示返航余量
 Return reserve of this pack...	此电池包的返航余量...
 Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.	将电池包剩余电量与返航所需电量比较，并在余量用完前提醒。需要电池包容量（编辑电池包）和起飞点位置。数值 reserve_pct 和 reserve_s 可用于规则、图表和日志。这是依据直线距离和平均电流得出的大致值，并非保证。
 Backup and restore: choose what goes in...	备份与恢复：选择内容...
+SWITCHING AIRCRAFT	正在切换飞机
+Loading its settings, rules and layout...	正在加载其设置、规则和布局...
