@@ -882,13 +882,11 @@ Farthest	Weiteste Entfernung
 Top speed	Höchstes Tempo
 Average {0} km/h	Durchschnitt {0} km/h
 Battery used	Akku verbraucht
-Energy	Energie
 Lowest cell	Niedrigste Zelle
 Peak current	Spitzenstrom
 Approval window at the end	Freigabefenster am Ende
 {0} min left	{0} min übrig
 Over by {0} min	{0} min überschritten
-Manoeuvres found	Manöver gefunden
 {0} dives, {1} rolls, {2} flips	{0} Sturzflüge, {1} Rollen, {2} Flips
 Copy the report text	Berichtstext kopieren
 Copied	Kopiert
@@ -963,3 +961,15 @@ Compares what is left in the pack with what the flight home would take, and call
 Backup and restore: choose what goes in...	Sichern und Wiederherstellen: Inhalt wählen...
 SWITCHING AIRCRAFT	FLUGZEUG WIRD GEWECHSELT
 Loading its settings, rules and layout...	Einstellungen, Regeln und Layout werden geladen...
+No dives, rolls or flips were found in this flight.	In diesem Flug wurden keine Sturzflüge, Rollen oder Flips gefunden.
+This log has no height values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.	In diesem Log fehlen die Höhenwerte, daher lassen sich keine Manöver finden. Zeichne sie auf (Einstellungen > Flug-Logs), um sie in späteren Flügen zu sehen.
+This log has no pitch and roll values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.	In diesem Log fehlen Nick- und Rollwerte, daher lassen sich keine Manöver finden. Zeichne sie auf (Einstellungen > Flug-Logs), um sie in späteren Flügen zu sehen.
+Armed to disarmed	Von Scharf bis Entschärft
+From the arming point	Vom Arming-Punkt
+Under load, at {0}	Unter Last, bei {0}
+Peak power {0} kW	Spitzenleistung {0} kW
+Landing	Landung
+{0} % left	{0} % übrig
+Per cell, at the end	Pro Zelle, am Ende
+VOLTAGE AND CURRENT	SPANNUNG UND STROM
+TRACK	SPUR

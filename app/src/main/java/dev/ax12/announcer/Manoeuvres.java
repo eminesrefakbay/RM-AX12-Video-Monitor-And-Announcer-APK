@@ -63,6 +63,13 @@ public final class Manoeuvres {
         return v;
     }
 
+    /** What the log lacks for finding manoeuvres: "height", "attitude (pitch and roll)", or "" when it has what is needed. */
+    public static String missing(FlightLog log) {
+        if (log.indexOf("height") < 0 && log.indexOf("gps_alt") < 0) return "height";
+        if (log.indexOf("pitch") < 0 || log.indexOf("roll") < 0) return "attitude (pitch and roll)";
+        return "";
+    }
+
     /** The height above the arming point: the logged height, or the GPS altitude minus its first value when the height was not logged. */
     public static double[] heights(FlightLog log) {
         double[] h = column(log, "height");

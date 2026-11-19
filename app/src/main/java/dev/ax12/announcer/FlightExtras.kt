@@ -64,6 +64,14 @@ class FlightExtras(
     val positionPanel = InfoPanel(activity, { tr("Last known position") }) { buildPosition(it) }
 
     private fun dp(v: Int): Int = (v * density + 0.5f).toInt()
+
+    /** The replay's button rail takes the right edge: the approval-window chip steps aside while a replay is open. */
+    fun replayMode(on: Boolean) {
+        val lp = chip.view.layoutParams as? FrameLayout.LayoutParams ?: return
+        lp.rightMargin = dp(if (on) 76 else 8)
+        chip.view.layoutParams = lp
+    }
+
     private fun code(): String = Lang.speechCode(activity)
 
     init {

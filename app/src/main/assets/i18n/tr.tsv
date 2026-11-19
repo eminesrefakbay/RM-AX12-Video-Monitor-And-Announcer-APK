@@ -882,13 +882,11 @@ Farthest	En uzak
 Top speed	En yüksek hız
 Average {0} km/h	Ortalama {0} km/sa
 Battery used	Kullanılan batarya
-Energy	Enerji
 Lowest cell	En düşük hücre
 Peak current	Tepe akım
 Approval window at the end	Sonda onay penceresi
 {0} min left	{0} dk kaldı
 Over by {0} min	{0} dk aşıldı
-Manoeuvres found	Bulunan manevralar
 {0} dives, {1} rolls, {2} flips	{0} dalış, {1} rulo, {2} takla
 Copy the report text	Rapor metnini kopyala
 Copied	Kopyalandı
@@ -963,3 +961,15 @@ Compares what is left in the pack with what the flight home would take, and call
 Backup and restore: choose what goes in...	Yedekle ve geri yükle: içeriği seç...
 SWITCHING AIRCRAFT	UÇAK DEĞİŞTİRİLİYOR
 Loading its settings, rules and layout...	Ayarları, kuralları ve yerleşimi yükleniyor...
+No dives, rolls or flips were found in this flight.	Bu uçuşta dalış, rulo veya takla bulunamadı.
+This log has no height values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.	Bu kayıtta yükseklik değerleri yok, bu yüzden manevralar bulunamaz. Sonraki uçuşlarda görmek için kaydet (Ayarlar > Uçuş kayıtları).
+This log has no pitch and roll values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.	Bu kayıtta yunuslama ve yatış değerleri yok, bu yüzden manevralar bulunamaz. Sonraki uçuşlarda görmek için kaydet (Ayarlar > Uçuş kayıtları).
+Armed to disarmed	Arm'dan disarm'a
+From the arming point	Arm noktasından
+Under load, at {0}	Yük altında, {0} anında
+Peak power {0} kW	Tepe güç {0} kW
+Landing	İniş
+{0} % left	%{0} kaldı
+Per cell, at the end	Hücre başına, sonda
+VOLTAGE AND CURRENT	GERİLİM VE AKIM
+TRACK	İZ

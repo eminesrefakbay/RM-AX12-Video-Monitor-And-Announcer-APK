@@ -69,6 +69,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private var logHeights = DoubleArray(0)
     private var movesFilter: String? = null
     private var selectedMove = -1
+    private var movesMissing = ""
     private val density = activity.resources.displayMetrics.density
     private var held = false
     private var lastSeekAt = 0L
@@ -138,13 +139,14 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     // ------------------------------------------------------------------ the manoeuvres
 
     /** The dives, rolls and flips of the flight, and the log's heights (for the chart of a dive). The button shows only when there are some. */
-    fun setMoves(items: List<Manoeuvres.Item>, times: LongArray, heights: DoubleArray) {
+    fun setMoves(items: List<Manoeuvres.Item>, times: LongArray, heights: DoubleArray, missing: String = "") {
         moves = items
+        movesMissing = missing
         logTimes = times
         logHeights = heights
         movesFilter = null
         selectedMove = -1
-        movesRail.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
+        movesRail.alpha = if (items.isEmpty()) 0.55f else 1f
         movesPanel.visibility = View.GONE
         diveCard.visibility = View.GONE
     }
@@ -180,6 +182,15 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         head.textSize = 12f
         head.setTextColor(CardStyle.LABEL)
         movesPanel.addView(head)
+        if (moves.isEmpty()) {
+            val none = TextView(activity)
+            none.text = if (movesMissing.isEmpty()) tr("No dives, rolls or flips were found in this flight.") else if (movesMissing == "height") tr("This log has no height values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.") else tr("This log has no pitch and roll values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.")
+            none.textSize = 14f
+            none.setTextColor(Color.WHITE)
+            none.setPadding(0, dp(10), 0, dp(10))
+            movesPanel.addView(none)
+            return
+        }
         movesChips.removeAllViews()
         movesChips.orientation = LinearLayout.HORIZONTAL
         val kinds = arrayOf<String?>(null, Manoeuvres.DIVE, Manoeuvres.ROLL, Manoeuvres.FLIP)
@@ -383,7 +394,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
 
     private fun railButton(v: ImageView, name: String, click: () -> Unit) {
         iconButton(v, name, click = click)
-        rail.addView(v, LinearLayout.LayoutParams(dp(56), dp(56)).also { it.bottomMargin = dp(8) })
+        rail.addView(v, LinearLayout.LayoutParams(dp(CardStyle.MIN_TOUCH_DP), dp(CardStyle.MIN_TOUCH_DP)).also { it.bottomMargin = dp(4) })
     }
 
     private fun buildRail() {
@@ -397,7 +408,6 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height")), trailMode) { actions.trail(it) } }
         railButton(cardsRail, "cards") { cardsOn = !cardsOn; paintToggles(); actions.cards(cardsOn) }
         railButton(movesRail, "moves") { toggleMoves() }
-        movesRail.visibility = View.GONE
         railButton(ImageView(activity), "snapshot") { closeMenu(); actions.snapshot() }
     }
 

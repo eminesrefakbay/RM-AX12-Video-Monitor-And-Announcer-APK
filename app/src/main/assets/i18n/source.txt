@@ -420,8 +420,6 @@ Each chart shows one value over the last seconds, with its own scale. Pick value
 Use names from the list, such as up_lq or cell.
 {0}  (in use)
 Choose the aircraft
-SWITCHING AIRCRAFT
-Loading its settings, rules and layout...
 In use
 Aircraft {0}
 At most {0} aircraft.
@@ -433,26 +431,7 @@ Add pack
 Pack {0}
 Each pack uses a battery profile (its limits). Choosing a pack in the menu switches to its profile. The capacity is for your records (0 = unknown). With no packs, the menu switches the profile directly.
 Enter numbers in every field
-Flight time
-Highest
-Above 120 m for {0} s
-Farthest
-Top speed
-Average {0} km/h
-Battery used
-Energy
-Lowest cell
-Peak current
-Approval window at the end
-{0} min left
-Over by {0} min
-Manoeuvres found
-{0} dives, {1} rolls, {2} flips
-Copy the report text
 Copied
-Flight summary
-Replay in 3D
-Export...
 GPX track
 KML path with heights
 CSV, every value
@@ -532,14 +511,19 @@ Dive
 Roll
 Flip
 MANOEUVRES  {0}
+No dives, rolls or flips were found in this flight.
+This log has no height values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.
+This log has no pitch and roll values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.
 All
 Found from the height and the attitude in the log. A quick roll or flip in a slow log can be missed.
 DIVE REPORT  {0}
 Start
 Height lost
 Dive angle
+Top speed
 Fall time
 Recovery
+Peak current
 {0}x
 Chase
 Orbit
@@ -836,6 +820,32 @@ Plain rectangles
 Video monitor
 HUD  ·  voice announcer
 Version {0}  ·  Build {1}
+Flight summary
+Approval window at the end
+{0} min left
+Over by {0} min
+Flight time
+Armed to disarmed
+Highest
+Above 120 m for {0} s
+Farthest
+From the arming point
+Average {0} km/h
+Battery used
+Lowest cell
+Under load, at {0}
+Peak power {0} kW
+Landing
+{0} % left
+Per cell, at the end
+VOLTAGE AND CURRENT
+TRACK
+Replay in 3D
+Export...
+Copy the report text
+{0} dives, {1} rolls, {2} flips
+SWITCHING AIRCRAFT
+Loading its settings, rules and layout...
 Use {variable} for a live value, for example {vbat/6:2}.
 A divisor in { } cannot be 0.
 Canceled

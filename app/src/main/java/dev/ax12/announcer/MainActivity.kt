@@ -1451,6 +1451,7 @@ class MainActivity : Activity() {
         shown.started = log.meta("started", "")
         val title = tr("REPLAY") + "  " + LogText.dateTime(shown) + (if (log.meta("aircraft", "").isEmpty()) "" else "  \u00B7  " + log.meta("aircraft", ""))
         replayUi.show(title)
+        extras.replayMode(true)
         val path = FlightPath.build(log)
         if (path.n >= 2) { flight3d.bind(path); flight3d.visibility = View.VISIBLE } else { flight3d.bind(null); flight3d.visibility = View.GONE }
         flight3d.model = Prefs.int(this, "replayModel", 0).coerceIn(0, 1)
@@ -1464,7 +1465,7 @@ class MainActivity : Activity() {
         val total = log.durationMs().coerceAtLeast(1L).toDouble()
         replayUi.setMarks(DoubleArray(times.size) { (times[it] / total).coerceIn(0.0, 1.0) }, IntArray(times.size) { markColor(path, times[it]) })
         val moves = Manoeuvres.detect(log)
-        replayUi.setMoves(moves, log.time, Manoeuvres.heights(log))
+        replayUi.setMoves(moves, log.time, Manoeuvres.heights(log), Manoeuvres.missing(log))
         if (moves.isNotEmpty()) {
             val f = DoubleArray(times.size + moves.size)
             val c = IntArray(f.size)
@@ -1487,6 +1488,7 @@ class MainActivity : Activity() {
         flight3d.bind(null)
         flight3d.visibility = View.GONE
         replayUi.hide()
+        extras.replayMode(false)
         replayCardsOn = true
         replayMarks = null
         fader.set(sticksView, sticksEnabled)
@@ -2918,55 +2920,11 @@ class MainActivity : Activity() {
 
     private fun showSummary(log: FlightLog, file: File, moves: List<Manoeuvres.Item>) {
         val s = FlightSummary.build(log, capacityForLog(log), 120.0)
-        val body = LinearLayout(this)
-        body.orientation = LinearLayout.VERTICAL
-        body.setPadding(dp(16), dp(8), dp(16), dp(8))
-        fun line(label: String, value: String, warn: Boolean = false) {
-            val row = LinearLayout(this)
-            row.orientation = LinearLayout.HORIZONTAL
-            val l = TextView(this)
-            l.text = label
-            l.textSize = 14f
-            val v = TextView(this)
-            v.text = value
-            v.textSize = 16f
-            v.setTypeface(null, android.graphics.Typeface.BOLD)
-            if (warn) v.setTextColor(CardStyle.WARN)
-            row.addView(l, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            row.addView(v)
-            body.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(32)))
-        }
-        fun n0(v: Double, unit: String) = if (v.isNaN()) "-" else Math.round(v).toString() + " " + unit
-        val head = TextView(this)
-        head.text = s.started + (if (s.aircraft.isEmpty()) "" else "  \u00B7  " + s.aircraft) + (if (s.pack.isEmpty()) "" else "  \u00B7  " + s.pack)
-        head.textSize = 12f
-        body.addView(head)
-        line(tr("Flight time"), FlightSummary.clock(s.durationMs))
-        line(tr("Highest"), n0(s.maxHeight, "m") + (if (s.aboveLimitS >= 1) "  (" + tr("Above 120 m for {0} s", Math.round(s.aboveLimitS)) + ")" else ""), s.aboveLimitS >= 1)
-        line(tr("Farthest"), if (s.maxDist.isNaN()) "-" else String.format(Locale.US, "%.2f km", s.maxDist / 1000.0))
-        line(tr("Top speed"), n0(s.topSpeed, "km/h") + (if (s.avgSpeed.isNaN()) "" else "  (" + tr("Average {0} km/h", Math.round(s.avgSpeed)) + ")"))
-        line(tr("Battery used"), n0(s.mah, "mAh") + (if (s.packPct.isNaN()) "" else "  (" + Math.round(s.packPct) + " %)"))
-        line(tr("Energy"), if (s.wh.isNaN()) "-" else String.format(Locale.US, "%.1f Wh", s.wh))
-        line(tr("Lowest cell"), if (s.minCell.isNaN()) "-" else String.format(Locale.US, "%.2f V", s.minCell), !s.minCell.isNaN() && s.minCell < 3.3)
-        line(tr("Peak current"), n0(s.peakCurrent, "A") + (if (s.peakPowerW.isNaN()) "" else "  (" + String.format(Locale.US, "%.1f kW", s.peakPowerW / 1000.0) + ")"))
-        if (!s.windowLeftMin.isNaN()) line(tr("Approval window at the end"), if (s.windowLeftMin >= 0) tr("{0} min left", Math.round(s.windowLeftMin)) else tr("Over by {0} min", Math.round(-s.windowLeftMin)), s.windowLeftMin < 0)
-        line(tr("Manoeuvres found"), tr("{0} dives, {1} rolls, {2} flips", Manoeuvres.count(moves, Manoeuvres.DIVE), Manoeuvres.count(moves, Manoeuvres.ROLL), Manoeuvres.count(moves, Manoeuvres.FLIP)))
-        val copy = Button(this)
-        copy.text = tr("Copy the report text")
-        copy.isAllCaps = false
-        copy.setOnClickListener { copyToClipboard(s.reportText()); Toasts.make(this, tr("Copied"), Toast.LENGTH_SHORT).show() }
-        body.addView(copy, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)).also { it.topMargin = dp(8) })
-        val scroll = ScrollView(this)
-        scroll.addView(body)
-        Immersive.show(
-            Sunlight.builder(this)
-                .setTitle(tr("Flight summary"))
-                .setView(scroll)
-                .setPositiveButton(tr("Replay in 3D")) { _, _ -> logViewer.hide(); startReplay(log, file.name) }
-                .setNeutralButton(tr("Export...")) { _, _ -> chooseExport(log, file) }
-                .setNegativeButton(tr("Close"), null)
-                .create()
-        )
+        SummaryPage(this, log, s, moves, object : SummaryPage.Actions {
+            override fun replay() { logViewer.hide(); startReplay(log, file.name) }
+            override fun export() { chooseExport(log, file) }
+            override fun copyText() { copyToClipboard(s.reportText()); Toasts.make(this@MainActivity, tr("Copied"), Toast.LENGTH_SHORT).show() }
+        }).show()
     }
 
     private fun chooseExport(log: FlightLog, file: File) {

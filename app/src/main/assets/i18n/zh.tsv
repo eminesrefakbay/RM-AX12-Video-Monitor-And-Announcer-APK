@@ -882,13 +882,11 @@ Farthest	最远
 Top speed	最高速度
 Average {0} km/h	平均 {0} 公里/小时
 Battery used	已用电量
-Energy	能量
 Lowest cell	最低单节电压
 Peak current	峰值电流
 Approval window at the end	结束时的批准窗口
 {0} min left	剩余 {0} 分钟
 Over by {0} min	超出 {0} 分钟
-Manoeuvres found	检测到的机动
 {0} dives, {1} rolls, {2} flips	{0} 次俯冲、{1} 次横滚、{2} 次转圈
 Copy the report text	复制报告文本
 Copied	已复制
@@ -963,3 +961,15 @@ Compares what is left in the pack with what the flight home would take, and call
 Backup and restore: choose what goes in...	备份与恢复：选择内容...
 SWITCHING AIRCRAFT	正在切换飞机
 Loading its settings, rules and layout...	正在加载其设置、规则和布局...
+No dives, rolls or flips were found in this flight.	此次飞行中没有检测到俯冲、横滚或转圈。
+This log has no height values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.	此日志没有高度数值，无法检测机动。请在设置 > 飞行日志中记录，之后的飞行就能看到。
+This log has no pitch and roll values, so manoeuvres cannot be found. Log them (Settings > Flight logs) to see them in later flights.	此日志没有俯仰和横滚数值，无法检测机动。请在设置 > 飞行日志中记录，之后的飞行就能看到。
+Armed to disarmed	从解锁到上锁
+From the arming point	距起飞点
+Under load, at {0}	负载下，在 {0}
+Peak power {0} kW	峰值功率 {0} kW
+Landing	降落
+{0} % left	剩余 {0} %
+Per cell, at the end	每节，结束时
+VOLTAGE AND CURRENT	电压与电流
+TRACK	航迹
