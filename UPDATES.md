@@ -71,7 +71,7 @@ A tag that already exists is never moved: use a new tag for each release.
 - Only `https://github.com/...` addresses are used, and only for two files: `update.json` and the APK.
 - The APK's SHA-256 is checked against `update.json` before Android is asked to install it.
 - Android itself refuses an APK that is not signed with your key, so nobody else can push a "fake update".
-- Nothing is sent to anyone: the app only asks for those two files. It has the internet permission for that and nothing else.
+- Nothing is sent to anyone: the update check only asks for those two files. The app also uses the internet permission to fetch map tiles for the 3D replay (see the Privacy section of the README), and for nothing else.
 - Do not update during a flight: the app restarts. The control link does not depend on the app, but your video and warnings do.
 
 ## When something goes wrong

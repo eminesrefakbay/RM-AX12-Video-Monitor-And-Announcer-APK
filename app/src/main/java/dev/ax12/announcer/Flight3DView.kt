@@ -8,6 +8,7 @@ package dev.ax12.announcer
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.LightingColorFilter
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Path
@@ -25,6 +26,14 @@ import android.view.View
  */
 class Flight3DView(context: Context) : View(context) {
     private var path: FlightPath? = null
+    /** The map laid on the ground; null when there is none (switched off, or no position). The screen owns it and sets it after [bind]. */
+    private var map: MapLayer? = null
+    /** False: the ground is drawn without the map (the replay's Map button). */
+    var mapOn = true
+    private val meshVerts = FloatArray((MapLayer.GRID + 1) * (MapLayer.GRID + 1) * 2)
+    private val mapPt = DoubleArray(3)
+    private val mapPaint = Paint(Paint.FILTER_BITMAP_FLAG)
+    private val creditBg = Paint()
     /** What the aircraft is drawn as: MODEL_QUAD or MODEL_PLANE. */
     var model = MODEL_QUAD
     private val cam = Cam3D()
@@ -99,6 +108,7 @@ class Flight3DView(context: Context) : View(context) {
         skyPaint.style = Paint.Style.FILL
         groundPaint.style = Paint.Style.FILL
         groundPaint.color = 0xFF17222D.toInt()
+        mapPaint.colorFilter = LightingColorFilter(0xFFB8B8B8.toInt(), 0)      // a little darker, so the trail and the flags stand out from it
         gridPaint.style = Paint.Style.STROKE
         gridPaint.strokeWidth = dp(1f)
         gridPaint.color = 0x4090A4AE
@@ -177,8 +187,16 @@ class Flight3DView(context: Context) : View(context) {
 
     // ------------------------------------------------------------------ what the screen tells it
 
+    /** Puts the map of the flight under it (null takes it away); the old one stops loading. */
+    fun setMap(layer: MapLayer?) {
+        if (map !== layer) map?.close()
+        map = layer
+        postInvalidateOnAnimation()
+    }
+
     /** The flight to show; null when the log holds no position. */
     fun bind(p: FlightPath?) {
+        setMap(null)                                                  // a new flight has its own map
         path = if (p != null && p.n >= 2) p else null
         val pp = path
         if (pp != null) {
@@ -282,12 +300,14 @@ class Flight3DView(context: Context) : View(context) {
         cam.update(pose, dt)
 
         drawSkyAndGround(canvas, w, h)
-        drawGrid(canvas)
+        val mapShown = drawMap(canvas, w, h)
+        if (!mapShown) drawGrid(canvas)
         drawRibbon(canvas, p)
         drawHome(canvas)
         drawFlags(canvas, p)
         drawAircraft(canvas)
         drawLegend(canvas, w, h)
+        if (mapShown) drawCredit(canvas, h)
 
         if (isAttachedToWindow) postInvalidateOnAnimation()          // the next screen frame: this is what keeps it smooth
     }
@@ -312,6 +332,64 @@ class Flight3DView(context: Context) : View(context) {
         val horizon = (h / 2 + cam.focal() * Math.tan(cam.pitchRad())).toFloat().coerceIn(-h, 2 * h)
         if (horizon < h) canvas.drawRect(0f, horizon.coerceAtLeast(0f), w, h, groundPaint)
         if (horizon > 0f && horizon < h) canvas.drawLine(0f, horizon, w, horizon, hazePaint)
+    }
+
+    /**
+     * The map tiles on the ground, each as a mesh of the picture laid on projected ground points (the picture is warped to the perspective; a finer
+     * mesh near the camera, a coarser one far away). Tiles that are behind the camera or off the screen are skipped. True when at least one tile was drawn.
+     */
+    private fun drawMap(canvas: Canvas, w: Float, h: Float): Boolean {
+        val m = map ?: return false
+        if (!mapOn || m.tiles.isEmpty()) return false
+        var drew = false
+        val n = MapLayer.GRID
+        val corners = intArrayOf(0, n, n * (n + 1), n * (n + 1) + n)
+        for (i in m.tiles.indices) {
+            val g = m.grid[i]
+            var behind = 0
+            var minX = Float.MAX_VALUE
+            var maxX = -Float.MAX_VALUE
+            var minY = Float.MAX_VALUE
+            var maxY = -Float.MAX_VALUE
+            for (c in corners) {
+                cam.projectClamped(g[c * 2], g[c * 2 + 1], 0.0, MAP_MIN_DEPTH, mapPt)
+                if (mapPt[2] < Cam3D.NEAR) behind++
+                val sx = mapPt[0].toFloat()
+                val sy = mapPt[1].toFloat()
+                if (sx < minX) minX = sx
+                if (sx > maxX) maxX = sx
+                if (sy < minY) minY = sy
+                if (sy > maxY) maxY = sy
+            }
+            if (behind == 4) continue                                                       // wholly behind the camera
+            if (behind == 0 && (maxX < 0f || minX > w || maxY < 0f || minY > h)) continue   // wholly off the screen
+            val bmp = m.bitmap(i) ?: continue
+            val near = Math.hypot(cam.ex - m.centerX[i], cam.ey - m.centerY[i]) < m.size * 2.5
+            val step = if (near) 1 else 2
+            val cells = n / step
+            var k = 0
+            for (j in 0..cells) for (c in 0..cells) {
+                val idx = (j * step * (n + 1) + c * step) * 2
+                cam.projectClamped(g[idx], g[idx + 1], 0.0, MAP_MIN_DEPTH, mapPt)
+                meshVerts[k++] = mapPt[0].toFloat()
+                meshVerts[k++] = mapPt[1].toFloat()
+            }
+            canvas.drawBitmapMesh(bmp, cells, cells, meshVerts, 0, null, 0, mapPaint)
+            drew = true
+        }
+        return drew
+    }
+
+    /** The credit of the map source, small, in the bottom left corner. The map's licence asks for it. */
+    private fun drawCredit(canvas: Canvas, h: Float) {
+        val text = map?.attribution ?: return
+        if (text.isEmpty()) return
+        textPaint.textSize = dp(10f)
+        textPaint.color = 0xFFFFFFFF.toInt()
+        val tw = textPaint.measureText(text)
+        creditBg.color = 0x99000000.toInt()
+        canvas.drawRect(0f, h - dp(18f), tw + dp(12f), h, creditBg)
+        canvas.drawText(text, dp(6f), h - dp(5f), textPaint)
     }
 
     private fun niceStep(v: Double): Double {
@@ -582,6 +660,8 @@ class Flight3DView(context: Context) : View(context) {
         const val TRAIL_SPEED = 0
         const val TRAIL_HEIGHT = 1
         const val RIBBON_STEP_MS = 250L
+        /** A ground point behind the camera is drawn as if this far in front of it (see Cam3D.projectClamped). */
+        const val MAP_MIN_DEPTH = 0.8
         const val BAND_COUNT = 8
         const val MAX_LABELS = 24
         const val TRAIL_POINTS = 240          // 60 s of the ribbon behind the aircraft in the chase view

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.16.0
+
+A map under the 3D replay. The ground of the replay is now a map: the tiles of OpenStreetMap by default, or the tile address of your own, laid on the ground in
+perspective under the ribbon. The tiles that cover a flight are fetched once when you open its replay and kept on the radio, so the map also shows
+without a network at the field. A Map button in the replay and a switch in Settings (Display) turn it on and off; without a map the grid stays. The credit of the map
+shows in the corner. The settings backup holds the switch and the tile address, and only takes an https address with the tile placeholders.
+
 ## 1.15.4
 
 The replay: the buttons on the right no longer reach down onto the player bar (they use two columns when the screen is too short for one), and the red

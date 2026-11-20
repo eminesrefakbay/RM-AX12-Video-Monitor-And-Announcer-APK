@@ -48,6 +48,10 @@ interface SettingsHost {
     fun openRulesText()
     fun splashOn(): Boolean
     fun setSplashOn(on: Boolean)
+    fun mapOn(): Boolean
+    fun setMapOn(on: Boolean)
+    fun mapSourceLabel(): String
+    fun editMapSource()
     fun menuAlways(): Boolean
     fun sunlightOn(): Boolean
     fun shapeLabel(): String
@@ -610,6 +614,9 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         toggle(tr("Always show the MENU button"), host.menuAlways()) { host.setMenuAlways(it) }
         note(tr("Off: the button hides and appears when you touch the screen."))
         toggle(tr("Start-up splash screen (animated, about 3 seconds)"), host.splashOn()) { host.setSplashOn(it) }
+        toggle(tr("Map under the 3D replay"), host.mapOn()) { host.setMapOn(it) }
+        valueRow(tr("Map tiles from"), host.mapSourceLabel()) { host.editMapSource() }
+        note(tr("The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at."))
         note(tr("Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD."))
     }
 

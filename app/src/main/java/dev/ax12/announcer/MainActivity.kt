@@ -96,6 +96,7 @@ class MainActivity : Activity() {
     private lateinit var diagPanel: InfoPanel
     private lateinit var replayUi: ReplayOverlay
     private var replay: ReplayEngine? = null
+    private var replayPath: FlightPath? = null
     private lateinit var flight3d: Flight3DView           // the 3D replay: drawn over the backdrop, under the cards
     private var replayStats = FlightStats()               // the replay's own statistics: the live ones are never touched
     private var replayChart = ChartModel()
@@ -307,6 +308,7 @@ class MainActivity : Activity() {
             override fun model(model: Int) { setReplayModel(model) }
             override fun trail(mode: Int) { setReplayTrail(mode) }
             override fun cards(show: Boolean) { setReplayCards(show) }
+            override fun map(on: Boolean) { setReplayMap(on) }
             override fun snapshot() { replaySnapshot() }
             override fun jumpTo(ms: Long) { replayJumpTo(ms) }
         })
@@ -1145,6 +1147,10 @@ class MainActivity : Activity() {
         override fun setUpdateAuto(on: Boolean) { Prefs.setBool(this@MainActivity, "updateAuto", on) }
         override fun splashOn(): Boolean = Prefs.bool(this@MainActivity, "splashOn", true)
         override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
+        override fun mapOn(): Boolean = Prefs.bool(this@MainActivity, "mapOn", true)
+        override fun setMapOn(on: Boolean) { this@MainActivity.setReplayMap(on) }
+        override fun mapSourceLabel(): String = MapTiles.sourceName(MapTiles.templateOrDefault(Prefs.string(this@MainActivity, "mapUrl", "")))
+        override fun editMapSource() { this@MainActivity.editMapSourceDialog() }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)
         override fun sunlightOn(): Boolean = Sunlight.on
         override fun trackerOn(): Boolean = this@MainActivity.trackerOn
@@ -1453,13 +1459,15 @@ class MainActivity : Activity() {
         replayUi.show(title)
         extras.replayMode(true)
         val path = FlightPath.build(log)
+        replayPath = path
         if (path.n >= 2) { flight3d.bind(path); flight3d.visibility = View.VISIBLE } else { flight3d.bind(null); flight3d.visibility = View.GONE }
         flight3d.model = Prefs.int(this, "replayModel", 0).coerceIn(0, 1)
         flight3d.trailMode = Prefs.int(this, "replayTrail", Flight3DView.TRAIL_SPEED).coerceIn(0, 1)
         replayCardsOn = true
         replayUi.setCards(true)
         replayUi.setLoop(false)
-        replayUi.set3d(path.n >= 2, flight3d.cameraMode(), flight3d.model, flight3d.trailMode)
+        applyReplayMap()
+        replayUi.set3d(path.n >= 2, flight3d.cameraMode(), flight3d.model, flight3d.trailMode, flight3d.mapOn)
         val times = path.markerTimes()
         replayMarks = times
         val total = log.durationMs().coerceAtLeast(1L).toDouble()
@@ -1485,6 +1493,7 @@ class MainActivity : Activity() {
     private fun stopReplay() {
         if (replay == null) return
         replay = null
+        replayPath = null
         flight3d.bind(null)
         flight3d.visibility = View.GONE
         replayUi.hide()
@@ -1588,6 +1597,22 @@ class MainActivity : Activity() {
     private fun setReplayModel(model: Int) {
         flight3d.model = model.coerceIn(0, 1)
         Prefs.setInt(this, "replayModel", flight3d.model)
+    }
+
+    /** The map under the 3D replay: made when a replay opens (from the cache folder, or from the tile server for what is missing) and when the Map button or the settings change it. */
+    private fun applyReplayMap() {
+        val p = replayPath
+        val on = Prefs.bool(this, "mapOn", true)
+        flight3d.mapOn = on
+        if (!on || p == null || p.n < 2 || p.originLat.isNaN()) { flight3d.setMap(null); return }
+        val version = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (e: Exception) { "?" }
+        val agent = "AX-HUD/" + version + " (+https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK)"
+        flight3d.setMap(MapLayer(this, p, Prefs.string(this, "mapUrl", ""), Prefs.string(this, "mapCredit", ""), agent))
+    }
+
+    private fun setReplayMap(on: Boolean) {
+        Prefs.setBool(this, "mapOn", on)
+        applyReplayMap()
     }
 
     private fun setReplayTrail(mode: Int) {
@@ -1918,6 +1943,45 @@ class MainActivity : Activity() {
     }
 
     /** The minutes left at which the voice warns, as numbers separated by commas. */
+    /** The address of the map tiles and the credit to show for them. Empty means OpenStreetMap. */
+    private fun editMapSourceDialog() {
+        val body = LinearLayout(this)
+        body.orientation = LinearLayout.VERTICAL
+        body.setPadding(dp(16), dp(8), dp(16), dp(8))
+        val hint = TextView(this)
+        hint.text = tr("An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.", MapTiles.DEFAULT_URL)
+        hint.textSize = 12f
+        body.addView(hint)
+        val url = EditText(this)
+        url.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_URI
+        url.setText(Prefs.string(this, "mapUrl", ""))
+        url.hint = tr("Tile address")
+        body.addView(url)
+        val credit = EditText(this)
+        credit.inputType = android.text.InputType.TYPE_CLASS_TEXT
+        credit.setText(Prefs.string(this, "mapCredit", ""))
+        credit.hint = tr("Credit to show on the map")
+        body.addView(credit)
+        Immersive.show(
+            Sunlight.builder(this)
+                .setTitle(tr("Map tiles from"))
+                .setView(body)
+                .setPositiveButton(tr("OK")) { _, _ ->
+                    val text = url.text.toString().trim()
+                    if (text.isNotEmpty() && !MapTiles.validTemplate(text)) {
+                        Toasts.make(this, tr("Use an https address with {z}, {x} and {y} in it."), Toast.LENGTH_LONG).show()
+                    } else {
+                        Prefs.setString(this, "mapUrl", text)
+                        Prefs.setString(this, "mapCredit", credit.text.toString().trim())
+                        if (replay != null) applyReplayMap()
+                        settingsPanel.refresh()
+                    }
+                }
+                .setNegativeButton(tr("Cancel"), null)
+                .create()
+        )
+    }
+
     private fun editWindowWarn() {
         val body = LinearLayout(this)
         body.orientation = LinearLayout.VERTICAL

@@ -342,6 +342,11 @@ No events yet.
 What did you do, and what happened? Positions and addresses are removed from the note automatically.
 Describe the problem (optional)
 OK
+An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.
+Tile address
+Credit to show on the map
+Map tiles from
+Use an https address with {z}, {x} and {y} in it.
 Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.
 Warn at (minutes left)
 Use whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1.
@@ -695,6 +700,8 @@ Dark text on light backgrounds for the menu, the settings, the other screens and
 Always show the MENU button
 Off: the button hides and appears when you touch the screen.
 Start-up splash screen (animated, about 3 seconds)
+Map under the 3D replay
+The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.
 Active aircraft
 Manage the aircraft (add, rename, delete)...
@@ -840,10 +847,10 @@ Landing
 Per cell, at the end
 VOLTAGE AND CURRENT
 TRACK
+{0} dives, {1} rolls, {2} flips
 Replay in 3D
 Export...
 Copy the report text
-{0} dives, {1} rolls, {2} flips
 SWITCHING AIRCRAFT
 Loading its settings, rules and layout...
 Use {variable} for a live value, for example {vbat/6:2}.

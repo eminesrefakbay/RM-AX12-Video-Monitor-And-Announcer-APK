@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.15.4)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.16.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 > **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
@@ -17,6 +17,10 @@
 * only **reads** from the radio. It never writes a setting.
 
 ## What's new
+
+**1.16: a map under the 3D replay (1.16.0)**
+
+* **A real map on the ground of the 3D replay.** The tiles of OpenStreetMap (or a tile address of your own, for example a satellite map) are laid on the ground under the ribbon, in perspective, so you see where the flight went: the field, the road, the trees. The tiles of a flight are loaded once, when you open its replay, and kept on the radio, so the map also shows at the field without a network. A Map button in the replay switches it on and off; Settings > Display has the switch and the source. The grid comes back when there is no map.
 
 **1.15: flight tools (1.15.0)**
 
@@ -75,7 +79,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,312 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,437 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -295,6 +299,7 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
 When the log holds a position (a GPS fix with at least 6 satellites), the replay shows the flight in 3D behind the cards. The cards, charts and
 scrub bar work as before; a log without a position shows a short note and the old replay.
 
+* **A map under the flight.** The ground is a map: OpenStreetMap tiles by default, or the address of your own tile server (Settings > Display > Map tiles from). The tiles that cover the flight (up to 144, a few MB) are fetched once, with an identifying User-Agent and two connections at most, and kept in the app's cache folder (trimmed at 120 MB, oldest first), so a flight you opened at home shows its map at the field. Without a network and without cached tiles the ground is plain, with the grid. The credit of the map shows at the bottom left. The ground is flat: a hill is drawn on the map but not as a hill.
 * **What you see.** A ribbon coloured by speed (blue when slow, then green, yellow, orange, red above 110 km/h), a flat ground with a grid and a
   horizon, a green HOME ring where the log starts, thin drop lines to the ground (height at a glance), the aircraft, and flags: take-off, each
   flight-mode change, the end of the approval window, the farthest point, the highest point, the top speed and the landing. Flags never cover each
@@ -647,11 +652,12 @@ g++ -std=c++20 -pthread -Iapp/src/main/cpp -Isdk-src/include/rmAxSdk1 app/src/te
 
 ## Privacy
 
-Permissions: the **camera** (the HDMI input reaches Android as a camera), **internet** and **install packages** (only for the update check and
-the update you ask for), and, on Android 9 and older, **storage read and write**, used only to save a screenshot (triple tap on the top edge)
+Permissions: the **camera** (the HDMI input reaches Android as a camera), **internet** and **install packages** (the update check and the update you ask for, and the map tiles of the 3D replay), and, on Android 9 and older, **storage read and write**, used only to save a screenshot (triple tap on the top edge)
 to `Pictures/AX-HUD`; Android 9 lists them as two switches and the app asks for both. For the **antenna tracker**: Bluetooth, and the location permission,
 asked once and only to search for the tracker (Android requires it for Bluetooth searches; the app does not read the location). If a screenshot cannot be saved, *Settings > Diagnostics*
 shows why in the events.
+
+**Map tiles.** When you open a 3D replay, the app asks the tile server (OpenStreetMap unless you set another address) for the map tiles that cover the flight. The server sees your IP address and which area you look at, which is where you fly. Switch it off in *Settings > Display > Map under the 3D replay* (or with the Map button in the replay) and nothing is requested; tiles already in the cache stay on the radio. A key you put into a tile address is saved in the settings backup.
 
 GPS coordinates are shown on screen. When a GPS fix is available, the app also saves the last known position to `last_position.txt` in its app folder, including during flight and when the link is lost; this is independent of flight logging. If you enable flight logs (off by default), those CSV files can also contain GPS positions. Three taps on the top edge (away from MENU) save a full-screen PNG, including any visible coordinates, to `Pictures/AX-HUD`. These files stay on the radio unless you copy them elsewhere. Do not commit flight logs or screenshots that show where you fly.
 
@@ -663,7 +669,7 @@ hands it to Android's installer, which asks you to confirm. Two channels: **Nigh
 also look for news a few seconds after it starts (switchable). Every build is signed with **one permanent key** kept in GitHub
 secrets, which is what lets each build install over the last one without uninstalling. The one-time setup, the daily routine and
 the error messages are in **[UPDATES.md](UPDATES.md)**. The only network use is fetching two files from github.com; the app has
-the internet permission for that and nothing else.
+the internet permission for that and for the map tiles of the 3D replay (see Privacy).
 
 ## Logo
 

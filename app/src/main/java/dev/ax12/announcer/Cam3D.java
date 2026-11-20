@@ -134,6 +134,20 @@ public final class Cam3D {
         return true;
     }
 
+    /**
+     * Like {@link #project}, but a point that is behind the camera is not dropped: it is put on the screen as if it were minDepth in front of the camera.
+     * That lets a map tile that reaches behind the camera be drawn in one piece; the stretched part is the ground at the camera's feet. out = {x, y, true depth}.
+     */
+    public void projectClamped(double wx, double wy, double wz, double minDepth, double[] out) {
+        double px = wx - ex, py = wy - ey, pz = wz - ez;
+        double zc = px * dx + py * dy + pz * dz;
+        out[2] = zc;
+        double zd = Math.max(zc, minDepth);
+        double xc = px * rx + py * ry + pz * rz, yc = px * ux + py * uy + pz * uz;
+        out[0] = w / 2 + focalPx * xc / zd;
+        out[1] = h / 2 - focalPx * yc / zd;
+    }
+
     /** A line from one world point to another on the screen: out = {x1, y1, x2, y2}. The part behind the camera is cut off; false when nothing is left. */
     public boolean projectSegment(double ax, double ay, double az, double bx, double by, double bz, double[] out) {
         double za = (ax - ex) * dx + (ay - ey) * dy + (az - ez) * dz;

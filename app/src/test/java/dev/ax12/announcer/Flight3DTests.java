@@ -37,6 +37,9 @@ public class Flight3DTests {
         return LogFormat.read(new BufferedReader(new StringReader(sb.toString())), 1_000_000);
     }
 
+    /** The path of the test flight, for the other tests that need a flight with a position. */
+    static FlightPath flightPath() throws Exception { return FlightPath.build(flight()); }
+
     public static void main(String[] args) throws Exception {
         // ---------- quaternions ----------
         double[] q = Quat.fromHeadingPitchRoll(90, 0, 0);

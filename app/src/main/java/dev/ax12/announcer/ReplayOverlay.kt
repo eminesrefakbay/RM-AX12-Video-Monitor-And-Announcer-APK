@@ -23,7 +23,7 @@ import android.widget.TextView
  * What a replay adds to the screen: a dark backdrop where the video was, a small REPLAY tag, a player bar along the bottom and a rail of
  * buttons on the right. The bar is a video player's: a scrub bar over the whole width with a mark for every event, then Stop, the previous
  * and next event, 10 seconds back and forward, Play or Pause, the time, the speed and Loop. The rail holds what is not about time: Close,
- * the camera, the aircraft, the colour of the trail, the cards and a snapshot. The cards themselves are the ones of the live flight.
+ * the camera, the aircraft, the colour of the trail, the map under the flight, the cards and a snapshot. The cards themselves are the ones of the live flight.
  */
 class ReplayOverlay(private val activity: Activity, private val actions: Actions) {
     /** What the buttons do; the screen implements it. */
@@ -41,6 +41,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         fun model(model: Int)
         fun trail(mode: Int)
         fun cards(show: Boolean)
+        fun map(on: Boolean)
         fun snapshot()
         fun jumpTo(ms: Long)
     }
@@ -64,6 +65,8 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private val modelRail = ImageView(activity)
     private val trailRail = ImageView(activity)
     private val cardsRail = ImageView(activity)
+    private val mapRail = ImageView(activity)
+    private var mapOn = true
     private val movesRail = ImageView(activity)
     private val movesPanel = LinearLayout(activity)
     private val movesChips = LinearLayout(activity)
@@ -495,6 +498,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         railButton(cameraRail, "camera") { openMenu(cameraRail, listOf(tr("Chase"), tr("Orbit"), tr("Pilot"), tr("Top")), camera) { actions.camera(it) } }
         railButton(modelRail, "aircraft") { openMenu(modelRail, listOf(tr("Quad"), tr("Plane")), model) { actions.model(it) } }
         railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height")), trailMode) { actions.trail(it) } }
+        railButton(mapRail, "map") { mapOn = !mapOn; paintToggles(); actions.map(mapOn) }
         railButton(cardsRail, "cards") { cardsOn = !cardsOn; paintToggles(); actions.cards(cardsOn) }
         railButton(movesRail, "moves") { toggleMoves() }
         railButton(ImageView(activity), "snapshot") { closeMenu(); actions.snapshot() }
@@ -603,8 +607,10 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     fun setMarks(fractions: DoubleArray, colors: IntArray) = scrub.setMarks(fractions, colors)
 
     /** The 3D buttons (camera, aircraft, trail) are there only when the log has a 3D view. */
-    fun set3d(available: Boolean, camera: Int, model: Int, trail: Int) {
+    fun set3d(available: Boolean, camera: Int, model: Int, trail: Int, mapOn: Boolean) {
         has3d = available
+        this.mapOn = mapOn
+        paintToggles()
         this.camera = camera
         this.model = model
         this.trailMode = trail
@@ -612,6 +618,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         cameraRail.visibility = v
         modelRail.visibility = v
         trailRail.visibility = v
+        mapRail.visibility = v
         layoutRail()
     }
 
@@ -621,6 +628,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private fun paintToggles() {
         loopButton.setImageDrawable(icon("loop", if (loopOn) CardStyle.ACCENT else Color.WHITE))
         cardsRail.setImageDrawable(icon("cards", if (cardsOn) Color.WHITE else CardStyle.ACCENT))
+        mapRail.setImageDrawable(icon("map", if (mapOn) CardStyle.ACCENT else Color.WHITE))
     }
 
     private fun paintSpeeds() {

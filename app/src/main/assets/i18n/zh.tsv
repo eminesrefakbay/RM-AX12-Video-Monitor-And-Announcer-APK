@@ -973,3 +973,10 @@ Landing	降落
 Per cell, at the end	每节，结束时
 VOLTAGE AND CURRENT	电压与电流
 TRACK	航迹
+Map under the 3D replay	3D 回放中的地图
+Map tiles from	地图图块来自
+The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at.	3D 回放会把地图放在地面上，图块来自 OpenStreetMap，除非您另外提供地址。打开回放时会载入这次飞行所需的图块，并保存在遥控器中，所以没有网络时也能显示地图。图块服务器能看到您查看的地点。
+An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	含有 {z}, {x} 和 {y} 的 https 地址，例如 {0}。留空则使用 OpenStreetMap。地址中的密钥会保存在设置备份里。请查看您所用图块服务器的条款。
+Tile address	图块地址
+Credit to show on the map	地图上显示的致谢
+Use an https address with {z}, {x} and {y} in it.	请使用含有 {z}, {x} 和 {y} 的 https 地址。

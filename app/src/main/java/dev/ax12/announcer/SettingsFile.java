@@ -36,7 +36,7 @@ public final class SettingsFile {
         s("language"); s("speechLanguage"); s("updateChannel"); s("camera");
         i("rotation", 0, 270); b("fill");
         // screen
-        b("menuAlways"); b("splashOn"); b("updateAuto"); i("replayModel", 0, 1); i("replayTrail", 0, 1);
+        b("menuAlways"); b("splashOn"); b("updateAuto"); i("replayModel", 0, 1); i("replayTrail", 0, 1); b("mapOn"); s("mapUrl"); s("mapCredit");
         // sticks, bars, warning bar
         b("sticksOn"); i("sticksSize", 0, 2); i("sticksPos", 0, 4); i("sticksOpacity", 0, 2);
         i("stickMode", 1, 4); i("stickRoll", 1, 16); i("stickPitch", 1, 16); i("stickThrottle", 1, 16); i("stickYaw", 1, 16); i("stickInvert", 0, 15);
@@ -67,7 +67,7 @@ public final class SettingsFile {
     static {
         d("language", "auto"); d("speechLanguage", "same"); d("updateChannel", "stable");
         d("rotation", 0); d("fill", false);
-        d("menuAlways", false); d("splashOn", true); d("updateAuto", true); d("replayModel", 0); d("replayTrail", 0); d("reserveOn", false); d("layoutWithAircraft", true);
+        d("menuAlways", false); d("splashOn", true); d("updateAuto", true); d("replayModel", 0); d("replayTrail", 0); d("mapOn", true); d("mapUrl", ""); d("mapCredit", ""); d("reserveOn", false); d("layoutWithAircraft", true);
         d("sticksOn", false); d("sticksSize", 1); d("sticksPos", 0); d("sticksOpacity", 1);
         d("stickMode", 2); d("stickRoll", 1); d("stickPitch", 2); d("stickThrottle", 3); d("stickYaw", 4); d("stickInvert", 0);
         d("barsOn", true); d("warnBarOn", true); d("warnBarPos", 0);
@@ -208,6 +208,8 @@ public final class SettingsFile {
         if (key.equals("dashLayouts")) return SavedDashLayouts.valid(value) ? value : null;
         if (key.equals("trkAddr")) return value.isEmpty() || value.matches("([0-9A-F]{2}:){5}[0-9A-F]{2}") ? value : null;
         if (key.equals("trkName")) return value.length() <= 32 && value.matches("[^\\p{Cntrl}]*") ? value : null;
+        if (key.equals("mapUrl")) return value.isEmpty() || MapTiles.validTemplate(value) ? value : null;
+        if (key.equals("mapCredit")) return value.length() <= 80 && value.matches("[^\\p{Cntrl}]*") ? value : null;
         if (key.equals("logFields")) return value.isEmpty() ? value : (LogFields.parse(value).isEmpty() ? null : LogFields.join(LogFields.parse(value)));
         if (key.equals("packs")) return Packs.parseStrict(value) != null ? value : null;
         if (key.equals("winWarn")) return ApprovalWindow.validWarn(value) ? value : null;
