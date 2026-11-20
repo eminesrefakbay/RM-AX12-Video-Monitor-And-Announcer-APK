@@ -246,8 +246,13 @@ class Flight3DView(context: Context) : View(context) {
         return cam.mode
     }
 
-    /** What the trail is coloured by: TRAIL_SPEED or TRAIL_HEIGHT. */
+    /** What the trail is coloured by: TRAIL_SPEED or TRAIL_HEIGHT; TRAIL_OFF draws no ribbon at all. */
     var trailMode = TRAIL_SPEED
+
+    /** FPV: how far the camera of a quad looks up from the nose, in degrees. A drag up or down in the FPV view changes it; [onFpvTilt] is told when the finger lifts. */
+    var fpvTilt = 25.0
+    var onFpvTilt: ((Int) -> Unit)? = null
+    private var tiltShownAt = 0L
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -266,8 +271,13 @@ class Flight3DView(context: Context) : View(context) {
                     cam.userAzimuth -= (e.x - lastX) * 0.008
                     cam.userElevation = (cam.userElevation + (e.y - lastY) * 0.006).coerceIn(0.08, 1.45)
                 }
+                if (e.pointerCount == 1 && cam.mode == Cam3D.FPV && model != MODEL_PLANE) {
+                    fpvTilt = (fpvTilt - (e.y - lastY) * 0.12).coerceIn(-10.0, 70.0)
+                    tiltShownAt = System.nanoTime()
+                }
                 lastX = e.x; lastY = e.y
             }
+            MotionEvent.ACTION_UP -> if (cam.mode == Cam3D.FPV && tiltShownAt != 0L) { fpvTilt = Math.round(fpvTilt).toDouble(); onFpvTilt?.invoke(fpvTilt.toInt()) }
         }
         return true
     }
@@ -298,7 +308,7 @@ class Flight3DView(context: Context) : View(context) {
         cam.homeX = 0.0; cam.homeY = 0.0
         if (snapNext) { cam.reset(); snapNext = false }
         cam.minEyeZ = if (hills()) groundZ(pose.x, pose.y) + 2.0 else -1e9
-        cam.fpvTiltDeg = if (model == MODEL_PLANE) 0.0 else 25.0
+        cam.fpvTiltDeg = if (model == MODEL_PLANE) 0.0 else fpvTilt
         cam.update(pose, dt)
         val fpv = cam.mode == Cam3D.FPV
         canvas.save()
@@ -318,6 +328,14 @@ class Flight3DView(context: Context) : View(context) {
         if (!fpv) drawAircraft(canvas)
         canvas.restore()
         drawLegend(canvas, w, h)
+        if (fpv && tiltShownAt != 0L && System.nanoTime() - tiltShownAt < 1_500_000_000L) {       // the angle, for a moment after it was changed
+            textPaint.textSize = dp(16f)
+            textPaint.color = 0xFFFFFFFF.toInt()
+            textPaint.textAlign = Paint.Align.CENTER
+            canvas.drawText(tr("Camera angle {0} degrees", Math.round(fpvTilt).toInt()), w / 2, h / 2 + dp(60f), textPaint)
+            textPaint.textAlign = Paint.Align.LEFT
+            textPaint.textSize = dp(11f)
+        }
         if (mapShown) drawCredit(canvas, h, map?.creditLine ?: "") else drawMapNote(canvas, h)
 
         if (isAttachedToWindow) postInvalidateOnAnimation()          // the next screen frame: this is what keeps it smooth
@@ -453,6 +471,7 @@ class Flight3DView(context: Context) : View(context) {
     }
 
     private fun drawRibbon(canvas: Canvas, p: FlightPath) {
+        if (trailMode == TRAIL_OFF) return
         val points = ribbon.size / 4
         if (points < 2) return
         val cur = (((renderMs - p.startMs()) / RIBBON_STEP_MS).toInt()).coerceIn(0, points - 1)
@@ -672,6 +691,7 @@ class Flight3DView(context: Context) : View(context) {
     }
 
     private fun drawLegend(canvas: Canvas, w: Float, h: Float) {
+        if (trailMode == TRAIL_OFF) return
         val barW = dp(150f)
         val barH = dp(6f)
         val x = w - barW - dp(12f)
@@ -697,6 +717,7 @@ class Flight3DView(context: Context) : View(context) {
         const val MODEL_PLANE = 1
         const val TRAIL_SPEED = 0
         const val TRAIL_HEIGHT = 1
+        const val TRAIL_OFF = 2
         const val RIBBON_STEP_MS = 250L
         /** A ground point behind the camera is drawn as if this far in front of it (see Cam3D.projectClamped). */
         const val MAP_MIN_DEPTH = 0.8

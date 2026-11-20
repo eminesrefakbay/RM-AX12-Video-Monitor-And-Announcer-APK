@@ -498,7 +498,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         railButton(ImageView(activity), "close") { actions.close() }
         railButton(cameraRail, "camera") { openMenu(cameraRail, listOf(tr("Chase"), tr("Orbit"), tr("Pilot"), tr("Top"), tr("FPV")), camera) { actions.camera(it) } }
         railButton(modelRail, "aircraft") { openMenu(modelRail, listOf(tr("Quad"), tr("Plane")), model) { actions.model(it) } }
-        railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height")), trailMode) { actions.trail(it) } }
+        railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height"), tr("Off")), trailMode) { actions.trail(it) } }
         railButton(mapRail, "map") {
             val labels = arrayListOf(tr("Off"), tr("Street map"), tr("Satellite"), tr("Terrain"))
             if (mapCustom) labels.add(tr("Custom address"))

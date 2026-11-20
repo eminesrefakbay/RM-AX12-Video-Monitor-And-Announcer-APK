@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.17.3
+
+The trail button of the replay has a third choice, Off: no ribbon and no colour legend. The FPV camera angle (how far a quad's camera looks up from the nose) is a
+setting, 25 degrees by default, and can be changed by dragging up or down in the FPV view.
+
 ## 1.17.2
 
 Hills fitted to the flight: the ground is lowered, by up to 60 m and never raised, until the lowest point of the log is a metre above it, so the ribbon does not

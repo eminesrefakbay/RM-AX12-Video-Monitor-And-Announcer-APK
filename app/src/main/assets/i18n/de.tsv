@@ -998,3 +998,7 @@ The ground under the map rises and falls like the real land, to look at. The hei
 FPV	FPV
 Fit the hills to the flight	Hügel an den Flug anpassen
 The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data.	Das Flugzeug kann nicht unter dem Boden sein; deshalb werden die Hügel um bis zu 60 m abgesenkt, bis der tiefste Punkt des Fluges knapp darüber liegt. Das gleicht den Höhenunterschied zwischen Log und Höhendaten aus.
+FPV camera angle	FPV-Kamerawinkel
+{0} degrees	{0} Grad
+Camera angle {0} degrees	Kamerawinkel {0} Grad
+How far the FPV camera of a quad looks up from its nose, in degrees (about the tilt of your real camera). In the FPV view you can also drag up or down to change it. Planes look along the nose.	Wie weit die FPV-Kamera eines Quads von der Nase aus nach oben schaut, in Grad (etwa die Neigung Ihrer echten Kamera). In der FPV-Ansicht können Sie den Winkel auch durch Ziehen nach oben oder unten ändern. Flugzeuge schauen entlang der Nase.

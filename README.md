@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.2)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.3)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 > **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
@@ -18,8 +18,9 @@
 
 ## What's new
 
-**1.17: hills under the 3D replay (1.17.0 to 1.17.2)**
+**1.17: hills under the 3D replay (1.17.0 to 1.17.3)**
 
+* **Ribbon off and the FPV camera angle (1.17.3).** The trail button in the replay has a third choice, Off, which draws no ribbon (and no colour legend): a clean view for video. The FPV camera of a quad looks up from the nose by an angle you set in Settings > Display > FPV camera angle (default 25 degrees), or by dragging up or down in the FPV view; the value is remembered. Planes look along the nose.
 * **Hills fitted to the flight (1.17.2).** The log height and the elevation data differ by some metres, so the ribbon could dip under the ground. The aircraft cannot be under the ground, so the hills are lowered (by up to 60 m, never raised) until the lowest point of the flight is a metre above them. Settings > Display > Fit the hills to the flight turns it off.
 * **An FPV camera in the replay (1.17.1).** The camera button has a fifth view, FPV: the eye sits on the aircraft and looks along its nose, tilted up 25 degrees for a quad (none for a plane), and the horizon turns with the roll, like the video of the flight. It goes well with the satellite map and Hills in 3D: choose Satellite as the map type and leave Hills in 3D on.
 * **The ground rises and falls.** The map in the 3D replay now lies on hills: a rough shape of the real land, to look at, with no contour lines and no labels. The heights are not exact and the flight line keeps the heights that were logged, so the ribbon can show through a hill. Settings > Display > Hills in 3D: Off, Real size, Twice as high, Three times as high (twice or three times shows flat land better). The heights come from the public AWS Terrain Tiles (a few small files per flight, kept on the radio); without them the ground stays flat. The camera never goes below the ground.

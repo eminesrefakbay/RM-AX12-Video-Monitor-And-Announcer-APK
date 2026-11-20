@@ -998,3 +998,7 @@ The ground under the map rises and falls like the real land, to look at. The hei
 FPV	FPV
 Fit the hills to the flight	让地形贴合飞行
 The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data.	飞机不可能在地面以下，所以地形最多降低 60 米，直到飞行的最低点略高于地形。这样可以修正记录与高度数据之间的高度差。
+FPV camera angle	FPV 相机角度
+{0} degrees	{0} 度
+Camera angle {0} degrees	相机角度 {0} 度
+How far the FPV camera of a quad looks up from its nose, in degrees (about the tilt of your real camera). In the FPV view you can also drag up or down to change it. Planes look along the nose.	无人机的 FPV 相机相对机头向上看的角度，单位为度（约等于您真实相机的角度）。在 FPV 视图中也可以上下拖动来改变。飞机沿机头方向看。

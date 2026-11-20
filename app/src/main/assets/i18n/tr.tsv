@@ -998,3 +998,7 @@ The ground under the map rises and falls like the real land, to look at. The hei
 FPV	FPV
 Fit the hills to the flight	Tepeleri uçuşa uydur
 The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data.	Uçak zeminin altında olamaz; bu yüzden tepeler, uçuşun en alçak noktası tepelerin hemen üstünde kalana kadar en çok 60 m alçaltılır. Bu, kayıt ile yükseklik verisi arasındaki yükseklik farkını düzeltir.
+FPV camera angle	FPV kamera açısı
+{0} degrees	{0} derece
+Camera angle {0} degrees	Kamera açısı {0} derece
+How far the FPV camera of a quad looks up from its nose, in degrees (about the tilt of your real camera). In the FPV view you can also drag up or down to change it. Planes look along the nose.	FPV kameranın quad'ın burnundan yukarı ne kadar baktığı, derece olarak (gerçek kameranızın eğimi kadar). FPV görünümünde parmağınızı yukarı veya aşağı sürükleyerek de değiştirebilirsiniz. Uçaklar burun yönüne bakar.

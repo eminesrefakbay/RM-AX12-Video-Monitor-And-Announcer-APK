@@ -1164,6 +1164,14 @@ class MainActivity : Activity() {
             Prefs.setInt(this@MainActivity, "mapType", kinds[(kinds.indexOf(now) + 1) % kinds.size])
             this@MainActivity.applyReplayMap()
         }
+        override fun fpvTiltLabel(): String = tr("{0} degrees", Prefs.int(this@MainActivity, "fpvTilt", 25))
+        override fun cycleFpvTilt() {
+            val steps = intArrayOf(0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60)
+            val now = Prefs.int(this@MainActivity, "fpvTilt", 25)
+            val next = steps.firstOrNull { it > now } ?: steps[0]
+            Prefs.setInt(this@MainActivity, "fpvTilt", next)
+            flight3d.fpvTilt = next.toDouble()
+        }
         override fun mapFit(): Boolean = Prefs.bool(this@MainActivity, "mapFit", true)
         override fun setMapFit(on: Boolean) {
             Prefs.setBool(this@MainActivity, "mapFit", on)
@@ -1495,7 +1503,9 @@ class MainActivity : Activity() {
         replayPath = path
         if (path.n >= 2) { flight3d.bind(path); flight3d.visibility = View.VISIBLE } else { flight3d.bind(null); flight3d.visibility = View.GONE }
         flight3d.model = Prefs.int(this, "replayModel", 0).coerceIn(0, 1)
-        flight3d.trailMode = Prefs.int(this, "replayTrail", Flight3DView.TRAIL_SPEED).coerceIn(0, 1)
+        flight3d.trailMode = Prefs.int(this, "replayTrail", Flight3DView.TRAIL_SPEED).coerceIn(0, 2)
+        flight3d.fpvTilt = Prefs.int(this, "fpvTilt", 25).coerceIn(-10, 70).toDouble()
+        flight3d.onFpvTilt = { Prefs.setInt(this, "fpvTilt", it) }
         replayCardsOn = true
         replayUi.setCards(true)
         replayUi.setLoop(false)
@@ -1663,7 +1673,7 @@ class MainActivity : Activity() {
     }
 
     private fun setReplayTrail(mode: Int) {
-        flight3d.trailMode = mode.coerceIn(0, 1)
+        flight3d.trailMode = mode.coerceIn(0, 2)
         Prefs.setInt(this, "replayTrail", flight3d.trailMode)
     }
 

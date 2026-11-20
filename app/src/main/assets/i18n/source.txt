@@ -137,6 +137,7 @@ Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
 No position in this log, so there is no 3D view.
+Camera angle {0} degrees
 Loading the map...
 No map tiles: {0}
 Packs
@@ -282,6 +283,7 @@ Satellite
 Terrain
 Custom address
 Street map
+{0} degrees
 Off
 Twice as high
 Three times as high
@@ -720,6 +722,8 @@ Hills in 3D
 The ground under the map rises and falls like the real land, to look at. The heights are rough and not exact, and the flight line keeps the heights that were logged. The heights come from AWS Terrain Tiles (a few small files per flight, kept on the radio). Check their terms. Twice or three times as high makes flat land easier to see.
 Fit the hills to the flight
 The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data.
+FPV camera angle
+How far the FPV camera of a quad looks up from its nose, in degrees (about the tilt of your real camera). In the FPV view you can also drag up or down to change it. Planes look along the nose.
 The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.
 Active aircraft
