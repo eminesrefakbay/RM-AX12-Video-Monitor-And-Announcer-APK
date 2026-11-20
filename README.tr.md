@@ -23,6 +23,10 @@
 
 ## Yenilikler
 
+**1.17: 3D tekrarın altında tepeler (1.17.0)**
+
+* **Zemin inip çıkar.** 3D tekrardaki harita artık tepelerin üzerinde durur: gerçek arazinin kabaca şekli, sadece bakmak için; eş yükselti çizgisi ve yazı yok. Yükseklikler kesin değildir ve uçuş çizgisi kaydedilen yükseklikleri korur, bu yüzden şerit bir tepenin içinden görünebilir. Ayarlar > Ekran > 3D'de tepeler: Kapalı, Gerçek boyut, İki kat yüksek, Üç kat yüksek. Yükseklikler herkese açık AWS Terrain Tiles'tan gelir (uçuş başına birkaç küçük dosya, telsizde saklanır); olmazsa zemin düz kalır.
+
 **1.16: 3D tekrarda harita (1.16.0 ve 1.16.1)**
 
 * **3D tekrarın zemininde gerçek bir harita.** Harita karoları şeridin altına perspektifle serilir: **sokak haritası** (OpenStreetMap), **arazi haritası** (OpenTopoMap), **uydu görüntüleri** (Esri) ya da kendi karo adresiniz; uçuşun nereden geçtiğini görürsünüz. Bir uçuşun karoları, tekrarını açtığınızda bir kez yüklenir ve telsizde saklanır; böylece harita sahada ağ olmadan da görünür. Tekrardaki Harita düğmesi bir menü açar (Kapalı, Sokak haritası, Uydu, Arazi); Ayarlar > Ekran'da anahtar, harita türü ve özel adres vardır.

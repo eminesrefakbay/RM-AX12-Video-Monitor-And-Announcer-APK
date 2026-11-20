@@ -990,3 +990,8 @@ The server sent no picture	服务器没有返回图片
 No network	没有网络
 Map type	地图样式
 The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.	3D 回放会把地图放在地面上：来自 OpenStreetMap 的道路地图、来自 OpenTopoMap 的地形图、来自 Esri 的卫星图片，或来自您自己地址的图块。一次飞行的图块在打开回放时载入，并保存在遥控器中，所以没有网络时也能显示地图。图块服务器能看到您查看的地点。请查看您所用服务器的条款。
+Hills in 3D	3D 地形
+Real size	真实大小
+Twice as high	高度 2x
+Three times as high	高度 3x
+The ground under the map rises and falls like the real land, to look at. The heights are rough and not exact, and the flight line keeps the heights that were logged. The heights come from AWS Terrain Tiles (a few small files per flight, kept on the radio). Check their terms. Twice or three times as high makes flat land easier to see.	地图下面的地面像真实的地形一样起伏，仅供观看。高度是大致的，不精确，飞行线保留记录的高度。高度数据来自 AWS Terrain Tiles（每次飞行几个小文件，保存在遥控器上）。请查看其条款。高度 2x 或 3x 更容易看出平地。

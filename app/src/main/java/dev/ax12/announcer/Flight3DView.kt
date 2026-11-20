@@ -297,6 +297,7 @@ class Flight3DView(context: Context) : View(context) {
         cam.setViewport(w.toDouble(), h.toDouble())
         cam.homeX = 0.0; cam.homeY = 0.0
         if (snapNext) { cam.reset(); snapNext = false }
+        cam.minEyeZ = if (hills()) groundZ(pose.x, pose.y) + 2.0 else -1e9
         cam.update(pose, dt)
 
         drawSkyAndGround(canvas, w, h)
@@ -307,7 +308,7 @@ class Flight3DView(context: Context) : View(context) {
         drawFlags(canvas, p)
         drawAircraft(canvas)
         drawLegend(canvas, w, h)
-        if (mapShown) drawCredit(canvas, h, map?.attribution ?: "") else drawMapNote(canvas, h)
+        if (mapShown) drawCredit(canvas, h, map?.creditLine ?: "") else drawMapNote(canvas, h)
 
         if (isAttachedToWindow) postInvalidateOnAnimation()          // the next screen frame: this is what keeps it smooth
     }
@@ -344,15 +345,27 @@ class Flight3DView(context: Context) : View(context) {
         var drew = false
         val n = MapLayer.GRID
         val corners = intArrayOf(0, n, n * (n + 1), n * (n + 1) + n)
-        for (i in m.tiles.indices) {
+        val rel = m.relief
+        val order = IntArray(m.tiles.size) { it }
+        if (rel != null) {                                                                  // hills: far tiles first, so that near ones cover them
+            val dist = DoubleArray(order.size) { Math.hypot(cam.ex - m.centerX[it], cam.ey - m.centerY[it]) }
+            for (a in 1 until order.size) {
+                val v = order[a]
+                var b = a - 1
+                while (b >= 0 && dist[order[b]] < dist[v]) { order[b + 1] = order[b]; b-- }
+                order[b + 1] = v
+            }
+        }
+        for (i in order) {
             val g = m.grid[i]
+            val zs = rel?.get(i)
             var behind = 0
             var minX = Float.MAX_VALUE
             var maxX = -Float.MAX_VALUE
             var minY = Float.MAX_VALUE
             var maxY = -Float.MAX_VALUE
             for (c in corners) {
-                cam.projectClamped(g[c * 2], g[c * 2 + 1], 0.0, MAP_MIN_DEPTH, mapPt)
+                cam.projectClamped(g[c * 2], g[c * 2 + 1], zs?.get(c)?.toDouble() ?: 0.0, MAP_MIN_DEPTH, mapPt)
                 if (mapPt[2] < Cam3D.NEAR) behind++
                 val sx = mapPt[0].toFloat()
                 val sy = mapPt[1].toFloat()
@@ -365,12 +378,13 @@ class Flight3DView(context: Context) : View(context) {
             if (behind == 0 && (maxX < 0f || minX > w || maxY < 0f || minY > h)) continue   // wholly off the screen
             val bmp = m.bitmap(i) ?: continue
             val near = Math.hypot(cam.ex - m.centerX[i], cam.ey - m.centerY[i]) < m.size * 2.5
-            val step = if (near) 1 else 2
+            val step = if (zs != null) (if (near) 1 else 2) else (if (near) 2 else 4)
             val cells = n / step
             var k = 0
             for (j in 0..cells) for (c in 0..cells) {
-                val idx = (j * step * (n + 1) + c * step) * 2
-                cam.projectClamped(g[idx], g[idx + 1], 0.0, MAP_MIN_DEPTH, mapPt)
+                val vi = j * step * (n + 1) + c * step
+                val idx = vi * 2
+                cam.projectClamped(g[idx], g[idx + 1], zs?.get(vi)?.toDouble() ?: 0.0, MAP_MIN_DEPTH, mapPt)
                 meshVerts[k++] = mapPt[0].toFloat()
                 meshVerts[k++] = mapPt[1].toFloat()
             }
@@ -379,6 +393,11 @@ class Flight3DView(context: Context) : View(context) {
         }
         return drew
     }
+
+    private fun hills(): Boolean = mapOn && map?.relief != null
+
+    /** The height of the ground at a point, for the things that stand on it (0 without hills). */
+    private fun groundZ(x: Double, y: Double): Double = if (hills()) map?.groundAt(x, y) ?: 0.0 else 0.0
 
     /** The credit of the map source, small, in the bottom left corner. The map's licence asks for it. */
     private fun drawCredit(canvas: Canvas, h: Float, text: String) {
@@ -449,7 +468,7 @@ class Flight3DView(context: Context) : View(context) {
                 bandCount[band] = o + 4
             }
             if (i % 8 == 0) {                                           // a thin drop line to the ground every two seconds: height at a glance
-                if (cam.projectSegment(ribbon[a].toDouble(), ribbon[a + 1].toDouble(), ribbon[a + 2].toDouble(), ribbon[a].toDouble(), ribbon[a + 1].toDouble(), 0.0, seg))
+                if (cam.projectSegment(ribbon[a].toDouble(), ribbon[a + 1].toDouble(), ribbon[a + 2].toDouble(), ribbon[a].toDouble(), ribbon[a + 1].toDouble(), groundZ(ribbon[a].toDouble(), ribbon[a + 1].toDouble()), seg))
                     canvas.drawLine(seg[0].toFloat(), seg[1].toFloat(), seg[2].toFloat(), seg[3].toFloat(), dropPaint)
             }
         }
@@ -459,15 +478,16 @@ class Flight3DView(context: Context) : View(context) {
 
     private fun drawHome(canvas: Canvas) {
         val r = 3.0
+        val gz = groundZ(0.0, 0.0)
         var first = true
         tmpPath.reset()
         for (i in 0..20) {
             val a = i * Math.PI * 2 / 20
-            if (!cam.project(Math.cos(a) * r, Math.sin(a) * r, 0.0, pt)) { first = true; continue }
+            if (!cam.project(Math.cos(a) * r, Math.sin(a) * r, gz, pt)) { first = true; continue }
             if (first) { tmpPath.moveTo(pt[0].toFloat(), pt[1].toFloat()); first = false } else tmpPath.lineTo(pt[0].toFloat(), pt[1].toFloat())
         }
         canvas.drawPath(tmpPath, homePaint)
-        if (cam.project(0.0, 0.0, 6.0, pt2) && cam.project(0.0, 0.0, 0.0, pt)) {
+        if (cam.project(0.0, 0.0, gz + 6.0, pt2) && cam.project(0.0, 0.0, gz, pt)) {
             canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), homePaint)
             label(canvas, "HOME", pt2[0].toFloat(), pt2[1].toFloat(), 0xFF66BB6A.toInt())
         }
@@ -483,8 +503,9 @@ class Flight3DView(context: Context) : View(context) {
     private fun drawFlags(canvas: Canvas, p: FlightPath) {
         placedCount = 0
         for (e in p.events) {
-            val top = Math.max(e.z, 4.0) + 6.0
-            if (!cam.project(e.x, e.y, 0.0, pt) || !cam.project(e.x, e.y, top, pt2)) continue
+            val gz = groundZ(e.x, e.y)
+            val top = Math.max(e.z, gz + 4.0) + 6.0
+            if (!cam.project(e.x, e.y, gz, pt) || !cam.project(e.x, e.y, top, pt2)) continue
             if (pt[2] > 1500.0) continue
             val col = eventColor(e.kind)
             flagPaint.color = (col and 0x00FFFFFF) or (if (e.ms <= renderMs) 0xB0000000.toInt() else 0x50000000)
@@ -525,7 +546,7 @@ class Flight3DView(context: Context) : View(context) {
         val a = Math.max(0.6, dp(20f) / cam.scaleAt(pt[2]))
         drawHeadingMark(canvas, a * 1.2)
         drawForwardArrow(canvas, a)
-        if (cam.project(pose.x, pose.y, 0.0, pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
+        if (cam.project(pose.x, pose.y, groundZ(pose.x, pose.y), pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
         // the arms: flat bars, the two front ones orange; the props are discs over them
         val tips = arrayOf(doubleArrayOf(-1.0, -1.0), doubleArrayOf(1.0, -1.0), doubleArrayOf(-1.0, 1.0), doubleArrayOf(1.0, 1.0))
         for (t in tips) {
@@ -607,7 +628,7 @@ class Flight3DView(context: Context) : View(context) {
         val pts = doubleArrayOf(fx * size * 1.6, fy * size * 1.6, -fx * size - fy * size * 0.8, -fy * size + fx * size * 0.8, -fx * size + fy * size * 0.8, -fy * size - fx * size * 0.8)
         tmpPath.reset()
         for (k in 0 until 3) {
-            if (!cam.project(pose.x + pts[k * 2], pose.y + pts[k * 2 + 1], 0.0, pt2)) return
+            if (!cam.project(pose.x + pts[k * 2], pose.y + pts[k * 2 + 1], groundZ(pose.x, pose.y), pt2)) return
             if (k == 0) tmpPath.moveTo(pt2[0].toFloat(), pt2[1].toFloat()) else tmpPath.lineTo(pt2[0].toFloat(), pt2[1].toFloat())
         }
         tmpPath.close()
@@ -620,7 +641,7 @@ class Flight3DView(context: Context) : View(context) {
         val a = Math.max(0.9, dp(22f) / cam.scaleAt(pt[2]))
         drawHeadingMark(canvas, a * 1.2)
         drawForwardArrow(canvas, a)
-        if (cam.project(pose.x, pose.y, 0.0, pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
+        if (cam.project(pose.x, pose.y, groundZ(pose.x, pose.y), pt2)) canvas.drawLine(pt[0].toFloat(), pt[1].toFloat(), pt2[0].toFloat(), pt2[1].toFloat(), shadowPaint)
         // the tail first, so that the wing and the nose are drawn over it
         bodyPoly(canvas, a, doubleArrayOf(0.0, -1.4, 0.0, 0.0, -1.1, 0.7, 0.0, -0.8, 0.0), tailPaint)                       // fin
         bodyPoly(canvas, a, doubleArrayOf(-0.75, -1.5, 0.0, 0.75, -1.5, 0.0, 0.5, -0.95, 0.0, -0.5, -0.95, 0.0), tailPaint) // tail plane

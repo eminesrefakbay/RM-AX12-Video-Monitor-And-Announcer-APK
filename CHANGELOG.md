@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.17.0
+
+Hills under the 3D replay. The map now lies on a rough 3D shape of the land (no contour lines, no labels), made from public elevation tiles (AWS Terrain Tiles)
+that are fetched once per flight and kept on the radio. Settings > Display > Hills in 3D: Off, Real size, Twice as high, Three times as high. The aircraft,
+drop lines, flags and the HOME ring stand on the ground, the camera stays above it, and the credit line names the elevation data. The heights are for looking
+and not exact; the flight ribbon keeps the logged heights. Without elevation data the ground stays flat.
+
 ## 1.16.1
 
 Choose the kind of map under the 3D replay: a street map (OpenStreetMap), a terrain map with contour lines (OpenTopoMap), satellite pictures (Esri World

@@ -22,6 +22,8 @@ public final class Cam3D {
     public boolean autoOrbit = true;
     /** Where the pilot stands and the height of his eyes. */
     public double homeX = 0, homeY = 0, eyeHeight = 1.7;
+    /** The camera never goes below this height (the ground under it, when the replay shows hills). */
+    public double minEyeZ = -1e9;
 
     // result
     public double ex, ey, ez, tx, ty, tz, fovDeg = 70;
@@ -100,6 +102,7 @@ public final class Cam3D {
             double hl = (mode == ORBIT || mode == TOP) ? 0.18 : 0.30;
             ex = damp(ex, nex, dtSec, hl); ey = damp(ey, ney, dtSec, hl); ez = damp(ez, nez, dtSec, hl);
         }
+        if (mode != PILOT && ez < minEyeZ) ez = minEyeZ;
         if (ez < tz - 400) ez = tz - 400;
         fovDeg = fov;
         fresh = false;

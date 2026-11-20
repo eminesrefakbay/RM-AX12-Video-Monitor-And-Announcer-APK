@@ -990,3 +990,8 @@ The server sent no picture	Der Server hat kein Bild gesendet
 No network	Kein Netz
 Map type	Kartentyp
 The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.	Das 3D-Replay legt eine Karte auf den Boden: eine Straßenkarte von OpenStreetMap, eine Geländekarte von OpenTopoMap, Satellitenbilder von Esri oder Kacheln von einer eigenen Adresse. Die Kacheln eines Fluges werden geladen, wenn Sie sein Replay öffnen, und auf dem Sender gespeichert, die Karte erscheint also auch auf dem Flugplatz ohne Netz. Die Kachel-Server sehen, welches Gebiet Sie ansehen. Prüfen Sie die Bedingungen des verwendeten Servers.
+Hills in 3D	Hügel in 3D
+Real size	Echte Größe
+Twice as high	Doppelt so hoch
+Three times as high	Dreimal so hoch
+The ground under the map rises and falls like the real land, to look at. The heights are rough and not exact, and the flight line keeps the heights that were logged. The heights come from AWS Terrain Tiles (a few small files per flight, kept on the radio). Check their terms. Twice or three times as high makes flat land easier to see.	Der Boden unter der Karte steigt und fällt wie das echte Gelände, nur zum Ansehen. Die Höhen sind grob und nicht exakt, und die Flugspur behält die aufgezeichneten Höhen. Die Höhen stammen von AWS Terrain Tiles (pro Flug wenige kleine Dateien, auf dem Funkgerät gespeichert). Prüfen Sie deren Bedingungen. Doppelt oder dreimal so hoch macht flaches Land besser sichtbar.

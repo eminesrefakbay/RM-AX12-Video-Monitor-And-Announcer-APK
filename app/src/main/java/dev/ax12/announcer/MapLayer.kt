@@ -26,7 +26,7 @@ import java.util.concurrent.Executors
  *
  * The view asks [bitmap] for the tile it wants to draw and gets null until the picture is ready; it draws every frame anyway, so no callback is needed.
  */
-class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, customCredit: String, private val userAgent: String) {
+class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, customCredit: String, private val userAgent: String, reliefSetting: Int = 0) {
     val originLat: Double = path.originLat
     val originLon: Double = path.originLon
     /** The kind of map that is really shown (a custom address that is not valid gives the street map). */
@@ -34,6 +34,16 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
     val template: String = MapTiles.templateFor(shownType, custom)
     val attribution: String = MapTiles.creditFor(shownType, custom, customCredit)
     val tiles: List<MapTiles.Tile> = MapTiles.forFlight(path, MapTiles.maxZoomOf(shownType))
+    /** The scale of the hills: 0 none, 1 true size, 2 twice as high, 3 three times. */
+    private val reliefScale: Double = ElevationModel.scaleOf(reliefSetting)
+    private val elevation: ElevationModel? = if (reliefScale > 0.0 && tiles.isNotEmpty()) ElevationModel(ElevationModel.zoomFor(MapTiles.radiusOf(path), path.originLat)) else null
+    private var homeHeight = Double.NaN
+    /** For every map tile, the height of the ground at the points of its grid (metres above the home point, already scaled); null until the elevation tiles are in. */
+    @Volatile var relief: Array<FloatArray>? = null
+        private set
+    /** The credit line: the map's own, and the one of the elevation data while hills are shown. */
+    val creditLine: String
+        get() = if (relief == null) attribution else if (attribution.isEmpty()) ElevationModel.CREDIT else attribution + " | " + ElevationModel.CREDIT
     /** Why the last tile could not be had, as a short text for the screen; empty when nothing failed. */
     @Volatile var lastError: String = ""
 
@@ -60,6 +70,7 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
         }
         size = if (tiles.isEmpty()) 100.0 else Math.abs(grid[0][GRID * 2] - grid[0][0])
         if (tiles.isNotEmpty()) {
+            if (elevation != null) try { pool.execute { loadRelief(path) } } catch (e: Exception) { }      // first in line: the hills come before the rest of the map is fetched
             for (i in tiles.indices) request(i, false)             // the whole area, nearest first: it is in the cache for the next time
             try { pool.execute { trimCache() } } catch (e: Exception) { }
         }
@@ -82,6 +93,40 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
 
     /** How many tiles could not be had. */
     fun failures(): Int = synchronized(this) { failed.size }
+
+    /** The height of the ground at a point of the flight's own axes (metres east and north of the start), above the home point; 0 when there are no hills. */
+    fun groundAt(x: Double, y: Double): Double {
+        val e = elevation ?: return 0.0
+        if (relief == null) return 0.0
+        val lat = originLat + Math.toDegrees(y / EARTH_M)
+        val lon = originLon + Math.toDegrees(x / (EARTH_M * Math.cos(Math.toRadians(originLat))))
+        return e.reliefAt(lat, lon, homeHeight, reliefScale)
+    }
+
+    /** Fetches the elevation tiles that cover the flight (a few big pictures), then works out the height of every point of every map tile's grid. */
+    private fun loadRelief(path: FlightPath) {
+        try {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND)
+            val e = elevation ?: return
+            val need = MapTiles.cover(originLat, originLon, MapTiles.radiusOf(path), e.zoom)
+            for (t in need) {
+                if (closed) return
+                val f = File(dir, "elevation/" + e.zoom + "/" + t.x + "/" + t.y + ".tile")
+                if (!f.exists() && !fetch(MapTiles.url(ElevationModel.URL, t), f)) return           // no hills without all of them: the ground stays flat
+                val b = BitmapFactory.decodeFile(f.path)                                            // full colour: the height is in the colours
+                if (b == null) { f.delete(); return }
+                val px = IntArray(ElevationModel.TILE * ElevationModel.TILE)
+                if (b.width == ElevationModel.TILE && b.height == ElevationModel.TILE) b.getPixels(px, 0, ElevationModel.TILE, 0, 0, ElevationModel.TILE, ElevationModel.TILE) else { b.recycle(); f.delete(); return }
+                b.recycle()
+                e.put(t.x, t.y, px)
+            }
+            homeHeight = e.heightAt(originLat, originLon)
+            if (homeHeight.isNaN()) return
+            relief = Array(tiles.size) { i -> e.reliefGrid(tiles[i], GRID, homeHeight, reliefScale) }
+        } catch (t: Throwable) {
+            // the ground simply stays flat
+        }
+    }
 
     /** The picture of tile i, or null while it is not ready (it is asked for, if it was not yet). */
     fun bitmap(i: Int): Bitmap? {
@@ -134,11 +179,13 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
         return b
     }
 
-    private fun download(t: MapTiles.Tile, dest: File): Boolean {
+    private fun download(t: MapTiles.Tile, dest: File): Boolean = fetch(MapTiles.url(template, t), dest)
+
+    private fun fetch(url: String, dest: File): Boolean {
         var c: HttpURLConnection? = null
         val part = File(dest.path + ".part")
         try {
-            c = URL(MapTiles.url(template, t)).openConnection() as HttpURLConnection
+            c = URL(url).openConnection() as HttpURLConnection
             c.connectTimeout = 8000
             c.readTimeout = 8000
             c.instanceFollowRedirects = true
@@ -197,8 +244,9 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
 
     companion object {
         /** Points per side of the grid laid on a tile: the picture is drawn as a mesh of GRID x GRID cells near the camera, half of that far away. */
-        const val GRID = 8
+        const val GRID = 16
         private const val MEMORY_TILES = 150
         private const val MAX_TILE_BYTES = 600 * 1024
+        private const val EARTH_M = 6371008.8
     }
 }

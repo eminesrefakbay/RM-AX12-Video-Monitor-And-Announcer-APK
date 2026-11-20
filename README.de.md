@@ -23,6 +23,10 @@
 
 ## Neu
 
+**1.17: Hügel unter dem 3D-Replay (1.17.0)**
+
+* **Der Boden steigt und fällt.** Die Karte im 3D-Replay liegt jetzt auf Hügeln: eine grobe Form des echten Geländes, nur zum Ansehen, ohne Höhenlinien und ohne Beschriftung. Die Höhen sind nicht exakt, und die Flugspur behält die aufgezeichneten Höhen, das Band kann also durch einen Hügel scheinen. Einstellungen > Display > Hügel in 3D: Aus, Echte Größe, Doppelt so hoch, Dreimal so hoch. Die Höhen kommen von den öffentlichen AWS Terrain Tiles (pro Flug wenige kleine Dateien, auf dem Funkgerät gespeichert); ohne sie bleibt der Boden flach.
+
 **1.16: eine Karte unter dem 3D-Replay (1.16.0 und 1.16.1)**
 
 * **Eine echte Karte auf dem Boden des 3D-Replays.** Kartenkacheln liegen in Perspektive unter dem Band, als **Straßenkarte** (OpenStreetMap), **Geländekarte** (OpenTopoMap), **Satellitenbilder** (Esri) oder von einer eigenen Kachel-Adresse, so siehst du, wo der Flug entlangging. Die Kacheln eines Fluges werden einmal geladen, wenn du sein Replay öffnest, und auf dem Sender gespeichert; die Karte erscheint also auch auf dem Flugplatz ohne Netz. Die Karten-Taste im Replay öffnet ein Menü (Aus, Straßenkarte, Satellit, Gelände); Einstellungen > Anzeige hat den Schalter, den Kartentyp und die eigene Adresse.

@@ -103,10 +103,13 @@ public final class MapTiles {
     public static int chooseZoom(double radiusM, double lat) { return chooseZoom(radiusM, lat, MAX_ZOOM); }
 
     /** The same, but not past maxZoom (a source may have no tiles at the sharpest zoom). */
-    public static int chooseZoom(double radiusM, double lat, int maxZoom) {
+    public static int chooseZoom(double radiusM, double lat, int maxZoom) { return chooseZoom(radiusM, lat, maxZoom, MAX_SIDE); }
+
+    /** The same, with at most maxSide tiles along a side (the elevation tiles use fewer and bigger ones). */
+    public static int chooseZoom(double radiusM, double lat, int maxZoom, int maxSide) {
         for (int z = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, maxZoom)); z > MIN_ZOOM; z--) {
             double side = Math.ceil(2 * radiusM / tileMeters(lat, z)) + 1;
-            if (side <= MAX_SIDE) return z;
+            if (side <= maxSide) return z;
         }
         return MIN_ZOOM;
     }

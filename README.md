@@ -2,7 +2,7 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.16.1)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.0)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
 > **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
@@ -17,6 +17,10 @@
 * only **reads** from the radio. It never writes a setting.
 
 ## What's new
+
+**1.17: hills under the 3D replay (1.17.0)**
+
+* **The ground rises and falls.** The map in the 3D replay now lies on hills: a rough shape of the real land, to look at, with no contour lines and no labels. The heights are not exact and the flight line keeps the heights that were logged, so the ribbon can show through a hill. Settings > Display > Hills in 3D: Off, Real size, Twice as high, Three times as high (twice or three times shows flat land better). The heights come from the public AWS Terrain Tiles (a few small files per flight, kept on the radio); without them the ground stays flat. The camera never goes below the ground.
 
 **1.16: a map under the 3D replay (1.16.0 and 1.16.1)**
 
@@ -79,7 +83,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,454 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,481 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -299,7 +303,7 @@ spreadsheet). The top of the file lists the app, the aircraft, the pack, the cel
 When the log holds a position (a GPS fix with at least 6 satellites), the replay shows the flight in 3D behind the cards. The cards, charts and
 scrub bar work as before; a log without a position shows a short note and the old replay.
 
-* **A map under the flight.** The ground is a map: a street map (OpenStreetMap, the default), a terrain map (OpenTopoMap), satellite pictures (Esri World Imagery) or the address of your own tile server (Settings > Display > Map type, and Custom tile address). The terrain and satellite maps stop at zoom 17, because those servers have no sharper tiles. The tiles that cover the flight (up to 144, a few MB) are fetched once, with an identifying User-Agent and two connections at most, and kept in the app's cache folder (trimmed at 120 MB, oldest first), so a flight you opened at home shows its map at the field. Without a network and without cached tiles the ground is plain, with the grid. The credit of the map shows at the bottom left. The ground is flat: a hill is drawn on the map but not as a hill.
+* **A map under the flight.** The ground is a map: a street map (OpenStreetMap, the default), a terrain map (OpenTopoMap), satellite pictures (Esri World Imagery) or the address of your own tile server (Settings > Display > Map type, and Custom tile address). The terrain and satellite maps stop at zoom 17, because those servers have no sharper tiles. The tiles that cover the flight (up to 144, a few MB) are fetched once, with an identifying User-Agent and two connections at most, and kept in the app's cache folder (trimmed at 120 MB, oldest first), so a flight you opened at home shows its map at the field. Without a network and without cached tiles the ground is plain, with the grid. The credit of the map shows at the bottom left. With **Hills in 3D** (Settings > Display, on by default) the ground is also a rough 3D shape of the land, with no contour lines or labels: elevation tiles (AWS Terrain Tiles, zoom 13 or lower, up to 16 files) are fetched once per flight and kept in the cache, the camera stays above the ground, and the aircraft, drop lines, flags and the HOME ring stand on it. The heights are for looking and not exact, the ribbon keeps the logged heights and can show through a hill (there is no depth buffer), and without the elevation tiles the ground is flat. Choose real size, twice or three times as high.
 * **What you see.** A ribbon coloured by speed (blue when slow, then green, yellow, orange, red above 110 km/h), a flat ground with a grid and a
   horizon, a green HOME ring where the log starts, thin drop lines to the ground (height at a glance), the aircraft, and flags: take-off, each
   flight-mode change, the end of the approval window, the farthest point, the highest point, the top speed and the landing. Flags never cover each
@@ -657,7 +661,7 @@ to `Pictures/AX-HUD`; Android 9 lists them as two switches and the app asks for 
 asked once and only to search for the tracker (Android requires it for Bluetooth searches; the app does not read the location). If a screenshot cannot be saved, *Settings > Diagnostics*
 shows why in the events.
 
-**Map tiles.** When you open a 3D replay, the app asks the tile server of the chosen map type (OpenStreetMap, OpenTopoMap, Esri, or your own address) for the map tiles that cover the flight. The server sees your IP address and which area you look at, which is where you fly. The built-in map types use public tile servers without a key; check the terms of the one you use, and use the custom address for a provider you have an account with. Switch it off in *Settings > Display > Map under the 3D replay* (or with the Map button in the replay) and nothing is requested; tiles already in the cache stay on the radio. A key you put into a tile address is saved in the settings backup.
+**Map tiles.** When you open a 3D replay, the app asks the tile server of the chosen map type (OpenStreetMap, OpenTopoMap, Esri, or your own address) for the map tiles that cover the flight. The server sees your IP address and which area you look at, which is where you fly. The built-in map types use public tile servers without a key; check the terms of the one you use, and use the custom address for a provider you have an account with. Switch it off in *Settings > Display > Map under the 3D replay* (or with the Map button in the replay) and nothing is requested; tiles already in the cache stay on the radio. **Hills in 3D** also asks AWS Terrain Tiles (public elevation tiles on Amazon S3) for a few small files that cover the flight; that server also sees your IP address and the area. The documentation of that data says the bucket is meant for use from AWS cloud machines, so check its terms for your use, and set Hills in 3D to Off to stop the requests. A key you put into a tile address is saved in the settings backup.
 
 GPS coordinates are shown on screen. When a GPS fix is available, the app also saves the last known position to `last_position.txt` in its app folder, including during flight and when the link is lost; this is independent of flight logging. If you enable flight logs (off by default), those CSV files can also contain GPS positions. Three taps on the top edge (away from MENU) save a full-screen PNG, including any visible coordinates, to `Pictures/AX-HUD`. These files stay on the radio unless you copy them elsewhere. Do not commit flight logs or screenshots that show where you fly.
 
