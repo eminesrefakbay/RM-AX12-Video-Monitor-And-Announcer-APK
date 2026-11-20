@@ -52,6 +52,8 @@ interface SettingsHost {
     fun setMapOn(on: Boolean)
     fun mapTypeLabel(): String
     fun cycleMapType()
+    fun mapFit(): Boolean
+    fun setMapFit(on: Boolean)
     fun mapReliefLabel(): String
     fun cycleMapRelief()
     fun mapCustomLabel(): String
@@ -628,6 +630,8 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             refresh()
         }
         note(tr("The ground under the map rises and falls like the real land, to look at. The heights are rough and not exact, and the flight line keeps the heights that were logged. The heights come from AWS Terrain Tiles (a few small files per flight, kept on the radio). Check their terms. Twice or three times as high makes flat land easier to see."))
+        toggle(tr("Fit the hills to the flight"), host.mapFit()) { host.setMapFit(it) }
+        note(tr("The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data."))
         valueRow(tr("Custom tile address"), host.mapCustomLabel()) { host.editMapSource() }
         note(tr("The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use."))
         note(tr("Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD."))

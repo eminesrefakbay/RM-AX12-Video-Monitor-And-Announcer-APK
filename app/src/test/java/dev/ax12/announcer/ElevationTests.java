@@ -87,6 +87,10 @@ public class ElevationTests {
         List<MapTiles.Tile> need = MapTiles.cover(36.85, 34.6, 300, z);
         check(need.size() >= 1 && need.size() <= ElevationModel.MAX_SIDE * ElevationModel.MAX_SIDE, "few tiles are needed: " + need.size());
         check(!new ElevationModel(z).hasAll(need) && !new ElevationModel(z).hasAll(new java.util.ArrayList<MapTiles.Tile>()), "an empty model has none of them");
+        check(near(ElevationModel.fitOffset(new double[]{0, 10, 5}, new double[]{0, 2, 9}, 1, 60), -5, 1e-9), "the ground is lowered until the flight is a metre above it: " + ElevationModel.fitOffset(new double[]{0, 10, 5}, new double[]{0, 2, 9}, 1, 60));
+        check(ElevationModel.fitOffset(new double[]{20, 30}, new double[]{0, 0}, 1, 60) == 0, "the ground is never raised");
+        check(ElevationModel.fitOffset(new double[]{0}, new double[]{500}, 1, 60) == -60, "the shift is limited");
+        check(ElevationModel.fitOffset(new double[]{}, new double[]{}, 1, 60) == 0 && ElevationModel.fitOffset(new double[]{Double.NaN}, new double[]{3}, 1, 60) == 0, "no data, no shift");
         check(ElevationModel.scaleOf(0) == 0 && ElevationModel.scaleOf(1) == 1 && ElevationModel.scaleOf(3) == 3 && ElevationModel.scaleOf(9) == 3 && ElevationModel.scaleOf(-2) == 0, "the setting gives the scale");
         check(MapTiles.validTemplate(ElevationModel.URL) && ElevationModel.CREDIT.length() <= 80, "the address is valid and the credit is short");
         check(new ElevationModel(99).zoom == ElevationModel.MAX_ZOOM, "the zoom is limited to what the tiles have");

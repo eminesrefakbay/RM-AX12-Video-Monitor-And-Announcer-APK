@@ -100,5 +100,24 @@ public final class ElevationModel {
     public static int zoomFor(double radiusM, double lat) { return MapTiles.chooseZoom(radiusM, lat, WANTED_ZOOM, MAX_SIDE); }
 
     /** The scale for a setting: 0 off, 1 true size, 2 twice as high, 3 three times. */
+    /**
+     * How far to move the ground so that the aircraft is never under it: the log height of every point of the flight against the height of the hill under it.
+     * The flight can only be above the ground, so the lowest gap says how much the hills stand too high, and they are lowered by that, leaving clearance metres
+     * under the lowest point. The ground is only ever lowered (never above 0) and by at most maxShift, so a bad log cannot throw the hills away.
+     * Returns the number to add to the ground heights (0 or negative).
+     */
+    public static double fitOffset(double[] logZ, double[] ground, double clearance, double maxShift) {
+        double lowest = Double.MAX_VALUE;
+        int n = Math.min(logZ.length, ground.length);
+        for (int i = 0; i < n; i++) {
+            if (Double.isNaN(logZ[i]) || Double.isNaN(ground[i])) continue;
+            double gap = logZ[i] - ground[i];
+            if (gap < lowest) lowest = gap;
+        }
+        if (lowest == Double.MAX_VALUE) return 0;
+        double d = lowest - clearance;
+        return Math.max(-maxShift, Math.min(0, d));
+    }
+
     public static double scaleOf(int setting) { return setting <= 0 ? 0.0 : Math.min(3, setting); }
 }

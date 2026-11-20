@@ -1164,6 +1164,11 @@ class MainActivity : Activity() {
             Prefs.setInt(this@MainActivity, "mapType", kinds[(kinds.indexOf(now) + 1) % kinds.size])
             this@MainActivity.applyReplayMap()
         }
+        override fun mapFit(): Boolean = Prefs.bool(this@MainActivity, "mapFit", true)
+        override fun setMapFit(on: Boolean) {
+            Prefs.setBool(this@MainActivity, "mapFit", on)
+            this@MainActivity.applyReplayMap()
+        }
         override fun mapReliefLabel(): String = when (Prefs.int(this@MainActivity, "mapRelief", 1)) {
             0 -> tr("Off")
             2 -> tr("Twice as high")
@@ -1635,7 +1640,7 @@ class MainActivity : Activity() {
         if (!on || p == null || p.n < 2 || p.originLat.isNaN()) { flight3d.setMap(null); return }
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (e: Exception) { "?" }
         val agent = "AX-HUD/" + version + " (+https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK)"
-        flight3d.setMap(MapLayer(this, p, Prefs.int(this, "mapType", 0), Prefs.string(this, "mapUrl", ""), Prefs.string(this, "mapCredit", ""), agent, Prefs.int(this, "mapRelief", 1)))
+        flight3d.setMap(MapLayer(this, p, Prefs.int(this, "mapType", 0), Prefs.string(this, "mapUrl", ""), Prefs.string(this, "mapCredit", ""), agent, Prefs.int(this, "mapRelief", 1), Prefs.bool(this, "mapFit", true)))
     }
 
     /** True when the address of the custom map in the settings can be used. */

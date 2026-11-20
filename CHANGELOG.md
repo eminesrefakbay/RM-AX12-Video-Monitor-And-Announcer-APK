@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.17.2
+
+Hills fitted to the flight: the ground is lowered, by up to 60 m and never raised, until the lowest point of the log is a metre above it, so the ribbon does not
+dip under the hills when the log height and the elevation data disagree. A switch in Settings > Display turns it off.
+
 ## 1.17.1
 
 A fifth camera in the 3D replay: FPV. The view is from the aircraft, along its nose (a quad camera tilted up 25 degrees), with the horizon turning with the roll.

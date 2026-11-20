@@ -26,7 +26,7 @@ import java.util.concurrent.Executors
  *
  * The view asks [bitmap] for the tile it wants to draw and gets null until the picture is ready; it draws every frame anyway, so no callback is needed.
  */
-class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, customCredit: String, private val userAgent: String, reliefSetting: Int = 0) {
+class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, customCredit: String, private val userAgent: String, reliefSetting: Int = 0, private val fitHills: Boolean = true) {
     val originLat: Double = path.originLat
     val originLon: Double = path.originLon
     /** The kind of map that is really shown (a custom address that is not valid gives the street map). */
@@ -38,6 +38,9 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
     private val reliefScale: Double = ElevationModel.scaleOf(reliefSetting)
     private val elevation: ElevationModel? = if (reliefScale > 0.0 && tiles.isNotEmpty()) ElevationModel(ElevationModel.zoomFor(MapTiles.radiusOf(path), path.originLat)) else null
     private var homeHeight = Double.NaN
+    /** The fit: how far the ground was lowered so that the flight is not under it (metres, 0 or negative). */
+    @Volatile var fitOffset = 0.0
+        private set
     /** For every map tile, the height of the ground at the points of its grid (metres above the home point, already scaled); null until the elevation tiles are in. */
     @Volatile var relief: Array<FloatArray>? = null
         private set
@@ -100,6 +103,12 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
         if (relief == null) return 0.0
         val lat = originLat + Math.toDegrees(y / EARTH_M)
         val lon = originLon + Math.toDegrees(x / (EARTH_M * Math.cos(Math.toRadians(originLat))))
+        return e.reliefAt(lat, lon, homeHeight, reliefScale) + fitOffset
+    }
+
+    private fun groundAtRaw(e: ElevationModel, x: Double, y: Double): Double {
+        val lat = originLat + Math.toDegrees(y / EARTH_M)
+        val lon = originLon + Math.toDegrees(x / (EARTH_M * Math.cos(Math.toRadians(originLat))))
         return e.reliefAt(lat, lon, homeHeight, reliefScale)
     }
 
@@ -122,7 +131,15 @@ class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, cu
             }
             homeHeight = e.heightAt(originLat, originLon)
             if (homeHeight.isNaN()) return
-            relief = Array(tiles.size) { i -> e.reliefGrid(tiles[i], GRID, homeHeight, reliefScale) }
+            val grids = Array(tiles.size) { i -> e.reliefGrid(tiles[i], GRID, homeHeight, reliefScale) }
+            if (fitHills) {                                                                         // the aircraft cannot be under the ground: lower the hills until it is not
+                val n = Math.min(path.n, path.x.size)
+                val gz = DoubleArray(n) { i -> groundAtRaw(e, path.x[i], path.y[i]) }
+                val d = ElevationModel.fitOffset(path.z.copyOf(n), gz, 1.0, 60.0)
+                if (d != 0.0) for (g in grids) for (k in g.indices) g[k] = g[k] + d.toFloat()
+                fitOffset = d
+            }
+            relief = grids
         } catch (t: Throwable) {
             // the ground simply stays flat
         }

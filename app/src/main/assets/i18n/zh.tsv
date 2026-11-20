@@ -996,3 +996,5 @@ Twice as high	高度 2x
 Three times as high	高度 3x
 The ground under the map rises and falls like the real land, to look at. The heights are rough and not exact, and the flight line keeps the heights that were logged. The heights come from AWS Terrain Tiles (a few small files per flight, kept on the radio). Check their terms. Twice or three times as high makes flat land easier to see.	地图下面的地面像真实的地形一样起伏，仅供观看。高度是大致的，不精确，飞行线保留记录的高度。高度数据来自 AWS Terrain Tiles（每次飞行几个小文件，保存在遥控器上）。请查看其条款。高度 2x 或 3x 更容易看出平地。
 FPV	FPV
+Fit the hills to the flight	让地形贴合飞行
+The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data.	飞机不可能在地面以下，所以地形最多降低 60 米，直到飞行的最低点略高于地形。这样可以修正记录与高度数据之间的高度差。

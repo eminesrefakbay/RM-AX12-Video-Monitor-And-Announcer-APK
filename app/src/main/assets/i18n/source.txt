@@ -718,6 +718,8 @@ Map under the 3D replay
 Map type
 Hills in 3D
 The ground under the map rises and falls like the real land, to look at. The heights are rough and not exact, and the flight line keeps the heights that were logged. The heights come from AWS Terrain Tiles (a few small files per flight, kept on the radio). Check their terms. Twice or three times as high makes flat land easier to see.
+Fit the hills to the flight
+The aircraft cannot be under the ground, so the hills are lowered, by up to 60 m, until the lowest point of the flight is just above them. This corrects the height difference between the log and the elevation data.
 The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.
 Active aircraft
