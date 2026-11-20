@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The app theme: no title bar, the logo screen as the window background so there is no white flash at start,
+    <!-- The app theme: no title bar, plain navy as the window background so there is no white flash at start (no logo screen),
          and one dark look for every button and every dialog. -->
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_window</item>

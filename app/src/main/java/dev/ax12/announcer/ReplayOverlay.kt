@@ -49,6 +49,11 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     val tag = TextView(activity)
     val bar = LinearLayout(activity)
     private val rail = LinearLayout(activity)
+    private val railA = LinearLayout(activity)          // the left column, used only when the buttons do not fit in the height above the bar
+    private val railB = LinearLayout(activity)          // the right column: all of the buttons, or the first half
+    private val railButtons = ArrayList<View>()
+    private var railSig = ""
+    private var frame: FrameLayout? = null
     private val menu = LinearLayout(activity)
     private val scrub = ScrubView(activity)
     private val timeView = TextView(activity)
@@ -438,12 +443,52 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
 
     private fun railButton(v: ImageView, name: String, click: () -> Unit) {
         iconButton(v, name, click = click)
-        rail.addView(v, LinearLayout.LayoutParams(dp(CardStyle.MIN_TOUCH_DP), dp(CardStyle.MIN_TOUCH_DP)).also { it.bottomMargin = dp(4) })
+        railButtons.add(v)
+    }
+
+    /**
+     * Puts the visible rail buttons in one column, or in two when [perColumn] of them do not fit in the height above the player bar, so the rail
+     * never reaches down onto the bar.
+     */
+    private fun placeRail(perColumn: Int) {
+        val vis = railButtons.filter { it.visibility != View.GONE }
+        val two = vis.size > perColumn
+        val first = if (two) (vis.size + 1) / 2 else vis.size
+        val sig = vis.size.toString() + "/" + first
+        if (sig == railSig) return
+        railSig = sig
+        railA.removeAllViews()
+        railB.removeAllViews()
+        for (i in vis.indices) {
+            (if (i < first) railB else railA).addView(vis[i], LinearLayout.LayoutParams(dp(CardStyle.MIN_TOUCH_DP), dp(CardStyle.MIN_TOUCH_DP)).also { it.bottomMargin = dp(4) })
+        }
+        railA.visibility = if (two) View.VISIBLE else View.GONE
+    }
+
+    /** Fits the rail, the moves list and the dive card to the room between the top of the screen and the player bar. */
+    private fun layoutRail() {
+        val f = frame ?: return
+        if (f.height == 0) return
+        val barH = if (bar.height > 0) bar.height else dp(100)
+        val avail = f.height - dp(10) - dp(4) - barH - dp(8)
+        placeRail(Math.max(2, avail / dp(CardStyle.MIN_TOUCH_DP + 4)))
+        val two = railA.visibility == View.VISIBLE
+        val rl = rail.layoutParams as FrameLayout.LayoutParams
+        if (rl.bottomMargin != barH + dp(8)) { rl.bottomMargin = barH + dp(8); rail.layoutParams = rl }
+        val ml = movesPanel.layoutParams as FrameLayout.LayoutParams
+        val right = dp(26 + (if (two) 108 else 56))
+        val bottom = barH + dp(8)
+        if (ml.rightMargin != right || ml.bottomMargin != bottom) { ml.rightMargin = right; ml.bottomMargin = bottom; movesPanel.layoutParams = ml }
     }
 
     private fun buildRail() {
-        rail.orientation = LinearLayout.VERTICAL
+        rail.orientation = LinearLayout.HORIZONTAL
         rail.setPadding(dp(4), dp(4), dp(4), dp(0))
+        railA.orientation = LinearLayout.VERTICAL
+        railB.orientation = LinearLayout.VERTICAL
+        railA.visibility = View.GONE
+        rail.addView(railA, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.rightMargin = dp(4) })
+        rail.addView(railB, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         rail.visibility = View.GONE
         rail.elevation = dp(16).toFloat()
         railButton(ImageView(activity), "close") { actions.close() }
@@ -453,6 +498,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         railButton(cardsRail, "cards") { cardsOn = !cardsOn; paintToggles(); actions.cards(cardsOn) }
         railButton(movesRail, "moves") { toggleMoves() }
         railButton(ImageView(activity), "snapshot") { closeMenu(); actions.snapshot() }
+        placeRail(railButtons.size)
     }
 
     /** A short list of choices beside a rail button; a pick applies and closes it. */
@@ -477,7 +523,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
             menu.addView(t, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)).also { it.bottomMargin = dp(if (i == labels.size - 1) 0 else 4) })
         }
         val lp = menu.layoutParams as FrameLayout.LayoutParams
-        lp.topMargin = (rail.top + anchor.top).coerceAtLeast(0)
+        lp.topMargin = (rail.top + ((anchor.parent as? View)?.top ?: 0) + anchor.top).coerceAtLeast(0)
         lp.rightMargin = rail.width + dp(16)               // the rail itself sits 8 dp from the edge
         menu.layoutParams = lp
         menu.visibility = View.VISIBLE
@@ -491,6 +537,8 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
 
     /** Adds the views to the frame: the backdrop under everything that draws, the tag, the rail, the bar and the menu on top. */
     fun attach(frame: FrameLayout, backdropIndex: Int) {
+        this.frame = frame
+        frame.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> frame.post { layoutRail() } }
         frame.addView(backdrop, backdropIndex, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         frame.addView(tag, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START).also { it.setMargins(dp(10), dp(10), 0, 0) })
         frame.addView(bar, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
@@ -511,7 +559,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         if (held || menu.visibility == View.VISIBLE || movesPanel.visibility == View.VISIBLE) touch()
         else {
             closeMenu()
-            for (v in arrayOf<View>(bar, rail)) {
+            for (v in arrayOf<View>(bar, rail, tag)) {         // the red tag goes with the bar and the rail, so it covers nothing
                 val view = v
                 view.animate().alpha(0f).setDuration(Motion.OUT_MS.toLong()).withEndAction { if (view.alpha == 0f) view.visibility = View.GONE }.start()
             }
@@ -521,8 +569,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     /** Shows the bar and the rail and starts the countdown to hide them again: they cover the picture (the sticks, the bottom cards) only while they are needed. */
     fun touch() {
         if (backdrop.visibility != View.VISIBLE) return
-        tag.visibility = View.VISIBLE
-        for (view in arrayOf<View>(bar, rail)) {
+        for (view in arrayOf<View>(bar, rail, tag)) {
             view.animate().cancel()
             view.alpha = 1f
             view.visibility = View.VISIBLE
@@ -544,6 +591,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         bar.removeCallbacks(hideBar)
         bar.animate().cancel()
         rail.animate().cancel()
+        tag.animate().cancel()
         closeMenu()
         backdrop.visibility = View.GONE
         tag.visibility = View.GONE
@@ -564,6 +612,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         cameraRail.visibility = v
         modelRail.visibility = v
         trailRail.visibility = v
+        layoutRail()
     }
 
     fun setLoop(on: Boolean) { loopOn = on; paintToggles() }

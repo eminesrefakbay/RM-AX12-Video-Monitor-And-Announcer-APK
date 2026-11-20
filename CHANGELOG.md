@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.15.4
+
+The replay: the buttons on the right no longer reach down onto the player bar (they use two columns when the screen is too short for one), and the red
+REPLAY tag at the top fades out together with the bar and the buttons, so it no longer covers the cards. The still logo screen that Android showed before the
+animated splash is gone: the app now opens on plain navy and goes straight into the splash.
+
 ## 1.15.3
 
 The flight summary page fits on one screen without scrolling. The figures are a little smaller, the voltage and current chart and the track share the height
