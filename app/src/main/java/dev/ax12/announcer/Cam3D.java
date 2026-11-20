@@ -11,9 +11,13 @@ package dev.ax12.announcer;
  * and a seek (reset) puts it straight at the new place instead of flying there. World axes: x east, y north, z up.
  */
 public final class Cam3D {
-    public static final int CHASE = 0, ORBIT = 1, PILOT = 2, TOP = 3;
+    public static final int CHASE = 0, ORBIT = 1, PILOT = 2, TOP = 3, FPV = 4;
     /** How many cameras there are. */
-    public static final int COUNT = 4;
+    public static final int COUNT = 5;
+    /** FPV: how far the camera looks up from the nose, in degrees (a quad's camera is tilted up; a plane's looks along the nose). */
+    public double fpvTiltDeg = 0;
+    /** FPV: the roll of the aircraft in degrees; the view turns the picture by it. Zero in the other cameras. */
+    public double rollDeg = 0;
     public static final double NEAR = 0.2;
 
     public int mode = CHASE;
@@ -81,6 +85,13 @@ public final class Cam3D {
                 setFov(damp(fov, 55, dtSec, 0.3), fresh);
                 break;
             }
+            case FPV: {                                          // from the aircraft: along its nose (plus the camera tilt), the horizon turns with the roll
+                double hd = Math.toRadians(p.headingDeg), pe = Math.toRadians(Math.max(-85, Math.min(85, p.pitchDeg + fpvTiltDeg)));
+                nex = p.x; ney = p.y; nez = p.z;
+                tx = nex + Math.sin(hd) * Math.cos(pe) * 60; ty = ney + Math.cos(hd) * Math.cos(pe) * 60; tz = nez + Math.sin(pe) * 60;
+                fov = 95;
+                break;
+            }
             case PILOT: {
                 nex = homeX; ney = homeY; nez = homeY * 0 + eyeHeight;
                 tx = fx; ty = fy; tz = fz;
@@ -97,13 +108,14 @@ public final class Cam3D {
                 setFov(damp(fov, 70, dtSec, 0.3), fresh);
             }
         }
-        if (fresh || mode == PILOT) { ex = nex; ey = ney; ez = nez; }
+        rollDeg = mode == FPV ? p.rollDeg : 0;
+        if (fresh || mode == PILOT || mode == FPV) { ex = nex; ey = ney; ez = nez; }
         else {
             double hl = (mode == ORBIT || mode == TOP) ? 0.18 : 0.30;
             ex = damp(ex, nex, dtSec, hl); ey = damp(ey, ney, dtSec, hl); ez = damp(ez, nez, dtSec, hl);
         }
-        if (mode != PILOT && ez < minEyeZ) ez = minEyeZ;
-        if (ez < tz - 400) ez = tz - 400;
+        if (mode != PILOT && mode != FPV && ez < minEyeZ) ez = minEyeZ;
+        if (mode != FPV && ez < tz - 400) ez = tz - 400;
         fovDeg = fov;
         fresh = false;
         basis();

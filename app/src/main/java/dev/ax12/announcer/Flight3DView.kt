@@ -238,7 +238,7 @@ class Flight3DView(context: Context) : View(context) {
     /** Chase, orbit, pilot, top, then chase again. */
     fun cycleCamera(): Int = setCamera((cam.mode + 1) % Cam3D.COUNT)
 
-    /** Puts a camera on: Cam3D.CHASE, ORBIT, PILOT or TOP. */
+    /** Puts a camera on: Cam3D.CHASE, ORBIT, PILOT, TOP or FPV. */
     fun setCamera(mode: Int): Int {
         cam.mode = mode.coerceIn(0, Cam3D.COUNT - 1)
         cam.autoOrbit = true
@@ -298,7 +298,16 @@ class Flight3DView(context: Context) : View(context) {
         cam.homeX = 0.0; cam.homeY = 0.0
         if (snapNext) { cam.reset(); snapNext = false }
         cam.minEyeZ = if (hills()) groundZ(pose.x, pose.y) + 2.0 else -1e9
+        cam.fpvTiltDeg = if (model == MODEL_PLANE) 0.0 else 25.0
         cam.update(pose, dt)
+        val fpv = cam.mode == Cam3D.FPV
+        canvas.save()
+        if (fpv) {                                                  // the picture turns with the roll; a little bigger so that no corner shows
+            val r = Math.toRadians(cam.rollDeg)
+            canvas.rotate((-cam.rollDeg).toFloat(), w / 2, h / 2)
+            val sc = (1.0 + 0.9 * Math.abs(Math.sin(r))).toFloat()
+            canvas.scale(sc, sc, w / 2, h / 2)
+        }
 
         drawSkyAndGround(canvas, w, h)
         val mapShown = drawMap(canvas, w, h)
@@ -306,7 +315,8 @@ class Flight3DView(context: Context) : View(context) {
         drawRibbon(canvas, p)
         drawHome(canvas)
         drawFlags(canvas, p)
-        drawAircraft(canvas)
+        if (!fpv) drawAircraft(canvas)
+        canvas.restore()
         drawLegend(canvas, w, h)
         if (mapShown) drawCredit(canvas, h, map?.creditLine ?: "") else drawMapNote(canvas, h)
 

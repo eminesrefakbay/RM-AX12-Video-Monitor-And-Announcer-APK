@@ -496,7 +496,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         rail.visibility = View.GONE
         rail.elevation = dp(16).toFloat()
         railButton(ImageView(activity), "close") { actions.close() }
-        railButton(cameraRail, "camera") { openMenu(cameraRail, listOf(tr("Chase"), tr("Orbit"), tr("Pilot"), tr("Top")), camera) { actions.camera(it) } }
+        railButton(cameraRail, "camera") { openMenu(cameraRail, listOf(tr("Chase"), tr("Orbit"), tr("Pilot"), tr("Top"), tr("FPV")), camera) { actions.camera(it) } }
         railButton(modelRail, "aircraft") { openMenu(modelRail, listOf(tr("Quad"), tr("Plane")), model) { actions.model(it) } }
         railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height")), trailMode) { actions.trail(it) } }
         railButton(mapRail, "map") {

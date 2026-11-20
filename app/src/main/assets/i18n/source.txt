@@ -546,6 +546,7 @@ Peak current
 Chase
 Orbit
 Pilot
+FPV
 Quad
 Plane
 Speed

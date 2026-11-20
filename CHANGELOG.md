@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.17.1
+
+A fifth camera in the 3D replay: FPV. The view is from the aircraft, along its nose (a quad camera tilted up 25 degrees), with the horizon turning with the roll.
+Satellite pictures on the hills work with Hills in 3D left on.
+
 ## 1.17.0
 
 Hills under the 3D replay. The map now lies on a rough 3D shape of the land (no contour lines, no labels), made from public elevation tiles (AWS Terrain Tiles)

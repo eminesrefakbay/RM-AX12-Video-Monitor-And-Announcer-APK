@@ -155,7 +155,16 @@ public class Flight3DTests {
         cam.mode = Cam3D.TOP; cam.reset(); pose.x = 0; pose.y = 0; pose.z = 20; cam.update(pose, 0.016);
         check(cam.ez > pose.z + 20 && Math.hypot(cam.ex - pose.x, cam.ey - pose.y) < cam.userDistance * 0.1, "top view hangs above the aircraft");
         check(cam.project(pose.x, pose.y, pose.z, sc) && near(sc[0], 640, 2) && near(sc[1], 360, 2), "top view has the aircraft in the middle of the screen: " + sc[0] + ", " + sc[1]);
-        check(Cam3D.COUNT == 4, "there are four cameras");
+        cam.mode = Cam3D.FPV; cam.fpvTiltDeg = 0; cam.reset();
+        pose.x = 10; pose.y = 20; pose.z = 30; pose.headingDeg = 90; pose.pitchDeg = 0; pose.rollDeg = 20; cam.update(pose, 0.016);
+        check(near(cam.ex, 10, 1e-9) && near(cam.ey, 20, 1e-9) && near(cam.ez, 30, 1e-9), "fpv sits at the aircraft");
+        check(cam.tx > cam.ex + 50 && near(cam.ty, cam.ey, 1e-6) && near(cam.tz, cam.ez, 1e-6), "fpv looks along the heading (east)");
+        check(near(cam.rollDeg, 20, 1e-9), "fpv carries the roll");
+        cam.fpvTiltDeg = 30; cam.update(pose, 0.016);
+        check(near(cam.pitchRad(), Math.toRadians(30), 1e-6), "the camera tilt looks up from the nose");
+        cam.mode = Cam3D.CHASE; cam.update(pose, 0.016);
+        check(near(cam.rollDeg, 0, 1e-9), "the other cameras do not roll");
+        check(Cam3D.COUNT == 5, "there are five cameras");
         // a seek does not make the camera fly across the map
         cam.mode = Cam3D.CHASE; cam.reset(); pose.x = 0; pose.y = 0; cam.update(pose, 0.016);
         double ex0 = cam.ex;
