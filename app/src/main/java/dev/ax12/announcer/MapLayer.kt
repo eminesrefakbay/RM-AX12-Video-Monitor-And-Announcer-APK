@@ -26,12 +26,16 @@ import java.util.concurrent.Executors
  *
  * The view asks [bitmap] for the tile it wants to draw and gets null until the picture is ready; it draws every frame anyway, so no callback is needed.
  */
-class MapLayer(context: Context, path: FlightPath, custom: String, customCredit: String, private val userAgent: String) {
+class MapLayer(context: Context, path: FlightPath, type: Int, custom: String, customCredit: String, private val userAgent: String) {
     val originLat: Double = path.originLat
     val originLon: Double = path.originLon
-    val template: String = MapTiles.templateOrDefault(custom)
-    val attribution: String = MapTiles.attributionFor(template, customCredit)
-    val tiles: List<MapTiles.Tile> = MapTiles.forFlight(path)
+    /** The kind of map that is really shown (a custom address that is not valid gives the street map). */
+    val shownType: Int = MapTiles.effectiveType(type, custom)
+    val template: String = MapTiles.templateFor(shownType, custom)
+    val attribution: String = MapTiles.creditFor(shownType, custom, customCredit)
+    val tiles: List<MapTiles.Tile> = MapTiles.forFlight(path, MapTiles.maxZoomOf(shownType))
+    /** Why the last tile could not be had, as a short text for the screen; empty when nothing failed. */
+    @Volatile var lastError: String = ""
 
     /** For every tile: a grid of (GRID + 1) x (GRID + 1) ground points as metres east and north, row by row from the north-west corner. */
     val grid: Array<DoubleArray> = Array(tiles.size) { i -> gridOf(tiles[i]) }
@@ -72,6 +76,12 @@ class MapLayer(context: Context, path: FlightPath, custom: String, customCredit:
         }
         return g
     }
+
+    /** True while tiles are still being fetched or read. */
+    fun loading(): Boolean = synchronized(this) { pending.isNotEmpty() }
+
+    /** How many tiles could not be had. */
+    fun failures(): Int = synchronized(this) { failed.size }
 
     /** The picture of tile i, or null while it is not ready (it is asked for, if it was not yet). */
     fun bitmap(i: Int): Bitmap? {
@@ -134,8 +144,8 @@ class MapLayer(context: Context, path: FlightPath, custom: String, customCredit:
             c.instanceFollowRedirects = true
             c.setRequestProperty("User-Agent", userAgent)
             c.setRequestProperty("Accept", "image/png,image/jpeg,image/*")
-            if (c.responseCode != 200) return false
-            if ((c.contentType ?: "").startsWith("image/").not()) return false
+            if (c.responseCode != 200) { lastError = tr("The server answered {0}", c.responseCode); return false }
+            if ((c.contentType ?: "").startsWith("image/").not()) { lastError = tr("The server sent no picture"); return false }
             dest.parentFile?.mkdirs()
             var total = 0
             c.inputStream.use { input ->
@@ -152,6 +162,7 @@ class MapLayer(context: Context, path: FlightPath, custom: String, customCredit:
             }
             return total > 0 && part.renameTo(dest)
         } catch (e: Exception) {
+            lastError = tr("No network")
             return false
         } finally {
             c?.disconnect()

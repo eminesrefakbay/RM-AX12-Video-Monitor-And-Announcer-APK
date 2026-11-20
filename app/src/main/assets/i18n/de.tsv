@@ -974,9 +974,19 @@ Per cell, at the end	Pro Zelle, am Ende
 VOLTAGE AND CURRENT	SPANNUNG UND STROM
 TRACK	SPUR
 Map under the 3D replay	Karte unter dem 3D-Replay
-Map tiles from	Kartenkacheln von
-The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at.	Das 3D-Replay legt eine Karte auf den Boden, aus den Kacheln von OpenStreetMap, sofern Sie keine andere Adresse angeben. Die Kacheln eines Fluges werden geladen, wenn Sie sein Replay öffnen, und auf dem Sender gespeichert, die Karte erscheint also auch auf dem Flugplatz ohne Netz. Der Kachel-Server sieht, welches Gebiet Sie ansehen.
-An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	Eine https-Adresse mit {z}, {x} und {y}, zum Beispiel {0}. Für OpenStreetMap leer lassen. Ein Schlüssel in der Adresse wird in der Einstellungssicherung gespeichert. Prüfen Sie die Bedingungen des verwendeten Kachel-Servers.
 Tile address	Kachel-Adresse
 Credit to show on the map	Quellenangabe auf der Karte
 Use an https address with {z}, {x} and {y} in it.	Verwenden Sie eine https-Adresse mit {z}, {x} und {y}.
+Loading the map...	Karte wird geladen...
+No map tiles: {0}	Keine Kartenkacheln: {0}
+Satellite	Satellit
+Terrain	Gelände
+Custom address	Eigene Adresse
+Street map	Straßenkarte
+Not set	Nicht gesetzt
+An https address with {z}, {x} and {y} in it, for example {0}. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	Eine https-Adresse mit {z}, {x} und {y}, zum Beispiel {0}. Ein Schlüssel in der Adresse wird in der Einstellungssicherung gespeichert. Prüfen Sie die Bedingungen des verwendeten Kachel-Servers.
+Custom tile address	Eigene Kachel-Adresse
+The server sent no picture	Der Server hat kein Bild gesendet
+No network	Kein Netz
+Map type	Kartentyp
+The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.	Das 3D-Replay legt eine Karte auf den Boden: eine Straßenkarte von OpenStreetMap, eine Geländekarte von OpenTopoMap, Satellitenbilder von Esri oder Kacheln von einer eigenen Adresse. Die Kacheln eines Fluges werden geladen, wenn Sie sein Replay öffnen, und auf dem Sender gespeichert, die Karte erscheint also auch auf dem Flugplatz ohne Netz. Die Kachel-Server sehen, welches Gebiet Sie ansehen. Prüfen Sie die Bedingungen des verwendeten Servers.

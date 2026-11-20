@@ -23,9 +23,9 @@
 
 ## Yenilikler
 
-**1.16: 3D tekrarda harita (1.16.0)**
+**1.16: 3D tekrarda harita (1.16.0 ve 1.16.1)**
 
-* **3D tekrarın zemininde gerçek bir harita.** OpenStreetMap karoları (ya da kendi karo adresiniz, örneğin bir uydu haritası) şeridin altına perspektifle serilir; uçuşun nereden geçtiğini görürsünüz. Bir uçuşun karoları, tekrarını açtığınızda bir kez yüklenir ve telsizde saklanır; böylece harita sahada ağ olmadan da görünür. Tekrardaki Harita düğmesi onu açıp kapatır; Ayarlar > Ekran'da anahtar ve kaynak vardır.
+* **3D tekrarın zemininde gerçek bir harita.** Harita karoları şeridin altına perspektifle serilir: **sokak haritası** (OpenStreetMap), **arazi haritası** (OpenTopoMap), **uydu görüntüleri** (Esri) ya da kendi karo adresiniz; uçuşun nereden geçtiğini görürsünüz. Bir uçuşun karoları, tekrarını açtığınızda bir kez yüklenir ve telsizde saklanır; böylece harita sahada ağ olmadan da görünür. Tekrardaki Harita düğmesi bir menü açar (Kapalı, Sokak haritası, Uydu, Arazi); Ayarlar > Ekran'da anahtar, harita türü ve özel adres vardır.
 
 **1.15: uçuş araçları (1.15.0)**
 
@@ -81,7 +81,7 @@ Bu uygulama deneyseldir ve **yedek bir bilgi kaynağı** olarak kullanılmalıd�
 
 ## Gizlilik
 
-Uygulama güncellemeleri almak için github.com'a bağlanır; başka bir yere veri göndermez. 3D tekrardaki harita için karo sunucusundan (varsayılan OpenStreetMap) harita karoları indirir; sunucu hangi bölgenin istendiğini, yani nerede uçtuğunuzu görür. Ayarlar > Ekran'dan kapatılabilir. GPS konumu bulunduğunda, uçuş sırasında ve bağlantı kaybında da son bilinen konum kumandanın uygulama klasöründeki `last_position.txt` dosyasına kaydedilir; bu, uçuş kayıtlarından bağımsızdır. Uçuş kayıtlarını açarsanız (varsayılan olarak kapalı), CSV dosyaları da GPS konumu içerebilir. MENU düğmesinden uzakta, ekranın üst kenarına üç kez dokunmak, görünen koordinatlar dâhil tam ekran bir PNG'yi `Pictures/AX-HUD` klasörüne kaydeder. Bu dosyalar başka yere kopyalamadıkça kumandada kalır. Uçtuğunuz yeri gösteren kayıtları veya ekran görüntülerini yayımlamayın.
+Uygulama güncellemeleri almak için github.com'a bağlanır; başka bir yere veri göndermez. 3D tekrardaki harita için seçilen harita türünün karo sunucusundan (OpenStreetMap, OpenTopoMap, Esri ya da özel adres) harita karoları indirir; sunucu hangi bölgenin istendiğini, yani nerede uçtuğunuzu görür. Ayarlar > Ekran'dan kapatılabilir. GPS konumu bulunduğunda, uçuş sırasında ve bağlantı kaybında da son bilinen konum kumandanın uygulama klasöründeki `last_position.txt` dosyasına kaydedilir; bu, uçuş kayıtlarından bağımsızdır. Uçuş kayıtlarını açarsanız (varsayılan olarak kapalı), CSV dosyaları da GPS konumu içerebilir. MENU düğmesinden uzakta, ekranın üst kenarına üç kez dokunmak, görünen koordinatlar dâhil tam ekran bir PNG'yi `Pictures/AX-HUD` klasörüne kaydeder. Bu dosyalar başka yere kopyalamadıkça kumandada kalır. Uçtuğunuz yeri gösteren kayıtları veya ekran görüntülerini yayımlamayın.
 
 ## Teşekkür
 

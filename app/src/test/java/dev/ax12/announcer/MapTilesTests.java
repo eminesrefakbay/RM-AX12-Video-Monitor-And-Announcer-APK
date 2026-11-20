@@ -134,6 +134,23 @@ public class MapTilesTests {
         cam.projectClamped(cam.tx, cam.ty, 0, 0.8, pc);
         check(pc[2] > 0 && pc[1] > 360 - 5, "the ground under the aircraft is on the lower half of the screen: y " + pc[1]);
 
+        // ---------- the kinds of map
+        check(MapTiles.validTemplate(MapTiles.SATELLITE_URL) && MapTiles.validTemplate(MapTiles.TERRAIN_URL), "the satellite and the terrain addresses are valid");
+        check(MapTiles.templateFor(MapTiles.STREET, "").equals(MapTiles.DEFAULT_URL) && MapTiles.templateFor(MapTiles.SATELLITE, "").equals(MapTiles.SATELLITE_URL) && MapTiles.templateFor(MapTiles.TERRAIN, "x").equals(MapTiles.TERRAIN_URL), "every kind has its address");
+        check(MapTiles.templateFor(MapTiles.CUSTOM, " https://e.org/{z}/{x}/{y}.png ").equals("https://e.org/{z}/{x}/{y}.png"), "the custom kind uses the user's address");
+        check(MapTiles.templateFor(MapTiles.CUSTOM, "").equals(MapTiles.DEFAULT_URL) && MapTiles.effectiveType(MapTiles.CUSTOM, "nonsense") == MapTiles.STREET && MapTiles.effectiveType(MapTiles.CUSTOM, "https://e.org/{z}/{x}/{y}") == MapTiles.CUSTOM, "custom without a good address is the street map");
+        check(MapTiles.typeOf(-3) == 0 && MapTiles.typeOf(9) == 3 && MapTiles.typeOf(2) == 2, "the kind is kept in range");
+        check(MapTiles.SATELLITE_URL.indexOf("{z}") < MapTiles.SATELLITE_URL.indexOf("{y}") && MapTiles.SATELLITE_URL.indexOf("{y}") < MapTiles.SATELLITE_URL.indexOf("{x}"), "the satellite address has its placeholders as z, y, x");
+        check(MapTiles.maxZoomOf(MapTiles.TERRAIN) == 17 && MapTiles.maxZoomOf(MapTiles.SATELLITE) <= 17 && MapTiles.maxZoomOf(MapTiles.STREET) == MapTiles.MAX_ZOOM, "terrain stops at zoom 17");
+        check(MapTiles.chooseZoom(150, 36.85, 17) == 17 && MapTiles.chooseZoom(150, 36.85) == 18, "a small flight is held to the zoom limit of its source");
+        List<MapTiles.Tile> tt = MapTiles.forFlight(fp, 15);
+        check(!tt.isEmpty() && tt.get(0).z <= 15, "the tiles of a flight respect the limit: zoom " + tt.get(0).z);
+        check(MapTiles.creditFor(MapTiles.TERRAIN, "", "").contains("OpenTopoMap") && MapTiles.creditFor(MapTiles.SATELLITE, "", "").contains("Esri") && MapTiles.creditFor(MapTiles.STREET, "", "").contains("OpenStreetMap"), "the preset kinds have their credits");
+        check(MapTiles.creditFor(MapTiles.CUSTOM, "https://e.org/{z}/{x}/{y}.png", "(c) Me").equals("(c) Me") && MapTiles.creditFor(MapTiles.CUSTOM, "https://e.org/{z}/{x}/{y}.png", "").isEmpty(), "the custom kind shows the user's credit, or none");
+        check(MapTiles.creditFor(MapTiles.CUSTOM, "nonsense", "(c) Me").contains("OpenStreetMap"), "custom without an address is the street map, with its credit");
+        check(MapTiles.creditFor(MapTiles.TERRAIN, "", "").length() <= 80 && MapTiles.creditFor(MapTiles.SATELLITE, "", "").length() <= 80, "the credits are short");
+        check(!MapTiles.cachePath(MapTiles.SATELLITE_URL, t5).substring(0, 8).equals(MapTiles.cachePath(MapTiles.TERRAIN_URL, t5).substring(0, 8)), "each kind has its own cache folder");
+
         // ---------- the settings file only takes a good address and a short credit
         java.util.Map<String, Object> st = new java.util.HashMap<String, Object>();
         st.put("mapOn", Boolean.TRUE); st.put("mapUrl", "https://e.org/{z}/{x}/{y}.png"); st.put("mapCredit", "(c) Example");

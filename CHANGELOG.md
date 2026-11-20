@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.16.1
+
+Choose the kind of map under the 3D replay: a street map (OpenStreetMap), a terrain map with contour lines (OpenTopoMap), satellite pictures (Esri World
+Imagery), or the address of your own tile server. The Map button of the replay opens a menu (Off, Street map, Satellite, Terrain), and Settings has the map
+type and the custom address. Terrain and satellite maps stop at zoom 17. When no tile can be had, the corner of the view says why. Each kind has its own cache.
+
 ## 1.16.0
 
 A map under the 3D replay. The ground of the replay is now a map: the tiles of OpenStreetMap by default, or the tile address of your own, laid on the ground in

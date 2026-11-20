@@ -974,9 +974,19 @@ Per cell, at the end	Hücre başına, sonda
 VOLTAGE AND CURRENT	GERİLİM VE AKIM
 TRACK	İZ
 Map under the 3D replay	3D tekrarda harita
-Map tiles from	Harita karolarının kaynağı
-The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at.	3D tekrar, başka bir adres vermezseniz OpenStreetMap karolarından oluşan bir haritayı zemine serer. Bir uçuşun karoları, tekrarını açtığınızda yüklenir ve telsizde saklanır; böylece harita sahada ağ olmadan da görünür. Karo sunucusu hangi bölgeye baktığınızı görür.
-An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	İçinde {z}, {x} ve {y} bulunan bir https adresi, örneğin {0}. OpenStreetMap için boş bırakın. Adresteki anahtar ayar yedeğine kaydedilir. Kullandığınız karo sunucusunun şartlarını kontrol edin.
 Tile address	Karo adresi
 Credit to show on the map	Haritada gösterilecek atıf
 Use an https address with {z}, {x} and {y} in it.	İçinde {z}, {x} ve {y} bulunan bir https adresi kullanın.
+Loading the map...	Harita yükleniyor...
+No map tiles: {0}	Harita karosu yok: {0}
+Satellite	Uydu
+Terrain	Arazi
+Custom address	Özel adres
+Street map	Sokak haritası
+Not set	Ayarlanmadı
+An https address with {z}, {x} and {y} in it, for example {0}. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	İçinde {z}, {x} ve {y} bulunan bir https adresi, örneğin {0}. Adresteki anahtar ayar yedeğine kaydedilir. Kullandığınız karo sunucusunun şartlarını kontrol edin.
+Custom tile address	Özel karo adresi
+The server sent no picture	Sunucu resim göndermedi
+No network	Ağ yok
+Map type	Harita türü
+The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.	3D tekrar zemine bir harita serer: OpenStreetMap'ten sokak haritası, OpenTopoMap'ten arazi haritası, Esri'den uydu görüntüleri ya da kendi adresinizden karolar. Bir uçuşun karoları, tekrarını açtığınızda yüklenir ve telsizde saklanır; böylece harita sahada ağ olmadan da görünür. Karo sunucuları hangi bölgeye baktığınızı görür. Kullandığınız sunucunun şartlarını kontrol edin.

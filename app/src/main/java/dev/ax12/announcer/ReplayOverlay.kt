@@ -41,7 +41,7 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         fun model(model: Int)
         fun trail(mode: Int)
         fun cards(show: Boolean)
-        fun map(on: Boolean)
+        fun map(index: Int)
         fun snapshot()
         fun jumpTo(ms: Long)
     }
@@ -66,7 +66,8 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     private val trailRail = ImageView(activity)
     private val cardsRail = ImageView(activity)
     private val mapRail = ImageView(activity)
-    private var mapOn = true
+    private var mapIndex = 1                 // 0 off, 1 street map, 2 satellite, 3 terrain, 4 the custom address
+    private var mapCustom = false
     private val movesRail = ImageView(activity)
     private val movesPanel = LinearLayout(activity)
     private val movesChips = LinearLayout(activity)
@@ -498,7 +499,11 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         railButton(cameraRail, "camera") { openMenu(cameraRail, listOf(tr("Chase"), tr("Orbit"), tr("Pilot"), tr("Top")), camera) { actions.camera(it) } }
         railButton(modelRail, "aircraft") { openMenu(modelRail, listOf(tr("Quad"), tr("Plane")), model) { actions.model(it) } }
         railButton(trailRail, "trail") { openMenu(trailRail, listOf(tr("Speed"), tr("Height")), trailMode) { actions.trail(it) } }
-        railButton(mapRail, "map") { mapOn = !mapOn; paintToggles(); actions.map(mapOn) }
+        railButton(mapRail, "map") {
+            val labels = arrayListOf(tr("Off"), tr("Street map"), tr("Satellite"), tr("Terrain"))
+            if (mapCustom) labels.add(tr("Custom address"))
+            openMenu(mapRail, labels, mapIndex) { actions.map(it) }
+        }
         railButton(cardsRail, "cards") { cardsOn = !cardsOn; paintToggles(); actions.cards(cardsOn) }
         railButton(movesRail, "moves") { toggleMoves() }
         railButton(ImageView(activity), "snapshot") { closeMenu(); actions.snapshot() }
@@ -607,10 +612,9 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
     fun setMarks(fractions: DoubleArray, colors: IntArray) = scrub.setMarks(fractions, colors)
 
     /** The 3D buttons (camera, aircraft, trail) are there only when the log has a 3D view. */
-    fun set3d(available: Boolean, camera: Int, model: Int, trail: Int, mapOn: Boolean) {
+    fun set3d(available: Boolean, camera: Int, model: Int, trail: Int, mapIndex: Int, mapCustom: Boolean) {
         has3d = available
-        this.mapOn = mapOn
-        paintToggles()
+        setMap(mapIndex, mapCustom)
         this.camera = camera
         this.model = model
         this.trailMode = trail
@@ -622,13 +626,20 @@ class ReplayOverlay(private val activity: Activity, private val actions: Actions
         layoutRail()
     }
 
+    /** The kind of map shown (0 off, 1 street, 2 satellite, 3 terrain, 4 custom) and whether the custom address is set. */
+    fun setMap(index: Int, custom: Boolean) {
+        mapIndex = index
+        mapCustom = custom
+        paintToggles()
+    }
+
     fun setLoop(on: Boolean) { loopOn = on; paintToggles() }
     fun setCards(show: Boolean) { cardsOn = show; paintToggles() }
 
     private fun paintToggles() {
         loopButton.setImageDrawable(icon("loop", if (loopOn) CardStyle.ACCENT else Color.WHITE))
         cardsRail.setImageDrawable(icon("cards", if (cardsOn) Color.WHITE else CardStyle.ACCENT))
-        mapRail.setImageDrawable(icon("map", if (mapOn) CardStyle.ACCENT else Color.WHITE))
+        mapRail.setImageDrawable(icon("map", if (mapIndex > 0) CardStyle.ACCENT else Color.WHITE))
     }
 
     private fun paintSpeeds() {

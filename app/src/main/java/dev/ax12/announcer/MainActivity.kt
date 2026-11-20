@@ -308,7 +308,7 @@ class MainActivity : Activity() {
             override fun model(model: Int) { setReplayModel(model) }
             override fun trail(mode: Int) { setReplayTrail(mode) }
             override fun cards(show: Boolean) { setReplayCards(show) }
-            override fun map(on: Boolean) { setReplayMap(on) }
+            override fun map(index: Int) { setReplayMap(index) }
             override fun snapshot() { replaySnapshot() }
             override fun jumpTo(ms: Long) { replayJumpTo(ms) }
         })
@@ -1148,8 +1148,26 @@ class MainActivity : Activity() {
         override fun splashOn(): Boolean = Prefs.bool(this@MainActivity, "splashOn", true)
         override fun setSplashOn(on: Boolean) { Prefs.setBool(this@MainActivity, "splashOn", on) }
         override fun mapOn(): Boolean = Prefs.bool(this@MainActivity, "mapOn", true)
-        override fun setMapOn(on: Boolean) { this@MainActivity.setReplayMap(on) }
-        override fun mapSourceLabel(): String = MapTiles.sourceName(MapTiles.templateOrDefault(Prefs.string(this@MainActivity, "mapUrl", "")))
+        override fun setMapOn(on: Boolean) {
+            Prefs.setBool(this@MainActivity, "mapOn", on)
+            this@MainActivity.applyReplayMap()
+        }
+        override fun mapTypeLabel(): String = when (MapTiles.effectiveType(Prefs.int(this@MainActivity, "mapType", 0), Prefs.string(this@MainActivity, "mapUrl", ""))) {
+            MapTiles.SATELLITE -> tr("Satellite")
+            MapTiles.TERRAIN -> tr("Terrain")
+            MapTiles.CUSTOM -> tr("Custom address")
+            else -> tr("Street map")
+        }
+        override fun cycleMapType() {
+            val kinds = if (this@MainActivity.customMapOk()) intArrayOf(0, 1, 2, 3) else intArrayOf(0, 1, 2)
+            val now = MapTiles.effectiveType(Prefs.int(this@MainActivity, "mapType", 0), Prefs.string(this@MainActivity, "mapUrl", ""))
+            Prefs.setInt(this@MainActivity, "mapType", kinds[(kinds.indexOf(now) + 1) % kinds.size])
+            this@MainActivity.applyReplayMap()
+        }
+        override fun mapCustomLabel(): String {
+            val u = Prefs.string(this@MainActivity, "mapUrl", "")
+            return if (MapTiles.validTemplate(u)) MapTiles.sourceName(u.trim()) else tr("Not set")
+        }
         override fun editMapSource() { this@MainActivity.editMapSourceDialog() }
         override fun menuAlways(): Boolean = Prefs.menuAlways(this@MainActivity)
         override fun sunlightOn(): Boolean = Sunlight.on
@@ -1467,7 +1485,7 @@ class MainActivity : Activity() {
         replayUi.setCards(true)
         replayUi.setLoop(false)
         applyReplayMap()
-        replayUi.set3d(path.n >= 2, flight3d.cameraMode(), flight3d.model, flight3d.trailMode, flight3d.mapOn)
+        replayUi.set3d(path.n >= 2, flight3d.cameraMode(), flight3d.model, flight3d.trailMode, mapIndexNow(), customMapOk())
         val times = path.markerTimes()
         replayMarks = times
         val total = log.durationMs().coerceAtLeast(1L).toDouble()
@@ -1607,12 +1625,26 @@ class MainActivity : Activity() {
         if (!on || p == null || p.n < 2 || p.originLat.isNaN()) { flight3d.setMap(null); return }
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (e: Exception) { "?" }
         val agent = "AX-HUD/" + version + " (+https://github.com/eminesrefakbay/RM-AX12-Video-Monitor-And-Announcer-APK)"
-        flight3d.setMap(MapLayer(this, p, Prefs.string(this, "mapUrl", ""), Prefs.string(this, "mapCredit", ""), agent))
+        flight3d.setMap(MapLayer(this, p, Prefs.int(this, "mapType", 0), Prefs.string(this, "mapUrl", ""), Prefs.string(this, "mapCredit", ""), agent))
     }
 
-    private fun setReplayMap(on: Boolean) {
-        Prefs.setBool(this, "mapOn", on)
+    /** True when the address of the custom map in the settings can be used. */
+    private fun customMapOk(): Boolean = MapTiles.validTemplate(Prefs.string(this, "mapUrl", ""))
+
+    /** What the replay's Map button shows: 0 off, 1 street map, 2 satellite, 3 terrain, 4 the custom address. */
+    private fun mapIndexNow(): Int =
+        if (!Prefs.bool(this, "mapOn", true)) 0 else MapTiles.effectiveType(Prefs.int(this, "mapType", 0), Prefs.string(this, "mapUrl", "")) + 1
+
+    /** A pick of the replay's Map menu: 0 switches the map off, 1 and up chooses the kind of map and switches it on. */
+    private fun setReplayMap(index: Int) {
+        if (index <= 0) {
+            Prefs.setBool(this, "mapOn", false)
+        } else {
+            Prefs.setBool(this, "mapOn", true)
+            Prefs.setInt(this, "mapType", MapTiles.typeOf(index - 1))
+        }
         applyReplayMap()
+        replayUi.setMap(mapIndexNow(), customMapOk())
     }
 
     private fun setReplayTrail(mode: Int) {
@@ -1949,7 +1981,7 @@ class MainActivity : Activity() {
         body.orientation = LinearLayout.VERTICAL
         body.setPadding(dp(16), dp(8), dp(16), dp(8))
         val hint = TextView(this)
-        hint.text = tr("An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.", MapTiles.DEFAULT_URL)
+        hint.text = tr("An https address with {z}, {x} and {y} in it, for example {0}. A key in the address is saved in the settings backup. Check the terms of the tile server you use.", MapTiles.DEFAULT_URL)
         hint.textSize = 12f
         body.addView(hint)
         val url = EditText(this)
@@ -1964,7 +1996,7 @@ class MainActivity : Activity() {
         body.addView(credit)
         Immersive.show(
             Sunlight.builder(this)
-                .setTitle(tr("Map tiles from"))
+                .setTitle(tr("Custom tile address"))
                 .setView(body)
                 .setPositiveButton(tr("OK")) { _, _ ->
                     val text = url.text.toString().trim()
@@ -1973,6 +2005,8 @@ class MainActivity : Activity() {
                     } else {
                         Prefs.setString(this, "mapUrl", text)
                         Prefs.setString(this, "mapCredit", credit.text.toString().trim())
+                        if (text.isNotEmpty()) Prefs.setInt(this, "mapType", MapTiles.CUSTOM)           // an address that was just typed in is the one to see
+                        else if (Prefs.int(this, "mapType", 0) == MapTiles.CUSTOM) Prefs.setInt(this, "mapType", MapTiles.STREET)
                         if (replay != null) applyReplayMap()
                         settingsPanel.refresh()
                     }

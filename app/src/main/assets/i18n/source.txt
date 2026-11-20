@@ -137,6 +137,8 @@ Tap MENU at the top right for nine tiles: Sound rules, Speech, Battery, Aircraft
 An aid, not a safety system
 AX-HUD helps you see and hear what your aircraft is doing. Do not rely on it as your only warning. Always fly within your local rules.
 No position in this log, so there is no 3D view.
+Loading the map...
+No map tiles: {0}
 Packs
 Last known position
 Reserve low. Turn back.
@@ -276,6 +278,11 @@ Stable
 Nightly
 Stable (tested releases only)
 Nightly (newest build of every push)
+Satellite
+Terrain
+Custom address
+Street map
+Not set
 Not chosen yet
 Magnetic declination (degrees, east is positive)
 Antenna height above the launch point (meters)
@@ -342,10 +349,10 @@ No events yet.
 What did you do, and what happened? Positions and addresses are removed from the note automatically.
 Describe the problem (optional)
 OK
-An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.
+An https address with {z}, {x} and {y} in it, for example {0}. A key in the address is saved in the settings backup. Check the terms of the tile server you use.
 Tile address
 Credit to show on the map
-Map tiles from
+Custom tile address
 Use an https address with {z}, {x} and {y} in it.
 Whole minutes from 1 to 240, at most 8, for example 30,15,10,5,2,1. Empty means no warnings; the end of the window is always spoken.
 Warn at (minutes left)
@@ -494,6 +501,9 @@ Sunlight
 On
 Off
 Video
+The server answered {0}
+The server sent no picture
+No network
 No video
 At most {0} packs.
 Pack {0}: the name cannot be empty.
@@ -701,7 +711,8 @@ Always show the MENU button
 Off: the button hides and appears when you touch the screen.
 Start-up splash screen (animated, about 3 seconds)
 Map under the 3D replay
-The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at.
+Map type
+The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.
 Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD.
 Active aircraft
 Manage the aircraft (add, rename, delete)...
@@ -858,7 +869,6 @@ A divisor in { } cannot be 0.
 Canceled
 Only https:// addresses are allowed
 Not a valid address
-The server answered {0}
 The answer is too large
 The file is too large
 The file has an unexpected size

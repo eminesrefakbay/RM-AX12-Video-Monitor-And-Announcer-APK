@@ -50,7 +50,9 @@ interface SettingsHost {
     fun setSplashOn(on: Boolean)
     fun mapOn(): Boolean
     fun setMapOn(on: Boolean)
-    fun mapSourceLabel(): String
+    fun mapTypeLabel(): String
+    fun cycleMapType()
+    fun mapCustomLabel(): String
     fun editMapSource()
     fun menuAlways(): Boolean
     fun sunlightOn(): Boolean
@@ -615,8 +617,12 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         note(tr("Off: the button hides and appears when you touch the screen."))
         toggle(tr("Start-up splash screen (animated, about 3 seconds)"), host.splashOn()) { host.setSplashOn(it) }
         toggle(tr("Map under the 3D replay"), host.mapOn()) { host.setMapOn(it) }
-        valueRow(tr("Map tiles from"), host.mapSourceLabel()) { host.editMapSource() }
-        note(tr("The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at."))
+        valueRow(tr("Map type"), host.mapTypeLabel()) {
+            host.cycleMapType()
+            refresh()
+        }
+        valueRow(tr("Custom tile address"), host.mapCustomLabel()) { host.editMapSource() }
+        note(tr("The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use."))
         note(tr("Tap the top edge three times, away from MENU, to save a screenshot to Pictures/AX-HUD."))
     }
 

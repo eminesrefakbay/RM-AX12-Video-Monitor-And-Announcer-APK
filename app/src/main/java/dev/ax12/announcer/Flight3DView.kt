@@ -307,7 +307,7 @@ class Flight3DView(context: Context) : View(context) {
         drawFlags(canvas, p)
         drawAircraft(canvas)
         drawLegend(canvas, w, h)
-        if (mapShown) drawCredit(canvas, h)
+        if (mapShown) drawCredit(canvas, h, map?.attribution ?: "") else drawMapNote(canvas, h)
 
         if (isAttachedToWindow) postInvalidateOnAnimation()          // the next screen frame: this is what keeps it smooth
     }
@@ -381,8 +381,7 @@ class Flight3DView(context: Context) : View(context) {
     }
 
     /** The credit of the map source, small, in the bottom left corner. The map's licence asks for it. */
-    private fun drawCredit(canvas: Canvas, h: Float) {
-        val text = map?.attribution ?: return
+    private fun drawCredit(canvas: Canvas, h: Float, text: String) {
         if (text.isEmpty()) return
         textPaint.textSize = dp(10f)
         textPaint.color = 0xFFFFFFFF.toInt()
@@ -390,6 +389,14 @@ class Flight3DView(context: Context) : View(context) {
         creditBg.color = 0x99000000.toInt()
         canvas.drawRect(0f, h - dp(18f), tw + dp(12f), h, creditBg)
         canvas.drawText(text, dp(6f), h - dp(5f), textPaint)
+    }
+
+    /** While no tile is on the screen: why (still loading, or the reason they could not be had), in the same corner as the credit. */
+    private fun drawMapNote(canvas: Canvas, h: Float) {
+        val m = map ?: return
+        if (!mapOn || m.tiles.isEmpty()) return
+        val text = if (m.loading()) tr("Loading the map...") else if (m.failures() > 0) tr("No map tiles: {0}", m.lastError.ifEmpty { "?" }) else return
+        drawCredit(canvas, h, text)
     }
 
     private fun niceStep(v: Double): Double {

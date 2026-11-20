@@ -23,9 +23,9 @@
 
 ## Neu
 
-**1.16: eine Karte unter dem 3D-Replay (1.16.0)**
+**1.16: eine Karte unter dem 3D-Replay (1.16.0 und 1.16.1)**
 
-* **Eine echte Karte auf dem Boden des 3D-Replays.** Die Kacheln von OpenStreetMap (oder eine eigene Kachel-Adresse, zum Beispiel eine Satellitenkarte) liegen in Perspektive unter dem Band, so siehst du, wo der Flug entlangging. Die Kacheln eines Fluges werden einmal geladen, wenn du sein Replay öffnest, und auf dem Sender gespeichert; die Karte erscheint also auch auf dem Flugplatz ohne Netz. Eine Karten-Taste im Replay schaltet sie ein und aus; Einstellungen > Anzeige hat den Schalter und die Quelle.
+* **Eine echte Karte auf dem Boden des 3D-Replays.** Kartenkacheln liegen in Perspektive unter dem Band, als **Straßenkarte** (OpenStreetMap), **Geländekarte** (OpenTopoMap), **Satellitenbilder** (Esri) oder von einer eigenen Kachel-Adresse, so siehst du, wo der Flug entlangging. Die Kacheln eines Fluges werden einmal geladen, wenn du sein Replay öffnest, und auf dem Sender gespeichert; die Karte erscheint also auch auf dem Flugplatz ohne Netz. Die Karten-Taste im Replay öffnet ein Menü (Aus, Straßenkarte, Satellit, Gelände); Einstellungen > Anzeige hat den Schalter, den Kartentyp und die eigene Adresse.
 
 **1.15: Flugwerkzeuge (1.15.0)**
 
@@ -82,7 +82,7 @@ Die App ist experimentell und nur als **zweite Informationsquelle** gedacht; sie
 
 ## Datenschutz
 
-Die App verbindet sich für Updates mit github.com und sendet keine Daten an andere Stellen. Für die Karte unter dem 3D-Replay lädt sie Kartenkacheln vom Kachel-Server (standardmäßig OpenStreetMap); der Server sieht, welches Gebiet angefragt wird, also wo du fliegst. Abschaltbar unter Einstellungen > Anzeige. Wenn ein GPS-Fix vorliegt, speichert sie die letzte bekannte Position auch während des Fluges und bei einem Verbindungsverlust in `last_position.txt` im App-Ordner auf der Fernsteuerung; das ist unabhängig von den Flugprotokollen. Wenn du Flugprotokolle aktivierst (standardmäßig aus), können auch die CSV-Dateien GPS-Positionen enthalten. Drei schnelle Berührungen oben am Bildschirm, nicht auf MENU, speichern einen PNG-Screenshot des ganzen Bildschirms einschließlich sichtbarer Koordinaten in `Pictures/AX-HUD`. Diese Dateien bleiben auf der Fernsteuerung, sofern du sie nicht kopierst. Veröffentliche keine Protokolle oder Screenshots, die zeigen, wo du fliegst.
+Die App verbindet sich für Updates mit github.com und sendet keine Daten an andere Stellen. Für die Karte unter dem 3D-Replay lädt sie Kartenkacheln vom Kachel-Server des gewählten Kartentyps (OpenStreetMap, OpenTopoMap, Esri oder eigene Adresse); der Server sieht, welches Gebiet angefragt wird, also wo du fliegst. Abschaltbar unter Einstellungen > Anzeige. Wenn ein GPS-Fix vorliegt, speichert sie die letzte bekannte Position auch während des Fluges und bei einem Verbindungsverlust in `last_position.txt` im App-Ordner auf der Fernsteuerung; das ist unabhängig von den Flugprotokollen. Wenn du Flugprotokolle aktivierst (standardmäßig aus), können auch die CSV-Dateien GPS-Positionen enthalten. Drei schnelle Berührungen oben am Bildschirm, nicht auf MENU, speichern einen PNG-Screenshot des ganzen Bildschirms einschließlich sichtbarer Koordinaten in `Pictures/AX-HUD`. Diese Dateien bleiben auf der Fernsteuerung, sofern du sie nicht kopierst. Veröffentliche keine Protokolle oder Screenshots, die zeigen, wo du fliegst.
 
 ## Dank
 

@@ -22,6 +22,13 @@ public final class MapTiles {
     public static final String DEFAULT_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     public static final String DEFAULT_ATTRIBUTION = "© OpenStreetMap contributors";
 
+    /** The kinds of map. CUSTOM is the address the user gave in the settings. */
+    public static final int STREET = 0, SATELLITE = 1, TERRAIN = 2, CUSTOM = 3, TYPES = 4;
+    /** Satellite pictures of the world imagery service of Esri; the order of the placeholders is z, y, x. No key is in the address. */
+    public static final String SATELLITE_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+    /** The terrain map of OpenTopoMap (contour lines and shading, from OpenStreetMap and SRTM data). It has no tiles past zoom 17. */
+    public static final String TERRAIN_URL = "https://tile.opentopomap.org/{z}/{x}/{y}.png";
+
     public static final int MIN_ZOOM = 10, MAX_ZOOM = 18;
     /** At most this many tiles along one side of the covered square, so one flight is at most 144 tiles (a few MB on the card). */
     public static final int MAX_SIDE = 12;
@@ -93,8 +100,11 @@ public final class MapTiles {
     public static double tileMeters(double lat, int z) { return CIRCUMFERENCE_M * Math.cos(Math.toRadians(lat)) / (1L << z); }
 
     /** The sharpest zoom for which the square of side 2 x radius needs at most MAX_SIDE tiles along a side. */
-    public static int chooseZoom(double radiusM, double lat) {
-        for (int z = MAX_ZOOM; z > MIN_ZOOM; z--) {
+    public static int chooseZoom(double radiusM, double lat) { return chooseZoom(radiusM, lat, MAX_ZOOM); }
+
+    /** The same, but not past maxZoom (a source may have no tiles at the sharpest zoom). */
+    public static int chooseZoom(double radiusM, double lat, int maxZoom) {
+        for (int z = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, maxZoom)); z > MIN_ZOOM; z--) {
             double side = Math.ceil(2 * radiusM / tileMeters(lat, z)) + 1;
             if (side <= MAX_SIDE) return z;
         }
@@ -123,10 +133,45 @@ public final class MapTiles {
     private static int clamp(int v, int n) { return Math.max(0, Math.min(n - 1, v)); }
 
     /** The tiles for a flight: the radius, the zoom and the cover in one step. Empty when the flight has no position. */
-    public static List<Tile> forFlight(FlightPath p) {
+    public static List<Tile> forFlight(FlightPath p) { return forFlight(p, MAX_ZOOM); }
+
+    /** The tiles for a flight, at a zoom of at most maxZoom. */
+    public static List<Tile> forFlight(FlightPath p, int maxZoom) {
         if (p == null || p.n < 2 || Double.isNaN(p.originLat) || Double.isNaN(p.originLon)) return new ArrayList<Tile>();
         double r = radiusOf(p);
-        return cover(p.originLat, p.originLon, r, chooseZoom(r, p.originLat));
+        return cover(p.originLat, p.originLon, r, chooseZoom(r, p.originLat, maxZoom));
+    }
+
+    // ------------------------------------------------------------------ the kinds of map
+
+    /** The kind of map, kept to 0..3. */
+    public static int typeOf(int v) { return Math.max(0, Math.min(TYPES - 1, v)); }
+
+    /** The tile address of a kind of map. CUSTOM uses the user's address when it is valid, and falls back to the street map when it is not. */
+    public static String templateFor(int type, String custom) {
+        if (type == SATELLITE) return SATELLITE_URL;
+        if (type == TERRAIN) return TERRAIN_URL;
+        if (type == CUSTOM && validTemplate(custom)) return custom.trim();
+        return DEFAULT_URL;
+    }
+
+    /** The kind of map that is really shown: CUSTOM without a valid address is the street map. */
+    public static int effectiveType(int type, String custom) {
+        return type == CUSTOM && !validTemplate(custom) ? STREET : typeOf(type);
+    }
+
+    /** The sharpest zoom a kind of map has tiles for. */
+    public static int maxZoomOf(int type) {
+        if (type == SATELLITE || type == TERRAIN) return 17;     // the imagery has no picture of many places at the sharpest zooms; OpenTopoMap ends at 17
+        return MAX_ZOOM;
+    }
+
+    /** The credit to show for a kind of map. */
+    public static String creditFor(int type, String custom, String customCredit) {
+        if (type == SATELLITE) return "Esri, Maxar, Earthstar Geographics, GIS User Community";
+        if (type == TERRAIN) return "\u00A9 OpenStreetMap contributors, SRTM | \u00A9 OpenTopoMap (CC-BY-SA)";
+        if (type == CUSTOM && validTemplate(custom)) return attributionFor(custom.trim(), customCredit);
+        return DEFAULT_ATTRIBUTION;
     }
 
     // ------------------------------------------------------------------ addresses and files

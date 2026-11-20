@@ -974,9 +974,19 @@ Per cell, at the end	每节，结束时
 VOLTAGE AND CURRENT	电压与电流
 TRACK	航迹
 Map under the 3D replay	3D 回放中的地图
-Map tiles from	地图图块来自
-The 3D replay lays a map on the ground, made of the tiles of OpenStreetMap unless you give another address. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile server sees which area you look at.	3D 回放会把地图放在地面上，图块来自 OpenStreetMap，除非您另外提供地址。打开回放时会载入这次飞行所需的图块，并保存在遥控器中，所以没有网络时也能显示地图。图块服务器能看到您查看的地点。
-An https address with {z}, {x} and {y} in it, for example {0}. Leave it empty for OpenStreetMap. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	含有 {z}, {x} 和 {y} 的 https 地址，例如 {0}。留空则使用 OpenStreetMap。地址中的密钥会保存在设置备份里。请查看您所用图块服务器的条款。
 Tile address	图块地址
 Credit to show on the map	地图上显示的致谢
 Use an https address with {z}, {x} and {y} in it.	请使用含有 {z}, {x} 和 {y} 的 https 地址。
+Loading the map...	正在载入地图...
+No map tiles: {0}	没有地图图块: {0}
+Satellite	卫星
+Terrain	地形
+Custom address	自己的地址
+Street map	道路地图
+Not set	未设置
+An https address with {z}, {x} and {y} in it, for example {0}. A key in the address is saved in the settings backup. Check the terms of the tile server you use.	含有 {z}, {x} 和 {y} 的 https 地址，例如 {0}。地址中的密钥会保存在设置备份里。请查看您所用图块服务器的条款。
+Custom tile address	自己的图块地址
+The server sent no picture	服务器没有返回图片
+No network	没有网络
+Map type	地图样式
+The 3D replay lays a map on the ground: a street map from OpenStreetMap, a terrain map from OpenTopoMap, satellite pictures from Esri, or tiles from an address of your own. The tiles of a flight are loaded when you open its replay and kept on the radio, so the map shows at the field without a network. The tile servers see which area you look at. Check the terms of the one you use.	3D 回放会把地图放在地面上：来自 OpenStreetMap 的道路地图、来自 OpenTopoMap 的地形图、来自 Esri 的卫星图片，或来自您自己地址的图块。一次飞行的图块在打开回放时载入，并保存在遥控器中，所以没有网络时也能显示地图。图块服务器能看到您查看的地点。请查看您所用服务器的条款。
