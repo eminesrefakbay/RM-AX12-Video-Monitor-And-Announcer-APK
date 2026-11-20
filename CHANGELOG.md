@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.3
+
+The flight summary page fits on one screen without scrolling. The figures are a little smaller, the voltage and current chart and the track share the height
+that is left, and the buttons (replay, export, copy the text, close) sit in one row at the bottom.
+
 ## 1.15.0
 
 Flight tools. A return reserve card on the HUD compares what is left in the pack with what the flight home needs and calls out before the margin is gone; its

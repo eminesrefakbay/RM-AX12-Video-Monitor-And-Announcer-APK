@@ -21,7 +21,6 @@ import android.view.Window
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import java.util.Locale
 
@@ -60,7 +59,7 @@ class SummaryPage(
         val s = summary
         val root = LinearLayout(activity)
         root.orientation = LinearLayout.VERTICAL
-        root.setPadding(dp(20), dp(12), dp(20), dp(12))
+        root.setPadding(dp(16), dp(8), dp(16), dp(8))
         root.setBackgroundColor(0xFF0B1016.toInt())
 
         // ---- head: the title, the flight, and the approval window as a pill on the right
@@ -71,13 +70,13 @@ class SummaryPage(
         titles.orientation = LinearLayout.VERTICAL
         val title = TextView(activity)
         title.text = tr("Flight summary")
-        title.textSize = 22f
+        title.textSize = 18f
         title.setTypeface(null, Typeface.BOLD)
         title.setTextColor(Color.WHITE)
         titles.addView(title)
         val sub = TextView(activity)
         sub.text = s.started + (if (s.aircraft.isEmpty()) "" else "  ·  " + s.aircraft) + (if (s.pack.isEmpty()) "" else "  ·  " + s.pack)
-        sub.textSize = 13f
+        sub.textSize = 12f
         sub.setTextColor(CardStyle.LABEL)
         titles.addView(sub)
         head.addView(titles, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
@@ -85,9 +84,9 @@ class SummaryPage(
             val pill = TextView(activity)
             val over = s.windowLeftMin < 0
             pill.text = tr("Approval window at the end") + ": " + (if (!over) tr("{0} min left", Math.round(s.windowLeftMin)) else tr("Over by {0} min", Math.round(-s.windowLeftMin)))
-            pill.textSize = 13f
+            pill.textSize = 12f
             pill.setTextColor(if (over) CardStyle.BAD else CardStyle.ACCENT)
-            pill.setPadding(dp(14), dp(6), dp(14), dp(6))
+            pill.setPadding(dp(12), dp(3), dp(12), dp(3))
             pill.background = CardStyle.panelBackground(density, 0xFF12202B.toInt(), if (over) CardStyle.BAD else CardStyle.ACCENT, solid = true)
             head.addView(pill)
         }
@@ -113,69 +112,68 @@ class SummaryPage(
         for (r in 0..1) {
             val row = LinearLayout(activity)
             row.orientation = LinearLayout.HORIZONTAL
-            for (i in 0..3) row.addView(tiles[r * 4 + i], LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).also { it.rightMargin = dp(if (i < 3) 10 else 0) })
-            root.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(10) })
+            for (i in 0..3) row.addView(tiles[r * 4 + i], LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).also { it.rightMargin = dp(if (i < 3) 8 else 0) })
+            root.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(6) })
         }
 
-        // ---- the chart, the track and the buttons
+        // ---- the chart and the track share the height that is left, the buttons sit in one slim row below
         val bottom = LinearLayout(activity)
         bottom.orientation = LinearLayout.HORIZONTAL
         val chartBox = box(tr("VOLTAGE AND CURRENT"), ChartView(activity, log, s.cells))
         val trackBox = box(tr("TRACK"), TrackView(activity, FlightPath.build(log), moves))
-        bottom.addView(chartBox, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2f).also { it.rightMargin = dp(10) })
-        bottom.addView(trackBox, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f).also { it.rightMargin = dp(10) })
-        val buttons = LinearLayout(activity)
-        buttons.orientation = LinearLayout.VERTICAL
-        fun button(text: String, primary: Boolean, click: () -> Unit) {
-            val b = Button(activity)
-            b.text = text
-            b.isAllCaps = false
-            b.textSize = 15f
-            b.setTypeface(null, Typeface.BOLD)
-            b.setTextColor(if (primary) 0xFF0B1016.toInt() else Color.WHITE)
-            b.background = if (primary) CardStyle.panelBackground(density, CardStyle.ACCENT, CardStyle.ACCENT, solid = true) else CardStyle.buttonBackground(density)
-            b.setOnClickListener { click() }
-            buttons.addView(b, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(CardStyle.MIN_TOUCH_DP)).also { it.bottomMargin = dp(8) })
-        }
-        button(tr("Replay in 3D"), true) { dialog.dismiss(); actions.replay() }
-        button(tr("Export..."), false) { actions.export() }
-        button(tr("Copy the report text"), false) { actions.copyText() }
-        buttons.addView(View(activity), LinearLayout.LayoutParams(1, 0, 1f))
+        bottom.addView(chartBox, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2f).also { it.rightMargin = dp(8) })
+        bottom.addView(trackBox, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
+        root.addView(bottom, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).also { it.topMargin = dp(6) })
+
+        val bar = LinearLayout(activity)
+        bar.orientation = LinearLayout.HORIZONTAL
+        bar.gravity = Gravity.CENTER_VERTICAL
         val mv = TextView(activity)
         mv.text = tr("{0} dives, {1} rolls, {2} flips", Manoeuvres.count(moves, Manoeuvres.DIVE), Manoeuvres.count(moves, Manoeuvres.ROLL), Manoeuvres.count(moves, Manoeuvres.FLIP))
         mv.textSize = 12f
+        mv.maxLines = 2
         mv.setTextColor(CardStyle.LABEL)
-        mv.setPadding(0, 0, 0, dp(8))
-        buttons.addView(mv)
-        button(tr("Close"), false) { dialog.dismiss() }
-        bottom.addView(buttons, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
-        root.addView(bottom, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).also { it.topMargin = dp(10) })
-        val scroll = ScrollView(activity)
-        scroll.isFillViewport = true
-        scroll.setBackgroundColor(0xFF0B1016.toInt())
-        scroll.addView(root, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        return scroll
+        bar.addView(mv, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.2f).also { it.rightMargin = dp(8) })
+        fun button(text: String, primary: Boolean, weight: Float, click: () -> Unit) {
+            val b = Button(activity)
+            b.text = text
+            b.isAllCaps = false
+            b.maxLines = 1
+            b.setTypeface(null, Typeface.BOLD)
+            b.setTextColor(if (primary) 0xFF0B1016.toInt() else Color.WHITE)
+            b.setPadding(dp(8), 0, dp(8), 0)
+            if (android.os.Build.VERSION.SDK_INT >= 26) b.setAutoSizeTextTypeUniformWithConfiguration(10, 14, 1, android.util.TypedValue.COMPLEX_UNIT_SP) else b.textSize = 12f
+            b.background = if (primary) CardStyle.panelBackground(density, CardStyle.ACCENT, CardStyle.ACCENT, solid = true) else CardStyle.buttonBackground(density)
+            b.setOnClickListener { click() }
+            bar.addView(b, LinearLayout.LayoutParams(0, dp(CardStyle.MIN_TOUCH_DP), weight).also { it.leftMargin = dp(8) })
+        }
+        button(tr("Replay in 3D"), true, 1.3f) { dialog.dismiss(); actions.replay() }
+        button(tr("Export..."), false, 1f) { actions.export() }
+        button(tr("Copy the report text"), false, 1.5f) { actions.copyText() }
+        button(tr("Close"), false, 0.8f) { dialog.dismiss() }
+        root.addView(bar, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(6) })
+        return root
     }
 
     private fun tile(label: String, value: String, note: String, valueColor: Int): View {
         val t = LinearLayout(activity)
         t.orientation = LinearLayout.VERTICAL
-        t.setPadding(dp(14), dp(10), dp(14), dp(10))
+        t.setPadding(dp(10), dp(5), dp(10), dp(5))
         t.background = CardStyle.panelBackground(density, 0xFF151D26.toInt(), CardStyle.ACCENT, solid = true)
         val l = TextView(activity)
         l.text = label.uppercase(Locale.getDefault())
-        l.textSize = 11f
+        l.textSize = 10f
         l.setTextColor(CardStyle.LABEL)
         t.addView(l)
         val v = TextView(activity)
         v.text = value
-        v.textSize = 30f
+        v.textSize = 22f
         v.setTypeface(null, Typeface.BOLD)
         v.setTextColor(valueColor)
         t.addView(v)
         val n = TextView(activity)
         n.text = if (note.isEmpty()) " " else note
-        n.textSize = 12f
+        n.textSize = 10f
         n.setTextColor(CardStyle.LABEL)
         t.addView(n)
         return t
@@ -184,14 +182,14 @@ class SummaryPage(
     private fun box(title: String, content: View): View {
         val b = LinearLayout(activity)
         b.orientation = LinearLayout.VERTICAL
-        b.setPadding(dp(14), dp(10), dp(14), dp(10))
+        b.setPadding(dp(10), dp(6), dp(10), dp(6))
         b.background = CardStyle.panelBackground(density, 0xFF151D26.toInt(), CardStyle.ACCENT, solid = true)
         val l = TextView(activity)
         l.text = title
-        l.textSize = 11f
+        l.textSize = 10f
         l.setTextColor(CardStyle.LABEL)
         b.addView(l)
-        b.addView(content, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).also { it.topMargin = dp(6) })
+        b.addView(content, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).also { it.topMargin = dp(4) })
         return b
     }
 
