@@ -19,6 +19,7 @@ names and trademarks belong to their owners.
 - It reads the radio's channels and telemetry. Its libraries (`librmAxSdk1.so`) are included in the APK.
 - The SDK is **not stored in this repository**: the build downloads it from RadioMaster's repository, so the terms RadioMaster publishes
   there apply to it. AX-HUD does not relicense it.
+- The SDK repository has no licence file. In a public issue on that repository (Nov 2026) the SDK developer stated: "we do not impose any restrictions on the use or redistribution of the sdk." That is a statement, not a licence text.
 - Thank you, RadioMaster, for publishing the SDK.
 
 ## Qt 6 (Core, Network, SerialPort, Concurrent)

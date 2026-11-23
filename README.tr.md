@@ -6,7 +6,7 @@
 
 > **Sorumluluk reddi:** AX-HUD bağımsız, açık kaynaklı bir projedir; RadioMaster ile resmî bir bağlantısı yoktur ve RadioMaster tarafından onaylanmaz veya desteklenmez. Kullanım kendi sorumluluğunuzdadır. Uygulama telemetri verilerini yalnızca okur, kumanda ayarlarına yazmaz; ancak ekipmanınız, yapılandırmanız ve uçuş güvenliğinizden yalnızca siz sorumlusunuz.
 
-> **RadioMaster SDK'sı hakkında:** Yayın APK'sı RadioMaster'ın AX SDK kütüphanelerini içerir. SDK deposunda lisans dosyası yoktur, yeniden dağıtım koşulları yazılı değildir; RadioMaster'a Kasım 2026'da önce destek kaydıyla, sonra SDK deposunda bir konuyla sordum ve henüz yanıt almadım. RadioMaster veya SDK'nın yazarları koşul belirtir ya da durdurmamı isterse kütüphaneleri sürümlerden hemen kaldıracağım. Ayrıntılar (İngilizce): [README.md](README.md#the-radiomaster-sdk-what-is-settled-and-what-is-not). Hukuki tavsiye değildir.
+> **RadioMaster SDK'sı hakkında:** Yayın APK'sı RadioMaster'ın AX SDK kütüphanelerini içerir. SDK deposunda lisans dosyası yoktur; RadioMaster'a Kasım 2026'da önce destek kaydıyla, sonra SDK deposunda bir konuyla sordum. SDK geliştiricisi orada şu yanıtı verdi: "we do not impose any restrictions on the use or redistribution of the sdk" (RadioMaster SDK'nın kullanımına ve yeniden dağıtımına kısıtlama getirmiyor). Bu, herkese açık bir konudaki bir açıklamadır, lisans metni değildir. RadioMaster veya SDK'nın yazarları farklı koşullar belirtir ya da durdurmamı isterse kütüphaneleri sürümlerden hemen kaldıracağım. Ayrıntılar (İngilizce): [README.md](README.md#the-radiomaster-sdk-what-is-settled-and-what-is-not). Hukuki tavsiye değildir.
 
 **AX-HUD**, RadioMaster AX12 için bir Android uygulamasıdır. Kumandadan yalnızca **okur**, hiçbir ayar yazmaz.
 

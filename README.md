@@ -2,9 +2,9 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.3)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.4)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
-> **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository states no licence, and RadioMaster has not answered my questions about redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
+> **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository has no licence file, but the SDK developer has stated in a public issue that RadioMaster does not impose any restrictions on the use or redistribution of the SDK. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -481,7 +481,7 @@ serial-port start-up takes a fixed ~12 s (11 of 12 recorded launches took 11.9 t
 opening), and the first channel data arrives 24 ms after the port opens. AX-HUD's own part is about 1 s (the SDK call takes 22 ms).
 RadioMaster's stock app is told its serial ports up front (`ttyS0` and `ttyS4` at 921600 baud) and opens the port 4.4 s after it starts.
 The public SDK has no way to pass a port: `initialize()` only takes a data folder, it exports no other function for it, and
-`postMessage()` is not meant for it. So this time cannot be shortened from the app; it needs an SDK change by RadioMaster. (The
+`postMessage()` is not meant for it. So this time cannot be shortened from the app; it needs an SDK change by RadioMaster. The SDK developer confirmed in the SDK issue that the 12 seconds are a design consequence of the automatic serial-port discovery, which supports several device models, and said that RadioMaster will consider an API that takes the port and the baud rate, for example `initialize(dataFolder, portName, baudRate)`, in a future SDK. (The
 "denied" lines in logcat are harmless: this radio runs SELinux in permissive mode.)
 
 **What the app does about it**
@@ -694,11 +694,9 @@ AX-HUD reads the radio's channels and telemetry through the **AX SDK that RadioM
 
 * **What points to permission.** The SDK is published for app developers, and its manual tells integrators to put the libraries into their
   app's `jniLibs` folder.
-* **What is not written down.** The SDK repository has no licence file, so its terms for using and redistributing the libraries are not
-  stated. The Qt libraries inside it are LGPL, and their licence text is in the app (About).
-* **What I did.** I asked RadioMaster in November 2026, first through their support (the ticket was closed without a reply) and then in an
-  issue on the SDK repository. I have had no answer so far, so I am publishing the app with this notice instead of waiting.
-* **What I will do if someone objects.** If RadioMaster or the authors of the SDK state terms or ask me to stop, I will remove the libraries
+* **What is not in a licence file.** The SDK repository has no licence file. The Qt libraries inside it are LGPL, and their licence text is in the app (About).
+* **What RadioMaster has said.** I asked RadioMaster in November 2026, first through their support (the ticket was closed without a reply) and then in an issue on the SDK repository (<https://github.com/Radiomaster-RC/RadiomasterAX_SDK/issues>). The SDK developer answered there: "we do not impose any restrictions on the use or redistribution of the sdk." That is a statement in a public issue, not a licence text.
+* **What I will do if that changes.** If RadioMaster or the authors of the SDK state different terms or ask me to stop, I will remove the libraries
   from the releases promptly and offer a way to build the app without them (you would add the SDK yourself, as described in "Build").
 * **The licence of AX-HUD's own code.** GPL-3.0-or-later, with an added permission in [LICENSE](LICENSE). That permission is mine to give
   for my own code; it gives you no rights in RadioMaster's files.

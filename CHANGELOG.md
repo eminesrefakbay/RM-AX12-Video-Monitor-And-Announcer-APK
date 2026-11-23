@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.17.4
+
+The notice about RadioMaster's SDK now says what RadioMaster answered in the SDK issue: the SDK developer stated that they do not impose any restrictions on the
+use or redistribution of the SDK (a statement in a public issue, not a licence text). The README, the About page and the third-party notices are updated, and the start-up
+section records the answer about the 12 second delay: it comes from the automatic serial-port discovery, and an API that takes the port and baud rate is under consideration.
+
 ## 1.17.3
 
 The trail button of the replay has a third choice, Off: no ribbon and no colour legend. The FPV camera angle (how far a quad's camera looks up from the nose) is a

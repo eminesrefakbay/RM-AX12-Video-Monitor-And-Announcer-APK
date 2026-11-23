@@ -60,7 +60,7 @@ Last {0} s	最近 {0} 秒
 Connecting to the radio... {0} s	正在连接遥控器... {0} 秒
 Still waiting. Close the RadioMaster app and check that the radio is on.	仍在等待。请关闭 RadioMaster 应用, 并确认遥控器已开机。
 This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
-Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository states no license, and RadioMaster has not answered my questions about redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件已包含在应用中, 与 RadioMaster 手册对应用开发者的说明一致。其仓库未声明许可证, RadioMaster 也尚未回复我关于再分发的询问 (见 README 中的说明)。感谢 RadioMaster 公开发布。
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has no license file, but the SDK developer has stated that RadioMaster does not impose any restrictions on its use or redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件已包含在应用中, 与 RadioMaster 手册对应用开发者的说明一致。其仓库没有许可证文件, SDK 开发者已声明 RadioMaster 不限制其使用和再分发 (见 README 中的说明)。感谢 RadioMaster 公开发布。
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。

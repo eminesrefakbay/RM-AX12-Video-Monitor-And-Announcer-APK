@@ -60,7 +60,7 @@ Last {0} s
 Connecting to the radio... {0} s
 Still waiting. Close the RadioMaster app and check that the radio is on.
 This app: the HUD, the voice announcer, the rules and the settings.
-Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository states no license, and RadioMaster has not answered my questions about redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has no license file, but the SDK developer has stated that RadioMaster does not impose any restrictions on its use or redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.
 The standard library of the Kotlin language, which the app is written in.
