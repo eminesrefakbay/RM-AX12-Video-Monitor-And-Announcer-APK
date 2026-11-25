@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import java.util.Locale
+import kotlin.math.roundToInt
 
 /**
  * The return reserve card: the margin (what is left after the way home and the landing) as a big number, what it means in flying time, a bar
@@ -92,6 +93,19 @@ class ReserveCard(context: Context) {
         home.setTextColor(CardStyle.LABEL)
         view.addView(home, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).also { it.topMargin = dp(4) })
     }
+
+    /** Size: the width and every text of the card scale together (1.0 is the old size). */
+    fun setScale(f: Double) {
+        view.layoutParams?.let { it.width = dp((380 * f).roundToInt()); view.layoutParams = it }
+        title.textSize = (11 * f).toFloat()
+        number.textSize = (30 * f).toFloat()
+        line.textSize = (13 * f).toFloat()
+        home.textSize = (12 * f).toFloat()
+        (bar.layoutParams as? LinearLayout.LayoutParams)?.let { it.height = dp((10 * f).roundToInt().coerceAtLeast(5)); bar.layoutParams = it }
+        view.setPadding(dp((12 * f).roundToInt()), dp((8 * f).roundToInt()), dp((12 * f).roundToInt()), dp((8 * f).roundToInt()))
+    }
+
+    fun setOpacity(a: Float) { view.alpha = a }
 
     val isShown: Boolean get() = view.visibility == View.VISIBLE
 

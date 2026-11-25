@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.17.5
+
+The return reserve card can be sized and tamed: Settings > Aircraft > Return reserve has Reserve card size (small, medium, large), position (top centre, left or right),
+opacity (50, 75 or 100 %) and Hide the reserve card after (never, 5, 10 or 30 seconds). The card now starts smaller and hides after 10 seconds by default, so it no longer
+covers the OSD; it comes back when the reserve changes state, so a warning is not missed.
+
 ## 1.17.4
 
 The notice about RadioMaster's SDK now says what RadioMaster answered in the SDK issue: the SDK developer stated that they do not impose any restrictions on the

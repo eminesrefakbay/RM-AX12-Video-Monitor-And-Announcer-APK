@@ -25,7 +25,7 @@ public final class BackupGroups {
     public static int groupOf(String key) {
         if (key.equals("rules") || key.equals("warnRules") || key.equals("checkRules")) return RULES;
         if (key.equals("aircraftStore") || key.equals("aircraftActive")) return AIRCRAFT;
-        if (key.equals("batProfiles") || key.equals("batActive") || key.equals("packs") || key.equals("packActive") || key.equals("reserveCfg") || key.equals("reserveOn")) return BATTERY;
+        if (key.equals("batProfiles") || key.equals("batActive") || key.equals("packs") || key.equals("packActive") || key.equals("reserveCfg") || key.equals("reserveOn") || key.startsWith("reserve")) return BATTERY;
         if (key.equals("dashTiles") || key.equals("dashLayouts") || key.equals("layoutWithAircraft") || AircraftStore.isLayoutKey(key)) return LAYOUTS;
         if (key.equals("trkOn") || key.equals("trkAddr") || key.equals("trkName")) return TRACKER;
         if (key.equals("packBook")) return HISTORY;

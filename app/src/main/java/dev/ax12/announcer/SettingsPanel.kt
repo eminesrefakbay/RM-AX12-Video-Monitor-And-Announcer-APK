@@ -179,6 +179,8 @@ interface SettingsHost {
     fun reserveOn(): Boolean
     fun setReserveOn(on: Boolean)
     fun editReserve()
+    fun reserveLabel(key: String): String
+    fun cycleReserve(key: String)
     fun layoutWithAircraft(): Boolean
     fun setLayoutWithAircraft(on: Boolean)
     fun openBackup()
@@ -666,7 +668,14 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
             host.setReserveOn(it)
             refresh()
         }
-        if (host.reserveOn()) action(tr("Return reserve of this pack...")) { host.editReserve() }
+        if (host.reserveOn()) {
+            action(tr("Return reserve of this pack...")) { host.editReserve() }
+            valueRow(tr("Reserve card size"), host.reserveLabel("reserveSize")) { host.cycleReserve("reserveSize"); refresh() }
+            valueRow(tr("Reserve card position"), host.reserveLabel("reservePos")) { host.cycleReserve("reservePos"); refresh() }
+            valueRow(tr("Reserve card opacity"), host.reserveLabel("reserveOpacity")) { host.cycleReserve("reserveOpacity"); refresh() }
+            valueRow(tr("Hide the reserve card after"), host.reserveLabel("reserveHide")) { host.cycleReserve("reserveHide"); refresh() }
+            note(tr("The card comes back when the reserve changes state (low, then gone), so a warning is not missed."))
+        }
         note(tr("Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise."))
     }
 

@@ -1002,3 +1002,11 @@ FPV camera angle	FPV kamera açısı
 {0} degrees	{0} derece
 Camera angle {0} degrees	Kamera açısı {0} derece
 How far the FPV camera of a quad looks up from its nose, in degrees (about the tilt of your real camera). In the FPV view you can also drag up or down to change it. Planes look along the nose.	FPV kameranın quad'ın burnundan yukarı ne kadar baktığı, derece olarak (gerçek kameranızın eğimi kadar). FPV görünümünde parmağınızı yukarı veya aşağı sürükleyerek de değiştirebilirsiniz. Uçaklar burun yönüne bakar.
+Reserve card size	Reserve kartı boyutu
+Reserve card position	Reserve kartı konumu
+Reserve card opacity	Reserve kartı opaklığı
+Hide the reserve card after	Reserve kartını şu süre sonra gizle
+The card comes back when the reserve changes state (low, then gone), so a warning is not missed.	Reserve durumu değişince (azaldı, sonra bitti) kart geri gelir; böylece uyarı kaçmaz.
+Top center	Üst orta
+Never	Asla
+{0} s	{0} sn

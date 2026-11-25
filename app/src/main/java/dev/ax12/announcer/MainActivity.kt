@@ -1115,6 +1115,18 @@ class MainActivity : Activity() {
         override fun editPacks() = this@MainActivity.editPacks()
         override fun reserveOn(): Boolean = Prefs.bool(this@MainActivity, "reserveOn", false)
         override fun setReserveOn(on: Boolean) { Prefs.setBool(this@MainActivity, "reserveOn", on); extras.reload() }
+        override fun reserveLabel(key: String): String = when (key) {
+            "reserveSize" -> sizeNames[Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_SIZE).coerceIn(0, 2)]
+            "reservePos" -> arrayOf(tr("Top center"), tr("Top left"), tr("Top right"))[Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_POS).coerceIn(0, 2)]
+            "reserveOpacity" -> arrayOf("50%", "75%", "100%")[Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_OPACITY).coerceIn(0, 2)]
+            else -> ReserveLook.hideSeconds(Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_HIDE)).let { if (it == 0) tr("Never") else tr("{0} s", it) }
+        }
+        override fun cycleReserve(key: String) {
+            val def = when (key) { "reserveSize" -> ReserveLook.DEFAULT_SIZE; "reservePos" -> ReserveLook.DEFAULT_POS; "reserveOpacity" -> ReserveLook.DEFAULT_OPACITY; else -> ReserveLook.DEFAULT_HIDE }
+            val count = when (key) { "reservePos" -> 3; "reserveHide" -> 4; else -> 3 }
+            Prefs.setInt(this@MainActivity, key, (Prefs.int(this@MainActivity, key, def) + 1) % count)
+            extras.reload()
+        }
         override fun editReserve() = this@MainActivity.editReserve()
         override fun layoutWithAircraft(): Boolean = Prefs.bool(this@MainActivity, "layoutWithAircraft", true)
         override fun setLayoutWithAircraft(on: Boolean) { Prefs.setBool(this@MainActivity, "layoutWithAircraft", on) }

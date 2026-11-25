@@ -46,6 +46,8 @@ class FlightExtras(
     private var reserveOn = false
     private var reserveCfgs: Map<String, ReturnReserve.Cfg> = emptyMap()
     private var lastReserveAt = 0L
+    private val reserveHide = ReserveLook.AutoHide()
+    private var reserveHideS = 10
     private val io = Executors.newSingleThreadExecutor()
     private val density = activity.resources.displayMetrics.density
 
@@ -103,6 +105,16 @@ class FlightExtras(
         reserveOn = Prefs.bool(activity, "reserveOn", false)
         reserveCfgs = ReturnReserve.decode(Prefs.string(activity, "reserveCfg", ""))
         if (!reserveOn) { reserveCard.hide(); watcher.reset() }
+        reserveHideS = ReserveLook.hideSeconds(Prefs.int(activity, "reserveHide", ReserveLook.DEFAULT_HIDE))
+        reserveCard.setScale(ReserveLook.scale(Prefs.int(activity, "reserveSize", ReserveLook.DEFAULT_SIZE)))
+        reserveCard.setOpacity(ReserveLook.alpha(Prefs.int(activity, "reserveOpacity", ReserveLook.DEFAULT_OPACITY)))
+        (reserveCard.view.layoutParams as? FrameLayout.LayoutParams)?.let {
+            it.gravity = Gravity.TOP or when (Prefs.int(activity, "reservePos", ReserveLook.DEFAULT_POS)) { 1 -> Gravity.START; 2 -> Gravity.END; else -> Gravity.CENTER_HORIZONTAL }
+            it.topMargin = dp(8)
+            it.marginStart = dp(8)
+            it.marginEnd = dp(8)
+            reserveCard.view.layoutParams = it
+        }
         prevLeft = Double.NaN
         prevState = ApprovalWindow.State.OFF
     }
@@ -119,6 +131,7 @@ class FlightExtras(
         if (!reserveOn || !armed) {
             if (reserveCard.isShown) reserveCard.hide()
             watcher.reset()
+            reserveHide.reset()
             return
         }
         val cfg = reserveConfig()
@@ -131,7 +144,7 @@ class FlightExtras(
         }
         if (now - lastReserveAt >= 500) {
             lastReserveAt = now
-            if (r.valid) reserveCard.show(r, dist) else reserveCard.hide()
+            if (r.valid && reserveHide.visible(now, r.state.ordinal, reserveHideS)) reserveCard.show(r, dist) else reserveCard.hide()
         }
         when (watcher.update(r, cfg)) {
             ReturnReserve.Event.WARN -> { Diagnostics.event("reserve", "the return reserve is low", "warn"); if (cfg.voice) speaker.say(I18n.tIn(code(), "Reserve low. Turn back."), false) }

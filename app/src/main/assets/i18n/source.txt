@@ -274,6 +274,11 @@ Automatic ({0})
 This device has no Chinese font, so the Chinese screen language is not available.
 Same as the app ({0})
 The voice now speaks {0}.
+Top center
+Top left
+Top right
+Never
+{0} s
 Installed: version {0} (build {1})   Channel: {2}
 Stable
 Nightly
@@ -307,8 +312,6 @@ Large
 Bottom center
 Bottom left
 Bottom right
-Top left
-Top right
 Center
 The log cannot be read: {0}
 REPLAY
@@ -737,6 +740,11 @@ Edit the battery profiles (cells and voltage limits)...
 Rules and checks can use the value cell (volts per cell) and the limits $low, $crit and $full of the active profile, for example: cell < $low -> battery low. Switching the profile changes the numbers, not the rules.
 Show the return reserve while flying
 Return reserve of this pack...
+Reserve card size
+Reserve card position
+Reserve card opacity
+Hide the reserve card after
+The card comes back when the reserve changes state (low, then gone), so a warning is not missed.
 Compares what is left in the pack with what the flight home would take, and calls out before the margin is gone. It needs the capacity of the pack (Edit the packs) and the position of home. The values reserve_pct and reserve_s can be used in rules, charts and logs. It is a guide from the straight-line distance and an average current, not a promise.
 The time you are approved to fly, for example the two hours the authority gave you. The radio shows the time left, speaks warnings while the aircraft is armed, and warns when you arm outside the window. It repeats every day and uses the clock of this radio, which says {0} now.
 Use an approval window
