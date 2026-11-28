@@ -40,6 +40,7 @@ struct State {
     // the start-up timeline
     std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
     Timeline tl{};
+    bool commRecovered = false;          // the SDK's RC_MSGID_COMM_RECOVER ("ComHub com recover") has arrived
     bool deferRequests = false;          // named port: the first requests wait until the radio link has delivered data
     bool deferDeviceInfo = false;
     bool deviceInfoAfterCfg = false;     // ask for the device information once more when the config is loaded
@@ -149,6 +150,13 @@ void onMessage(const rmaxSdk::SdkMessage& message, void* /*user*/) {
         }
         break;
     }
+    case rmaxSdk::RC_MSGID_COMM_RECOVER: {
+        std::lock_guard<std::mutex> lock(s.m);
+        s.commRecovered = true;
+        s.dirty = true;
+        s.cv.notify_one();
+        break;
+    }
     case rmaxSdk::RC_MSGID_TELEMETRY_LOST: {
         std::lock_guard<std::mutex> lock(s.m);
         s.tlmOk = false;
@@ -177,10 +185,10 @@ void workerLoop() {
         s.dirty = false;
         // Named port: the SDK opens it at once, long before the radio answers. A config request sent that early
         // seems to stay pending for ever (every later one is refused: "conflict 6"), so the first request is sent
-        // when the first channel message has arrived (or after 15 s at the latest).
+        // when the SDK reports the radio link as recovered (RC_MSGID_COMM_RECOVER, about 2 s after start), or after 15 s at the latest. The first channel message at 40 ms is too early: the log shows the request is still refused then.
         bool releaseNow = false;
         bool releaseDeviceInfo = false;
-        if (s.deferRequests && (s.mixoutMsgs > 0 || msSince(s.t0) >= 15000.0)) {
+        if (s.deferRequests && (s.commRecovered || msSince(s.t0) >= 15000.0)) {
             s.deferRequests = false;
             releaseNow = true;
             releaseDeviceInfo = s.deferDeviceInfo;
@@ -194,7 +202,7 @@ void workerLoop() {
             if (releaseDeviceInfo) {
                 rmaxSdk::rcTaskRequestDeviceInf();
                 std::lock_guard<std::mutex> l(s.m);
-                markFirst(s, kTlDeviceInfoRequested, "device info requested (after the link was up)");
+                markFirst(s, kTlDeviceInfoRequested, "device info requested (after the radio link recovered)");
             }
             lastCfgRequest = std::chrono::steady_clock::now();
             rmaxSdk::taskReadConfigFromDevice();
@@ -273,6 +281,7 @@ int startWith(const std::string& appDataPath, bool requestDeviceInfo, const std:
         logLine(initMs, "SDK initialize() returned");
         s.deviceInfoAfterCfg = requestDeviceInfo;
         s.deferRequests = !port.empty();
+        s.commRecovered = false;
         s.deferDeviceInfo = requestDeviceInfo;
         s.running = true;
         s.dirty = true;
@@ -292,7 +301,7 @@ int startWith(const std::string& appDataPath, bool requestDeviceInfo, const std:
     if (!port.empty()) {
         // The first requests wait for the radio link (see workerLoop).
         std::lock_guard<std::mutex> lock(s.m);
-        logLine(msSince(s.t0), "named port: the config request waits for the first channel message");
+        logLine(msSince(s.t0), "named port: the config request waits for the radio link (RC_MSGID_COMM_RECOVER)");
         s.worker = std::thread(workerLoop);
         return static_cast<int>(result);
     }
