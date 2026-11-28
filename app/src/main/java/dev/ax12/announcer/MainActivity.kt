@@ -1121,6 +1121,8 @@ class MainActivity : Activity() {
             "reserveOpacity" -> arrayOf("50%", "75%", "100%")[Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_OPACITY).coerceIn(0, 2)]
             else -> ReserveLook.hideSeconds(Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_HIDE)).let { if (it == 0) tr("Never") else tr("{0} s", it) }
         }
+        override fun sdkDeviceInfoOn(): Boolean = Prefs.bool(this@MainActivity, "sdkDeviceInfo", true)
+        override fun setSdkDeviceInfoOn(on: Boolean) { Prefs.setBool(this@MainActivity, "sdkDeviceInfo", on) }
         override fun sdkLinkLabel(): String = SdkLink.label(Prefs.int(this@MainActivity, "sdkLink", SdkLink.DEFAULT), tr("Automatic (scan)")) +
             if (SdkLink.clamp(Prefs.int(this@MainActivity, "sdkLink", SdkLink.DEFAULT)) != StartupState.sdkLinkUsed && StartupState.sdkLinkUsed >= 0) "  " + tr("(applies at the next start)") else ""
         override fun cycleSdkLink() { Prefs.setInt(this@MainActivity, "sdkLink", SdkLink.next(Prefs.int(this@MainActivity, "sdkLink", SdkLink.DEFAULT))) }
