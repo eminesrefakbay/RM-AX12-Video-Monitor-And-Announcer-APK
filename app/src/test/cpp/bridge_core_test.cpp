@@ -123,6 +123,18 @@ int main() {
               "TMPDIR points at <appData>/qt_tmp, which exists, before the SDK is initialised");
     }
     ax12::stop();
+    {
+        // Android layout: <app>/files and <app>/cache. The cache folder is preferred.
+        char t2[] = "/tmp/ax12appXXXXXX";
+        const std::string app = mkdtemp(t2);
+        mkdir((app + "/files").c_str(), 0700);
+        mkdir((app + "/cache").c_str(), 0700);
+        unsetenv("TMPDIR");
+        CHECK(ax12::start((app + "/files").c_str()) == 0, "start with an app-like layout");
+        const char* t = std::getenv("TMPDIR");
+        CHECK(t != nullptr && std::string(t) == app + "/cache", "TMPDIR points at the app's cache folder when it exists");
+        ax12::stop();
+    }
     fake::cfgReadCalls = 0;
     CHECK(ax12::start("/tmp") == 0, "start succeeds");
     CHECK(ax12::snapshot().v[ax12::kSnapState] == 1, "running");

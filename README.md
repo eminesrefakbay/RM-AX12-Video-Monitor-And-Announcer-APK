@@ -636,7 +636,7 @@ Locally: JDK 17, Android SDK + NDK, `gradle :app:assembleDebug` (copy the SDK fi
 
 The SDK talks to the radio over a serial link that Qt's `QSerialPort` opens only after creating a lock file. An Android app has no writable lock directory, so the link may never open: then the Show variables panel says `radio config: NOT loaded yet` and `mixout msgs` stays 0.
 
-* The app always points Qt's temp folder (`TMPDIR`) at its own data folder before the SDK starts (as RadioMaster's demo does).
+* The app always points Qt's temp folder (`TMPDIR`) at its own cache folder (like RadioMaster's app; falls back to a folder in its data) before the SDK starts (as RadioMaster's demo does).
 * To bypass the QSerialPort lock file requirement on Android, the app applies a memory patch similar to the official demo. The patch is in **`ax-hud.apk`**, which the CI builds with the Gradle flag `-PaxLockPatch=true`; **`ax-hud-plain.apk`** is the same app without it. It checks both instructions are exactly the expected ones before changing anything.
 * Close RadioMaster's own AX app first: two programs must not read the same serial port.
 * Look for the cause in `adb logcat`: lines with `qt`, `serial`, `lock` or `ax12bridge` ("Failed to create a lock file").
