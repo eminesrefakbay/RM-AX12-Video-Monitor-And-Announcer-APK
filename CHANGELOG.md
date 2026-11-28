@@ -3,12 +3,11 @@
 ## 1.17.6
 
 The app now uses the new RadioMaster SDK (Flyshark's `rmAxSdk`, commit of 27 Nov 2026), whose `initialize()` takes the serial port and the baud rate. Settings > System has a new row,
-Radio serial link: Automatic (the default: the SDK scans for the port, as before), or ttyS0 at 921600, 1870000 or 400000. The named-port choices are experimental: on the first test the port opened at once but the radio configuration did not load (the connecting badge kept counting and roll and yaw were swapped), so Automatic stays the default until RadioMaster confirms how the new initialize() is meant to be used.
+Radio serial link: Automatic (the default: the SDK scans for the port, as before), or ttyS0 at 921600 (the radio's own link rate; the other baud rates in RadioMaster's app are for the ELRS module, and in tests the SDK ignored the baud argument). The named-port choice is experimental: on the first test the port opened at once but the radio configuration did not load (the connecting badge kept counting and roll and yaw were swapped), so Automatic stays the default until RadioMaster confirms how the new initialize() is meant to be used.
 Naming the port should remove the roughly 12 second wait at start, which was the SDK scanning for the port (to be confirmed on the radio). A change applies the next time the app starts.
 The SDK now comes with a licence file (RadioMaster: use, copy, distribute and redistribute the binaries and headers, commercial or not); the README, the third-party notices and the About page say so,
 and the About page shows its text. The build takes the SDK from `flyshark2024/rmAxSdk` and uses its dated library `librmAxSdk1.20261127.so` under the name `librmAxSdk1.so`; the build fails if
 that library lacks the new `initialize()`.
-Settings > System also has a test switch, "Test: ask the radio for its device information at start" (on by default, as before). Switching it off asks for the configuration only, to find out why the configuration does not load with a named port (the SDK logs `taskReadConfigFromDevice conflict 6`).
 
 ## 1.17.5
 

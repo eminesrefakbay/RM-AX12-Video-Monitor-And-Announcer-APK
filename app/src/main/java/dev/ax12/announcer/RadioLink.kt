@@ -62,7 +62,7 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
         val previousBase = StartupState.nativeBaseMs
         StartupState.nativeBaseMs = SystemClock.elapsedRealtime()      // the bridge's own clock starts now
         val link = Prefs.int(context, "sdkLink", SdkLink.DEFAULT)      // the SDK runs once per start of the app: a changed choice applies at the next start
-        val code = AxSdkJni.nativeStart(context.filesDir.absolutePath, Prefs.bool(context, "sdkDeviceInfo", true), configRetryMs, SdkLink.port(link), SdkLink.baud(link))
+        val code = AxSdkJni.nativeStart(context.filesDir.absolutePath, true, configRetryMs, SdkLink.port(link), SdkLink.baud(link))
         if (code == 0) StartupState.sdkLinkUsed = SdkLink.clamp(link)
         if (code == 1 && previousBase > 0) StartupState.nativeBaseMs = previousBase     // it was running already: that clock is still the right one
         started = (code == 0 || code == 1)

@@ -181,7 +181,6 @@ interface SettingsHost {
     fun editReserve()
     fun reserveLabel(key: String): String
     fun sdkLinkLabel(): String
-    fun sdkDeviceInfoOn(): Boolean
     fun setSdkDeviceInfoOn(on: Boolean)
     fun cycleSdkLink()
     fun cycleReserve(key: String)
@@ -883,10 +882,8 @@ class SettingsPanel(private val activity: Activity, private val host: SettingsHo
         toggle(tr("Show the variables panel (every value the radio sends)"), host.variablesOn()) { host.setVariablesOn(it) }
         toggle(tr("Test channels: sliders instead of the radio"), host.testChannelsOn()) { host.setTestChannelsOn(it) }
         action(tr("Show the start-up timings of the last launches...")) { host.showStartupTimings() }
-        toggle(tr("Test: ask the radio for its device information at start"), host.sdkDeviceInfoOn()) { host.setSdkDeviceInfoOn(it) }
-        note(tr("On is what the app has always done, as RadioMaster's demo does: device information first, then the configuration. Switch it off to ask for the configuration only, which can help to find out why the configuration does not load. A change applies the next time the app starts."))
-        valueRow(tr("Radio serial link (port and baud rate)"), host.sdkLinkLabel()) { host.cycleSdkLink(); refresh() }
-        note(tr("The port ttyS0 is the radio's own serial port; naming it lets the SDK open it at once instead of scanning for it (about 12 s). The baud rate has to match the radio: 921600 is the SDK's default and enough up to ELRS 500 Hz, 1870000 is for 1000 Hz and all packet rates. Automatic scans as before. A change applies the next time the app starts: close it from the menu and open it again."))
+        valueRow(tr("Radio serial link (port)"), host.sdkLinkLabel()) { host.cycleSdkLink(); refresh() }
+        note(tr("The port ttyS0 is the radio's own serial port (921600 baud, the rate of the radio's own link; the baud setting in RadioMaster's app is for the ELRS module). Naming it lets the SDK open it at once instead of scanning for it (about 12 s), but in the first tests the radio configuration then did not load, so Automatic is the default. A change applies the next time the app starts: close it from the menu and open it again."))
         note(tr("The radio link starts on a background thread and keeps running while the app's own screens, file pickers and rebuilds come and go; it stops when you leave the app. The SDK itself needs about 12 seconds to open the radio's serial port; the timings show where the time goes."))
         note(tr("Close Settings to see the panels over the video."))
     }

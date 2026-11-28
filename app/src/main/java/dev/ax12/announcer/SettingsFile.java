@@ -56,7 +56,7 @@ public final class SettingsFile {
         s("aircraftStore"); s("aircraftActive");
         // flight logs
         b("layoutSnap"); b("layoutStripHidden"); b("dashPage"); s("dashTiles"); s("dashLayouts"); b("horizonInvPitch"); b("horizonInvRoll");
-        b("sunlight"); b("sdkDeviceInfo"); b("trkOn"); s("trkAddr"); s("trkName"); i("shape", 0, ShapeGeometry.COUNT - 1); b("winOn"); i("winStart", 0, 1439); i("winEnd", 0, 1439); s("winWarn"); b("winSpeech"); b("debriefOn"); b("lossSpeech"); s("packBook"); s("reserveCfg"); b("reserveOn"); i("reserveSize", 0, 2); i("reserveOpacity", 0, 2); i("reserveHide", 0, 3); i("reservePos", 0, 2); i("sdkLink", 0, 3); b("layoutWithAircraft");
+        b("sunlight"); b("trkOn"); s("trkAddr"); s("trkName"); i("shape", 0, ShapeGeometry.COUNT - 1); b("winOn"); i("winStart", 0, 1439); i("winEnd", 0, 1439); s("winWarn"); b("winSpeech"); b("debriefOn"); b("lossSpeech"); s("packBook"); s("reserveCfg"); b("reserveOn"); i("reserveSize", 0, 2); i("reserveOpacity", 0, 2); i("reserveHide", 0, 3); i("reservePos", 0, 2); i("sdkLink", 0, SdkLink.COUNT - 1); b("layoutWithAircraft");
         b("logOn"); i("logRate", 0, FlightLogger.RATES_HZ.length - 1); i("logKeep", 0, FlightLogger.KEEP.length - 1); s("logFields");
     }
 
@@ -67,7 +67,7 @@ public final class SettingsFile {
     static {
         d("language", "auto"); d("speechLanguage", "same"); d("updateChannel", "stable");
         d("rotation", 0); d("fill", false);
-        d("menuAlways", false); d("sdkDeviceInfo", true); d("splashOn", true); d("updateAuto", true); d("replayModel", 0); d("replayTrail", 0); d("fpvTilt", 25); d("mapOn", true); d("mapType", 0); d("mapUrl", ""); d("mapCredit", ""); d("mapRelief", 1); d("mapFit", true); d("reserveOn", false); d("reserveSize", 1); d("reserveOpacity", 1); d("reserveHide", 2); d("reservePos", 0); d("sdkLink", 0); d("layoutWithAircraft", true);
+        d("menuAlways", false); d("splashOn", true); d("updateAuto", true); d("replayModel", 0); d("replayTrail", 0); d("fpvTilt", 25); d("mapOn", true); d("mapType", 0); d("mapUrl", ""); d("mapCredit", ""); d("mapRelief", 1); d("mapFit", true); d("reserveOn", false); d("reserveSize", 1); d("reserveOpacity", 1); d("reserveHide", 2); d("reservePos", 0); d("sdkLink", 0); d("layoutWithAircraft", true);
         d("sticksOn", false); d("sticksSize", 1); d("sticksPos", 0); d("sticksOpacity", 1);
         d("stickMode", 2); d("stickRoll", 1); d("stickPitch", 2); d("stickThrottle", 3); d("stickYaw", 4); d("stickInvert", 0);
         d("barsOn", true); d("warnBarOn", true); d("warnBarPos", 0);

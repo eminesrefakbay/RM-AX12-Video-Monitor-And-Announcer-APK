@@ -17,7 +17,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #include "rmAxSdkApi.h"
 
@@ -58,18 +57,7 @@ State& st() {
 // TMPDIR environment variable. Android's default temp location is not writable for an app, so
 // point TMPDIR at a folder inside the app's private data (RadioMaster's demo does the same, and
 // it must happen BEFORE initialize(), which creates the Qt application object).
-// RadioMaster's own app keeps its lock files in the app's cache folder (the sibling "cache" of
-// "files"), so that folder is preferred; <appData>/qt_tmp is the fallback.
 void redirectTempDir(const std::string& appDataPath) {
-    const auto slash = appDataPath.find_last_of('/');
-    if (slash != std::string::npos) {
-        const std::string cache = appDataPath.substr(0, slash) + "/cache";
-        struct stat st {};
-        if (stat(cache.c_str(), &st) == 0 && S_ISDIR(st.st_mode) && access(cache.c_str(), W_OK) == 0) {
-            setenv("TMPDIR", cache.c_str(), 1);
-            return;
-        }
-    }
     const std::string tmp = appDataPath + "/qt_tmp";
     if (mkdir(tmp.c_str(), 0700) != 0 && errno != EEXIST) return;
     setenv("TMPDIR", tmp.c_str(), 1);

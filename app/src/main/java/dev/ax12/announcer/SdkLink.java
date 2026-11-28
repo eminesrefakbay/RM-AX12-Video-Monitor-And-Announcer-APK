@@ -11,13 +11,13 @@ package dev.ax12.announcer;
  * takes about 12 seconds. Plain Java, tested on a PC.
  */
 public final class SdkLink {
-    public static final int COUNT = 4;
+    public static final int COUNT = 2;
     public static final int DEFAULT = 0;
     /** The radio's own serial port (the AX12 has only ttyS0). */
     public static final String PORT = "ttyS0";
-    /** What the SDK uses when no baud rate is given. */
+    /** The radio's own link runs at 921600 (the stock app uses it too); the other rates in RadioMaster's help are the ELRS module's. */
     public static final int SDK_DEFAULT_BAUD = 921600;
-    private static final int[] BAUD = {921600, 1870000, 400000, SDK_DEFAULT_BAUD};
+    private static final int[] BAUD = {SDK_DEFAULT_BAUD, 921600};   // choice 0 is Automatic: no port, the SDK's own baud rate
 
     private SdkLink() {}
 
@@ -25,7 +25,7 @@ public final class SdkLink {
     public static int clamp(int choice) { return choice < 0 || choice >= COUNT ? DEFAULT : choice; }
 
     /** True when the SDK is told which port to open; false means it scans for the port itself. */
-    public static boolean namesPort(int choice) { return clamp(choice) != COUNT - 1; }
+    public static boolean namesPort(int choice) { return clamp(choice) != 0; }
 
     /** The port name given to the SDK; empty means "scan". */
     public static String port(int choice) { return namesPort(choice) ? PORT : ""; }
