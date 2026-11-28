@@ -40,6 +40,8 @@ struct State {
     // the start-up timeline
     std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
     Timeline tl{};
+    bool deferRequests = false;          // named port: the first requests wait until the radio link has delivered data
+    bool deferDeviceInfo = false;
     bool deviceInfoAfterCfg = false;     // ask for the device information once more when the config is loaded
 
     State() {
@@ -173,11 +175,32 @@ void workerLoop() {
         s.cv.wait_for(lock, 250ms, [&] { return !s.running || s.dirty; });
         if (!s.running) break;
         s.dirty = false;
-        const bool needCfg = !s.cfgReady;
+        // Named port: the SDK opens it at once, long before the radio answers. A config request sent that early
+        // seems to stay pending for ever (every later one is refused: "conflict 6"), so the first request is sent
+        // when the first channel message has arrived (or after 15 s at the latest).
+        bool releaseNow = false;
+        bool releaseDeviceInfo = false;
+        if (s.deferRequests && (s.mixoutMsgs > 0 || msSince(s.t0) >= 15000.0)) {
+            s.deferRequests = false;
+            releaseNow = true;
+            releaseDeviceInfo = s.deferDeviceInfo;
+        }
+        const bool needCfg = !s.cfgReady && !s.deferRequests;
         const bool needDeviceInfo = s.cfgReady && s.deviceInfoAfterCfg;
         if (needDeviceInfo) s.deviceInfoAfterCfg = false;           // once
         lock.unlock();
 
+        if (releaseNow) {
+            if (releaseDeviceInfo) {
+                rmaxSdk::rcTaskRequestDeviceInf();
+                std::lock_guard<std::mutex> l(s.m);
+                markFirst(s, kTlDeviceInfoRequested, "device info requested (after the link was up)");
+            }
+            lastCfgRequest = std::chrono::steady_clock::now();
+            rmaxSdk::taskReadConfigFromDevice();
+            std::lock_guard<std::mutex> l(s.m);
+            markRequest(s);
+        }
         // The radio may not have been reachable at start-up: keep asking until it answers.
         if (needCfg && std::chrono::steady_clock::now() - lastCfgRequest >= std::chrono::milliseconds(g_cfgRetryMs.load())) {
             lastCfgRequest = std::chrono::steady_clock::now();
@@ -249,6 +272,8 @@ int startWith(const std::string& appDataPath, bool requestDeviceInfo, const std:
         s.tl.t[kTlInitReturned] = initMs;
         logLine(initMs, "SDK initialize() returned");
         s.deviceInfoAfterCfg = requestDeviceInfo;
+        s.deferRequests = !port.empty();
+        s.deferDeviceInfo = requestDeviceInfo;
         s.running = true;
         s.dirty = true;
         s.tlmOk = true;
@@ -263,6 +288,13 @@ int startWith(const std::string& appDataPath, bool requestDeviceInfo, const std:
     {
         std::lock_guard<std::mutex> lock(s.m);
         markFirst(s, kTlCallbackSet, "message callback set");
+    }
+    if (!port.empty()) {
+        // The first requests wait for the radio link (see workerLoop).
+        std::lock_guard<std::mutex> lock(s.m);
+        logLine(msSince(s.t0), "named port: the config request waits for the first channel message");
+        s.worker = std::thread(workerLoop);
+        return static_cast<int>(result);
     }
     // RadioMaster's demo asks for the device information first (the standard start does not).
     if (requestDeviceInfo) {

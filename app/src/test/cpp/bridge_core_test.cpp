@@ -232,6 +232,23 @@ int main() {
         CHECK(fake::devInfoCalls == 0, "standard: never asks for the device information, not even when the config is loaded");
         ax12::stop();
 
+        // --- a named port: nothing is requested until the first channel message has arrived
+        reset();
+        ax12::StartOptions named;
+        named.port = "ttyS0";
+        named.requestDeviceInfo = true;
+        named.configRetryMs = 400;
+        CHECK(ax12::start("/tmp", named) == 0, "start with a named port");
+        std::this_thread::sleep_for(600ms);
+        CHECK(fake::cfgReadCalls == 0 && fake::devInfoCalls == 0, "named port: no request before the radio link has delivered data");
+        send(rmaxSdk::RC_MSGID_MIXOUT_UPDATE);
+        CHECK(waitFor([] { return fake::cfgReadCalls >= 1; }, 1000), "named port: the config is requested after the first channel message");
+        CHECK(fake::devInfoCalls >= 1 && fake::firstDevInfoSeq < fake::firstCfgSeq, "named port: the device information goes first, then the config");
+        CHECK(waitFor([] { return fake::cfgReadCalls >= 2; }, 1500), "named port: retried after the retry time as before");
+        send(rmaxSdk::RC_MSGID_GETDEVCFG_END);
+        CHECK(waitFor([] { return ax12::snapshot().v[ax12::kSnapCfgReady] == 1; }, 1000), "named port: config ready");
+        ax12::stop();
+
         // --- the demo-like start: device information first, then the config, and once more when the config is loaded
         reset();
         ax12::StartOptions demo;
