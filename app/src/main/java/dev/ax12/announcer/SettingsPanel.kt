@@ -181,7 +181,6 @@ interface SettingsHost {
     fun editReserve()
     fun reserveLabel(key: String): String
     fun sdkLinkLabel(): String
-    fun setSdkDeviceInfoOn(on: Boolean)
     fun cycleSdkLink()
     fun cycleReserve(key: String)
     fun layoutWithAircraft(): Boolean
