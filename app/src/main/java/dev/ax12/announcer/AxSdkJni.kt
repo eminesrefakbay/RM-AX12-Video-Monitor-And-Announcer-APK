@@ -22,8 +22,10 @@ object AxSdkJni {
      * 0 = started, 1 = already started, 2 = worker thread failed, 3 = could not open the radio's serial link.
      * @param requestDeviceInfo ask the radio for its device information before the config (RadioMaster's demo does)
      * @param configRetryMs how long to wait before asking for the config again
+     * @param port the serial port for the SDK to open, for example "ttyS0"; empty = the SDK scans for it (about 12 seconds)
+     * @param baudRate the baud rate given to the SDK
      */
-    @JvmStatic external fun nativeStart(appDataPath: String, requestDeviceInfo: Boolean, configRetryMs: Int): Int
+    @JvmStatic external fun nativeStart(appDataPath: String, requestDeviceInfo: Boolean, configRetryMs: Int, port: String, baudRate: Int): Int
     /** when each step of the start happened, in ms since the start (layout in bridge_core.h; -1 = not yet) */
     @JvmStatic external fun nativeTimeline(): DoubleArray
     @JvmStatic external fun nativeStop()

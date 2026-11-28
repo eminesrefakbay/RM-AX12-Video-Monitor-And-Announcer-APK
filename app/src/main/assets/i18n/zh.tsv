@@ -60,7 +60,6 @@ Last {0} s	最近 {0} 秒
 Connecting to the radio... {0} s	正在连接遥控器... {0} 秒
 Still waiting. Close the RadioMaster app and check that the radio is on.	仍在等待。请关闭 RadioMaster 应用, 并确认遥控器已开机。
 This app: the HUD, the voice announcer, the rules and the settings.	本应用: HUD、语音播报、规则和设置。
-Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has no license file, but the SDK developer has stated that RadioMaster does not impose any restrictions on its use or redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件已包含在应用中, 与 RadioMaster 手册对应用开发者的说明一致。其仓库没有许可证文件, SDK 开发者已声明 RadioMaster 不限制其使用和再分发 (见 README 中的说明)。感谢 RadioMaster 公开发布。
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	随 RadioMaster SDK 提供的 Qt 库, 保持其交付时的状态。源代码: download.qt.io。
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK 的 C++ 运行库, SDK 需要它。
 The standard library of the Kotlin language, which the app is written in.	Kotlin 语言的标准库, 本应用即用 Kotlin 编写。
@@ -407,7 +406,6 @@ Test sliders (no radio)	测试滑块 (无遥控器)
 RadioMaster SDK	RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)	此版本不含 RadioMaster SDK 文件 (见 README)
 SDK worker thread failed to start	SDK 工作线程启动失败
-The SDK could not open the radio's serial link (see README: serial lock)	SDK 无法打开遥控器的串口连接 (见 README: 串口锁)
 SDK start failed (code {0})	SDK 启动失败 (代码 {0})
 {0}x	{0}x
 Line {0}: missing '->'  ({1})	第 {0} 行: 缺少 '->'  ({1})
@@ -1010,3 +1008,9 @@ The card comes back when the reserve changes state (low, then gone), so a warnin
 Top center	顶部居中
 Never	从不
 {0} s	{0} 秒
+Radio serial link (port and baud rate)	遥控器串口连接（串口名和波特率）
+Automatic (scan)	自动（搜索）
+(applies at the next start)	（下次启动时生效）
+The SDK could not open the radio's serial link. Try another choice under Settings > System > Radio serial link, then close the app and open it again (see README: serial lock)	SDK 无法打开遥控器的串口连接。请在 设置 > 系统 > 遥控器串口连接 中试另一个选项，然后关闭应用并重新打开（见 README：serial lock）
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has a license file that allows using, copying and redistributing the SDK binaries and headers for commercial and non-commercial applications (see the notice in the README). Thank you, RadioMaster, for publishing it.	读取遥控器的通道和遥测数据。其库文件已包含在应用中, 与 RadioMaster 手册对应用开发者的说明一致。其仓库有一份许可证文件, 允许在任何应用中使用、复制和再分发 SDK 的二进制文件和头文件 (见 README 中的说明)。感谢 RadioMaster 公开发布。
+The port ttyS0 is the radio's own serial port; naming it lets the SDK open it at once instead of scanning for it (about 12 s). The baud rate has to match the radio: 921600 is the SDK's default and enough up to ELRS 500 Hz, 1870000 is for 1000 Hz and all packet rates. Automatic scans as before. A change applies the next time the app starts: close it from the menu and open it again.	ttyS0 是遥控器自己的串口；指定它后，SDK 会立即打开，而不是自行搜索（约 12 秒）。波特率必须与遥控器一致：921600 是 SDK 的默认值，适用于 ELRS 500 Hz 以内；1870000 适用于 1000 Hz 和所有数据包速率。自动则和以前一样搜索。更改在应用下次启动时生效：请从菜单关闭后再打开。

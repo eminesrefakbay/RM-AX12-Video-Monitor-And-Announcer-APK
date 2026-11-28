@@ -51,16 +51,21 @@ Java_dev_ax12_announcer_AxSdkJni_nativeVersion(JNIEnv* env, jclass) {
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_dev_ax12_announcer_AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDataPath, jboolean requestDeviceInfo, jint configRetryMs) {
+Java_dev_ax12_announcer_AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDataPath, jboolean requestDeviceInfo, jint configRetryMs, jstring port, jint baudRate) {
     const char* chars = env->GetStringUTFChars(appDataPath, nullptr);
     const std::string path(chars != nullptr ? chars : "");
     if (chars != nullptr) env->ReleaseStringUTFChars(appDataPath, chars);
+    const char* portChars = port != nullptr ? env->GetStringUTFChars(port, nullptr) : nullptr;
+    const std::string portName(portChars != nullptr ? portChars : "");
+    if (portChars != nullptr) env->ReleaseStringUTFChars(port, portChars);
     ax12::StartOptions options;
+    options.port = portName;
+    options.baudRate = baudRate;
     options.requestDeviceInfo = requestDeviceInfo == JNI_TRUE;
     options.configRetryMs = configRetryMs;
     const int result = ax12::start(path, options);
-    LOGI("nativeStart: path=%s deviceInfoFirst=%d retryMs=%d result=%d (0 ok, 1 already running, 2 thread failed, 3 communication failed)",
-         path.c_str(), options.requestDeviceInfo ? 1 : 0, options.configRetryMs, result);
+    LOGI("nativeStart: path=%s deviceInfoFirst=%d retryMs=%d port=%s baud=%d result=%d (0 ok, 1 already running, 2 thread failed, 3 communication failed)",
+         path.c_str(), options.requestDeviceInfo ? 1 : 0, options.configRetryMs, options.port.empty() ? "(scan)" : options.port.c_str(), options.baudRate, result);
     return result;
 }
 

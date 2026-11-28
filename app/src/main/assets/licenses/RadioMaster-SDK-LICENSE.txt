@@ -1,0 +1,7 @@
+SDK License
+
+Copyright (c) RadioMaster
+
+Permission is hereby granted to use, copy, distribute,
+and redistribute the SDK binaries and headers for both
+commercial and non-commercial applications.

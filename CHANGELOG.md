@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.17.6
+
+The app now uses the new RadioMaster SDK (Flyshark's `rmAxSdk`, commit of 27 Nov 2026), whose `initialize()` takes the serial port and the baud rate. Settings > System has a new row,
+Radio serial link: ttyS0 at 921600 (the default, as in RadioMaster's example), ttyS0 at 1870000 (for ELRS 1000 Hz), ttyS0 at 400000, or Automatic (the SDK scans for the port, as before).
+Naming the port should remove the roughly 12 second wait at start, which was the SDK scanning for the port (to be confirmed on the radio). A change applies the next time the app starts.
+The SDK now comes with a licence file (RadioMaster: use, copy, distribute and redistribute the binaries and headers, commercial or not); the README, the third-party notices and the About page say so,
+and the About page shows its text. The build takes the SDK from `flyshark2024/rmAxSdk` and uses its dated library `librmAxSdk1.20261127.so` under the name `librmAxSdk1.so`; the build fails if
+that library lacks the new `initialize()`.
+
 ## 1.17.5
 
 The return reserve card can be sized and tamed: Settings > Aircraft > Return reserve has Reserve card size (small, medium, large), position (top centre, left or right),

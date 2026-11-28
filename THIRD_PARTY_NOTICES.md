@@ -15,11 +15,11 @@ names and trademarks belong to their owners.
 
 ## RadioMaster AX SDK
 
-- Holder: RadioMaster. Published for app developers at <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>. The build uses the commit `7aa7facc0f3680a286a01cb7335f310211d7b9ef` (12 Oct 2026); its maintainers also publish the same files at <https://github.com/flyshark2024/rmAxSdk>.
-- It reads the radio's channels and telemetry. Its libraries (`librmAxSdk1.so`) are included in the APK.
+- Holder: RadioMaster. Published for app developers at <https://github.com/flyshark2024/rmAxSdk> (an older copy is at <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>). The build uses the commit `82a9e4570a1c8f3782e2a886c93174575782478b` (27 Nov 2026), the first with `initialize(path, port, baudRate)`.
+- It reads the radio's channels and telemetry. Its libraries (`librmAxSdk1.so`, built from the dated `librmAxSdk1.20261127.so` of that commit) are included in the APK.
 - The SDK is **not stored in this repository**: the build downloads it from RadioMaster's repository, so the terms RadioMaster publishes
   there apply to it. AX-HUD does not relicense it.
-- The SDK repository has no licence file. In a public issue on that repository (Nov 2026) the SDK developer stated: "we do not impose any restrictions on the use or redistribution of the sdk." That is a statement, not a licence text.
+- The SDK repository has a licence file ("SDK License, Copyright (c) RadioMaster"): permission to use, copy, distribute and redistribute the SDK binaries and headers for commercial and non-commercial applications. Its text is in the app (About) and in `app/src/main/assets/licenses/RadioMaster-SDK-LICENSE.txt`. Before it was added, the SDK developer had stated in a public issue (Nov 2026): "we do not impose any restrictions on the use or redistribution of the sdk."
 - Thank you, RadioMaster, for publishing the SDK.
 
 ## Qt 6 (Core, Network, SerialPort, Concurrent)

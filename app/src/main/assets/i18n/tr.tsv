@@ -60,7 +60,6 @@ Last {0} s	Son {0} sn
 Connecting to the radio... {0} s	Kumandaya bağlanılıyor... {0} sn
 Still waiting. Close the RadioMaster app and check that the radio is on.	Hâlâ bekleniyor. RadioMaster uygulamasını kapatın ve kumandanın açık olduğundan emin olun.
 This app: the HUD, the voice announcer, the rules and the settings.	Bu uygulama: HUD, sesli anons, kurallar ve ayarlar.
-Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has no license file, but the SDK developer has stated that RadioMaster does not impose any restrictions on its use or redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri, RadioMaster'ın kılavuzunun uygulama geliştiricileri için tarif ettiği gibi uygulamaya dahildir. Deposunda lisans dosyası yoktur, ancak SDK geliştiricisi RadioMaster'ın kullanıma ve yeniden dağıtıma kısıtlama getirmediğini belirtmiştir (README'deki nota bakın). Yayımladığı için teşekkürler, RadioMaster.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	RadioMaster SDK ile gelen Qt kütüphaneleri, onunla birlikte teslim edildiği gibi. Kaynak kod: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Android NDK'nın C++ çalışma zamanı; SDK'nın ihtiyaç duyduğu.
 The standard library of the Kotlin language, which the app is written in.	Uygulamanın yazıldığı Kotlin dilinin standart kütüphanesi.
@@ -407,7 +406,6 @@ Test sliders (no radio)	Test kaydırıcıları (kumanda yok)
 RadioMaster SDK	RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)	Bu sürümde RadioMaster SDK dosyaları yok (README'ye bakın)
 SDK worker thread failed to start	SDK çalışan iş parçacığı başlatılamadı
-The SDK could not open the radio's serial link (see README: serial lock)	SDK, kumandanın seri bağlantısını açamadı (README'ye bakın: seri kilit)
 SDK start failed (code {0})	SDK başlatılamadı (kod {0})
 {0}x	{0}x
 Line {0}: missing '->'  ({1})	Satır {0}: '->' eksik  ({1})
@@ -1010,3 +1008,9 @@ The card comes back when the reserve changes state (low, then gone), so a warnin
 Top center	Üst orta
 Never	Asla
 {0} s	{0} sn
+Radio serial link (port and baud rate)	Telsiz seri bağlantısı (port ve baud hızı)
+Automatic (scan)	Otomatik (tara)
+(applies at the next start)	(bir sonraki açılışta geçerli olur)
+The SDK could not open the radio's serial link. Try another choice under Settings > System > Radio serial link, then close the app and open it again (see README: serial lock)	SDK telsizin seri bağlantısını açamadı. Ayarlar > Sistem > Telsiz seri bağlantısı bölümünden başka bir seçenek deneyin, sonra uygulamayı kapatıp yeniden açın (bkz. README: serial lock)
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has a license file that allows using, copying and redistributing the SDK binaries and headers for commercial and non-commercial applications (see the notice in the README). Thank you, RadioMaster, for publishing it.	Kumandanın kanallarını ve telemetrisini okur. Kütüphaneleri, RadioMaster'ın kılavuzunun uygulama geliştiricileri için tarif ettiği gibi uygulamaya dahildir. Deposunda, SDK ikili dosyalarının ve başlık dosyalarının ticari ve ticari olmayan uygulamalarda kullanılmasına, kopyalanmasına ve yeniden dağıtılmasına izin veren bir lisans dosyası vardır (README'deki nota bakın). Yayımladığı için teşekkürler, RadioMaster.
+The port ttyS0 is the radio's own serial port; naming it lets the SDK open it at once instead of scanning for it (about 12 s). The baud rate has to match the radio: 921600 is the SDK's default and enough up to ELRS 500 Hz, 1870000 is for 1000 Hz and all packet rates. Automatic scans as before. A change applies the next time the app starts: close it from the menu and open it again.	Port ttyS0 telsizin kendi seri portudur; adını vermek SDK'nın portu aramak yerine (yaklaşık 12 sn) hemen açmasını sağlar. Baud hızı telsizle uyumlu olmalıdır: 921600 SDK'nın varsayılanıdır ve ELRS 500 Hz'e kadar yeterlidir, 1870000 ise 1000 Hz ve tüm paket hızları içindir. Otomatik eskisi gibi tarar. Değişiklik uygulama bir sonraki başladığında geçerli olur: menüden kapatıp yeniden açın.

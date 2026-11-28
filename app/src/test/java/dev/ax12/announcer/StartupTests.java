@@ -34,9 +34,9 @@ public class StartupTests {
             && k.get("kMaxRequests") == StartupTimeline.N_MAX_REQ, "the step numbers match bridge_core.h");
         check(header.contains("constexpr int kTlSize = kTlRequest0 + kMaxRequests;") && StartupTimeline.N_SIZE == k.get("kTlRequest0") + k.get("kMaxRequests"), "and the size");
         String jni = new String(Files.readAllBytes(new File("app/src/main/java/dev/ax12/announcer/AxSdkJni.kt").toPath()), StandardCharsets.UTF_8);
-        check(jni.contains("nativeStart(appDataPath: String, requestDeviceInfo: Boolean, configRetryMs: Int)") && jni.contains("nativeTimeline(): DoubleArray"), "the Kotlin side declares the same native functions");
+        check(jni.contains("nativeStart(appDataPath: String, requestDeviceInfo: Boolean, configRetryMs: Int, port: String, baudRate: Int)") && jni.contains("nativeTimeline(): DoubleArray"), "the Kotlin side declares the same native functions");
         String cpp = new String(Files.readAllBytes(new File("app/src/main/cpp/ax12bridge_jni.cpp").toPath()), StandardCharsets.UTF_8);
-        check(cpp.contains("AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDataPath, jboolean requestDeviceInfo, jint configRetryMs)") && cpp.contains("AxSdkJni_nativeTimeline"), "and the JNI file implements them with the same parameters");
+        check(cpp.contains("AxSdkJni_nativeStart(JNIEnv* env, jclass, jstring appDataPath, jboolean requestDeviceInfo, jint configRetryMs, jstring port, jint baudRate)") && cpp.contains("AxSdkJni_nativeTimeline"), "and the JNI file implements them with the same parameters");
 
         // ---------- marking ----------
         StartupTimeline t = new StartupTimeline();

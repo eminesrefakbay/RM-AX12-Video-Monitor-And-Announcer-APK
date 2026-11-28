@@ -2,9 +2,9 @@
 
 <p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.de.md">Deutsch</a> · <a href="README.zh.md">中文</a></p>
 
-# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.5)
+# AX-HUD: AX12 video monitor, HUD and announcer (v1.17.6)
 > **Disclaimer:** AX-HUD is an independent open-source project and is NOT officially affiliated with, endorsed, or supported by RadioMaster. Use it at your own risk. The app only reads telemetry data and does not write to the radio's settings, but you are solely responsible for your equipment, configuration, and flight safety.
-> **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository has no licence file, but the SDK developer has stated in a public issue that RadioMaster does not impose any restrictions on the use or redistribution of the SDK. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
+> **The RadioMaster SDK:** the release APK contains RadioMaster's AX SDK libraries. The SDK's repository now has a licence file (RadioMaster, Nov 2026) that permits using, copying and redistributing the SDK binaries and headers for commercial and non-commercial applications; the SDK developer had also said in a public issue that RadioMaster does not impose any restrictions on its use or redistribution. Read [the notice](#the-radiomaster-sdk-what-is-settled-and-what-is-not) before you use or share the APK.
 
 **AX-HUD** is an Android app for the RadioMaster AX12:
 
@@ -86,7 +86,7 @@ controllers are **untested**. The APK `ax-hud.apk` (with the serial-lock patch, 
 
 | Part | State |
 | --- | --- |
-| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,536 automated checks pass |
+| Rules, text templates, warnings, CRSF parser, scaler, overlays, files, updater and translations (plain Java) | 2,549 automated checks pass |
 | Native bridge core (C++, fake SDK, also under thread and address sanitizers) | 74 checks pass |
 | Camera, layout, speech, JNI glue, Gradle/NDK build | built by CI, used on the radio |
 
@@ -625,8 +625,8 @@ CRSF values older than 5 s are dropped, so a rule never acts on a stale reading.
 
 ## Build
 
-The RadioMaster SDK files are **not stored in this repository** (the SDK repository states no licence of its own).
-The CI workflow clones <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>, checks out the commit `7aa7fac` (pinned in `.github/workflows/build.yml`, so that a change on their side cannot break the build or change what is shipped) and copies the five `.so` files into
+The RadioMaster SDK files are **not stored in this repository** (the SDK repository has its own licence, described in the notice below).
+The CI workflow clones <https://github.com/flyshark2024/rmAxSdk>, checks out the commit `82a9e45` (pinned in `.github/workflows/build.yml`, so that a change on their side cannot break the build or change what is shipped) and copies the five `.so` files (the SDK library is the dated `librmAxSdk1.20261127.so`, copied under its internal name `librmAxSdk1.so`) into
 `app/src/main/jniLibs/arm64-v8a/` and the headers into `app/src/main/cpp/sdk-include/rmAxSdk1/` before building.
 Without those files the app still builds and runs on the test sliders.
 
@@ -689,13 +689,13 @@ pure navy (no light fringe).
 ## The RadioMaster SDK: what is settled and what is not
 
 AX-HUD reads the radio's channels and telemetry through the **AX SDK that RadioMaster publishes**
-(<https://github.com/Radiomaster-RC/RadiomasterAX_SDK>). The release APK contains the SDK's libraries, unchanged, from the commit pinned in
+(<https://github.com/flyshark2024/rmAxSdk>; the older copy is <https://github.com/Radiomaster-RC/RadiomasterAX_SDK>). The release APK contains the SDK's libraries, unchanged, from the commit pinned in
 `.github/workflows/build.yml`; the SDK files are not stored in this repository.
 
 * **What points to permission.** The SDK is published for app developers, and its manual tells integrators to put the libraries into their
   app's `jniLibs` folder.
-* **What is not in a licence file.** The SDK repository has no licence file. The Qt libraries inside it are LGPL, and their licence text is in the app (About).
-* **What RadioMaster has said.** I asked RadioMaster in November 2026, first through their support (the ticket was closed without a reply) and then in an issue on the SDK repository (<https://github.com/Radiomaster-RC/RadiomasterAX_SDK/issues>). The SDK developer answered there: "we do not impose any restrictions on the use or redistribution of the sdk." That is a statement in a public issue, not a licence text.
+* **What the licence file says.** Since November 2026 the SDK repository (`flyshark2024/rmAxSdk`) has a licence file, "SDK License, Copyright (c) RadioMaster": permission to use, copy, distribute and redistribute the SDK binaries and headers for both commercial and non-commercial applications. Its text is in the app (About). The older repository (`Radiomaster-RC/RadiomasterAX_SDK`) has no licence file. The licence names the SDK binaries and headers; the Qt libraries inside the SDK are LGPL, and their licence text is in the app (About) too.
+* **What RadioMaster has said.** I asked RadioMaster in November 2026, first through their support (the ticket was closed without a reply) and then in an issue on the SDK repository (<https://github.com/Radiomaster-RC/RadiomasterAX_SDK/issues>). The SDK developer answered there: "we do not impose any restrictions on the use or redistribution of the sdk." That was a statement in a public issue, before the licence file was added.
 * **What I will do if that changes.** If RadioMaster or the authors of the SDK state different terms or ask me to stop, I will remove the libraries
   from the releases promptly and offer a way to build the app without them (you would add the SDK yourself, as described in "Build").
 * **The licence of AX-HUD's own code.** GPL-3.0-or-later, with an added permission in [LICENSE](LICENSE). That permission is mine to give

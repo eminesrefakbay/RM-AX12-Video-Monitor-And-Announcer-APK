@@ -35,11 +35,19 @@ std::atomic<int> firstCfgSeq{0};
 std::atomic<int> logLines{0};
 std::thread::id lastGetterThread;
 rmaxSdk::InitResult initResult = rmaxSdk::InitResult::Success;
+std::string lastPort = "(never called)";
+int lastBaud = -1;
+int initCalls = 0;
 }  // namespace fake
 
 namespace rmaxSdk {
 std::string_view version() noexcept { return "fake"; }
-InitResult initialize(std::string) noexcept { return fake::initResult; }
+InitResult initialize(std::string, std::string port, int baudRate) noexcept {
+    fake::lastPort = port;
+    fake::lastBaud = baudRate;
+    ++fake::initCalls;
+    return fake::initResult;
+}
 bool setMessageCallback(MessageCallback cb, void*) noexcept {
     std::lock_guard<std::mutex> l(fake::m);
     fake::callback = cb;
@@ -88,6 +96,18 @@ int main() {
     fake::initResult = rmaxSdk::InitResult::CommunicationInitFailed;
     CHECK(ax12::start("/tmp") == 3, "init failure is reported");
     CHECK(ax12::snapshot().v[ax12::kSnapState] == 0, "state stays 0 after a failed start");
+    CHECK(fake::lastPort.empty() && fake::lastBaud == 921600, "the plain start gives the SDK no port (it scans) and the SDK's own baud rate, as before");
+    {
+        ax12::StartOptions o;
+        o.port = "ttyS0";
+        o.baudRate = 1870000;
+        CHECK(ax12::start("/tmp", o) == 3, "a start with a named port reports a failed init too");
+        CHECK(fake::lastPort == "ttyS0" && fake::lastBaud == 1870000, "the port and the baud rate reach the SDK's initialize()");
+        CHECK(ax12::snapshot().v[ax12::kSnapState] == 0, "state stays 0 after that failed start");
+        ax12::StartOptions d;
+        CHECK(d.port.empty() && d.baudRate == 921600, "StartOptions defaults: no port, 921600");
+    }
+    CHECK(fake::initCalls == 2, "each start asks the SDK once, with no hidden retry");
     fake::initResult = rmaxSdk::InitResult::Success;
 
     ax12::setConfigRetryMs(100);

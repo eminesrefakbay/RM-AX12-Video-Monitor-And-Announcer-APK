@@ -62,13 +62,15 @@ class AxSdkRadioLink(private val context: Context) : RadioLink {
         if (!AxSdkJni.loaded) return tr("This build has no RadioMaster SDK files (see the README)")
         val previousBase = StartupState.nativeBaseMs
         StartupState.nativeBaseMs = SystemClock.elapsedRealtime()      // the bridge's own clock starts now
-        val code = AxSdkJni.nativeStart(context.filesDir.absolutePath, requestDeviceInfo, configRetryMs)
+        val link = Prefs.int(context, "sdkLink", SdkLink.DEFAULT)      // the SDK runs once per start of the app: a changed choice applies at the next start
+        val code = AxSdkJni.nativeStart(context.filesDir.absolutePath, requestDeviceInfo, configRetryMs, SdkLink.port(link), SdkLink.baud(link))
+        if (code == 0) StartupState.sdkLinkUsed = SdkLink.clamp(link)
         if (code == 1 && previousBase > 0) StartupState.nativeBaseMs = previousBase     // it was running already: that clock is still the right one
         started = (code == 0 || code == 1)
         return when (code) {
             0, 1 -> null
             2 -> tr("SDK worker thread failed to start")
-            3 -> tr("The SDK could not open the radio's serial link (see README: serial lock)")
+            3 -> tr("The SDK could not open the radio's serial link. Try another choice under Settings > System > Radio serial link, then close the app and open it again (see README: serial lock)")
             else -> tr("SDK start failed (code {0})", code)
         }
     }

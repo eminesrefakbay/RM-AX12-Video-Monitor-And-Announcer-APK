@@ -59,6 +59,8 @@ struct Timeline {
 struct StartOptions {
     bool requestDeviceInfo = false;   // ask the radio for its device information before the config, and once more when the config is loaded (RadioMaster's demo does)
     int configRetryMs = 3000;         // how long to wait before asking for the config again
+    std::string port;                 // the serial port for the SDK to open (for example "ttyS0"); empty = the SDK scans for it, which takes about 12 s
+    int baudRate = 921600;            // the baud rate given to the SDK (its own default is 921600)
 };
 
 /** How long to wait before asking the radio for its configuration again (default 3000 ms). Mainly for tests. */

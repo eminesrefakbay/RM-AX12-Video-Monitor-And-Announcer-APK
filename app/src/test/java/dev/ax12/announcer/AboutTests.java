@@ -75,11 +75,11 @@ public class AboutTests {
             for (Credits.Text x : e.texts) {
                 texts++;
                 File f = new File(assets + x.asset);
-                if (!f.isFile() || f.length() < 500 || x.label.isEmpty()) { bad++; System.out.println("  missing text: " + x.asset); }
+                if (!f.isFile() || f.length() < 150 || x.label.isEmpty()) { bad++; System.out.println("  missing text: " + x.asset); }
             }
         }
         check(bad == 0 && texts >= 5, "names are unique, every entry is complete, every license text exists (" + texts + " texts)");
-        check(list.get(1).texts.isEmpty() && list.get(1).name.contains("RadioMaster") && list.get(1).description.contains("Thank you"), "the SDK entry credits RadioMaster and does not invent a license text");
+        check(list.get(1).texts.size() == 1 && list.get(1).texts.get(0).asset.equals("licenses/RadioMaster-SDK-LICENSE.txt") && list.get(1).name.contains("RadioMaster") && list.get(1).description.contains("Thank you"), "the SDK entry credits RadioMaster and carries RadioMaster's own license text");
         check(list.get(2).texts.size() == 2 && list.get(2).license.contains("LGPL"), "Qt: its own license information and the LGPL");
         check(Credits.entries().get(0).url.contains("eminesrefakbay"), "the project page");
 

@@ -60,7 +60,6 @@ Last {0} s	Letzte {0} s
 Connecting to the radio... {0} s	Verbindung zur Fernsteuerung wird hergestellt... {0} s
 Still waiting. Close the RadioMaster app and check that the radio is on.	Es dauert noch. Schließe die RadioMaster-App und prüfe, ob die Fernsteuerung eingeschaltet ist.
 This app: the HUD, the voice announcer, the rules and the settings.	Diese App: das HUD, die Sprachansage, die Regeln und die Einstellungen.
-Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has no license file, but the SDK developer has stated that RadioMaster does not impose any restrictions on its use or redistribution (see the notice in the README). Thank you, RadioMaster, for publishing it.	Liest die Kanäle und die Telemetrie der Fernsteuerung. Die Bibliotheken sind in der App enthalten, wie es das Handbuch von RadioMaster für App-Entwickler beschreibt. Das Repository hat keine Lizenzdatei, aber der SDK-Entwickler hat erklärt, dass RadioMaster die Nutzung und Weitergabe nicht einschränkt (siehe den Hinweis in der README). Danke, RadioMaster, für die Veröffentlichung.
 The Qt libraries that come with the RadioMaster SDK, as delivered with it. Source code: download.qt.io.	Die Qt-Bibliotheken, die mit dem RadioMaster-SDK kommen, so wie sie mitgeliefert werden. Quellcode: download.qt.io.
 The C++ runtime of the Android NDK, needed by the SDK.	Die C++-Laufzeit des Android-NDK, die das SDK braucht.
 The standard library of the Kotlin language, which the app is written in.	Die Standardbibliothek der Sprache Kotlin, in der die App geschrieben ist.
@@ -407,7 +406,6 @@ Test sliders (no radio)	Testregler (keine Fernsteuerung)
 RadioMaster SDK	RadioMaster SDK
 This build has no RadioMaster SDK files (see the README)	Diese Version enthält keine RadioMaster-SDK-Dateien (siehe README)
 SDK worker thread failed to start	SDK-Arbeitsthread konnte nicht gestartet werden
-The SDK could not open the radio's serial link (see README: serial lock)	Das SDK konnte die serielle Verbindung der Fernsteuerung nicht öffnen (siehe README: serielle Sperre)
 SDK start failed (code {0})	SDK-Start fehlgeschlagen (Code {0})
 {0}x	{0}x
 Line {0}: missing '->'  ({1})	Zeile {0}: '->' fehlt  ({1})
@@ -1010,3 +1008,9 @@ The card comes back when the reserve changes state (low, then gone), so a warnin
 Top center	Oben Mitte
 Never	Nie
 {0} s	{0} s
+Radio serial link (port and baud rate)	Serielle Funkverbindung (Port und Baudrate)
+Automatic (scan)	Automatisch (suchen)
+(applies at the next start)	(gilt beim nächsten Start)
+The SDK could not open the radio's serial link. Try another choice under Settings > System > Radio serial link, then close the app and open it again (see README: serial lock)	Das SDK konnte die serielle Verbindung der Fernsteuerung nicht öffnen. Probieren Sie unter Einstellungen > System > Serielle Funkverbindung eine andere Auswahl, schließen Sie dann die App und öffnen Sie sie erneut (siehe README: serial lock)
+Reads the radio's channels and telemetry. Its libraries are included in the app, as RadioMaster's manual describes for app developers. Its repository has a license file that allows using, copying and redistributing the SDK binaries and headers for commercial and non-commercial applications (see the notice in the README). Thank you, RadioMaster, for publishing it.	Liest die Kanäle und die Telemetrie der Fernsteuerung. Die Bibliotheken sind in der App enthalten, wie es das Handbuch von RadioMaster für App-Entwickler beschreibt. Das Repository hat eine Lizenzdatei, die Nutzung, Kopie und Weitergabe der SDK-Binärdateien und -Header in kommerziellen und nichtkommerziellen Anwendungen erlaubt (siehe den Hinweis in der README). Danke, RadioMaster, für die Veröffentlichung.
+The port ttyS0 is the radio's own serial port; naming it lets the SDK open it at once instead of scanning for it (about 12 s). The baud rate has to match the radio: 921600 is the SDK's default and enough up to ELRS 500 Hz, 1870000 is for 1000 Hz and all packet rates. Automatic scans as before. A change applies the next time the app starts: close it from the menu and open it again.	Der Port ttyS0 ist der eigene serielle Port der Fernsteuerung; wird er genannt, öffnet das SDK ihn sofort, statt danach zu suchen (etwa 12 s). Die Baudrate muss zur Fernsteuerung passen: 921600 ist der Standard des SDK und reicht bis ELRS 500 Hz, 1870000 gilt für 1000 Hz und alle Paketraten. Automatisch sucht wie bisher. Eine Änderung gilt beim nächsten Start der App: über das Menü schließen und wieder öffnen.

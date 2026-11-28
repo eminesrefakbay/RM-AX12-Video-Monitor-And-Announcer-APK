@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-// The RadioMaster SDK files are not stored in this repository (their licence is not stated).
+// The RadioMaster SDK files are not stored in this repository (RadioMaster publishes them with their own SDK License).
 // When they are present (the CI workflow copies them in, see README) the native bridge is built;
 // without them the app still builds and runs on the test sliders.
 val sdkLib = file("src/main/jniLibs/arm64-v8a/librmAxSdk1.so")
@@ -24,7 +24,7 @@ val keystorePassword: String? = System.getenv("SIGNING_PASSWORD")
 val ciRun: Int? = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
 // The version people read. Nightly builds get a suffix from CI ("-nightly.45"), stable builds do not.
 // Change baseVersion before you make a stable release.
-val baseVersion = "1.17.5"
+val baseVersion = "1.17.6"
 val versionSuffix: String = System.getenv("VERSION_SUFFIX") ?: ""
 
 android {

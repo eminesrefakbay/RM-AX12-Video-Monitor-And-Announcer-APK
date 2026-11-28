@@ -46,7 +46,7 @@ public class DocsTests {
         check(r.contains("(#the-radiomaster-sdk-what-is-settled-and-what-is-not)"), "the top of the README points to the notice");
         for (String name : new String[]{"README.tr.md", "README.de.md", "README.zh.md"}) check(read(name).contains("README.md#the-radiomaster-sdk-what-is-settled-and-what-is-not"), name + ": has the notice and points to the English one");
         String credits = read("app/src/main/java/dev/ax12/announcer/Credits.java");
-        check(credits.contains("(no license file; RadioMaster permits use and redistribution, see the README notice)") && credits.contains("does not impose any restrictions on its use or redistribution"), "the About page says the same as the README");
+        check(credits.contains("RadioMaster SDK License: use, copy, distribute and redistribute the binaries and headers") && credits.contains("licenses/RadioMaster-SDK-LICENSE.txt") && r.contains("SDK License, Copyright (c) RadioMaster"), "the About page says the same as the README");
         Matcher title = Pattern.compile("# AX-HUD: AX12 video monitor, HUD and announcer \\(v([0-9.]+)\\)").matcher(r);
         check(title.find() && title.group(1).equals(ver), "the README title shows the current version " + ver + (title.find(0) ? " (it shows " + title.group(1) + ")" : ""));
 

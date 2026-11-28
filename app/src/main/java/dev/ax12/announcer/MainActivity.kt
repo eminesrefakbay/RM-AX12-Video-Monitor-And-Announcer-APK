@@ -1121,6 +1121,9 @@ class MainActivity : Activity() {
             "reserveOpacity" -> arrayOf("50%", "75%", "100%")[Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_OPACITY).coerceIn(0, 2)]
             else -> ReserveLook.hideSeconds(Prefs.int(this@MainActivity, key, ReserveLook.DEFAULT_HIDE)).let { if (it == 0) tr("Never") else tr("{0} s", it) }
         }
+        override fun sdkLinkLabel(): String = SdkLink.label(Prefs.int(this@MainActivity, "sdkLink", SdkLink.DEFAULT), tr("Automatic (scan)")) +
+            if (SdkLink.clamp(Prefs.int(this@MainActivity, "sdkLink", SdkLink.DEFAULT)) != StartupState.sdkLinkUsed && StartupState.sdkLinkUsed >= 0) "  " + tr("(applies at the next start)") else ""
+        override fun cycleSdkLink() { Prefs.setInt(this@MainActivity, "sdkLink", SdkLink.next(Prefs.int(this@MainActivity, "sdkLink", SdkLink.DEFAULT))) }
         override fun cycleReserve(key: String) {
             val def = when (key) { "reserveSize" -> ReserveLook.DEFAULT_SIZE; "reservePos" -> ReserveLook.DEFAULT_POS; "reserveOpacity" -> ReserveLook.DEFAULT_OPACITY; else -> ReserveLook.DEFAULT_HIDE }
             val count = when (key) { "reservePos" -> 3; "reserveHide" -> 4; else -> 3 }

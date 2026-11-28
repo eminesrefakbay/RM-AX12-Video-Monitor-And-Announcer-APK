@@ -22,6 +22,7 @@ object StartupState {
     val timeline = StartupTimeline()
     @Volatile var processStartMs = SystemClock.elapsedRealtime()
     @Volatile var nativeBaseMs = 0L           // when the native SDK start began (0 = not yet)
+    @Volatile var sdkLinkUsed = -1            // the serial link choice the SDK was started with (-1 = not started yet); a change in Settings applies at the next start
     @Volatile var connected = false           // the radio's configuration is loaded and values have reached the screen; false again when the link is shut down
     @Volatile private var logged = false
     private const val LOG_FILE = "startup_timings.txt"

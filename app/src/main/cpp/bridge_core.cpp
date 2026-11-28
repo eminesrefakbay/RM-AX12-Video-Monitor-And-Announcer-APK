@@ -229,7 +229,7 @@ Timeline timeline() {
 }
 
 namespace {
-int startWith(const std::string& appDataPath, bool requestDeviceInfo) {
+int startWith(const std::string& appDataPath, bool requestDeviceInfo, const std::string& port, int baudRate) {
     State& s = st();
     {
         std::lock_guard<std::mutex> lock(s.m);
@@ -237,7 +237,7 @@ int startWith(const std::string& appDataPath, bool requestDeviceInfo) {
     }
     const auto t0 = std::chrono::steady_clock::now();
     redirectTempDir(appDataPath);
-    const auto result = rmaxSdk::initialize(appDataPath);
+    const auto result = rmaxSdk::initialize(appDataPath, port, baudRate);
     const double initMs = msSince(t0);
     if (result != rmaxSdk::InitResult::Success && result != rmaxSdk::InitResult::AlreadyInitialized) {
         return static_cast<int>(result);
@@ -282,11 +282,11 @@ int startWith(const std::string& appDataPath, bool requestDeviceInfo) {
 }
 }  // namespace
 
-int start(const std::string& appDataPath) { return startWith(appDataPath, false); }
+int start(const std::string& appDataPath) { return startWith(appDataPath, false, std::string(), 921600); }
 
 int start(const std::string& appDataPath, const StartOptions& options) {
     g_cfgRetryMs = options.configRetryMs;
-    return startWith(appDataPath, options.requestDeviceInfo);
+    return startWith(appDataPath, options.requestDeviceInfo, options.port, options.baudRate);
 }
 
 void stop() {
